@@ -1,0 +1,22 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: #282a36;
+}
+
+.GLWindow {
+    padding-top: 5rem;
+    display: flex;
+    justify-content: center;
+
+    canvas {
+        margin: 0;
+    }
+}
