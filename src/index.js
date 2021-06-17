@@ -11,6 +11,8 @@ class BasicWorldDemo {
     }
 
     _Initialize() {
+        this._animations = {}
+
         this._threejs = new THREE.WebGLRenderer({
             antialias: true,
             canvas: document.getElementById('WebGLCanvas'),
@@ -99,8 +101,6 @@ class BasicWorldDemo {
         const loader = new FBXLoader()
         loader.setPath('./resources/models/')
         loader.load('Rogue.fbx', (fbx) => {
-            console.debug(fbx)
-
             this._scene.add(fbx)
 
             fbx.scale.setScalar(0.1)
@@ -118,6 +118,21 @@ class BasicWorldDemo {
                     c.material.side = THREE.DoubleSide
                 }
             })
+
+            this._mixer = new THREE.AnimationMixer(fbx)
+            fbx.animations.forEach((anim) => {
+                this._animations[anim.name] = {
+                    clip: anim,
+                    action: this._mixer.clipAction(anim),
+                }
+            })
+            // console.debug(this._animations)
+            const { action } = this._animations['CharacterArmature|Attacking_Idle']
+            action.time = 0.0
+            action.enabled = true
+            action.setEffectiveTimeScale(1.0)
+            action.setEffectiveWeight(1.0)
+            action.play()
         })
     }
 
@@ -130,9 +145,16 @@ class BasicWorldDemo {
     }
 
     tick() {
-        requestAnimationFrame(() => {
-            this._threejs.render(this._scene, this._camera)
+        requestAnimationFrame((t) => {
+            if (!this._lastTick) {
+                this._lastTick = t
+            }
+            const delta = Math.min(1.0 / 30.0, (t - this._lastTick) * 0.001)
             this.tick()
+            this._threejs.render(this._scene, this._camera)
+            if (this._mixer) {
+                this._mixer.update(delta)
+            }
         })
     }
 }

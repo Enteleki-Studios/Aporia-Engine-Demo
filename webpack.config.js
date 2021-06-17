@@ -20,6 +20,7 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 { from: 'resources', to: 'resources' },
+                { from: 'favicon.ico', to: 'favicon.ico' },
             ],
         }),
     ],
