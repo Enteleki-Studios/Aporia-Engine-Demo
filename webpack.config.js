@@ -1,10 +1,13 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
 const path = require('path')
 
 module.exports = {
     entry: './src/index.js',
+    target: 'web',
+    stats: 'errors-warnings',
     resolve: {
         modules: [
             path.resolve(__dirname, 'node_modules'),
@@ -12,6 +15,7 @@ module.exports = {
         ],
     },
     plugins: [
+        new ESLintPlugin(),
         new MiniCssExtractPlugin(),
         new HtmlWebpackPlugin({
             title: 'index',
@@ -33,6 +37,13 @@ module.exports = {
                     'css-loader',
                     'sass-loader',
                 ],
+            },
+            {
+                test: /\m?js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader",
+                },
             },
         ],
     },

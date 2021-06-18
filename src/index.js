@@ -4,13 +4,9 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 import 'style/root.scss'
 
-
-class BasicWorldDemo {
-    constructor() {
-        this._Initialize()
-    }
-
-    _Initialize() {
+class ECS {
+    #animations = {}
+    Init() {
         this._animations = {}
 
         this._threejs = new THREE.WebGLRenderer({
@@ -58,7 +54,8 @@ class BasicWorldDemo {
         this._scene.add(ambientLight)
 
         const controls = new OrbitControls(
-            this._camera, this._threejs.domElement)
+            this._camera, this._threejs.domElement,
+        )
         controls.target.set(0, 20, 0)
         controls.update()
 
@@ -77,7 +74,8 @@ class BasicWorldDemo {
             new THREE.PlaneGeometry(100, 100, 10, 10),
             new THREE.MeshStandardMaterial({
                 color: 0x6272a4,
-            }))
+            }),
+        )
         plane.castShadow = false
         plane.receiveShadow = true
         plane.rotation.x = -Math.PI / 2
@@ -97,6 +95,7 @@ class BasicWorldDemo {
 
         this.tick()
     }
+
     _LoadAnimatedModel() {
         const loader = new FBXLoader()
         loader.setPath('./resources/models/')
@@ -137,8 +136,7 @@ class BasicWorldDemo {
     }
 
     _OnWindowResize() {
-        const width = this._threejs.domElement.width
-        const height = this._threejs.domElement.height
+        const { width, height } = this._threejs.domElement
         this._camera.aspect = width / height
         this._camera.updateProjectionMatrix()
         this._threejs.setSize(width, height)
@@ -159,8 +157,7 @@ class BasicWorldDemo {
     }
 }
 
-let _APP = null
-
 window.addEventListener('DOMContentLoaded', () => {
-    _APP = new BasicWorldDemo()
+    const App = new ECS()
+    App.Init()
 })

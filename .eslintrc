@@ -1,0 +1,15 @@
+{
+    "extends": ["airbnb", "airbnb/hooks"],
+    "env": {
+        "browser": true,
+    },
+    "settings": {
+        "import/resolver": "webpack"
+    },
+    "rules": {
+        "indent": ["error", 4],
+        "semi": ["error", "never"],
+        "no-param-reassign": ["error", { "props": false }],
+        "no-underscore-dangle": ["error", { "allowAfterThis": true, "allowAfterSuper": true }],
+    }
+}

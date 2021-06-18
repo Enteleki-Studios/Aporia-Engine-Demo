@@ -1,0 +1,15 @@
+{
+    "presets": [
+        [
+            "@babel/env",
+            {
+                "targets": {
+                    "firefox": 80
+                }
+            }
+        ]
+    ],
+    "plugins": [
+        "@babel/plugin-proposal-private-methods"
+    ]
+}
