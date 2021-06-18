@@ -35,19 +35,14 @@ export class SkyBox extends THREE.Mesh {
             offset: { value: 33 },
             exponent: { value: 0.6 },
         }
-        // uniforms.topColor.value.copy(hemiLight.color)
-        // this._scene.fog.color.copy(uniforms.bottomColor.value)
 
-        const skyGeo = new THREE.SphereGeometry(400, 32, 15)
-        const skyMat = new THREE.ShaderMaterial({
+        this.geometry = new THREE.SphereGeometry(400, 32, 15)
+        this.material = new THREE.ShaderMaterial({
             uniforms,
             vertexShader,
             fragmentShader,
             side: THREE.BackSide,
         })
-
-        this.geometry = skyGeo
-        this.material = skyMat
     }
 }
 export default SkyBox

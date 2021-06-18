@@ -48,7 +48,8 @@ class ECS {
         this._scene.add(light.helper)
         this._scene.add(light.shadowHelper)
 
-        const hemiLight = new THREE.HemisphereLight(0xbd93f9, 0x44475a, 0.6)
+        // const hemiLight = new THREE.HemisphereLight(0xbd93f9, 0x44475a, 0.6)
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6)
         hemiLight.position.set(0, 5, 0)
         this._scene.add(hemiLight)
 
@@ -88,8 +89,8 @@ class ECS {
         const cube = new THREE.Mesh(cubeGeo, cubeMat)
         cube.castShadow = true
         cube.receiveShadow = true
-        // cube.position.set(5, 0.5, 5)
-        cube.position.set(3, 0.5, 3)
+        cube.position.set(5, 0.5, 5)
+        // cube.position.set(3, 0.5, 3)
         this._scene.add(cube)
 
         this.tick()
@@ -102,7 +103,7 @@ class ECS {
             this._scene.add(fbx)
 
             fbx.scale.setScalar(0.01)
-            fbx.position.set(1, 0, 1)
+            fbx.position.set(2, 0, 2)
 
             const textureLoader = new THREE.TextureLoader()
             const texture = textureLoader.load('./resources/models/Textures/Rogue_Texture.png')
