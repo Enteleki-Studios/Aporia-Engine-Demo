@@ -43,18 +43,36 @@ class ECS {
         const axesHelper = new THREE.AxesHelper(1)
         this._scene.add(axesHelper)
 
-        const light = new GLHelpers.DirectionalLight(0xFFFFFF, 1.0)
-        this._scene.add(light)
-        this._scene.add(light.helper)
-        this._scene.add(light.shadowHelper)
+        // const light = new GLHelpers.DirectionalLight(0xFFFFFF, 1.0)
+        // this._scene.add(light)
+        // this._scene.add(light.helper)
+        // this._scene.add(light.shadowHelper)
 
-        // const hemiLight = new THREE.HemisphereLight(0xbd93f9, 0x44475a, 0.6)
         const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6)
         hemiLight.position.set(0, 5, 0)
         this._scene.add(hemiLight)
-
         const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 1)
         this._scene.add(hemiLightHelper)
+
+        const spotLight = new THREE.SpotLight(0xffffff, 1, 15, Math.PI / 4, 1)
+        spotLight.position.set(2, 5, -2)
+        spotLight.castShadow = true
+        spotLight.shadow.mapSize.width = 2048
+        spotLight.shadow.mapSize.height = 2048
+        spotLight.shadow.camera.near = 5
+        spotLight.shadow.camera.far = 400
+        spotLight.shadow.camera.fov = 10
+        const d = 10
+        spotLight.shadow.camera.left = d
+        spotLight.shadow.camera.right = -d
+        spotLight.shadow.camera.top = d
+        spotLight.shadow.camera.bottom = -d
+        this._scene.add(spotLight)
+        const spotLightTarget = new THREE.Object3D()
+        this._scene.add(spotLightTarget)
+        spotLightTarget.position.set(2, 0, 2)
+        spotLight.target = spotLightTarget
+        this._scene.add(new THREE.SpotLightHelper(spotLight, 0x0000ff))
 
         // const ambientLight = new THREE.AmbientLight(0x101010, 10)
         // this._scene.add(ambientLight)
