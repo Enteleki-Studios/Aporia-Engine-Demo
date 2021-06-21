@@ -1,100 +1,77 @@
 import * as THREE from 'three'
-import * as GLHelpers from 'GLHelpers'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
-import Stats from 'three/examples/jsm/libs/stats.module'
+
+import ECS from 'ECS'
+import * as Systems from 'Systems'
+
+import Axes from 'Components/Axes'
+import Light from 'Components/Light'
+import Stats from 'Components/Stats'
+import OrbitControls from 'Components/OrbitControls'
+import SkyBox from 'Components/SkyBox'
+import Plane from 'Components/Plane'
 
 import 'style/root.scss'
 
-class ECS {
+const renderDimensions = [1280, 720]
+
+class Gammme {
     Init() {
-        this._animations = {}
-        this._clock = new THREE.Clock()
+        // this._animations = {}
+        // this._clock = new THREE.Clock()
 
-        this._stats = new Stats()
-        document.getElementsByClassName('GLWindow')[0].appendChild(this._stats.dom)
+        // this._threejs = new THREE.WebGLRenderer({
+        //     antialias: true,
+        //     canvas: document.getElementById('WebGLCanvas'),
+        // })
+        // this._threejs.outputEncoding = THREE.sRGBEncoding
+        // this._threejs.gammaFactor = 2.2
+        // this._threejs.shadowMap.enabled = true
+        // this._threejs.shadowMap.type = THREE.PCFSoftShadowMap
+        // this._threejs.setPixelRatio(window.devicePixelRatio)
 
-        this._threejs = new THREE.WebGLRenderer({
-            antialias: true,
-            canvas: document.getElementById('WebGLCanvas'),
-        })
-        this._threejs.outputEncoding = THREE.sRGBEncoding
-        this._threejs.gammaFactor = 2.2
-        this._threejs.shadowMap.enabled = true
-        this._threejs.shadowMap.type = THREE.PCFSoftShadowMap
-        this._threejs.setPixelRatio(window.devicePixelRatio)
+        // window.addEventListener('resize', () => {
+        //     this._OnWindowResize()
+        // }, false)
 
-        window.addEventListener('resize', () => {
-            this._OnWindowResize()
-        }, false)
+        // const fov = 60
+        // const aspect = 1920 / 1080
+        // const near = 1.0
+        // const far = 500
+        // this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+        // this._camera.position.set(-7, 5, -2)
+        // this._OnWindowResize()
 
-        const fov = 60
-        const aspect = 1920 / 1080
-        const near = 1.0
-        const far = 500
-        this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
-        this._camera.position.set(-7, 5, -2)
-        this._OnWindowResize()
+        // this._scene = new THREE.Scene()
+        // this._scene.background = new THREE.Color(0xbd93f9)
+        // this._scene.fog = new THREE.Fog(this._scene.background, 1, 100)
 
-        this._scene = new THREE.Scene()
-        this._scene.background = new THREE.Color(0xbd93f9)
-        this._scene.fog = new THREE.Fog(this._scene.background, 1, 100)
+        // const axesHelper = new THREE.AxesHelper(1)
+        // this._scene.add(axesHelper)
 
-        const axesHelper = new THREE.AxesHelper(1)
-        this._scene.add(axesHelper)
+        // const light = new GLHelpers.DirectionalLight(0xFFFFFF, 1.0)
+        // this._scene.add(light)
+        // this._scene.add(light.helper)
+        // this._scene.add(light.shadowHelper)
 
-        const light = new GLHelpers.DirectionalLight(0xFFFFFF, 1.0)
-        this._scene.add(light)
-        this._scene.add(light.helper)
-        this._scene.add(light.shadowHelper)
-
-        const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6)
-        hemiLight.position.set(0, 5, 0)
-        this._scene.add(hemiLight)
-        const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 1)
-        this._scene.add(hemiLightHelper)
-
-        // const spotLight = new THREE.SpotLight(0xffffff, 1, 15, Math.PI / 4, 1)
-        // spotLight.position.set(2, 5, -2)
-        // spotLight.castShadow = true
-        // spotLight.shadow.mapSize.width = 2048
-        // spotLight.shadow.mapSize.height = 2048
-        // spotLight.shadow.camera.near = 5
-        // spotLight.shadow.camera.far = 400
-        // spotLight.shadow.camera.fov = 10
-        // const d = 10
-        // spotLight.shadow.camera.left = d
-        // spotLight.shadow.camera.right = -d
-        // spotLight.shadow.camera.top = d
-        // spotLight.shadow.camera.bottom = -d
-        // this._scene.add(spotLight)
-        // // this._scene.add(spotLight.target)
-        // const spotLightTarget = new THREE.Object3D()
-        // spotLight.target = spotLightTarget
-        // // this._scene.add(spotLight.target)
-        // // spotLightTarget.position.set(2, 0, 2)
-        // // spotLight.target.position.set(2, 0, 2)
-        // spotLight.target.position.x = 5
-        // this._scene.add(new THREE.SpotLightHelper(spotLight, 0x0000ff))
-
-        // const ambientLight = new THREE.AmbientLight(0x101010, 10)
+        // const ambientLight = new THREE.AmbientLight(0x101010, 5)
         // this._scene.add(ambientLight)
 
-        const sky = new GLHelpers.SkyBox()
-        this._scene.add(sky)
+        // const sky = new GLHelpers.SkyBox()
+        // this._scene.add(sky)
 
-        const controls = new OrbitControls(
-            this._camera, this._threejs.domElement,
-        )
-        controls.minDistance = 3
-        controls.maxDistance = 50
-        controls.target.set(0, 2, 0)
-        controls.update()
+        // const controls = new OrbitControls(
+        //     this._camera, this._threejs.domElement,
+        // )
+        // controls.minDistance = 3
+        // controls.maxDistance = 50
+        // controls.target.set(2, 2, 2)
+        // controls.update()
 
         const plane = new THREE.Mesh(
             new THREE.PlaneGeometry(10, 10),
             new THREE.MeshStandardMaterial({
-                color: 0x6272a4,
+                color: 0x44475a,
             }),
         )
         plane.castShadow = false
@@ -104,15 +81,17 @@ class ECS {
         this._scene.add(plane)
 
         this._LoadAnimatedModel()
+        this._LoadWalls()
+        this._LoadFloor()
 
-        const cubeGeo = new THREE.BoxGeometry(1, 1, 1)
-        const cubeMat = new THREE.MeshStandardMaterial({ color: 0x50fa7b })
-        const cube = new THREE.Mesh(cubeGeo, cubeMat)
-        cube.castShadow = true
-        cube.receiveShadow = true
-        cube.position.set(5, 0.5, 5)
-        // cube.position.set(3, 0.5, 3)
-        this._scene.add(cube)
+        // const cubeGeo = new THREE.BoxGeometry(1, 1, 1)
+        // const cubeMat = new THREE.MeshStandardMaterial({ color: 0x50fa7b })
+        // const cube = new THREE.Mesh(cubeGeo, cubeMat)
+        // cube.castShadow = true
+        // cube.receiveShadow = true
+        // cube.position.set(5, 0.5, 5)
+        // // cube.position.set(3, 0.5, 3)
+        // this._scene.add(cube)
 
         this.tick()
     }
@@ -123,7 +102,7 @@ class ECS {
         loader.load('Rogue.fbx', (fbx) => {
             this._scene.add(fbx)
 
-            fbx.scale.setScalar(0.01)
+            fbx.scale.setScalar(0.006)
             fbx.position.set(2, 0, 2)
 
             const textureLoader = new THREE.TextureLoader()
@@ -158,13 +137,48 @@ class ECS {
         })
     }
 
+    _LoadWalls() {
+        const loader = new FBXLoader()
+        loader.setPath('./resources/models/Env/')
+        loader.load('ModularStoneWall_top.fbx', (f) => {
+            f.scale.setScalar(0.01)
+            f.traverse((c) => {
+                c.castShadow = true
+                c.receiveShadow = true
+            })
+            f.rotateY(Math.PI)
+            for (let i = 1; i <= 5; i += 1) {
+                const fbx = f.clone()
+                this._scene.add(fbx)
+                fbx.position.set(10, 1, 1 * 2 * i - 1)
+            }
+            f.rotateY(-Math.PI / 2)
+            for (let i = 1; i <= 5; i += 1) {
+                const fbx = f.clone()
+                this._scene.add(fbx)
+                fbx.position.set(1 * 2 * i - 1, 1, 10)
+            }
+        })
+    }
+
+    _LoadFloor() {
+        const loader = new FBXLoader()
+        loader.setPath('./resources/models/Env/')
+        loader.load('ModularFloor.fbx', (fbx) => {
+            fbx.scale.setScalar(0.01)
+            fbx.traverse((c) => {
+                c.castShadow = true
+                c.receiveShadow = true
+            })
+            this._scene.add(fbx)
+            fbx.position.set(9, -0.3, 1)
+        })
+    }
+
     _OnWindowResize() {
-        // const { width, height } = document.getElementById('WebGLCanvas')
-        const width = 1000
-        const height = 700
-        this._camera.aspect = width / height
+        this._camera.aspect = renderDimensions[0] / renderDimensions[1]
         this._camera.updateProjectionMatrix()
-        this._threejs.setSize(width, height)
+        this._threejs.setSize(renderDimensions[0], renderDimensions[1])
     }
 
     tick() {
@@ -175,12 +189,37 @@ class ECS {
             if (this._mixer) {
                 this._mixer.update(delta)
             }
-            this._stats.update()
         })
     }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    const App = new ECS()
-    App.Init()
+    // const TheGame = new Gammme()
+    // TheGame.Init()
+
+    const DungeonECS = new ECS()
+
+    DungeonECS.registerSystem(new Systems.Renderer({
+        canvasId: 'WebGLCanvas',
+        dimensions: [1280, 720],
+    }))
+
+    DungeonECS.addComponent(new Stats(DungeonECS.createEntity()))
+    DungeonECS.addComponent(new Axes(DungeonECS.createEntity()))
+    DungeonECS.addComponent(new OrbitControls(DungeonECS.createEntity()))
+
+    DungeonECS.addComponent(new SkyBox(DungeonECS.createEntity()))
+
+    DungeonECS.addComponent(new Light(DungeonECS.createEntity(), 'DirectionalLight'))
+    DungeonECS.addComponent(new Light(DungeonECS.createEntity(), 'AmbientLight', {
+        color: 0x101010,
+        intensity: 5,
+    }))
+
+    DungeonECS.addComponent(new Plane(DungeonECS.createEntity(), {
+        width: 10,
+        height: 10,
+        color: 0x44475a,
+        position: [5, 0, 5],
+    }))
 })

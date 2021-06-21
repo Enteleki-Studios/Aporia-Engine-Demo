@@ -7,11 +7,14 @@
         "import/resolver": "webpack"
     },
     "rules": {
-        "indent": ["error", 4],
+        "indent": ["error", 4, {
+            "SwitchCase": 1,
+        }],
         "semi": ["error", "never"],
         "no-param-reassign": ["error", { "props": false }],
         "no-underscore-dangle": ["error", { "allowAfterThis": true, "allowAfterSuper": true }],
         "no-unused-vars": 1,
-        "max-len": ["error", 120]
+        "max-len": ["warn", 120],
+        "import/prefer-default-export": "off"
     }
 }
