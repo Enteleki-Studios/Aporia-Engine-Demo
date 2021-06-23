@@ -1,7 +1,7 @@
 export default class ComponentManager {
     constructor(ECS) {
         this._ECS = ECS
-        this.components = []
+        this._components = []
         this._componentsByEntity = {}
         this._componentsByType = {}
     }
@@ -11,7 +11,7 @@ export default class ComponentManager {
             throw new Error('Component missing entity or type', component)
         }
 
-        this.components.push(component)
+        this._components.push(component)
 
         if (!this._componentsByEntity[component.entity]) {
             this._componentsByEntity[component.entity] = []

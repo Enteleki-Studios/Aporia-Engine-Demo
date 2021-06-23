@@ -1,7 +1,19 @@
-export default function Plane(entity, params) {
+export default function Plane(
+    entity,
+    {
+        width,
+        height,
+        color,
+        position,
+    },
+) {
     return {
         type: 'plane',
         entity,
-        ...params,
+
+        width,
+        height,
+        color,
+        position,
     }
 }

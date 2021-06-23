@@ -1,7 +1,11 @@
 import * as THREE from 'three'
+
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+
 import * as GLHelpers from 'GLHelpers'
+
 import System from 'ECS/System'
 
 export class Renderer extends System {
@@ -45,9 +49,13 @@ export class Renderer extends System {
             ['orbitControls', () => this._onAddOrbitControls()],
             ['skyBox', () => this._onAddSkyBox()],
             ['plane', (c) => this._onAddPlane(c)],
+            ['model', (c) => this._onAddModel(c)],
+            ['position', (c) => this._onAddPosition(c)],
         ]
 
         this._jobs = []
+        this._models = new Map()
+        this._animations = new Map()
 
         this.update()
     }
@@ -108,6 +116,60 @@ export class Renderer extends System {
         plane.rotation.x = -Math.PI / 2
         plane.position.set(...component.position)
         this._scene.add(plane)
+    }
+
+    _onAddModel(component) {
+        const loader = new FBXLoader()
+        loader.setPath(component.resourcePath)
+        loader.load(component.modelPath, (fbx) => {
+            this._scene.add(fbx)
+
+            fbx.scale.setScalar(component.scale)
+
+            fbx.position.set(...component.initialPosition)
+
+            const textureLoader = new THREE.TextureLoader()
+            const texture = textureLoader.load(component.resourcePath + component.texturePath)
+            texture.encoding = THREE.sRGBEncoding
+            texture.flipY = true
+
+            fbx.traverse((c) => {
+                c.castShadow = true
+                c.receiveShadow = true
+                if (c.material) {
+                    c.material.map = texture
+                    c.material.side = THREE.DoubleSide
+                    // c.material.wireframe = true
+                }
+            })
+
+            console.debug(fbx.animations)
+
+            const mixer = new THREE.AnimationMixer(fbx)
+            const animations = {}
+            fbx.animations.forEach((anim) => {
+                animations[anim.name] = {
+                    clip: anim,
+                    action: mixer.clipAction(anim),
+                }
+            })
+            const { action } = animations['CharacterArmature|Attacking_Idle']
+            action.time = 0.0
+            action.enabled = true
+            action.setEffectiveTimeScale(1.0)
+            action.setEffectiveWeight(1.0)
+            action.play()
+
+            this._models.set(component.entity, fbx)
+            this._animations.set(component.entity, animations)
+            this._jobs.push((delta) => mixer.update(delta))
+        })
+    }
+
+    _onAddPosition(component) {
+        if (this._models.has(component.entity)) {
+            this._models.get(component.entity).position.set(...component.position)
+        }
     }
 
     _onResize() {
