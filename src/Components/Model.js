@@ -1,21 +1,8 @@
-export default function Model(
-    entity,
-    {
-        resourcePath,
-        modelPath,
-        texturePath,
-        scale,
-        initialPosition,
-    },
-) {
+export default function Model(entity, { modelId }) {
     return {
         type: 'model',
         entity,
 
-        resourcePath,
-        modelPath,
-        texturePath,
-        scale,
-        initialPosition,
+        modelId,
     }
 }

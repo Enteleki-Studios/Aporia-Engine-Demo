@@ -15,6 +15,7 @@
         "no-underscore-dangle": ["error", { "allowAfterThis": true, "allowAfterSuper": true }],
         "no-unused-vars": 1,
         "max-len": ["warn", 120],
-        "import/prefer-default-export": "off"
+        "import/prefer-default-export": "off",
+        "object-curly-newline": "off"
     }
 }

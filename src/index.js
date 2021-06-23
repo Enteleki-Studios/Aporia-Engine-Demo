@@ -1,5 +1,3 @@
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
-
 import ECS from 'ECS'
 import * as Systems from 'Systems'
 
@@ -11,36 +9,9 @@ import SkyBox from 'Components/SkyBox'
 import Plane from 'Components/Plane'
 import Model from 'Components/Model'
 import Position from 'Components/Position'
+import Animation from 'Components/Animation'
 
 import 'style/root.scss'
-
-// this._animations = {}
-
-class Gammme {
-    _LoadWalls() {
-        const loader = new FBXLoader()
-        loader.setPath('./resources/models/Env/')
-        loader.load('ModularStoneWall_top.fbx', (f) => {
-            f.scale.setScalar(0.01)
-            f.traverse((c) => {
-                c.castShadow = true
-                c.receiveShadow = true
-            })
-            f.rotateY(Math.PI)
-            for (let i = 1; i <= 5; i += 1) {
-                const fbx = f.clone()
-                this._scene.add(fbx)
-                fbx.position.set(10, 1, 1 * 2 * i - 1)
-            }
-            f.rotateY(-Math.PI / 2)
-            for (let i = 1; i <= 5; i += 1) {
-                const fbx = f.clone()
-                this._scene.add(fbx)
-                fbx.position.set(1 * 2 * i - 1, 1, 10)
-            }
-        })
-    }
-}
 
 window.addEventListener('DOMContentLoaded', () => {
     const DungeonECS = new ECS()
@@ -70,26 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }))
 
     const playerEntity = DungeonECS.createEntity()
-    DungeonECS.addComponent(new Model(playerEntity, {
-        resourcePath: '/resources/models/rogue/',
-        modelPath: 'Rogue.fbx',
-        texturePath: 'Rogue_Texture.png',
-        scale: 0.006,
-        initialPosition: [2, 0, 2],
-    }))
+    DungeonECS.addComponent(new Model(playerEntity, { modelId: 1 }))
     DungeonECS.addComponent(new Position(playerEntity, [2, 0, 2]))
+    DungeonECS.addComponent(new Animation(playerEntity, 'enGarde'))
 })
-
-// _LoadFloor() {
-//     const loader = new FBXLoader()
-//     loader.setPath('./resources/models/Env/')
-//     loader.load('ModularFloor.fbx', (fbx) => {
-//         fbx.scale.setScalar(0.01)
-//         fbx.traverse((c) => {
-//             c.castShadow = true
-//             c.receiveShadow = true
-//         })
-//         this._scene.add(fbx)
-//         fbx.position.set(9, -0.3, 1)
-//     })
-// }

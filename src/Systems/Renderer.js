@@ -5,6 +5,7 @@ import Stats from 'three/examples/jsm/libs/stats.module'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import * as GLHelpers from 'GLHelpers'
+import modelDB from 'modelDB'
 
 import System from 'ECS/System'
 
@@ -51,6 +52,7 @@ export class Renderer extends System {
             ['plane', (c) => this._onAddPlane(c)],
             ['model', (c) => this._onAddModel(c)],
             ['position', (c) => this._onAddPosition(c)],
+            ['animation', (c) => this._onAddAnimation(c)],
         ]
 
         this._jobs = []
@@ -119,17 +121,23 @@ export class Renderer extends System {
     }
 
     _onAddModel(component) {
+        const { entity, modelId } = component
+        const { resourcePath, modelPath, texturePath, scale, animations: animationIndex } = modelDB[modelId]
+
         const loader = new FBXLoader()
-        loader.setPath(component.resourcePath)
-        loader.load(component.modelPath, (fbx) => {
+        loader.setPath(resourcePath)
+        loader.load(modelPath, (fbx) => {
             this._scene.add(fbx)
 
-            fbx.scale.setScalar(component.scale)
+            fbx.scale.setScalar(scale)
 
-            fbx.position.set(...component.initialPosition)
+            const positionComponent = this._getComponent(entity, 'position')
+            if (positionComponent) {
+                fbx.position.set(...positionComponent.position)
+            }
 
             const textureLoader = new THREE.TextureLoader()
-            const texture = textureLoader.load(component.resourcePath + component.texturePath)
+            const texture = textureLoader.load(resourcePath + texturePath)
             texture.encoding = THREE.sRGBEncoding
             texture.flipY = true
 
@@ -143,26 +151,31 @@ export class Renderer extends System {
                 }
             })
 
-            console.debug(fbx.animations)
+            this._models.set(entity, fbx)
 
-            const mixer = new THREE.AnimationMixer(fbx)
-            const animations = {}
-            fbx.animations.forEach((anim) => {
-                animations[anim.name] = {
-                    clip: anim,
-                    action: mixer.clipAction(anim),
+            if (fbx.animations) {
+                const mixer = new THREE.AnimationMixer(fbx)
+                const animations = {}
+                fbx.animations.forEach((anim) => {
+                    animations[anim.name] = {
+                        clip: anim,
+                        action: mixer.clipAction(anim),
+                    }
+                })
+                this._animations.set(entity, animations)
+
+                const animationComponent = this._getComponent(entity, 'animation')
+                if (animationComponent) {
+                    const { action } = animations[animationIndex[animationComponent.state]]
+                    action.time = 0.0
+                    action.enabled = true
+                    action.setEffectiveTimeScale(1.0)
+                    action.setEffectiveWeight(1.0)
+                    action.play()
+
+                    this._jobs.push((delta) => mixer.update(delta))
                 }
-            })
-            const { action } = animations['CharacterArmature|Attacking_Idle']
-            action.time = 0.0
-            action.enabled = true
-            action.setEffectiveTimeScale(1.0)
-            action.setEffectiveWeight(1.0)
-            action.play()
-
-            this._models.set(component.entity, fbx)
-            this._animations.set(component.entity, animations)
-            this._jobs.push((delta) => mixer.update(delta))
+            }
         })
     }
 
@@ -170,6 +183,14 @@ export class Renderer extends System {
         if (this._models.has(component.entity)) {
             this._models.get(component.entity).position.set(...component.position)
         }
+        this._saveComponent(component)
+    }
+
+    _onAddAnimation(component) {
+        if (this._animations.has(component.entity)) {
+            this._animations.get(component.entity)[component.state].play()
+        }
+        this._saveComponent(component)
     }
 
     _onResize() {
@@ -186,10 +207,6 @@ export class Renderer extends System {
             this._renderer.render(this._scene, this._camera)
             this._jobs.forEach((j) => j(delta))
         })
-
-        // if (this._mixer) {
-        //     this._mixer.update(delta)
-        // }
     }
 }
 
@@ -201,3 +218,42 @@ export class Renderer extends System {
 // cube.position.set(5, 0.5, 5)
 // // cube.position.set(3, 0.5, 3)
 // this._scene.add(cube)
+//
+//
+// _LoadFloor() {
+//     const loader = new FBXLoader()
+//     loader.setPath('./resources/models/Env/')
+//     loader.load('ModularFloor.fbx', (fbx) => {
+//         fbx.scale.setScalar(0.01)
+//         fbx.traverse((c) => {
+//             c.castShadow = true
+//             c.receiveShadow = true
+//         })
+//         this._scene.add(fbx)
+//         fbx.position.set(9, -0.3, 1)
+//     })
+// }
+//
+// _LoadWalls() {
+//     const loader = new FBXLoader()
+//     loader.setPath('./resources/models/Env/')
+//     loader.load('ModularStoneWall_top.fbx', (f) => {
+//         f.scale.setScalar(0.01)
+//         f.traverse((c) => {
+//             c.castShadow = true
+//             c.receiveShadow = true
+//         })
+//         f.rotateY(Math.PI)
+//         for (let i = 1; i <= 5; i += 1) {
+//             const fbx = f.clone()
+//             this._scene.add(fbx)
+//             fbx.position.set(10, 1, 1 * 2 * i - 1)
+//         }
+//         f.rotateY(-Math.PI / 2)
+//         for (let i = 1; i <= 5; i += 1) {
+//             const fbx = f.clone()
+//             this._scene.add(fbx)
+//             fbx.position.set(1 * 2 * i - 1, 1, 10)
+//         }
+//     })
+// }
