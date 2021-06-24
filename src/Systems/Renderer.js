@@ -10,8 +10,18 @@ import modelDB from 'modelDB'
 import System from 'ECS/System'
 
 export class Renderer extends System {
-    constructor({ canvasId, dimensions }) {
-        super()
+    constructor({ canvasId, dimensions }, ECS) {
+        super([
+            'axes',
+            'light',
+            'stats',
+            'orbitControls',
+            'skyBox',
+            'plane',
+            'model',
+            'position',
+            'animation',
+        ], ECS)
 
         this._dimensions = dimensions
 
@@ -43,23 +53,47 @@ export class Renderer extends System {
         }, false)
         this._onResize()
 
-        this.handlers = [
-            ['axes', () => this._onAddAxes()],
-            ['light', (c) => this._onAddLight(c)],
-            ['stats', () => this._onAddStats()],
-            ['orbitControls', () => this._onAddOrbitControls()],
-            ['skyBox', () => this._onAddSkyBox()],
-            ['plane', (c) => this._onAddPlane(c)],
-            ['model', (c) => this._onAddModel(c)],
-            ['position', (c) => this._onAddPosition(c)],
-            ['animation', (c) => this._onAddAnimation(c)],
-        ]
-
         this._jobs = []
         this._models = new Map()
         this._animations = new Map()
 
+        this._ECS.addEventListener('position.updated', this._onPositionUpdatedEvent.bind(this))
+
         this.update()
+    }
+
+    addComponent(component) {
+        switch (component.type) {
+            case 'axes':
+                this._onAddAxes()
+                break
+            case 'light':
+                this._onAddLight(component)
+                break
+            case 'stats':
+                this._onAddStats()
+                break
+            case 'orbitControls':
+                this._onAddOrbitControls()
+                break
+            case 'skyBox':
+                this._onAddSkyBox()
+                break
+            case 'plane':
+                this._onAddPlane(component)
+                break
+            case 'model':
+                this._onAddModel(component)
+                break
+            case 'position':
+                this._onAddPosition(component)
+                break
+            case 'animation':
+                this._onAddAnimation(component)
+                break
+            default:
+                break
+        }
     }
 
     _onAddLight(component) {
@@ -131,9 +165,8 @@ export class Renderer extends System {
 
             fbx.scale.setScalar(scale)
 
-            const positionComponent = this._getComponent(entity, 'position')
-            if (positionComponent) {
-                fbx.position.set(...positionComponent.position)
+            if (this._hasComponent(entity, 'position')) {
+                fbx.position.set(...this._getComponent(entity, 'position').position)
             }
 
             const textureLoader = new THREE.TextureLoader()
@@ -164,9 +197,8 @@ export class Renderer extends System {
                 })
                 this._animations.set(entity, animations)
 
-                const animationComponent = this._getComponent(entity, 'animation')
-                if (animationComponent) {
-                    const { action } = animations[animationIndex[animationComponent.state]]
+                if (this._hasComponent(entity, 'animation')) {
+                    const { action } = animations[animationIndex[this._getComponent(entity, 'animation').state]]
                     action.time = 0.0
                     action.enabled = true
                     action.setEffectiveTimeScale(1.0)
@@ -197,6 +229,13 @@ export class Renderer extends System {
         this._camera.aspect = this._dimensions[0] / this._dimensions[1]
         this._camera.updateProjectionMatrix()
         this._renderer.setSize(this._dimensions[0], this._dimensions[1])
+    }
+
+    _onPositionUpdatedEvent(event) {
+        const model = this._models.get(event.entity)
+        if (model) {
+            model.position.set(...event.position)
+        }
     }
 
     update() {

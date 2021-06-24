@@ -10,6 +10,7 @@ import Plane from 'Components/Plane'
 import Model from 'Components/Model'
 import Position from 'Components/Position'
 import Animation from 'Components/Animation'
+import PlayerControl from 'Components/PlayerControl'
 
 import 'style/root.scss'
 
@@ -19,7 +20,9 @@ window.addEventListener('DOMContentLoaded', () => {
     DungeonECS.registerSystem(new Systems.Renderer({
         canvasId: 'WebGLCanvas',
         dimensions: [1280, 720],
-    }))
+    }, DungeonECS))
+
+    DungeonECS.registerSystem(new Systems.Movement(DungeonECS))
 
     DungeonECS.addComponent(new Stats(DungeonECS.createEntity()))
     DungeonECS.addComponent(new Axes(DungeonECS.createEntity()))
@@ -44,4 +47,5 @@ window.addEventListener('DOMContentLoaded', () => {
     DungeonECS.addComponent(new Model(playerEntity, { modelId: 1 }))
     DungeonECS.addComponent(new Position(playerEntity, [2, 0, 2]))
     DungeonECS.addComponent(new Animation(playerEntity, 'enGarde'))
+    DungeonECS.addComponent(new PlayerControl(playerEntity))
 })

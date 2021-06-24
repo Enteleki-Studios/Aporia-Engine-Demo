@@ -8,6 +8,7 @@ export default class ECS {
 
         this._systems = []
         this._componentHandlers = {}
+        this._eventHandlers = new Map()
     }
 
     createEntity() {
@@ -18,21 +19,39 @@ export default class ECS {
     addComponent(component) {
         this._ComponentManager.addComponent(component)
 
-        const handlers = this._componentHandlers[component.type]
-        if (handlers) {
-            handlers.forEach((h) => h(component))
+        const systems = this._componentHandlers[component.type]
+        if (systems) {
+            systems.forEach((system) => system.addComponent(component))
+        } else {
+            throw new Error(`No Systems handle Component type '${component.type}'`)
         }
     }
 
     registerSystem(system) {
-        system.handlers.forEach((handler) => {
-            if (!this._componentHandlers[handler[0]]) {
-                this._componentHandlers[handler[0]] = []
+        system.handles.forEach((handle) => {
+            if (!this._componentHandlers[handle]) {
+                this._componentHandlers[handle] = []
             }
 
-            this._componentHandlers[handler[0]].push(handler[1])
+            this._componentHandlers[handle].push(system)
         })
+        system.ECS = this
         this._systems.push(system)
+    }
+
+    addEventListener(eventName, cb) {
+        if (this._eventHandlers.has(eventName)) {
+            this._eventHandlers.get(eventName).push(cb)
+        } else {
+            this._eventHandlers.set(eventName, [cb])
+        }
+    }
+
+    broadcastEvent(event) {
+        const eventHandlers = this._eventHandlers.get(event.name)
+        if (eventHandlers) {
+            eventHandlers.forEach((cb) => cb(event))
+        }
     }
 
     // _update() {
