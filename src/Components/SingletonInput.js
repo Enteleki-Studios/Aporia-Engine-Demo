@@ -3,6 +3,9 @@ export default function SingletonInput(entity) {
         type: 'singletonInput',
         entity,
 
+        forward: false,
+        run: false,
+
         upPress: false,
         upHold: false,
 

@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import ECS from 'ECS'
 import * as Systems from 'Systems'
 
@@ -32,13 +33,13 @@ window.addEventListener('DOMContentLoaded', () => {
         width: 10,
         height: 10,
         color: 0x44475a,
-        position: [5, 0, 5],
+        position: new THREE.Vector3(5, 0, 5),
     }))
 
     const playerEntity = DungeonECS.createEntity()
     DungeonECS.addComponent(new Model(playerEntity, { modelId: 1 }))
     DungeonECS.addComponent(new SingletonInput(playerEntity))
-    DungeonECS.addComponent(new Position(playerEntity, [2, 0, 2]))
-    DungeonECS.addComponent(new Animation(playerEntity, 'enGarde'))
+    DungeonECS.addComponent(new Position(playerEntity, new THREE.Vector3(2, 0, 2), new THREE.Quaternion()))
+    DungeonECS.addComponent(new Animation(playerEntity, 'idle'))
     DungeonECS.addComponent(new PlayerControl(playerEntity))
 })

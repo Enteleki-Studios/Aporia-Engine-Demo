@@ -15,6 +15,7 @@ export class Input extends System {
             left: false,
             right: false,
             down: false,
+            shift: false,
         }
 
         this._initInputHandlers()
@@ -47,6 +48,9 @@ export class Input extends System {
             case 'ArrowRight':
                 this._liveInput.right = true
                 break
+            case 'ShiftLeft':
+                this._liveInput.shift = true
+                break
             default:
                 break
         }
@@ -70,6 +74,9 @@ export class Input extends System {
             case 'ArrowRight':
                 this._liveInput.right = false
                 break
+            case 'ShiftLeft':
+                this._liveInput.shift = false
+                break
             default:
                 break
         }
@@ -78,6 +85,23 @@ export class Input extends System {
     tick() {
         if (!this._inputComponent) {
             return
+        }
+
+        if (
+            this._liveInput.up
+            || this._liveInput.down
+            || this._liveInput.left
+            || this._liveInput.right
+        ) {
+            this._inputComponent.forward = true
+        } else {
+            this._inputComponent.forward = false
+        }
+
+        if (this._liveInput.shift) {
+            this._inputComponent.run = true
+        } else {
+            this._inputComponent.run = false
         }
 
         if (this._liveInput.up) {

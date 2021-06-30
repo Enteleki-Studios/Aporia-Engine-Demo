@@ -1,10 +1,10 @@
 import * as THREE from 'three'
 
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import * as GLHelpers from 'GLHelpers'
+import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
 
 import System from 'ECS/System'
@@ -26,7 +26,7 @@ export class Renderer extends System {
             canvas: document.getElementById(canvasId),
         })
         this._renderer.outputEncoding = THREE.sRGBEncoding
-        this._renderer.gammaFactor = 2.2
+        // this._renderer.gammaFactor = 2.2
         this._renderer.shadowMap.enabled = true
         this._renderer.shadowMap.type = THREE.PCFSoftShadowMap
         this._renderer.setPixelRatio(window.devicePixelRatio)
@@ -48,7 +48,7 @@ export class Renderer extends System {
 
         // Debug stuff
         this._onAddAxes()
-        this._onAddStats()
+        // this._onAddStats()
         this._onAddOrbitControls()
         this._onAddSkyBox()
     }
@@ -65,10 +65,10 @@ export class Renderer extends System {
                 this._onAddModel(component)
                 break
             case 'position':
-                this._onAddPosition(component)
+                this._saveComponent(component)
                 break
             case 'animation':
-                this._onAddAnimation(component)
+                this._saveComponent(component)
                 break
             default:
                 break
@@ -129,72 +129,36 @@ export class Renderer extends System {
         plane.castShadow = false
         plane.receiveShadow = true
         plane.rotation.x = -Math.PI / 2
-        plane.position.set(...component.position)
+        plane.position.copy(component.position)
         this._scene.add(plane)
     }
 
     _onAddModel(component) {
         const { entity, modelId } = component
-        const { resourcePath, modelPath, texturePath, scale, animations: animationIndex } = modelDB[modelId]
+        const { modelPath, texturePath, scale, animations: animationIndex } = modelDB[modelId]
 
-        const loader = new FBXLoader()
-        loader.setPath(resourcePath)
-        loader.load(modelPath, (fbx) => {
-            this._scene.add(fbx)
+        loadFBX(modelPath, texturePath).then((model) => {
+            model.scale.setScalar(scale)
 
-            fbx.scale.setScalar(scale)
+            this._scene.add(model)
+            this._models.set(entity, model)
 
-            const textureLoader = new THREE.TextureLoader()
-            const texture = textureLoader.load(resourcePath + texturePath)
-            texture.encoding = THREE.sRGBEncoding
-            texture.flipY = true
-
-            fbx.traverse((c) => {
-                c.castShadow = true
-                c.receiveShadow = true
-                if (c.material) {
-                    c.material.map = texture
-                    c.material.side = THREE.DoubleSide
-                    // c.material.wireframe = true
-                }
-            })
-
-            this._models.set(entity, fbx)
-
-            if (fbx.animations) {
-                const mixer = new THREE.AnimationMixer(fbx)
-                const animations = {}
-                fbx.animations.forEach((anim) => {
-                    animations[anim.name] = {
+            if (model.animations) {
+                const mixer = new THREE.AnimationMixer(model)
+                const modelAnimations = {}
+                model.animations.forEach((anim) => {
+                    modelAnimations[animationIndex[anim.name]] = ({
                         clip: anim,
                         action: mixer.clipAction(anim),
-                    }
+                    })
                 })
-                this._animations.set(entity, animations)
+                this._animations.set(entity, modelAnimations)
 
                 if (this._hasComponent(entity, 'animation')) {
-                    const { action } = animations[animationIndex[this._getComponent(entity, 'animation').state]]
-                    action.time = 0.0
-                    action.enabled = true
-                    action.setEffectiveTimeScale(1.0)
-                    action.setEffectiveWeight(1.0)
-                    action.play()
-
                     this._jobs.push((delta) => mixer.update(delta))
                 }
             }
         })
-    }
-
-    _onAddPosition(component) {
-        this._saveComponent(component)
-    }
-
-    _onAddAnimation(component) {
-        if (this._animations.has(component.entity)) {
-            this._animations.get(component.entity)[component.state].play()
-        }
-        this._saveComponent(component)
     }
 
     tick(delta) {
@@ -205,7 +169,28 @@ export class Renderer extends System {
             switch (component.type) {
                 case 'position':
                     if (component._needsUpdate && this._models.has(component.entity)) {
-                        this._models.get(component.entity).position.set(...component.position)
+                        const model = this._models.get(component.entity)
+                        model.position.copy(component.position)
+                        model.quaternion.copy(component.quaternion)
+                        component._needsUpdate = false
+                    }
+                    break
+                case 'animation':
+                    if (component._needsUpdate && this._animations.has(component.entity)) {
+                        component._needsUpdate = false
+                        const { action } = this._animations.get(component.entity)[component.state]
+                        action.time = 0.0
+                        action.enabled = true
+                        action.setEffectiveTimeScale(1.0)
+                        action.setEffectiveWeight(1.0)
+                        if (component._prevState) {
+                            const { action: prevAction } = this._animations.get(component.entity)[component._prevState]
+                            const ratio = action.getClip().duration / prevAction.getClip().duration
+                            action.time = prevAction.time * ratio
+                            action.crossFadeFrom(prevAction, 0.5, true)
+                        }
+                        action.play()
+                        component._needsUpdate = false
                     }
                     break
                 default:

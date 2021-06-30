@@ -42,7 +42,7 @@ module.exports = {
     },
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
-        port: 1080,
+        port: 2080,
         host: '0.0.0.0',
     },
     devtool: 'inline-source-map',

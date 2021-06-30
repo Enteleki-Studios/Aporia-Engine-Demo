@@ -64,7 +64,13 @@ export default class ECS {
             const delta = this._clock.getDelta()
             this._update()
 
-            this._systems.forEach((system) => system.tick(delta))
+            try {
+                this._systems.forEach((system) => system.tick(delta))
+            } catch (error) {
+                console.error(error)
+                // eslint-disable-next-line
+                debugger
+            }
         })
     }
 }
