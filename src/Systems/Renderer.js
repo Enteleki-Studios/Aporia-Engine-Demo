@@ -10,22 +10,16 @@ import modelDB from 'modelDB'
 import System from 'ECS/System'
 
 export class Renderer extends System {
-    constructor({ canvasId, dimensions }, ECS) {
+    constructor({ canvasId, dimensions }) {
         super([
-            'axes',
             'light',
-            'stats',
-            'orbitControls',
-            'skyBox',
             'plane',
             'model',
             'position',
             'animation',
-        ], ECS)
+        ])
 
         this._dimensions = dimensions
-
-        this._clock = new THREE.Clock()
 
         this._renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -48,36 +42,21 @@ export class Renderer extends System {
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
         this._camera.position.set(-7, 5, -2)
 
-        window.addEventListener('resize', () => {
-            this._onResize()
-        }, false)
-        this._onResize()
-
         this._jobs = []
         this._models = new Map()
         this._animations = new Map()
 
-        this._ECS.addEventListener('position.updated', this._onPositionUpdatedEvent.bind(this))
-
-        this.update()
+        // Debug stuff
+        this._onAddAxes()
+        this._onAddStats()
+        this._onAddOrbitControls()
+        this._onAddSkyBox()
     }
 
     addComponent(component) {
         switch (component.type) {
-            case 'axes':
-                this._onAddAxes()
-                break
             case 'light':
                 this._onAddLight(component)
-                break
-            case 'stats':
-                this._onAddStats()
-                break
-            case 'orbitControls':
-                this._onAddOrbitControls()
-                break
-            case 'skyBox':
-                this._onAddSkyBox()
                 break
             case 'plane':
                 this._onAddPlane(component)
@@ -165,10 +144,6 @@ export class Renderer extends System {
 
             fbx.scale.setScalar(scale)
 
-            if (this._hasComponent(entity, 'position')) {
-                fbx.position.set(...this._getComponent(entity, 'position').position)
-            }
-
             const textureLoader = new THREE.TextureLoader()
             const texture = textureLoader.load(resourcePath + texturePath)
             texture.encoding = THREE.sRGBEncoding
@@ -212,9 +187,6 @@ export class Renderer extends System {
     }
 
     _onAddPosition(component) {
-        if (this._models.has(component.entity)) {
-            this._models.get(component.entity).position.set(...component.position)
-        }
         this._saveComponent(component)
     }
 
@@ -225,26 +197,20 @@ export class Renderer extends System {
         this._saveComponent(component)
     }
 
-    _onResize() {
-        this._camera.aspect = this._dimensions[0] / this._dimensions[1]
-        this._camera.updateProjectionMatrix()
-        this._renderer.setSize(this._dimensions[0], this._dimensions[1])
-    }
+    tick(delta) {
+        this._renderer.render(this._scene, this._camera)
+        this._jobs.forEach((j) => j(delta))
 
-    _onPositionUpdatedEvent(event) {
-        const model = this._models.get(event.entity)
-        if (model) {
-            model.position.set(...event.position)
-        }
-    }
-
-    update() {
-        requestAnimationFrame(() => {
-            const delta = this._clock.getDelta()
-            this.update()
-
-            this._renderer.render(this._scene, this._camera)
-            this._jobs.forEach((j) => j(delta))
+        this._components.forEach((component) => {
+            switch (component.type) {
+                case 'position':
+                    if (component._needsUpdate && this._models.has(component.entity)) {
+                        this._models.get(component.entity).position.set(...component.position)
+                    }
+                    break
+                default:
+                    break
+            }
         })
     }
 }

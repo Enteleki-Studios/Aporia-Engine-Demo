@@ -15,8 +15,11 @@ body {
 .GLWindow {
     display: flex;
     justify-content: center;
+    width: 95%;
+    margin: auto;
 
     canvas {
         margin: 0;
+        max-width: 100%;
     }
 }

@@ -4,9 +4,9 @@ tmux new-session -d -s ECS
 
 tmux rename-window 'VIM'
 tmux send-keys "cd $PWD" 'C-m' 'C-l'
-tmux split-window -h
-tmux send-keys "cd $PWD" 'C-m' 'C-l'
 tmux split-window -v
+tmux send-keys "cd $PWD" 'C-m' 'C-l'
+tmux split-window -h
 tmux send-keys "cd $PWD" 'C-m' 'C-l'
 
 tmux send-keys "pods node ." 'C-m'

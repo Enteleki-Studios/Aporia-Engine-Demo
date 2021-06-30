@@ -1,5 +1,5 @@
 export default class System {
-    constructor(handles, ECS) {
+    constructor(handles) {
         if (handles && handles.length) {
             this._handles = handles
         } else {
@@ -7,7 +7,11 @@ export default class System {
         }
 
         // Map entity to map of component type to component
-        this._components = new Map()
+        this._entityComponents = new Map()
+        this._components = []
+    }
+
+    set ECS(ECS) {
         this._ECS = ECS
     }
 
@@ -17,20 +21,26 @@ export default class System {
 
     _saveComponent(component) {
         const { entity, type } = component
-        if (!this._components.has(entity)) {
-            this._components.set(entity, new Map())
+        if (!this._entityComponents.has(entity)) {
+            this._entityComponents.set(entity, new Map())
         }
-        this._components.get(entity).set(type, component)
+        this._entityComponents.get(entity).set(type, component)
+        this._components.push(component)
     }
 
     _hasComponent(entity, type) {
-        if (!this._components.has(entity)) {
+        if (!this._entityComponents.has(entity)) {
             return false
         }
-        return this._components.get(entity).has(type)
+        return this._entityComponents.get(entity).has(type)
     }
 
     _getComponent(entity, type) {
-        return this._components.get(entity).get(type)
+        return this._entityComponents.get(entity).get(type)
+    }
+
+    // eslint-disable-next-line
+    tick() {
+        return null
     }
 }

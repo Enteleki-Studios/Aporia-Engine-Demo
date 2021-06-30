@@ -1,14 +1,19 @@
+import * as THREE from 'three'
 import ComponentManager from 'ECS/ComponentManager'
 
 export default class ECS {
     constructor() {
         this._ComponentManager = new ComponentManager()
 
+        this._clock = new THREE.Clock()
+
         this._lastEntityId = 0
 
         this._systems = []
         this._componentHandlers = {}
         this._eventHandlers = new Map()
+
+        this._update()
     }
 
     createEntity() {
@@ -54,12 +59,12 @@ export default class ECS {
         }
     }
 
-    // _update() {
-    //     requestAnimationFrame(() => {
-    //         const delta = this._clock.getDelta()
-    //         this._update()
+    _update() {
+        requestAnimationFrame(() => {
+            const delta = this._clock.getDelta()
+            this._update()
 
-    //         this._systems.forEach((system) => system.update(delta))
-    //     })
-    // }
+            this._systems.forEach((system) => system.tick(delta))
+        })
+    }
 }

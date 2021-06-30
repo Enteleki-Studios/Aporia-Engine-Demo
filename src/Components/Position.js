@@ -4,5 +4,7 @@ export default function Position(entity, position) {
         entity,
 
         position,
+
+        _needsUpdate: true,
     }
 }
