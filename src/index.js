@@ -15,13 +15,14 @@ import 'style/root.scss'
 window.addEventListener('DOMContentLoaded', () => {
     const DungeonECS = new ECS()
 
+    DungeonECS.registerSystem(new Systems.Input())
+    DungeonECS.registerSystem(new Systems.Movement())
+    DungeonECS.registerSystem(new Systems.Animation())
+
     DungeonECS.registerSystem(new Systems.Renderer({
         canvasId: 'WebGLCanvas',
         dimensions: [1280, 720],
-    }, DungeonECS))
-
-    DungeonECS.registerSystem(new Systems.Input(DungeonECS))
-    DungeonECS.registerSystem(new Systems.Movement(DungeonECS))
+    }))
 
     DungeonECS.addComponent(new Light(DungeonECS.createEntity(), 'DirectionalLight'))
     DungeonECS.addComponent(new Light(DungeonECS.createEntity(), 'AmbientLight', {
@@ -42,4 +43,6 @@ window.addEventListener('DOMContentLoaded', () => {
     DungeonECS.addComponent(new Position(playerEntity, new THREE.Vector3(2, 0, 2), new THREE.Quaternion()))
     DungeonECS.addComponent(new Animation(playerEntity, 'idle'))
     DungeonECS.addComponent(new PlayerControl(playerEntity))
+
+    DungeonECS.start()
 })

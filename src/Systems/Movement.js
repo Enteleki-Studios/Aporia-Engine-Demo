@@ -6,14 +6,13 @@ export class Movement extends System {
         super([
             'playerControl',
             'position',
-            'animation',
             'singletonInput',
         ])
 
         this._controlledEntities = []
+        this._input = null
 
         this._decceleration = new THREE.Vector3(-0.0005, -0.0001, -5.0)
-        // this._acceleration = new THREE.Vector3(1, 0.4, 20.0)
         this._acceleration = new THREE.Vector3(1, 10, 20.0)
         this._velocity = new THREE.Vector3(0, 0, 0)
     }
@@ -23,18 +22,21 @@ export class Movement extends System {
             case 'playerControl':
                 this._controlledEntities.push(component.entity)
                 break
+            case 'position':
+                this._saveComponent(component)
+                break
+            case 'singletonInput':
+                this._input = component
+                break
             default:
                 break
         }
-        this._saveComponent(component)
     }
 
     // Cardinal direction movement
     tick(delta) {
         this._controlledEntities.forEach((entity) => {
-            const input = this._getComponent(entity, 'singletonInput')
             const positionComponent = this._getComponent(entity, 'position')
-            const animationComponent = this._getComponent(entity, 'animation')
 
             const velocity = this._velocity
             const frameDecceleration = new THREE.Vector3(
@@ -57,43 +59,30 @@ export class Movement extends System {
             // TODO: Copy acceleration and apply scalar if we need to pause or run
 
             const acceleration = this._acceleration.clone()
-            if (input.run) {
+            if (this._input.run) {
                 acceleration.multiplyScalar(2)
             }
 
-            if (input.forward) {
+            if (this._input.forward) {
                 velocity.z += acceleration.z * delta
-                let nextState = 'walk'
-                if (input.run) {
-                    nextState = 'run'
-                }
-                if (animationComponent.state !== nextState) {
-                    animationComponent._prevState = animationComponent.state
-                    animationComponent.state = nextState
-                    animationComponent._needsUpdate = true
-                }
-            } else if (animationComponent.state !== 'idle') {
-                animationComponent._prevState = animationComponent.state
-                animationComponent.state = 'idle'
-                animationComponent._needsUpdate = true
             }
 
-            if (input.upHold) {
+            if (this._input.upHold) {
                 _A.set(0, 1, 0)
                 _Q.setFromAxisAngle(_A, 0 * Math.PI)
                 _R.slerp(_Q, delta * acceleration.y)
             }
-            if (input.downHold) {
+            if (this._input.downHold) {
                 _A.set(0, 1, 0)
                 _Q.setFromAxisAngle(_A, 1 * Math.PI)
                 _R.slerp(_Q, delta * acceleration.y)
             }
-            if (input.leftHold) {
+            if (this._input.leftHold) {
                 _A.set(0, 1, 0)
                 _Q.setFromAxisAngle(_A, 0.5 * Math.PI)
                 _R.slerp(_Q, delta * acceleration.y)
             }
-            if (input.rightHold) {
+            if (this._input.rightHold) {
                 _A.set(0, 1, 0)
                 _Q.setFromAxisAngle(_A, 1.5 * Math.PI)
                 _R.slerp(_Q, delta * acceleration.y)

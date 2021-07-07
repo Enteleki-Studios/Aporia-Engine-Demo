@@ -12,8 +12,6 @@ export default class ECS {
         this._systems = []
         this._componentHandlers = {}
         this._eventHandlers = new Map()
-
-        this._update()
     }
 
     createEntity() {
@@ -59,6 +57,10 @@ export default class ECS {
         }
     }
 
+    start() {
+        this._update()
+    }
+
     _update() {
         requestAnimationFrame(() => {
             const delta = this._clock.getDelta()
@@ -67,8 +69,8 @@ export default class ECS {
             try {
                 this._systems.forEach((system) => system.tick(delta))
             } catch (error) {
+                /* eslint-disable no-console, no-debugger */
                 console.error(error)
-                // eslint-disable-next-line
                 debugger
             }
         })
