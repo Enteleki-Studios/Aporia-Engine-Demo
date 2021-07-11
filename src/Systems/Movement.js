@@ -1,43 +1,19 @@
 import System from 'ECS/System'
+import { INPUT, POSITION } from 'Components/types'
 import * as THREE from 'three'
 
 export class Movement extends System {
     constructor() {
-        super([
-            'playerControl',
-            'position',
-            'singletonInput',
-        ])
-
-        this._controlledEntities = []
-        this._input = null
+        super()
 
         this._decceleration = new THREE.Vector3(-0.0005, -0.0001, -5.0)
-        this._acceleration = new THREE.Vector3(1, 10, 20.0)
+        this._acceleration = new THREE.Vector3(1, 10, 15)
         this._velocity = new THREE.Vector3(0, 0, 0)
-    }
-
-    addComponent(component) {
-        switch (component.type) {
-            case 'playerControl':
-                this._controlledEntities.push(component.entity)
-                break
-            case 'position':
-                this._saveComponent(component)
-                break
-            case 'singletonInput':
-                this._input = component
-                break
-            default:
-                break
-        }
     }
 
     // Cardinal direction movement
     tick(delta) {
-        this._controlledEntities.forEach((entity) => {
-            const positionComponent = this._getComponent(entity, 'position')
-
+        this.ECS.ComponentManager.getTuplesByQuery([INPUT, POSITION]).forEach(([inputComponent, positionComponent]) => {
             const velocity = this._velocity
             const frameDecceleration = new THREE.Vector3(
                 velocity.x * this._decceleration.x,
@@ -56,33 +32,31 @@ export class Movement extends System {
             const _A = new THREE.Vector3()
             const _R = positionComponent.quaternion.clone()
 
-            // TODO: Copy acceleration and apply scalar if we need to pause or run
-
             const acceleration = this._acceleration.clone()
-            if (this._input.run) {
+            if (inputComponent.run) {
                 acceleration.multiplyScalar(2)
             }
 
-            if (this._input.forward) {
+            if (inputComponent.forward) {
                 velocity.z += acceleration.z * delta
             }
 
-            if (this._input.upHold) {
+            if (inputComponent.upHold) {
                 _A.set(0, 1, 0)
                 _Q.setFromAxisAngle(_A, 0 * Math.PI)
                 _R.slerp(_Q, delta * acceleration.y)
             }
-            if (this._input.downHold) {
+            if (inputComponent.downHold) {
                 _A.set(0, 1, 0)
                 _Q.setFromAxisAngle(_A, 1 * Math.PI)
                 _R.slerp(_Q, delta * acceleration.y)
             }
-            if (this._input.leftHold) {
+            if (inputComponent.leftHold) {
                 _A.set(0, 1, 0)
                 _Q.setFromAxisAngle(_A, 0.5 * Math.PI)
                 _R.slerp(_Q, delta * acceleration.y)
             }
-            if (this._input.rightHold) {
+            if (inputComponent.rightHold) {
                 _A.set(0, 1, 0)
                 _Q.setFromAxisAngle(_A, 1.5 * Math.PI)
                 _R.slerp(_Q, delta * acceleration.y)
@@ -103,7 +77,7 @@ export class Movement extends System {
             positionComponent.position.add(forward)
             positionComponent.position.add(sideways)
 
-            positionComponent._needsUpdate = true
+            positionComponent.needsUpdate = true
         })
     }
 

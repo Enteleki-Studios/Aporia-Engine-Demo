@@ -1,9 +1,11 @@
+import { ANIMATION } from './types'
+
 export default function Animation(entity, state) {
     return {
-        type: 'animation',
+        type: ANIMATION,
         entity,
-        _needsUpdate: true,
-        _prevState: null,
+        needsUpdate: true,
+        prevState: null,
 
         state,
     }

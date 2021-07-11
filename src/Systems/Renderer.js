@@ -6,79 +6,60 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as GLHelpers from 'GLHelpers'
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
+import { LIGHT, PLANE, MODEL, POSITION, ANIMATION } from 'Components/types'
 
 import System from 'ECS/System'
 
 export class Renderer extends System {
-    constructor({ canvasId, dimensions }) {
-        super([
-            'light',
-            'plane',
-            'model',
-            'position',
-            'animation',
-        ])
+    constructor({ canvas, aspect }) {
+        super()
 
-        this._dimensions = dimensions
-
-        this._renderer = new THREE.WebGLRenderer({
-            antialias: true,
-            canvas: document.getElementById(canvasId),
-        })
-        this._renderer.outputEncoding = THREE.sRGBEncoding
-        // this._renderer.gammaFactor = 2.2
-        this._renderer.shadowMap.enabled = true
-        this._renderer.shadowMap.type = THREE.PCFSoftShadowMap
-        this._renderer.setPixelRatio(window.devicePixelRatio)
+        this._renderer = new GLHelpers.Renderer({ canvas })
 
         this._scene = new THREE.Scene()
         this._scene.background = new THREE.Color(0xbd93f9)
         this._scene.fog = new THREE.Fog(this._scene.background, 1, 100)
 
         const fov = 60
-        const aspect = this._dimensions[0] / this._dimensions[1]
         const near = 1.0
         const far = 500
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
-        this._camera.position.set(-7, 5, -2)
+        this._camera.position.set(5, 6, -6)
 
         this._jobs = []
-        this._models = new Map()
         this._animations = new Map()
 
         // Debug stuff
-        this._onAddAxes()
-        // this._onAddStats()
-        this._onAddOrbitControls()
+        this._enableDebug()
+
         this._onAddSkyBox()
     }
 
-    addComponent(component) {
-        switch (component.type) {
-            case 'light':
-                this._onAddLight(component)
-                break
-            case 'plane':
-                this._onAddPlane(component)
-                break
-            case 'model':
-                this._onAddModel(component)
-                break
-            case 'position':
-                this._saveComponent(component)
-                break
-            case 'animation':
-                this._saveComponent(component)
-                break
-            default:
-                break
-        }
+    _enableDebug() {
+        // FPS counter
+        const s = new Stats()
+        document.body.appendChild(s.dom)
+        this._jobs.push(() => s.update())
+
+        // Origin axes
+        this._scene.add(new THREE.AxesHelper(1))
+
+        // Mouse camera controls
+        const controls = new OrbitControls(
+            this._camera,
+            this._renderer.domElement,
+        )
+        controls.minDistance = 3
+        controls.maxDistance = 50
+        controls.target.set(5, 2, 5)
+        controls.update()
     }
 
     _onAddLight(component) {
         switch (component.lightType) {
             case 'DirectionalLight': {
                 const light = new GLHelpers.DirectionalLight(0xFFFFFF, 1.0)
+                component.resource = light
                 this._scene.add(light)
                 this._scene.add(light.helper)
                 this._scene.add(light.shadowHelper)
@@ -86,33 +67,13 @@ export class Renderer extends System {
             }
             case 'AmbientLight': {
                 const light = new THREE.AmbientLight(component.color, component.intensity)
+                component.resource = light
                 this._scene.add(light)
                 break
             }
             default:
                 break
         }
-    }
-
-    _onAddStats() {
-        const s = new Stats()
-        document.body.appendChild(s.dom)
-        this._jobs.push(() => s.update())
-    }
-
-    _onAddAxes() {
-        this._scene.add(new THREE.AxesHelper(1))
-    }
-
-    _onAddOrbitControls() {
-        const controls = new OrbitControls(
-            this._camera,
-            this._renderer.domElement,
-        )
-        controls.minDistance = 3
-        controls.maxDistance = 50
-        controls.target.set(2, 2, 2)
-        controls.update()
     }
 
     _onAddSkyBox() {
@@ -130,6 +91,7 @@ export class Renderer extends System {
         plane.receiveShadow = true
         plane.rotation.x = -Math.PI / 2
         plane.position.copy(component.position)
+        component.resource = plane
         this._scene.add(plane)
     }
 
@@ -137,11 +99,13 @@ export class Renderer extends System {
         const { entity, modelId } = component
         const { modelPath, texturePath, scale, animations: animationIndex } = modelDB[modelId]
 
+        component.isLoading = true
         loadFBX(modelPath, texturePath).then((model) => {
             model.scale.setScalar(scale)
 
             this._scene.add(model)
-            this._models.set(entity, model)
+            component.resource = model
+            component.isLoading = false
 
             if (model.animations) {
                 const mixer = new THREE.AnimationMixer(model)
@@ -154,9 +118,9 @@ export class Renderer extends System {
                 })
                 this._animations.set(entity, modelAnimations)
 
-                if (this._hasComponent(entity, 'animation')) {
-                    this._jobs.push((delta) => mixer.update(delta))
-                }
+                // TODO: update animations to a proper system
+                // Not all models will be animated
+                this._jobs.push((delta) => mixer.update(delta))
             }
         })
     }
@@ -165,36 +129,48 @@ export class Renderer extends System {
         this._renderer.render(this._scene, this._camera)
         this._jobs.forEach((j) => j(delta))
 
-        this._components.forEach((component) => {
-            switch (component.type) {
-                case 'position':
-                    if (component._needsUpdate && this._models.has(component.entity)) {
-                        const model = this._models.get(component.entity)
-                        model.position.copy(component.position)
-                        model.quaternion.copy(component.quaternion)
-                        component._needsUpdate = false
+        this.ECS.ComponentManager.getTuplesByQuery([ANIMATION, MODEL, POSITION]).forEach(
+            ([animationComponent, modelComponent, positionComponent]) => {
+                if (modelComponent.resource) {
+                    // Update position
+                    if (positionComponent.needsUpdate) {
+                        modelComponent.resource.position.copy(positionComponent.position)
+                        modelComponent.resource.quaternion.copy(positionComponent.quaternion)
+                        modelComponent.needsUpdate = false
                     }
-                    break
-                case 'animation':
-                    if (component._needsUpdate && this._animations.has(component.entity)) {
-                        component._needsUpdate = false
-                        const { action } = this._animations.get(component.entity)[component.state]
+
+                    // Update animation
+                    if (animationComponent.needsUpdate) {
+                        const { action } = this._animations.get(animationComponent.entity)[animationComponent.state]
                         action.time = 0.0
                         action.enabled = true
                         action.setEffectiveTimeScale(1.0)
                         action.setEffectiveWeight(1.0)
-                        if (component._prevState) {
-                            const { action: prevAction } = this._animations.get(component.entity)[component._prevState]
+                        if (animationComponent.prevState) {
+                            const animations = this._animations.get(animationComponent.entity)
+                            const { action: prevAction } = animations[animationComponent.prevState]
                             const ratio = action.getClip().duration / prevAction.getClip().duration
                             action.time = prevAction.time * ratio
                             action.crossFadeFrom(prevAction, 0.5, true)
                         }
                         action.play()
-                        component._needsUpdate = false
+                        animationComponent.needsUpdate = false
                     }
-                    break
-                default:
-                    break
+                } else if (!modelComponent.isLoading) {
+                    this._onAddModel(modelComponent)
+                }
+            },
+        )
+
+        this.ECS.ComponentManager.getTuplesByQuery([LIGHT]).forEach(([lightComponent]) => {
+            if (!lightComponent.resource) {
+                this._onAddLight(lightComponent)
+            }
+        })
+
+        this.ECS.ComponentManager.getTuplesByQuery([PLANE]).forEach(([planeComponent]) => {
+            if (!planeComponent.resource) {
+                this._onAddPlane(planeComponent)
             }
         })
     }

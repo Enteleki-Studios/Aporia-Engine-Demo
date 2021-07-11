@@ -1,6 +1,8 @@
-export default function SingletonInput(entity) {
+import { INPUT } from './types'
+
+export default function Input(entity) {
     return {
-        type: 'singletonInput',
+        type: INPUT,
         entity,
 
         forward: false,

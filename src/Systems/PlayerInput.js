@@ -1,0 +1,144 @@
+import System from 'ECS/System'
+import { HERO, INPUT } from 'Components/types'
+
+export class PlayerInput extends System {
+    constructor() {
+        super()
+
+        this._liveInput = {
+            up: false,
+            left: false,
+            right: false,
+            down: false,
+            shift: false,
+        }
+
+        this._initInputHandlers()
+    }
+
+    _initInputHandlers() {
+        document.addEventListener('keydown', this._onKeyDown.bind(this))
+        document.addEventListener('keyup', this._onKeyUp.bind(this))
+    }
+
+    _onKeyDown(e) {
+        switch (e.code) {
+            case 'KeyW':
+            case 'ArrowUp':
+                this._liveInput.up = true
+                break
+            case 'KeyS':
+            case 'ArrowDown':
+                this._liveInput.down = true
+                break
+            case 'KeyA':
+            case 'ArrowLeft':
+                this._liveInput.left = true
+                break
+            case 'KeyD':
+            case 'ArrowRight':
+                this._liveInput.right = true
+                break
+            case 'ShiftLeft':
+                this._liveInput.shift = true
+                break
+            default:
+                break
+        }
+    }
+
+    _onKeyUp(e) {
+        switch (e.code) {
+            case 'KeyW':
+            case 'ArrowUp':
+                this._liveInput.up = false
+                break
+            case 'KeyS':
+            case 'ArrowDown':
+                this._liveInput.down = false
+                break
+            case 'KeyA':
+            case 'ArrowLeft':
+                this._liveInput.left = false
+                break
+            case 'KeyD':
+            case 'ArrowRight':
+                this._liveInput.right = false
+                break
+            case 'ShiftLeft':
+                this._liveInput.shift = false
+                break
+            default:
+                break
+        }
+    }
+
+    tick() {
+        this.ECS.ComponentManager.getTuplesByQuery([HERO, INPUT]).forEach(([, inputComponent]) => {
+            if (
+                this._liveInput.up
+                || this._liveInput.down
+                || this._liveInput.left
+                || this._liveInput.right
+            ) {
+                inputComponent.forward = true
+            } else {
+                inputComponent.forward = false
+            }
+
+            if (this._liveInput.shift) {
+                inputComponent.run = true
+            } else {
+                inputComponent.run = false
+            }
+
+            if (this._liveInput.up) {
+                if (inputComponent.upHold) {
+                    inputComponent.upPress = false
+                } else {
+                    inputComponent.upPress = true
+                    inputComponent.upHold = true
+                }
+            } else {
+                inputComponent.upPress = false
+                inputComponent.upHold = false
+            }
+
+            if (this._liveInput.left) {
+                if (inputComponent.leftHold) {
+                    inputComponent.leftPress = false
+                } else {
+                    inputComponent.leftPress = true
+                    inputComponent.leftHold = true
+                }
+            } else {
+                inputComponent.leftPress = false
+                inputComponent.leftHold = false
+            }
+
+            if (this._liveInput.right) {
+                if (inputComponent.rightHold) {
+                    inputComponent.rightPress = false
+                } else {
+                    inputComponent.rightPress = true
+                    inputComponent.rightHold = true
+                }
+            } else {
+                inputComponent.rightPress = false
+                inputComponent.rightHold = false
+            }
+
+            if (this._liveInput.down) {
+                if (inputComponent.downHold) {
+                    inputComponent.downPress = false
+                } else {
+                    inputComponent.downPress = true
+                    inputComponent.downHold = true
+                }
+            } else {
+                inputComponent.downPress = false
+                inputComponent.downHold = false
+            }
+        })
+    }
+}

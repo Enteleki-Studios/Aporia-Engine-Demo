@@ -3,14 +3,13 @@ import ComponentManager from 'ECS/ComponentManager'
 
 export default class ECS {
     constructor() {
-        this._ComponentManager = new ComponentManager()
+        this.ComponentManager = new ComponentManager()
 
         this._clock = new THREE.Clock()
 
         this._lastEntityId = 0
 
         this._systems = []
-        this._componentHandlers = {}
         this._eventHandlers = new Map()
     }
 
@@ -20,24 +19,10 @@ export default class ECS {
     }
 
     addComponent(component) {
-        this._ComponentManager.addComponent(component)
-
-        const systems = this._componentHandlers[component.type]
-        if (systems) {
-            systems.forEach((system) => system.addComponent(component))
-        } else {
-            throw new Error(`No Systems handle Component type '${component.type}'`)
-        }
+        this.ComponentManager.addComponent(component)
     }
 
     registerSystem(system) {
-        system.handles.forEach((handle) => {
-            if (!this._componentHandlers[handle]) {
-                this._componentHandlers[handle] = []
-            }
-
-            this._componentHandlers[handle].push(system)
-        })
         system.ECS = this
         this._systems.push(system)
     }

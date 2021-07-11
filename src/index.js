@@ -7,21 +7,21 @@ import Plane from 'Components/Plane'
 import Model from 'Components/Model'
 import Position from 'Components/Position'
 import Animation from 'Components/Animation'
-import PlayerControl from 'Components/PlayerControl'
-import SingletonInput from 'Components/SingletonInput'
+import Hero from 'Components/Hero'
+import Input from 'Components/Input'
 
 import 'style/root.scss'
 
 window.addEventListener('DOMContentLoaded', () => {
     const DungeonECS = new ECS()
 
-    DungeonECS.registerSystem(new Systems.Input())
+    DungeonECS.registerSystem(new Systems.PlayerInput())
     DungeonECS.registerSystem(new Systems.Movement())
     DungeonECS.registerSystem(new Systems.Animation())
 
     DungeonECS.registerSystem(new Systems.Renderer({
-        canvasId: 'WebGLCanvas',
-        dimensions: [1280, 720],
+        canvas: document.getElementById('WebGLCanvas'),
+        aspect: (1280 / 720),
     }))
 
     DungeonECS.addComponent(new Light(DungeonECS.createEntity(), 'DirectionalLight'))
@@ -29,7 +29,6 @@ window.addEventListener('DOMContentLoaded', () => {
         color: 0x101010,
         intensity: 5,
     }))
-
     DungeonECS.addComponent(new Plane(DungeonECS.createEntity(), {
         width: 10,
         height: 10,
@@ -38,11 +37,11 @@ window.addEventListener('DOMContentLoaded', () => {
     }))
 
     const playerEntity = DungeonECS.createEntity()
+    DungeonECS.addComponent(new Hero(playerEntity))
     DungeonECS.addComponent(new Model(playerEntity, { modelId: 1 }))
-    DungeonECS.addComponent(new SingletonInput(playerEntity))
+    DungeonECS.addComponent(new Input(playerEntity))
     DungeonECS.addComponent(new Position(playerEntity, new THREE.Vector3(2, 0, 2), new THREE.Quaternion()))
     DungeonECS.addComponent(new Animation(playerEntity, 'idle'))
-    DungeonECS.addComponent(new PlayerControl(playerEntity))
 
     DungeonECS.start()
 })

@@ -1,0 +1,7 @@
+export const ANIMATION = 'ANIMATION'
+export const HERO = 'HERO'
+export const INPUT = 'INPUT'
+export const LIGHT = 'LIGHT'
+export const MODEL = 'MODEL'
+export const PLANE = 'PLANE'
+export const POSITION = 'POSITION'

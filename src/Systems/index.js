@@ -1,4 +1,4 @@
 export { Animation } from './Animation'
-export { Input } from './Input'
+export { PlayerInput } from './PlayerInput'
 export { Movement } from './Movement'
 export { Renderer } from './Renderer'

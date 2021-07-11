@@ -1,3 +1,5 @@
+import { PLANE } from './types'
+
 export default function Plane(
     entity,
     {
@@ -8,12 +10,14 @@ export default function Plane(
     },
 ) {
     return {
-        type: 'plane',
+        type: PLANE,
         entity,
 
         width,
         height,
         color,
         position,
+
+        resource: null,
     }
 }

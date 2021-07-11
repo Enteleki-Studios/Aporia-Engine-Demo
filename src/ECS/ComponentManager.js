@@ -12,7 +12,7 @@ export default class ComponentManager {
 
         if (this._componentsByEntity.has(entity)) {
             if (this._componentsByEntity.get(entity).has(type)) {
-                throw new Error(`Cannot add the saame Component '${type}' to an Entity more than once`)
+                throw new Error(`Cannot add the same Component '${type}' to an Entity more than once`)
             } else {
                 this._componentsByEntity.get(entity).set(type, component)
             }
@@ -21,5 +21,15 @@ export default class ComponentManager {
         }
 
         this._components.push(component)
+    }
+
+    getTuplesByQuery(queryTypes) {
+        const tuples = []
+        this._componentsByEntity.forEach((entity) => {
+            if (queryTypes.every((qt) => entity.has(qt))) {
+                tuples.push(queryTypes.map((qt) => entity.get(qt)))
+            }
+        })
+        return tuples
     }
 }
