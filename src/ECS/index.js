@@ -22,24 +22,13 @@ export default class ECS {
         this.ComponentManager.addComponent(component)
     }
 
+    addComponents(components) {
+        components.forEach((component) => this.addComponent(component))
+    }
+
     registerSystem(system) {
         system.ECS = this
         this._systems.push(system)
-    }
-
-    addEventListener(eventName, cb) {
-        if (this._eventHandlers.has(eventName)) {
-            this._eventHandlers.get(eventName).push(cb)
-        } else {
-            this._eventHandlers.set(eventName, [cb])
-        }
-    }
-
-    broadcastEvent(event) {
-        const eventHandlers = this._eventHandlers.get(event.name)
-        if (eventHandlers) {
-            eventHandlers.forEach((cb) => cb(event))
-        }
     }
 
     start() {
@@ -49,10 +38,10 @@ export default class ECS {
     _update() {
         requestAnimationFrame(() => {
             const delta = this._clock.getDelta()
-            this._update()
 
             try {
                 this._systems.forEach((system) => system.tick(delta))
+                this._update()
             } catch (error) {
                 /* eslint-disable no-console, no-debugger */
                 console.error(error)

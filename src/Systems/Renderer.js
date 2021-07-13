@@ -32,7 +32,7 @@ export class Renderer extends System {
         // Debug stuff
         this._enableDebug()
 
-        this._onAddSkyBox()
+        this._addSkyBox()
     }
 
     _enableDebug() {
@@ -55,74 +55,42 @@ export class Renderer extends System {
         controls.update()
     }
 
-    _onAddLight(component) {
-        switch (component.lightType) {
-            case 'DirectionalLight': {
-                const light = new GLHelpers.DirectionalLight(0xFFFFFF, 1.0)
-                component.resource = light
-                this._scene.add(light)
-                this._scene.add(light.helper)
-                this._scene.add(light.shadowHelper)
-                break
-            }
-            case 'AmbientLight': {
-                const light = new THREE.AmbientLight(component.color, component.intensity)
-                component.resource = light
-                this._scene.add(light)
-                break
-            }
+    static createLight(lightComponent) {
+        switch (lightComponent.lightType) {
+            case 'DirectionalLight':
+                return new GLHelpers.DirectionalLight(0xFFFFFF, 1.0)
+            case 'AmbientLight':
+                return new THREE.AmbientLight(lightComponent.color, lightComponent.intensity)
             default:
-                break
+                throw new Error(`Unsupported light type ${lightComponent.lightType}`)
         }
     }
 
-    _onAddSkyBox() {
-        this._scene.add(new GLHelpers.SkyBox())
-    }
-
-    _onAddPlane(component) {
+    static createPlane(planeComponent) {
         const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(component.width, component.height),
+            new THREE.PlaneGeometry(planeComponent.width, planeComponent.height),
             new THREE.MeshStandardMaterial({
-                color: component.color,
+                color: planeComponent.color,
             }),
         )
         plane.castShadow = false
         plane.receiveShadow = true
         plane.rotation.x = -Math.PI / 2
-        plane.position.copy(component.position)
-        component.resource = plane
-        this._scene.add(plane)
+        plane.position.copy(planeComponent.position)
+        return plane
     }
 
-    _onAddModel(component) {
-        const { entity, modelId } = component
-        const { modelPath, texturePath, scale, animations: animationIndex } = modelDB[modelId]
+    static async createModel(modelComponent) {
+        const { modelId } = modelComponent
+        const { modelPath, texturePath, scale } = modelDB[modelId]
 
-        component.isLoading = true
-        loadFBX(modelPath, texturePath).then((model) => {
-            model.scale.setScalar(scale)
+        const model = await loadFBX(modelPath, texturePath)
+        model.scale.setScalar(scale)
+        return model
+    }
 
-            this._scene.add(model)
-            component.resource = model
-            component.isLoading = false
-
-            if (model.animations) {
-                const mixer = new THREE.AnimationMixer(model)
-                const modelAnimations = {}
-                model.animations.forEach((anim) => {
-                    modelAnimations[animationIndex[anim.name]] = ({
-                        clip: anim,
-                        action: mixer.clipAction(anim),
-                    })
-                })
-                this._animations.set(entity, modelAnimations)
-
-                // TODO: update animations to a proper system
-                // Not all models will be animated
-                this._jobs.push((delta) => mixer.update(delta))
-            }
-        })
+    _addSkyBox() {
+        this._scene.add(new GLHelpers.SkyBox())
     }
 
     tick(delta) {
@@ -157,20 +125,50 @@ export class Renderer extends System {
                         animationComponent.needsUpdate = false
                     }
                 } else if (!modelComponent.isLoading) {
-                    this._onAddModel(modelComponent)
+                    modelComponent.isLoading = true
+                    Renderer.createModel(modelComponent).then((resource) => {
+                        console.debug(resource)
+                        modelComponent.resource = resource
+                        this._scene.add(resource)
+                        if (resource.animations) {
+                            const { animations: animationIndex } = modelDB[modelComponent.modelId]
+                            const mixer = new THREE.AnimationMixer(resource)
+                            const modelAnimations = {}
+                            resource.animations.forEach((anim) => {
+                                modelAnimations[animationIndex[anim.name]] = ({
+                                    clip: anim,
+                                    action: mixer.clipAction(anim),
+                                })
+                            })
+                            this._animations.set(modelComponent.entity, modelAnimations)
+
+                            // TODO: update animations to a proper system
+                            // Not all models will be animated
+                            this._jobs.push((d) => mixer.update(d))
+                        }
+                        modelComponent.isLoading = false
+                    })
                 }
             },
         )
 
         this.ECS.ComponentManager.getTuplesByQuery([LIGHT]).forEach(([lightComponent]) => {
             if (!lightComponent.resource) {
-                this._onAddLight(lightComponent)
+                lightComponent.resource = Renderer.createLight(lightComponent)
+                this._scene.add(lightComponent.resource)
+                if (lightComponent.resource.helper) {
+                    this._scene.add(lightComponent.resource.helper)
+                }
+                if (lightComponent.resource.shadowHelper) {
+                    this._scene.add(lightComponent.resource.shadowHelper)
+                }
             }
         })
 
         this.ECS.ComponentManager.getTuplesByQuery([PLANE]).forEach(([planeComponent]) => {
             if (!planeComponent.resource) {
-                this._onAddPlane(planeComponent)
+                planeComponent.resource = Renderer.createPlane(planeComponent)
+                this._scene.add(planeComponent.resource)
             }
         })
     }

@@ -18,7 +18,6 @@ window.addEventListener('DOMContentLoaded', () => {
     DungeonECS.registerSystem(new Systems.PlayerInput())
     DungeonECS.registerSystem(new Systems.Movement())
     DungeonECS.registerSystem(new Systems.Animation())
-
     DungeonECS.registerSystem(new Systems.Renderer({
         canvas: document.getElementById('WebGLCanvas'),
         aspect: (1280 / 720),
@@ -37,11 +36,13 @@ window.addEventListener('DOMContentLoaded', () => {
     }))
 
     const playerEntity = DungeonECS.createEntity()
-    DungeonECS.addComponent(new Hero(playerEntity))
-    DungeonECS.addComponent(new Model(playerEntity, { modelId: 1 }))
-    DungeonECS.addComponent(new Input(playerEntity))
-    DungeonECS.addComponent(new Position(playerEntity, new THREE.Vector3(2, 0, 2), new THREE.Quaternion()))
-    DungeonECS.addComponent(new Animation(playerEntity, 'idle'))
+    DungeonECS.addComponents([
+        new Hero(playerEntity),
+        new Model(playerEntity, { modelId: 1 }),
+        new Input(playerEntity),
+        new Position(playerEntity, new THREE.Vector3(2, 0, 2), new THREE.Quaternion()),
+        new Animation(playerEntity, 'idle'),
+    ])
 
     DungeonECS.start()
 })

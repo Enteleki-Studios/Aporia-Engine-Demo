@@ -105,7 +105,7 @@ export class Movement extends System {
     //         const _A = new THREE.Vector3()
     //         const _R = position.quaternion.clone()
 
-    //         // TODO: Copy acceleration and apply scalar if we need to pause or run
+    //         // Copy acceleration and apply scalar if we need to pause or run
 
     //         if (input.upHold) {
     //             velocity.z += this._acceleration.z * delta
