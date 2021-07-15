@@ -2,6 +2,7 @@ export default class ComponentManager {
     constructor() {
         this._components = []
         this._componentsByEntity = new Map()
+        this._queryCache = new Map()
     }
 
     addComponent(component) {
@@ -21,15 +22,21 @@ export default class ComponentManager {
         }
 
         this._components.push(component)
+        this._queryCache = new Map()
     }
 
     getTuplesByQuery(queryTypes) {
+        const query = queryTypes.join('.')
+        if (this._queryCache.has(query)) {
+            return this._queryCache.get(query)
+        }
         const tuples = []
         this._componentsByEntity.forEach((entity) => {
             if (queryTypes.every((qt) => entity.has(qt))) {
                 tuples.push(queryTypes.map((qt) => entity.get(qt)))
             }
         })
+        this._queryCache.set(query, tuples)
         return tuples
     }
 }

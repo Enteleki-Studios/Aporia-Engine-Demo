@@ -1,4 +1,5 @@
 export const ANIMATION = 'ANIMATION'
+export const CAMERA = 'CAMERA'
 export const HERO = 'HERO'
 export const INPUT = 'INPUT'
 export const LIGHT = 'LIGHT'

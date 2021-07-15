@@ -10,6 +10,7 @@
         "indent": ["error", 4, {
             "SwitchCase": 1,
         }],
+        "no-multiple-empty-lines": "warn",
         "semi": ["error", "never"],
         "no-param-reassign": ["error", { "props": false }],
         "no-underscore-dangle": "off",

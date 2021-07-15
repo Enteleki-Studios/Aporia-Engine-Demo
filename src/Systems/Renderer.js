@@ -1,12 +1,12 @@
 import * as THREE from 'three'
 
 import Stats from 'three/examples/jsm/libs/stats.module'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import * as GLHelpers from 'GLHelpers'
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
-import { LIGHT, PLANE, MODEL, POSITION, ANIMATION } from 'Components/types'
+import { LIGHT, PLANE, MODEL, POSITION, ANIMATION, CAMERA } from 'Components/types'
 
 import System from 'ECS/System'
 
@@ -17,7 +17,8 @@ export class Renderer extends System {
         this._renderer = new GLHelpers.Renderer({ canvas })
 
         this._scene = new THREE.Scene()
-        this._scene.background = new THREE.Color(0xbd93f9)
+        // this._scene.background = new THREE.Color(0xbd93f9)
+        this._scene.background = new THREE.Color(0x121212)
         this._scene.fog = new THREE.Fog(this._scene.background, 1, 100)
 
         const fov = 60
@@ -25,6 +26,7 @@ export class Renderer extends System {
         const far = 500
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
         this._camera.position.set(5, 6, -6)
+        this._camera.lookAt(5, 2, 5)
 
         this._jobs = []
         this._animations = new Map()
@@ -32,7 +34,7 @@ export class Renderer extends System {
         // Debug stuff
         this._enableDebug()
 
-        this._addSkyBox()
+        // this._addSkyBox()
     }
 
     _enableDebug() {
@@ -45,14 +47,14 @@ export class Renderer extends System {
         this._scene.add(new THREE.AxesHelper(1))
 
         // Mouse camera controls
-        const controls = new OrbitControls(
-            this._camera,
-            this._renderer.domElement,
-        )
-        controls.minDistance = 3
-        controls.maxDistance = 50
-        controls.target.set(5, 2, 5)
-        controls.update()
+        // const controls = new OrbitControls(
+        //     this._camera,
+        //     this._renderer.domElement,
+        // )
+        // controls.minDistance = 3
+        // controls.maxDistance = 50
+        // controls.target.set(5, 2, 5)
+        // controls.update()
     }
 
     static createLight(lightComponent) {
@@ -67,16 +69,22 @@ export class Renderer extends System {
     }
 
     static createPlane(planeComponent) {
+        const texture = new THREE.TextureLoader().load('/resources/textures/floor.png')
+        texture.wrapS = THREE.RepeatWrapping
+        texture.wrapT = THREE.RepeatWrapping
+        texture.repeat.x = 10
+        texture.repeat.y = 10
         const plane = new THREE.Mesh(
             new THREE.PlaneGeometry(planeComponent.width, planeComponent.height),
             new THREE.MeshStandardMaterial({
-                color: planeComponent.color,
+                map: texture,
             }),
         )
         plane.castShadow = false
         plane.receiveShadow = true
         plane.rotation.x = -Math.PI / 2
         plane.position.copy(planeComponent.position)
+
         return plane
     }
 
@@ -127,7 +135,6 @@ export class Renderer extends System {
                 } else if (!modelComponent.isLoading) {
                     modelComponent.isLoading = true
                     Renderer.createModel(modelComponent).then((resource) => {
-                        console.debug(resource)
                         modelComponent.resource = resource
                         this._scene.add(resource)
                         if (resource.animations) {
@@ -156,11 +163,20 @@ export class Renderer extends System {
             if (!lightComponent.resource) {
                 lightComponent.resource = Renderer.createLight(lightComponent)
                 this._scene.add(lightComponent.resource)
+                if (lightComponent.resource.target) {
+                    this._scene.add(lightComponent.resource.target)
+                }
                 if (lightComponent.resource.helper) {
                     this._scene.add(lightComponent.resource.helper)
                 }
                 if (lightComponent.resource.shadowHelper) {
                     this._scene.add(lightComponent.resource.shadowHelper)
+                }
+            } else if (lightComponent.needsUpdate) {
+                if (lightComponent.lightType === 'DirectionalLight') {
+                    lightComponent.resource.position.copy(lightComponent.position)
+                    lightComponent.resource.target.position.copy(lightComponent.target)
+                    lightComponent.needsUpdate = false
                 }
             }
         })
@@ -169,6 +185,14 @@ export class Renderer extends System {
             if (!planeComponent.resource) {
                 planeComponent.resource = Renderer.createPlane(planeComponent)
                 this._scene.add(planeComponent.resource)
+            }
+        })
+
+        this.ECS.ComponentManager.getTuplesByQuery([CAMERA]).forEach(([cameraComponent]) => {
+            if (cameraComponent.needsUpdate) {
+                this._camera.position.copy(cameraComponent.position)
+                this._camera.lookAt(cameraComponent.lookAt)
+                cameraComponent.needsUpdate = false
             }
         })
     }

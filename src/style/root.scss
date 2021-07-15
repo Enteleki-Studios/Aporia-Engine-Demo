@@ -4,6 +4,7 @@
 
 html {
     font-size: 100%;
+    font-family: Arial, sans-serif;
 }
 
 body {
@@ -22,4 +23,12 @@ body {
         margin: 0;
         max-width: 100%;
     }
+}
+
+#debug {
+    color: #ccc;
+    width: 95%;
+    max-width: 1280px;
+    margin: auto;
+    padding-top: 2rem;
 }
