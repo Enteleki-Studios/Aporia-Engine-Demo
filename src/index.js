@@ -17,6 +17,35 @@ import 'style/root.scss'
 window.addEventListener('DOMContentLoaded', () => {
     const DungeonECS = new ECS()
 
+    ROT.RNG.setSeed(421)
+    const mapSize = [256, 256]
+    const map = new ROT.Map.Digger(mapSize[0], mapSize[1], {
+        roomWidth: [10, 50],
+        roomHeight: [12, 50],
+        corridorLength: [3, 5],
+        dugPercentage: 0.3,
+    })
+    const display = new ROT.Display({
+        width: mapSize[0],
+        height: mapSize[1],
+        fontSize: 1,
+        fg: '#fff',
+        bg: '#000',
+    })
+    const debugCanvas = display.getContainer()
+    const mapScale = 3
+    debugCanvas.id = 'mapCanvas'
+    debugCanvas.style = `width: ${mapSize[0] * mapScale}px; height: ${mapSize[0] * mapScale}px`
+    document.getElementById('debug').append(debugCanvas)
+    const localMap = []
+    map.create((x, y, what) => {
+        localMap.push(what)
+        display.DEBUG(x, y, what)
+    })
+    window.mapArray = localMap
+
+    const rooms = map.getRooms()
+
     DungeonECS.registerSystem(new Systems.PlayerInput())
     DungeonECS.registerSystem(new Systems.Movement())
     DungeonECS.registerSystem(new Systems.Animation())
@@ -32,52 +61,16 @@ window.addEventListener('DOMContentLoaded', () => {
     }))
 
     const playerEntity = DungeonECS.createEntity()
+    const [x, z] = rooms[0].getCenter()
     DungeonECS.addComponents([
         new Hero(playerEntity),
         new Model(playerEntity, { modelId: 1 }),
         new Input(playerEntity),
-        new Position(playerEntity, new THREE.Vector3(2, 0, 2), new THREE.Quaternion()),
+        new Position(playerEntity, new THREE.Vector3(x, 0, z), new THREE.Quaternion()),
         new Animation(playerEntity, 'idle'),
         new Camera(playerEntity),
         new Light(playerEntity, 'DirectionalLight'),
     ])
 
     DungeonECS.start()
-
-    // //////
-
-    ROT.RNG.setSeed(421)
-    const mapSize = [200, 200]
-    const map = new ROT.Map.Digger(mapSize[0], mapSize[1], {
-        roomWidth: [10, 50],
-        roomHeight: [12, 50],
-        corridorLength: [3, 5],
-        dugPercentage: 0.3,
-    })
-    const display = new ROT.Display({
-        width: mapSize[0],
-        height: mapSize[1],
-        fontSize: 8,
-    })
-    const debugCanvas = display.getContainer()
-    const mapScale = 3
-    debugCanvas.style = `width: ${mapSize[0] * mapScale}px; height: ${mapSize[0] * mapScale}px`
-    document.getElementById('debug').append(debugCanvas)
-    map.create(display.DEBUG)
-
-    const drawDoor = (x, y) => {
-        display.draw(x, y, '', '', 'red')
-    }
-
-    const rooms = map.getRooms()
-    rooms.forEach((room) => {
-        DungeonECS.addComponent(new Plane(DungeonECS.createEntity(), {
-            width: room.getRight() - room.getLeft(),
-            height: room.getBottom() - room.getTop(),
-            color: 0x44475a,
-            position: new THREE.Vector3(room.getCenter()[0], 0, room.getCenter()[1]),
-        }))
-
-        room.getDoors(drawDoor)
-    })
 })

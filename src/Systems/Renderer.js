@@ -1,7 +1,8 @@
 import * as THREE from 'three'
 
 import Stats from 'three/examples/jsm/libs/stats.module'
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
 import * as GLHelpers from 'GLHelpers'
 import loadFBX from 'utils/loadFBX'
@@ -9,6 +10,8 @@ import modelDB from 'modelDB'
 import { LIGHT, PLANE, MODEL, POSITION, ANIMATION, CAMERA } from 'Components/types'
 
 import System from 'ECS/System'
+
+const DEBUG = false
 
 export class Renderer extends System {
     constructor({ canvas, aspect }) {
@@ -19,22 +22,30 @@ export class Renderer extends System {
         this._scene = new THREE.Scene()
         // this._scene.background = new THREE.Color(0xbd93f9)
         this._scene.background = new THREE.Color(0x121212)
-        this._scene.fog = new THREE.Fog(this._scene.background, 1, 100)
+        if (!DEBUG) {
+            this._scene.fog = new THREE.Fog(this._scene.background, 1, 100)
+        }
 
         const fov = 60
         const near = 1.0
-        const far = 500
+        const far = 50
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
-        this._camera.position.set(5, 6, -6)
-        this._camera.lookAt(5, 2, 5)
 
         this._jobs = []
         this._animations = new Map()
 
-        // Debug stuff
-        this._enableDebug()
+        if (DEBUG) {
+            this._scene.add(new THREE.CameraHelper(this._camera))
+            this._debugCamera = new THREE.PerspectiveCamera(fov, aspect, near, 500)
+            this._debugCamera.position.set(20, 20, 20)
+
+            this._orbitControls = null
+
+            this._enableDebug()
+        }
 
         // this._addSkyBox()
+        this._addShaderWorld()
     }
 
     _enableDebug() {
@@ -47,14 +58,100 @@ export class Renderer extends System {
         this._scene.add(new THREE.AxesHelper(1))
 
         // Mouse camera controls
-        // const controls = new OrbitControls(
-        //     this._camera,
-        //     this._renderer.domElement,
-        // )
+        this._orbitControls = new OrbitControls(
+            this._debugCamera,
+            this._renderer.domElement,
+        )
         // controls.minDistance = 3
         // controls.maxDistance = 50
-        // controls.target.set(5, 2, 5)
-        // controls.update()
+        // controls.target.set(0, 0, -100)
+        this._orbitControls.update()
+    }
+
+    _addShaderWorld() {
+        // const mapTexture = new THREE.CanvasTexture(
+        //     document.getElementById('mapCanvas'),
+        //     THREE.UVMapping,
+        // )
+        // mapTexture.wrapS = THREE.RepeatWrapping
+        // mapTexture.wrapT = THREE.RepeatWrapping
+        // this._scene.add(shaderWorld)
+        const floorGeometries = []
+        const wallGeometries = []
+        // const rooms = window.mapObject.getRooms()
+        // rooms.forEach((room) => {
+        //     const b = new THREE.BoxBufferGeometry(
+        //     room.getRight() - room.getLeft(), 1, room.getBottom() - room.getTop())
+        //     const mat4 = new THREE.Matrix4()
+        //     mat4.makeTranslation(room.getCenter()[0], -1, room.getCenter()[1])
+        //     b.applyMatrix(mat4)
+        //     geometries.push(b)
+        // })
+        // console.debug(window.mapObject.getCorridors())
+        //
+        const localMap = window.mapArray
+
+        const createWall = (x, y) => {
+            const b = new THREE.BoxBufferGeometry(1, 3, 1)
+            const mat4 = new THREE.Matrix4()
+            mat4.makeTranslation(x, 1, y)
+            b.applyMatrix4(mat4)
+            return b
+        }
+        const mapWidth = 256
+        const mapHeight = 256
+        for (let x = 0; x < mapWidth; x += 1) {
+            for (let y = 0; y < mapHeight; y += 1) {
+                const index = y * mapWidth + x
+                const isFloor = !localMap[index]
+                if (isFloor) {
+                    const b = new THREE.BoxBufferGeometry(1, 1, 1)
+                    const mat4 = new THREE.Matrix4()
+                    mat4.makeTranslation(x, -0.5, y)
+                    b.applyMatrix4(mat4)
+                    floorGeometries.push(b)
+
+                    if (localMap[index - mapWidth]) {
+                        wallGeometries.push(createWall(x, y - 1))
+                    }
+                    if (localMap[index + mapWidth]) {
+                        wallGeometries.push(createWall(x, y + 1))
+                    }
+                    if (localMap[index - 1]) {
+                        wallGeometries.push(createWall(x - 1, y))
+                    }
+                    if (localMap[index + 1]) {
+                        wallGeometries.push(createWall(x + 1, y))
+                    }
+                }
+            }
+        }
+
+        const mergedFloorGeometries = BufferGeometryUtils.mergeBufferGeometries(floorGeometries, false)
+        const mergedWallGeometries = BufferGeometryUtils.mergeBufferGeometries(wallGeometries, false)
+
+        const texture = new THREE.TextureLoader().load('/resources/textures/floor.png')
+        texture.wrapS = THREE.RepeatWrapping
+        texture.wrapT = THREE.RepeatWrapping
+        const tileSize = 0.5
+        texture.repeat.x = tileSize
+        texture.repeat.y = tileSize
+
+        const wallTexture = new THREE.TextureLoader().load('/resources/textures/wall.jpg')
+        wallTexture.wrapS = THREE.RepeatWrapping
+        wallTexture.wrapT = THREE.RepeatWrapping
+        wallTexture.repeat.x = 1
+        wallTexture.repeat.y = 3
+        const floorMaterial = new THREE.MeshStandardMaterial({ map: texture })
+        floorMaterial.castShadow = false
+        floorMaterial.receiveShadow = true
+        const wallMaterial = new THREE.MeshStandardMaterial({ map: wallTexture })
+        wallMaterial.castShadow = false
+        wallMaterial.receiveShadow = true
+        const floorMesh = new THREE.Mesh(mergedFloorGeometries, floorMaterial)
+        const wallMesh = new THREE.Mesh(mergedWallGeometries, wallMaterial)
+        this._scene.add(floorMesh)
+        this._scene.add(wallMesh)
     }
 
     static createLight(lightComponent) {
@@ -72,8 +169,10 @@ export class Renderer extends System {
         const texture = new THREE.TextureLoader().load('/resources/textures/floor.png')
         texture.wrapS = THREE.RepeatWrapping
         texture.wrapT = THREE.RepeatWrapping
-        texture.repeat.x = 10
-        texture.repeat.y = 10
+        const aspect = planeComponent.width / planeComponent.height
+        const tileSize = 20
+        texture.repeat.x = tileSize * aspect
+        texture.repeat.y = tileSize
         const plane = new THREE.Mesh(
             new THREE.PlaneGeometry(planeComponent.width, planeComponent.height),
             new THREE.MeshStandardMaterial({
@@ -102,7 +201,11 @@ export class Renderer extends System {
     }
 
     tick(delta) {
-        this._renderer.render(this._scene, this._camera)
+        if (DEBUG) {
+            this._renderer.render(this._scene, this._debugCamera)
+        } else {
+            this._renderer.render(this._scene, this._camera)
+        }
         this._jobs.forEach((j) => j(delta))
 
         this.ECS.ComponentManager.getTuplesByQuery([ANIMATION, MODEL, POSITION]).forEach(
@@ -166,11 +269,13 @@ export class Renderer extends System {
                 if (lightComponent.resource.target) {
                     this._scene.add(lightComponent.resource.target)
                 }
-                if (lightComponent.resource.helper) {
-                    this._scene.add(lightComponent.resource.helper)
-                }
-                if (lightComponent.resource.shadowHelper) {
-                    this._scene.add(lightComponent.resource.shadowHelper)
+                if (DEBUG) {
+                    if (lightComponent.resource.helper) {
+                        this._scene.add(lightComponent.resource.helper)
+                    }
+                    if (lightComponent.resource.shadowHelper) {
+                        this._scene.add(lightComponent.resource.shadowHelper)
+                    }
                 }
             } else if (lightComponent.needsUpdate) {
                 if (lightComponent.lightType === 'DirectionalLight') {
@@ -193,6 +298,11 @@ export class Renderer extends System {
                 this._camera.position.copy(cameraComponent.position)
                 this._camera.lookAt(cameraComponent.lookAt)
                 cameraComponent.needsUpdate = false
+
+                if (DEBUG) {
+                    this._orbitControls.target.copy(cameraComponent.lookAt)
+                    this._orbitControls.update()
+                }
             }
         })
     }

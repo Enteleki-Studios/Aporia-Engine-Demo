@@ -10,7 +10,7 @@ html {
 body {
     margin: 0;
     background-color: #282a36;
-    padding-top: 5rem;
+    padding: 5rem 0;
 }
 
 .GLWindow {
@@ -31,4 +31,8 @@ body {
     max-width: 1280px;
     margin: auto;
     padding-top: 2rem;
+
+    canvas {
+        image-rendering: crisp-edges;
+    }
 }
