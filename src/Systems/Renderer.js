@@ -46,6 +46,7 @@ export class Renderer extends System {
 
         // this._addSkyBox()
         this._addShaderWorld()
+        this._addShaderWorld2()
     }
 
     _enableDebug() {
@@ -69,32 +70,13 @@ export class Renderer extends System {
     }
 
     _addShaderWorld() {
-        // const mapTexture = new THREE.CanvasTexture(
-        //     document.getElementById('mapCanvas'),
-        //     THREE.UVMapping,
-        // )
-        // mapTexture.wrapS = THREE.RepeatWrapping
-        // mapTexture.wrapT = THREE.RepeatWrapping
-        // this._scene.add(shaderWorld)
-        const floorGeometries = []
         const wallGeometries = []
-        // const rooms = window.mapObject.getRooms()
-        // rooms.forEach((room) => {
-        //     const b = new THREE.BoxBufferGeometry(
-        //     room.getRight() - room.getLeft(), 1, room.getBottom() - room.getTop())
-        //     const mat4 = new THREE.Matrix4()
-        //     mat4.makeTranslation(room.getCenter()[0], -1, room.getCenter()[1])
-        //     b.applyMatrix(mat4)
-        //     geometries.push(b)
-        // })
-        // console.debug(window.mapObject.getCorridors())
-        //
         const localMap = window.mapArray
 
         const createWall = (x, y) => {
             const b = new THREE.BoxBufferGeometry(1, 3, 1)
             const mat4 = new THREE.Matrix4()
-            mat4.makeTranslation(x, 1, y)
+            mat4.makeTranslation(y, 1.5, x)
             b.applyMatrix4(mat4)
             return b
         }
@@ -105,12 +87,6 @@ export class Renderer extends System {
                 const index = y * mapWidth + x
                 const isFloor = !localMap[index]
                 if (isFloor) {
-                    const b = new THREE.BoxBufferGeometry(1, 1, 1)
-                    const mat4 = new THREE.Matrix4()
-                    mat4.makeTranslation(x, -0.5, y)
-                    b.applyMatrix4(mat4)
-                    floorGeometries.push(b)
-
                     if (localMap[index - mapWidth]) {
                         wallGeometries.push(createWall(x, y - 1))
                     }
@@ -127,31 +103,94 @@ export class Renderer extends System {
             }
         }
 
-        const mergedFloorGeometries = BufferGeometryUtils.mergeBufferGeometries(floorGeometries, false)
         const mergedWallGeometries = BufferGeometryUtils.mergeBufferGeometries(wallGeometries, false)
-
-        const texture = new THREE.TextureLoader().load('/resources/textures/floor.png')
-        texture.wrapS = THREE.RepeatWrapping
-        texture.wrapT = THREE.RepeatWrapping
-        const tileSize = 0.5
-        texture.repeat.x = tileSize
-        texture.repeat.y = tileSize
 
         const wallTexture = new THREE.TextureLoader().load('/resources/textures/wall.jpg')
         wallTexture.wrapS = THREE.RepeatWrapping
         wallTexture.wrapT = THREE.RepeatWrapping
         wallTexture.repeat.x = 1
         wallTexture.repeat.y = 3
-        const floorMaterial = new THREE.MeshStandardMaterial({ map: texture })
-        floorMaterial.castShadow = false
-        floorMaterial.receiveShadow = true
         const wallMaterial = new THREE.MeshStandardMaterial({ map: wallTexture })
         wallMaterial.castShadow = false
         wallMaterial.receiveShadow = true
-        const floorMesh = new THREE.Mesh(mergedFloorGeometries, floorMaterial)
         const wallMesh = new THREE.Mesh(mergedWallGeometries, wallMaterial)
-        this._scene.add(floorMesh)
         this._scene.add(wallMesh)
+    }
+
+    _addShaderWorld2() {
+        const mapTexture = new THREE.CanvasTexture(
+            document.getElementById('mapCanvas'),
+            THREE.UVMapping,
+        )
+        const floorTexture = new THREE.TextureLoader().load('/resources/textures/floor.png')
+        floorTexture.wrapS = THREE.RepeatWrapping
+        floorTexture.wrapT = THREE.RepeatWrapping
+        // floorTexture.minFilter = THREE.NearestFilter
+
+        const vertexShader = `
+            uniform sampler2D mapTexture;
+            uniform float tileAmt;
+
+            varying float vAmount;
+            varying vec2 vUV;
+
+            void main()
+            {
+                // The "coordinates" in UV mapping representation
+                vUV = uv * tileAmt;
+
+                // The heightmap data at those coordinates
+                vec4 bumpData = texture2D(mapTexture, uv);
+
+                // height map is grayscale, so it doesn't matter if you use r, g, or b.
+                vAmount = bumpData.r;
+
+                // move the position along the normal
+                // vec3 newPosition = position + normal * bumpScale * vAmount;
+
+                // Compute the position of the vertex using a standard formula
+                // gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `
+
+        const fragmentShader = `
+            uniform sampler2D floorTexture;
+            varying vec2 vUV;
+            varying float vAmount;
+
+            void main()
+            {
+                if (vAmount < 1.0) {
+                    gl_FragColor = texture2D(floorTexture, vUV);
+                } else {
+                    gl_FragColor = vec4(0, 0, 0, 0);
+                }
+            }
+        `
+
+        const floor = new THREE.Mesh(
+            new THREE.PlaneGeometry(256, 256, 512, 512),
+            new THREE.ShaderMaterial({
+                uniforms: {
+                    floorTexture: { value: floorTexture },
+                    mapTexture: { value: mapTexture },
+                    tileAmt: { value: 64.0 },
+                    ambientLightColor: { value: 0xffffff },
+                },
+                vertexShader,
+                fragmentShader,
+                lights: false,
+                fog: false,
+                transparent: true,
+            }),
+        )
+        floor.castShadow = false
+        floor.receiveShadow = true
+        floor.rotation.x = -Math.PI / 2
+        floor.position.set(128, 0, 128)
+
+        this._scene.add(floor)
     }
 
     static createLight(lightComponent) {

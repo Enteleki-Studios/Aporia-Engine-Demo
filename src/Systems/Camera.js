@@ -10,7 +10,7 @@ export class Camera extends System {
             ([cameraComponent, lightComponent, positionComponent]) => {
                 cameraComponent.position.lerp(new Vector3(
                     positionComponent.position.x - 1,
-                    4,
+                    3,
                     positionComponent.position.z - 5,
 
                 ), delta * LERP_FACTOR)

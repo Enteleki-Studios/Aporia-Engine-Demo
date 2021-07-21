@@ -4,7 +4,6 @@ import ECS from 'ECS'
 import * as Systems from 'Systems'
 
 import Light from 'Components/Light'
-import Plane from 'Components/Plane'
 import Model from 'Components/Model'
 import Position from 'Components/Position'
 import Animation from 'Components/Animation'
