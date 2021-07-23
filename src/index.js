@@ -17,10 +17,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const DungeonECS = new ECS()
 
     ROT.RNG.setSeed(421)
-    const mapSize = [256, 256]
+    const mapSize = [64, 64]
     const map = new ROT.Map.Digger(mapSize[0], mapSize[1], {
-        roomWidth: [10, 50],
-        roomHeight: [12, 50],
+        roomWidth: [5, 25],
+        roomHeight: [5, 25],
         corridorLength: [3, 5],
         dugPercentage: 0.3,
     })
@@ -32,7 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
         bg: '#000',
     })
     const debugCanvas = display.getContainer()
-    const mapScale = 3
+    const mapScale = 6
     debugCanvas.id = 'mapCanvas'
     debugCanvas.style = `width: ${mapSize[0] * mapScale}px; height: ${mapSize[0] * mapScale}px`
     document.getElementById('debug').append(debugCanvas)
@@ -45,18 +45,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const rooms = map.getRooms()
 
-    DungeonECS.registerSystem(new Systems.PlayerInput())
+    const canvas = document.getElementById('WebGLCanvas')
+    DungeonECS.registerSystem(new Systems.PlayerInput({
+        canvas,
+    }))
     DungeonECS.registerSystem(new Systems.Movement())
     DungeonECS.registerSystem(new Systems.Animation())
     DungeonECS.registerSystem(new Systems.Camera())
     DungeonECS.registerSystem(new Systems.Renderer({
-        canvas: document.getElementById('WebGLCanvas'),
+        canvas,
         aspect: (1280 / 720),
     }))
 
     DungeonECS.addComponent(new Light(DungeonECS.createEntity(), 'AmbientLight', {
         color: 0x101010,
-        intensity: 5,
+        intensity: 3,
     }))
 
     const playerEntity = DungeonECS.createEntity()
@@ -65,7 +68,7 @@ window.addEventListener('DOMContentLoaded', () => {
         new Hero(playerEntity),
         new Model(playerEntity, { modelId: 1 }),
         new Input(playerEntity),
-        new Position(playerEntity, new THREE.Vector3(x, 0, z), new THREE.Quaternion()),
+        new Position(playerEntity, new THREE.Vector3(x * 2, 0, z * 2), new THREE.Quaternion()),
         new Animation(playerEntity, 'idle'),
         new Camera(playerEntity),
         new Light(playerEntity, 'DirectionalLight'),

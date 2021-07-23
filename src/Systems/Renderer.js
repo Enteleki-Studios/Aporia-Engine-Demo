@@ -23,7 +23,7 @@ export class Renderer extends System {
         // this._scene.background = new THREE.Color(0xbd93f9)
         this._scene.background = new THREE.Color(0x121212)
         if (!DEBUG) {
-            this._scene.fog = new THREE.Fog(this._scene.background, 1, 100)
+            this._scene.fog = new THREE.Fog(this._scene.background, 1, 30)
         }
 
         const fov = 60
@@ -74,14 +74,14 @@ export class Renderer extends System {
         const localMap = window.mapArray
 
         const createWall = (x, y) => {
-            const b = new THREE.BoxBufferGeometry(1, 3, 1)
+            const b = new THREE.BoxBufferGeometry(2, 4, 2)
             const mat4 = new THREE.Matrix4()
-            mat4.makeTranslation(y, 1.5, x)
+            mat4.makeTranslation(y * 2, 2, x * 2)
             b.applyMatrix4(mat4)
             return b
         }
-        const mapWidth = 256
-        const mapHeight = 256
+        const mapWidth = 64
+        const mapHeight = 64
         for (let x = 0; x < mapWidth; x += 1) {
             for (let y = 0; y < mapHeight; y += 1) {
                 const index = y * mapWidth + x
@@ -108,87 +108,35 @@ export class Renderer extends System {
         const wallTexture = new THREE.TextureLoader().load('/resources/textures/wall.jpg')
         wallTexture.wrapS = THREE.RepeatWrapping
         wallTexture.wrapT = THREE.RepeatWrapping
-        wallTexture.repeat.x = 1
-        wallTexture.repeat.y = 3
-        const wallMaterial = new THREE.MeshStandardMaterial({ map: wallTexture })
-        wallMaterial.castShadow = false
-        wallMaterial.receiveShadow = true
+        const wallMaterial = new THREE.MeshStandardMaterial({
+            map: wallTexture,
+            flatShading: true,
+            side: THREE.FrontSide,
+        })
         const wallMesh = new THREE.Mesh(mergedWallGeometries, wallMaterial)
+        wallMesh.receiveShadow = true
+        wallMesh.castShadow = true
         this._scene.add(wallMesh)
     }
 
     _addShaderWorld2() {
-        const mapTexture = new THREE.CanvasTexture(
-            document.getElementById('mapCanvas'),
-            THREE.UVMapping,
-        )
         const floorTexture = new THREE.TextureLoader().load('/resources/textures/floor.png')
         floorTexture.wrapS = THREE.RepeatWrapping
         floorTexture.wrapT = THREE.RepeatWrapping
         // floorTexture.minFilter = THREE.NearestFilter
 
-        const vertexShader = `
-            uniform sampler2D mapTexture;
-            uniform float tileAmt;
-
-            varying float vAmount;
-            varying vec2 vUV;
-
-            void main()
-            {
-                // The "coordinates" in UV mapping representation
-                vUV = uv * tileAmt;
-
-                // The heightmap data at those coordinates
-                vec4 bumpData = texture2D(mapTexture, uv);
-
-                // height map is grayscale, so it doesn't matter if you use r, g, or b.
-                vAmount = bumpData.r;
-
-                // move the position along the normal
-                // vec3 newPosition = position + normal * bumpScale * vAmount;
-
-                // Compute the position of the vertex using a standard formula
-                // gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
-        `
-
-        const fragmentShader = `
-            uniform sampler2D floorTexture;
-            varying vec2 vUV;
-            varying float vAmount;
-
-            void main()
-            {
-                if (vAmount < 1.0) {
-                    gl_FragColor = texture2D(floorTexture, vUV);
-                } else {
-                    gl_FragColor = vec4(0, 0, 0, 0);
-                }
-            }
-        `
-
         const floor = new THREE.Mesh(
-            new THREE.PlaneGeometry(256, 256, 512, 512),
-            new THREE.ShaderMaterial({
-                uniforms: {
-                    floorTexture: { value: floorTexture },
-                    mapTexture: { value: mapTexture },
-                    tileAmt: { value: 64.0 },
-                    ambientLightColor: { value: 0xffffff },
-                },
-                vertexShader,
-                fragmentShader,
-                lights: false,
-                fog: false,
-                transparent: true,
+            new THREE.PlaneGeometry(128, 128),
+            new THREE.MeshStandardMaterial({
+                map: floorTexture,
+                castShadow: false,
+                receiveShadow: true,
             }),
         )
-        floor.castShadow = false
+        floorTexture.repeat.set(32, 32)
         floor.receiveShadow = true
         floor.rotation.x = -Math.PI / 2
-        floor.position.set(128, 0, 128)
+        floor.position.set(64, 0, 64)
 
         this._scene.add(floor)
     }
@@ -196,7 +144,7 @@ export class Renderer extends System {
     static createLight(lightComponent) {
         switch (lightComponent.lightType) {
             case 'DirectionalLight':
-                return new GLHelpers.DirectionalLight(0xFFFFFF, 1.0)
+                return new GLHelpers.DirectionalLight(0xFFFFFF, 0.4)
             case 'AmbientLight':
                 return new THREE.AmbientLight(lightComponent.color, lightComponent.intensity)
             default:

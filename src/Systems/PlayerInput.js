@@ -2,8 +2,10 @@ import System from 'ECS/System'
 import { HERO, INPUT } from 'Components/types'
 
 export class PlayerInput extends System {
-    constructor() {
+    constructor({ canvas }) {
         super()
+
+        this._canvas = canvas
 
         this._liveInput = {
             up: false,
@@ -11,6 +13,8 @@ export class PlayerInput extends System {
             right: false,
             down: false,
             shift: false,
+            mouseX: 0,
+            mouseY: 0,
         }
 
         this._initInputHandlers()
@@ -19,6 +23,33 @@ export class PlayerInput extends System {
     _initInputHandlers() {
         document.addEventListener('keydown', this._onKeyDown.bind(this))
         document.addEventListener('keyup', this._onKeyUp.bind(this))
+
+        this._canvas.addEventListener('click', () => {
+            this._canvas.requestPointerLock = this._canvas.requestPointerLock
+                || this._canvas.mozRequestPointerLock
+                || this._canvas.webkitRequestPointerLock
+            this._canvas.requestPointerLock()
+        })
+
+        const onPointerLockChange = () => {
+            if (document.pointerLockElement === this._canvas
+                || document.mozPointerLockElement === this._canvas
+                || document.webkitPointerLockElement === this._canvas) {
+                document.addEventListener('mousemove', this._onMouseMove, false)
+            } else {
+                document.removeEventListener('mousemove', this._onMouseMove, false)
+            }
+        }
+
+        // Hook pointer lock state change events
+        document.addEventListener('pointerlockchange', onPointerLockChange, false)
+        document.addEventListener('mozpointerlockchange', onPointerLockChange, false)
+        document.addEventListener('webkitpointerlockchange', onPointerLockChange, false)
+    }
+
+    _onMouseMove(e) {
+        this._liveInput.mouseX += e.movementX
+        this._liveInput.mouseY += e.movementY
     }
 
     _onKeyDown(e) {
@@ -139,6 +170,10 @@ export class PlayerInput extends System {
                 inputComponent.downPress = false
                 inputComponent.downHold = false
             }
+
+            inputComponent.pan.set(this._liveInput.mouseX, this._liveInput.mouseY)
+            this._liveInput.mouseX = 0
+            this._liveInput.mouseY = 0
         })
     }
 }

@@ -9,9 +9,9 @@ export class Camera extends System {
         this.ECS.ComponentManager.getTuplesByQuery([CAMERA, LIGHT, POSITION]).forEach(
             ([cameraComponent, lightComponent, positionComponent]) => {
                 cameraComponent.position.lerp(new Vector3(
-                    positionComponent.position.x - 1,
+                    positionComponent.position.x + 1,
                     3,
-                    positionComponent.position.z - 5,
+                    positionComponent.position.z - 6,
 
                 ), delta * LERP_FACTOR)
 
