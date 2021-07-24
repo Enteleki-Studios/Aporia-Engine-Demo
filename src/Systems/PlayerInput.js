@@ -31,13 +31,14 @@ export class PlayerInput extends System {
             this._canvas.requestPointerLock()
         })
 
+        const onMouseMove = (e) => this._onMouseMove(e)
         const onPointerLockChange = () => {
             if (document.pointerLockElement === this._canvas
                 || document.mozPointerLockElement === this._canvas
                 || document.webkitPointerLockElement === this._canvas) {
-                document.addEventListener('mousemove', this._onMouseMove, false)
+                document.addEventListener('mousemove', onMouseMove, false)
             } else {
-                document.removeEventListener('mousemove', this._onMouseMove, false)
+                document.removeEventListener('mousemove', onMouseMove, false)
             }
         }
 
@@ -106,17 +107,6 @@ export class PlayerInput extends System {
 
     tick() {
         this.ECS.ComponentManager.getTuplesByQuery([HERO, INPUT]).forEach(([, inputComponent]) => {
-            if (
-                this._liveInput.up
-                || this._liveInput.down
-                || this._liveInput.left
-                || this._liveInput.right
-            ) {
-                inputComponent.forward = true
-            } else {
-                inputComponent.forward = false
-            }
-
             if (this._liveInput.shift) {
                 inputComponent.run = true
             } else {
@@ -129,10 +119,12 @@ export class PlayerInput extends System {
                 } else {
                     inputComponent.upPress = true
                     inputComponent.upHold = true
+                    inputComponent.forward = true
                 }
             } else {
                 inputComponent.upPress = false
                 inputComponent.upHold = false
+                inputComponent.forward = false
             }
 
             if (this._liveInput.left) {
@@ -171,7 +163,7 @@ export class PlayerInput extends System {
                 inputComponent.downHold = false
             }
 
-            inputComponent.pan.set(this._liveInput.mouseX, this._liveInput.mouseY)
+            inputComponent.pan.set(this._liveInput.mouseX, this._liveInput.mouseY, 0)
             this._liveInput.mouseX = 0
             this._liveInput.mouseY = 0
         })

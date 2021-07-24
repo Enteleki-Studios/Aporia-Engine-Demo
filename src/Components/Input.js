@@ -1,4 +1,4 @@
-import { Vector2 } from 'three'
+import { Vector3 } from 'three'
 import { INPUT } from './types'
 
 export default function Input(entity) {
@@ -21,6 +21,6 @@ export default function Input(entity) {
         downPress: false,
         downHold: false,
 
-        pan: new Vector2(0, 0),
+        pan: new Vector3(0, 0, 0),
     }
 }

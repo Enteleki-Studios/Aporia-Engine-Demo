@@ -6,8 +6,8 @@ export class Movement extends System {
     constructor() {
         super()
 
-        this._decceleration = new THREE.Vector3(-0.0005, -0.0001, -5.0)
-        this._acceleration = new THREE.Vector3(1, 10, 15)
+        this._decceleration = new THREE.Vector3(-5, -0.0001, -5)
+        this._acceleration = new THREE.Vector3(10, 0.01, 15)
         this._velocity = new THREE.Vector3(0, 0, 0)
     }
 
@@ -28,8 +28,8 @@ export class Movement extends System {
 
             velocity.add(frameDecceleration)
 
-            const _Q = new THREE.Quaternion()
             const _A = new THREE.Vector3()
+            const _Q = new THREE.Quaternion()
             const _R = positionComponent.quaternion.clone()
 
             const acceleration = this._acceleration.clone()
@@ -37,40 +37,32 @@ export class Movement extends System {
                 acceleration.multiplyScalar(2)
             }
 
-            if (inputComponent.forward) {
+            if (inputComponent.upHold) {
                 velocity.z += acceleration.z * delta
             }
-
-            if (inputComponent.upHold) {
-                _A.set(0, 1, 0)
-                _Q.setFromAxisAngle(_A, 0 * Math.PI)
-                _R.slerp(_Q, delta * acceleration.y)
-            }
             if (inputComponent.downHold) {
-                _A.set(0, 1, 0)
-                _Q.setFromAxisAngle(_A, 1 * Math.PI)
-                _R.slerp(_Q, delta * acceleration.y)
+                velocity.z -= acceleration.z * delta
             }
             if (inputComponent.leftHold) {
-                _A.set(0, 1, 0)
-                _Q.setFromAxisAngle(_A, 0.5 * Math.PI)
-                _R.slerp(_Q, delta * acceleration.y)
+                velocity.x += acceleration.x * delta
             }
             if (inputComponent.rightHold) {
-                _A.set(0, 1, 0)
-                _Q.setFromAxisAngle(_A, 1.5 * Math.PI)
-                _R.slerp(_Q, delta * acceleration.y)
+                velocity.x -= acceleration.x * delta
             }
+
+            _A.set(0, 1, 0)
+            _Q.setFromAxisAngle(_A, -2 * Math.PI * inputComponent.pan.x * delta * acceleration.y)
+            _R.multiply(_Q)
 
             positionComponent.quaternion.copy(_R)
 
             const forward = new THREE.Vector3(0, 0, 1)
-            forward.applyQuaternion(positionComponent.quaternion)
+            forward.applyQuaternion(_R)
             forward.normalize()
             forward.multiplyScalar(velocity.z * delta)
 
-            const sideways = new THREE.Vector3(1, 0, 1)
-            sideways.applyQuaternion(positionComponent.quaternion)
+            const sideways = new THREE.Vector3(1, 0, 0)
+            sideways.applyQuaternion(_R)
             sideways.normalize()
             sideways.multiplyScalar(velocity.x * delta)
 

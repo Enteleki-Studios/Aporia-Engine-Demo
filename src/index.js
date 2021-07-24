@@ -59,7 +59,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     DungeonECS.addComponent(new Light(DungeonECS.createEntity(), 'AmbientLight', {
         color: 0x101010,
-        intensity: 3,
+        intensity: 4,
     }))
 
     const playerEntity = DungeonECS.createEntity()

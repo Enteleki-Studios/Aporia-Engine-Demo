@@ -4,7 +4,7 @@ export class DirectionalLight extends THREE.DirectionalLight {
     constructor(color, intensity) {
         super(color, intensity)
 
-        const d = 10
+        const d = 20
 
         this.castShadow = true
         // this.shadow.bias = -0.001

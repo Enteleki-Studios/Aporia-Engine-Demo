@@ -129,8 +129,6 @@ export class Renderer extends System {
             new THREE.PlaneGeometry(128, 128),
             new THREE.MeshStandardMaterial({
                 map: floorTexture,
-                castShadow: false,
-                receiveShadow: true,
             }),
         )
         floorTexture.repeat.set(32, 32)
