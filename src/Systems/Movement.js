@@ -7,7 +7,7 @@ export class Movement extends System {
         super()
 
         this._decceleration = new THREE.Vector3(-5, -0.0001, -5)
-        this._acceleration = new THREE.Vector3(10, 0.01, 15)
+        this._acceleration = new THREE.Vector3(15, 0.01, 15)
         this._velocity = new THREE.Vector3(0, 0, 0)
     }
 

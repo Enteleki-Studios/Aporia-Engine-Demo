@@ -5,19 +5,29 @@ export class Animation extends System {
     tick() {
         this.ECS.ComponentManager.getTuplesByQuery([ANIMATION, INPUT]).forEach(
             ([animationComponent, inputComponent]) => {
-                if (inputComponent.forward) {
-                    let nextState = 'walk'
+                let nextState = 'idle'
+                if (inputComponent.upHold) {
+                    nextState = 'walk'
                     if (inputComponent.run) {
                         nextState = 'run'
                     }
-                    if (animationComponent.state !== nextState) {
-                        animationComponent.prevState = animationComponent.state
-                        animationComponent.state = nextState
-                        animationComponent.needsUpdate = true
+                } else if (inputComponent.downHold) {
+                    nextState = 'walkBack'
+                } else if (inputComponent.leftHold) {
+                    nextState = 'strafeLeft'
+                    if (inputComponent.run) {
+                        nextState = 'strafeLeftRun'
                     }
-                } else if (animationComponent.state !== 'idle') {
+                } else if (inputComponent.rightHold) {
+                    nextState = 'strafeRight'
+                    if (inputComponent.run) {
+                        nextState = 'strafeRightRun'
+                    }
+                }
+
+                if (animationComponent.state !== nextState) {
                     animationComponent.prevState = animationComponent.state
-                    animationComponent.state = 'idle'
+                    animationComponent.state = nextState
                     animationComponent.needsUpdate = true
                 }
             },

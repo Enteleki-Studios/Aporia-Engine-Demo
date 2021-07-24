@@ -66,7 +66,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const [x, z] = rooms[0].getCenter()
     DungeonECS.addComponents([
         new Hero(playerEntity),
-        new Model(playerEntity, { modelId: 1 }),
+        new Model(playerEntity, { modelId: 2 }),
         new Input(playerEntity),
         new Position(playerEntity, new THREE.Vector3(x * 2, 0, z * 2), new THREE.Quaternion()),
         new Animation(playerEntity, 'idle'),

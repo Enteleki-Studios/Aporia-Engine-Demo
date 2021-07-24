@@ -7,6 +7,8 @@ import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtil
 import * as GLHelpers from 'GLHelpers'
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
+import animationDB from 'animationDB'
+
 import { LIGHT, PLANE, MODEL, POSITION, ANIMATION, CAMERA } from 'Components/types'
 
 import System from 'ECS/System'
@@ -205,20 +207,24 @@ export class Renderer extends System {
 
                     // Update animation
                     if (animationComponent.needsUpdate) {
-                        const { action } = this._animations.get(animationComponent.entity)[animationComponent.state]
-                        action.time = 0.0
-                        action.enabled = true
-                        action.setEffectiveTimeScale(1.0)
-                        action.setEffectiveWeight(1.0)
-                        if (animationComponent.prevState) {
-                            const animations = this._animations.get(animationComponent.entity)
-                            const { action: prevAction } = animations[animationComponent.prevState]
-                            const ratio = action.getClip().duration / prevAction.getClip().duration
-                            action.time = prevAction.time * ratio
-                            action.crossFadeFrom(prevAction, 0.5, true)
+                        const animations = this._animations.get(animationComponent.entity)
+                        if (animations) {
+                            const { action } = animations[animationComponent.state]
+                            action.time = 0.0
+                            action.enabled = true
+                            action.setEffectiveTimeScale(1.0)
+                            action.setEffectiveWeight(1.0)
+                            if (animationComponent.prevState) {
+                                const { action: prevAction } = animations[animationComponent.prevState]
+                                if (animationComponent.state !== 'idle') {
+                                    const ratio = action.getClip().duration / prevAction.getClip().duration
+                                    action.time = prevAction.time * ratio
+                                }
+                                action.crossFadeFrom(prevAction, 0.5, true)
+                            }
+                            action.play()
+                            animationComponent.needsUpdate = false
                         }
-                        action.play()
-                        animationComponent.needsUpdate = false
                     }
                 } else if (!modelComponent.isLoading) {
                     modelComponent.isLoading = true
@@ -226,16 +232,28 @@ export class Renderer extends System {
                         modelComponent.resource = resource
                         this._scene.add(resource)
                         if (resource.animations) {
-                            const { animations: animationIndex } = modelDB[modelComponent.modelId]
+                            // const { animations: animationIndex } = modelDB[modelComponent.modelId]
                             const mixer = new THREE.AnimationMixer(resource)
                             const modelAnimations = {}
-                            resource.animations.forEach((anim) => {
-                                modelAnimations[animationIndex[anim.name]] = ({
-                                    clip: anim,
-                                    action: mixer.clipAction(anim),
+                            // resource.animations.forEach((anim) => {
+                            //     modelAnimations[animationIndex[anim.name]] = ({
+                            //         clip: anim,
+                            //         action: mixer.clipAction(anim),
+                            //     })
+                            // })
+
+                            animationDB.forEach((animItem) => {
+                                const { name, modelPath } = animItem
+                                loadFBX(modelPath).then((anim) => {
+                                    modelAnimations[name] = ({
+                                        clip: anim.animations[0],
+                                        action: mixer.clipAction(anim.animations[0]),
+                                    })
+                                    if (name === 'idle') {
+                                        this._animations.set(modelComponent.entity, modelAnimations)
+                                    }
                                 })
                             })
-                            this._animations.set(modelComponent.entity, modelAnimations)
 
                             // TODO: update animations to a proper system
                             // Not all models will be animated

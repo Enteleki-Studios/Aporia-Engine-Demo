@@ -19,4 +19,12 @@ export default [
             'CharacterArmature|Roll': 'roll',
         },
     },
+    {
+        modelPath: '/resources/models/eve/eve.fbx',
+        scale: 0.015,
+        animations: {
+            'Take 001': 'walk',
+            'mixamo.com': 'run',
+        },
+    },
 ]

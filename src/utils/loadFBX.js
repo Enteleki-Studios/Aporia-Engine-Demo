@@ -11,19 +11,20 @@ export default function loadFBX(modelPath, texturePath) {
                 const texture = textureLoader.load(texturePath)
                 texture.encoding = THREE.sRGBEncoding
                 texture.flipY = true
-
                 model.traverse((c) => {
-                    if (c.isMesh) {
-                        c.castShadow = true
-                        c.receiveShadow = true
-                        if (c.material) {
-                            c.material.map = texture
-                            c.material.side = THREE.DoubleSide
-                            // c.material.wireframe = true
-                        }
+                    if (c.isMesh && c.material) {
+                        c.material.map = texture
+                        c.material.side = THREE.DoubleSide
+                        // c.material.wireframe = true
                     }
                 })
             }
+            model.traverse((c) => {
+                if (c.isMesh) {
+                    c.castShadow = true
+                    c.receiveShadow = true
+                }
+            })
             resolve(model)
         })
     })
