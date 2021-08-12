@@ -9,7 +9,7 @@ import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
 import animationDB from 'animationDB'
 
-import { LIGHT, PLANE, MODEL, POSITION, ANIMATION, CAMERA } from 'Components/types'
+import { LIGHT, MODEL, POSITION, ANIMATION, CAMERA, LEVEL } from 'Components/types'
 
 import System from 'ECS/System'
 
@@ -47,8 +47,7 @@ export class Renderer extends System {
         }
 
         // this._addSkyBox()
-        this._addShaderWorld()
-        this._addShaderWorld2()
+        this._hasWorld = false
     }
 
     _enableDebug() {
@@ -71,14 +70,14 @@ export class Renderer extends System {
         this._orbitControls.update()
     }
 
-    _addShaderWorld() {
+    _addWorld(levelComponent) {
         const wallGeometries = []
-        const localMap = window.mapArray
+        const { tiles } = levelComponent.resource
 
         const createWall = (x, y) => {
             const b = new THREE.BoxBufferGeometry(2, 4, 2)
             const mat4 = new THREE.Matrix4()
-            mat4.makeTranslation(y * 2, 2, x * 2)
+            mat4.makeTranslation(x * 2, 2, y * 2)
             b.applyMatrix4(mat4)
             return b
         }
@@ -86,19 +85,18 @@ export class Renderer extends System {
         const mapHeight = 64
         for (let x = 0; x < mapWidth; x += 1) {
             for (let y = 0; y < mapHeight; y += 1) {
-                const index = y * mapWidth + x
-                const isFloor = !localMap[index]
+                const isFloor = !tiles[x][y]
                 if (isFloor) {
-                    if (localMap[index - mapWidth]) {
+                    if (tiles[x][y - 1]) {
                         wallGeometries.push(createWall(x, y - 1))
                     }
-                    if (localMap[index + mapWidth]) {
+                    if (tiles[x][y + 1]) {
                         wallGeometries.push(createWall(x, y + 1))
                     }
-                    if (localMap[index - 1]) {
+                    if (tiles[x - 1][y]) {
                         wallGeometries.push(createWall(x - 1, y))
                     }
-                    if (localMap[index + 1]) {
+                    if (tiles[x + 1][y]) {
                         wallGeometries.push(createWall(x + 1, y))
                     }
                 }
@@ -119,9 +117,7 @@ export class Renderer extends System {
         wallMesh.receiveShadow = true
         wallMesh.castShadow = true
         this._scene.add(wallMesh)
-    }
 
-    _addShaderWorld2() {
         const floorTexture = new THREE.TextureLoader().load('/resources/textures/floor.png')
         floorTexture.wrapS = THREE.RepeatWrapping
         floorTexture.wrapT = THREE.RepeatWrapping
@@ -137,8 +133,9 @@ export class Renderer extends System {
         floor.receiveShadow = true
         floor.rotation.x = -Math.PI / 2
         floor.position.set(64, 0, 64)
-
         this._scene.add(floor)
+
+        this._hasWorld = true
     }
 
     static createLight(lightComponent) {
@@ -150,28 +147,6 @@ export class Renderer extends System {
             default:
                 throw new Error(`Unsupported light type ${lightComponent.lightType}`)
         }
-    }
-
-    static createPlane(planeComponent) {
-        const texture = new THREE.TextureLoader().load('/resources/textures/floor.png')
-        texture.wrapS = THREE.RepeatWrapping
-        texture.wrapT = THREE.RepeatWrapping
-        const aspect = planeComponent.width / planeComponent.height
-        const tileSize = 20
-        texture.repeat.x = tileSize * aspect
-        texture.repeat.y = tileSize
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(planeComponent.width, planeComponent.height),
-            new THREE.MeshStandardMaterial({
-                map: texture,
-            }),
-        )
-        plane.castShadow = false
-        plane.receiveShadow = true
-        plane.rotation.x = -Math.PI / 2
-        plane.position.copy(planeComponent.position)
-
-        return plane
     }
 
     static async createModel(modelComponent) {
@@ -201,7 +176,7 @@ export class Renderer extends System {
                     // Update position
                     if (positionComponent.needsUpdate) {
                         modelComponent.resource.position.copy(positionComponent.position)
-                        modelComponent.resource.quaternion.copy(positionComponent.quaternion)
+                        modelComponent.resource.quaternion.copy(positionComponent.rotation)
                         modelComponent.needsUpdate = false
                     }
 
@@ -289,13 +264,6 @@ export class Renderer extends System {
             }
         })
 
-        this.ECS.ComponentManager.getTuplesByQuery([PLANE]).forEach(([planeComponent]) => {
-            if (!planeComponent.resource) {
-                planeComponent.resource = Renderer.createPlane(planeComponent)
-                this._scene.add(planeComponent.resource)
-            }
-        })
-
         this.ECS.ComponentManager.getTuplesByQuery([CAMERA]).forEach(([cameraComponent]) => {
             if (cameraComponent.needsUpdate) {
                 this._camera.position.copy(cameraComponent.position)
@@ -308,53 +276,12 @@ export class Renderer extends System {
                 }
             }
         })
+
+        if (!this._hasWorld) {
+            const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0]
+            if (levelComponent.resource) {
+                this._addWorld(levelComponent)
+            }
+        }
     }
 }
-
-// const cubeGeo = new THREE.BoxGeometry(1, 1, 1)
-// const cubeMat = new THREE.MeshStandardMaterial({ color: 0x50fa7b })
-// const cube = new THREE.Mesh(cubeGeo, cubeMat)
-// cube.castShadow = true
-// cube.receiveShadow = true
-// cube.position.set(5, 0.5, 5)
-// // cube.position.set(3, 0.5, 3)
-// this._scene.add(cube)
-//
-//
-// _LoadFloor() {
-//     const loader = new FBXLoader()
-//     loader.setPath('./resources/models/Env/')
-//     loader.load('ModularFloor.fbx', (fbx) => {
-//         fbx.scale.setScalar(0.01)
-//         fbx.traverse((c) => {
-//             c.castShadow = true
-//             c.receiveShadow = true
-//         })
-//         this._scene.add(fbx)
-//         fbx.position.set(9, -0.3, 1)
-//     })
-// }
-//
-// _LoadWalls() {
-//     const loader = new FBXLoader()
-//     loader.setPath('./resources/models/Env/')
-//     loader.load('ModularStoneWall_top.fbx', (f) => {
-//         f.scale.setScalar(0.01)
-//         f.traverse((c) => {
-//             c.castShadow = true
-//             c.receiveShadow = true
-//         })
-//         f.rotateY(Math.PI)
-//         for (let i = 1; i <= 5; i += 1) {
-//             const fbx = f.clone()
-//             this._scene.add(fbx)
-//             fbx.position.set(10, 1, 1 * 2 * i - 1)
-//         }
-//         f.rotateY(-Math.PI / 2)
-//         for (let i = 1; i <= 5; i += 1) {
-//             const fbx = f.clone()
-//             this._scene.add(fbx)
-//             fbx.position.set(1 * 2 * i - 1, 1, 10)
-//         }
-//     })
-// }

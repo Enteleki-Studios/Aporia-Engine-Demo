@@ -1,5 +1,6 @@
 export { Animation } from './Animation'
 export { Camera } from './Camera'
+export { Level } from './Level'
 export { PlayerInput } from './PlayerInput'
 export { Movement } from './Movement'
 export { Renderer } from './Renderer'

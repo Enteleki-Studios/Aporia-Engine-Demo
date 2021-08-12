@@ -107,7 +107,7 @@ export class PlayerInput extends System {
 
     tick() {
         this.ECS.ComponentManager.getTuplesByQuery([HERO, INPUT]).forEach(([, inputComponent]) => {
-            if (this._liveInput.shift) {
+            if (this._liveInput.shift && !this._liveInput.down) {
                 inputComponent.run = true
             } else {
                 inputComponent.run = false

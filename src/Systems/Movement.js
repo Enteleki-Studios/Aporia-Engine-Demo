@@ -28,9 +28,10 @@ export class Movement extends System {
 
             velocity.add(frameDecceleration)
 
-            const _A = new THREE.Vector3()
+            const _A = new THREE.Vector3(0, 1, 0)
             const _Q = new THREE.Quaternion()
-            const _R = positionComponent.quaternion.clone()
+            const _D = positionComponent.quaternion.clone()
+            const _R = positionComponent.rotation.clone()
 
             const acceleration = this._acceleration.clone()
             if (inputComponent.run) {
@@ -50,19 +51,43 @@ export class Movement extends System {
                 velocity.x -= acceleration.x * delta
             }
 
-            _A.set(0, 1, 0)
             _Q.setFromAxisAngle(_A, -2 * Math.PI * inputComponent.pan.x * delta * acceleration.y)
+            _D.multiply(_Q)
+
+            positionComponent.quaternion.copy(_D)
+
+            _R.copy(_D)
+
+            let nextAngle = 0
+            if (inputComponent.upHold) {
+                if (inputComponent.leftHold) {
+                    nextAngle = Math.PI / 4
+                } else if (inputComponent.rightHold) {
+                    nextAngle = Math.PI / -4
+                }
+            } else if (inputComponent.downHold) {
+                if (inputComponent.leftHold) {
+                    nextAngle = Math.PI / -4
+                } else if (inputComponent.rightHold) {
+                    nextAngle = Math.PI / 4
+                }
+            } else if (inputComponent.leftHold) {
+                nextAngle = Math.PI / 2
+            } else if (inputComponent.rightHold) {
+                nextAngle = Math.PI / -2
+            }
+            _Q.setFromAxisAngle(_A, nextAngle)
             _R.multiply(_Q)
 
-            positionComponent.quaternion.copy(_R)
+            positionComponent.rotation.slerp(_R, delta * 8)
 
             const forward = new THREE.Vector3(0, 0, 1)
-            forward.applyQuaternion(_R)
+            forward.applyQuaternion(_D)
             forward.normalize()
             forward.multiplyScalar(velocity.z * delta)
 
             const sideways = new THREE.Vector3(1, 0, 0)
-            sideways.applyQuaternion(_R)
+            sideways.applyQuaternion(_D)
             sideways.normalize()
             sideways.multiplyScalar(velocity.x * delta)
 

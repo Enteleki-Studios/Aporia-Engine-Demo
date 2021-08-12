@@ -37,7 +37,7 @@ export default class ECS {
 
     _update() {
         requestAnimationFrame(() => {
-            const delta = this._clock.getDelta()
+            const delta = Math.min(this._clock.getDelta(), 500)
 
             try {
                 this._systems.forEach((system) => system.tick(delta))
