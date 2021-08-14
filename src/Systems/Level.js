@@ -1,6 +1,6 @@
 import * as ROT from 'rot-js'
 import System from 'ECS/System'
-import { LEVEL } from 'Components/types'
+import { LEVEL, MODEL, POSITION } from 'Components/types'
 
 export class Level extends System {
     constructor({ size }) {
@@ -58,5 +58,12 @@ export class Level extends System {
         if (!levelComponent.resource) {
             levelComponent.resource = this._createMap(levelComponent.seed)
         }
+
+        this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach(
+            ([, positionComponent]) => {
+                const { position: { x, z } } = positionComponent
+                this.display.draw(Math.floor(x / 2), Math.floor(z / 2), '', '', '#cd00cd')
+            },
+        )
     }
 }

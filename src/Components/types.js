@@ -1,5 +1,6 @@
 export const ANIMATION = 'ANIMATION'
 export const CAMERA = 'CAMERA'
+export const COLLIDES = 'COLLIDES'
 export const HERO = 'HERO'
 export const INPUT = 'INPUT'
 export const LEVEL = 'LEVEL'

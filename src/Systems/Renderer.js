@@ -77,7 +77,7 @@ export class Renderer extends System {
         const createWall = (x, y) => {
             const b = new THREE.BoxBufferGeometry(2, 4, 2)
             const mat4 = new THREE.Matrix4()
-            mat4.makeTranslation(x * 2, 2, y * 2)
+            mat4.makeTranslation(x * 2 + 1, 2, y * 2 + 1)
             b.applyMatrix4(mat4)
             return b
         }

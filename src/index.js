@@ -4,6 +4,7 @@ import * as Systems from 'Systems'
 
 import Animation from 'Components/Animation'
 import Camera from 'Components/Camera'
+import Collides from 'Components/Collides'
 import Hero from 'Components/Hero'
 import Input from 'Components/Input'
 import Light from 'Components/Light'
@@ -24,8 +25,9 @@ window.addEventListener('DOMContentLoaded', () => {
         canvas,
     }))
     DungeonECS.registerSystem(new Systems.Movement())
-    DungeonECS.registerSystem(new Systems.Animation())
+    DungeonECS.registerSystem(new Systems.Collision())
     DungeonECS.registerSystem(new Systems.Camera())
+    DungeonECS.registerSystem(new Systems.Animation())
     DungeonECS.registerSystem(new Systems.Renderer({
         canvas,
         aspect: (1280 / 720),
@@ -40,13 +42,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const playerEntity = DungeonECS.createEntity()
     DungeonECS.addComponents([
-        new Hero(playerEntity),
-        new Model(playerEntity, { modelId: 2 }),
-        new Input(playerEntity),
-        new Position(playerEntity, new THREE.Vector3(20, 0, 20)),
         new Animation(playerEntity, 'idle'),
         new Camera(playerEntity),
+        new Collides(playerEntity),
+        new Hero(playerEntity),
+        new Input(playerEntity),
         new Light(playerEntity, 'DirectionalLight'),
+        new Model(playerEntity, { modelId: 2 }),
+        new Position(playerEntity, new THREE.Vector3(20, 0, 20)),
     ])
 
     DungeonECS.start()
