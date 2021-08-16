@@ -67,5 +67,12 @@ window.addEventListener('DOMContentLoaded', () => {
         new Position(batEntity, new THREE.Vector3(60, 1, 66)),
     ])
 
+    const skelEntity = DungeonECS.createEntity()
+    DungeonECS.addComponents([
+        new Animation(skelEntity, 'idle'),
+        new Model(skelEntity, { modelId: 5 }),
+        new Position(skelEntity, new THREE.Vector3(64, 0, 70)),
+    ])
+
     DungeonECS.start()
 })

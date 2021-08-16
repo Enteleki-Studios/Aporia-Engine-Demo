@@ -10,30 +10,46 @@ export class Animation extends System {
     constructor() {
         super()
 
-        this._animations = new Map()
+        this._dbAnimations = {}
+        this._dbLoaded = false
+
         this._jobs = []
+
+        this.loadDBAnimations()
     }
 
-    static async loadAnimations(animationComponent, modelComponent) {
-        const model = modelComponent.resource
-        const mixer = new AnimationMixer(model)
-
+    async loadDBAnimations() {
         await Promise.all(animationDB.map(async (animItem) => {
             const { name, modelPath: animationPath } = animItem
-            const anim = await loadFBX(animationPath)
-            animationComponent.animations[name] = ({
-                clip: anim.animations[0],
-                action: mixer.clipAction(anim.animations[0]),
-            })
+            const resource = await loadFBX(animationPath)
+            const [animation] = resource.animations
+            this._dbAnimations[name] = animation
         }))
+        this._dbLoaded = true
+    }
 
-        const { animations: animationIndex } = modelDB[modelComponent.modelId]
-        if (model.animations) {
-            model.animations.forEach((anim) => {
-                animationComponent.animations[animationIndex[anim.name]] = ({
-                    clip: anim,
-                    action: mixer.clipAction(anim),
-                })
+    async loadAnimations(animationComponent, modelComponent) {
+        const { resource: model } = modelComponent
+        const { animations: animationIndex, animationsExternal } = modelDB[modelComponent.modelId]
+
+        const mixer = new AnimationMixer(model)
+
+        if (animationsExternal) {
+            animationsExternal.forEach((key) => {
+                animationComponent.animations[key] = {
+                    clip: this._dbAnimations[key],
+                    action: mixer.clipAction(this._dbAnimations[key]),
+                }
+            })
+        }
+
+        if (animationIndex) {
+            Object.entries(animationIndex).forEach(([key, name]) => {
+                const animation = model.animations.find((a) => a.name === name)
+                animationComponent.animations[key] = {
+                    clip: animation,
+                    action: mixer.clipAction(animation),
+                }
             })
         }
 
@@ -66,10 +82,11 @@ export class Animation extends System {
                 if (
                     !animationComponent.loaded
                     && !animationComponent.isLoading
+                    && this._dbLoaded
                     && modelComponent.resource
                 ) {
                     animationComponent.isLoading = true
-                    Animation.loadAnimations(animationComponent, modelComponent).then((mixer) => {
+                    this.loadAnimations(animationComponent, modelComponent).then((mixer) => {
                         animationComponent.loaded = true
                         animationComponent.isLoading = false
                         this._jobs.push((d) => mixer.update(d))
@@ -98,6 +115,6 @@ export class Animation extends System {
             },
         )
 
-        this._jobs.forEach((j) => j(delta))
+        this._jobs.forEach((job) => job(delta))
     }
 }
