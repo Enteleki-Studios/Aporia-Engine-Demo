@@ -27,4 +27,8 @@ export default [
             'mixamo.com': 'run',
         },
     },
+    {
+        modelPath: '/resources/models/slime/slime.fbx',
+        scale: 0.05,
+    },
 ]

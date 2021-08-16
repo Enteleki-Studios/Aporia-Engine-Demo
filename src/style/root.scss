@@ -31,8 +31,20 @@ body {
     max-width: 1280px;
     margin: auto;
     padding-top: 2rem;
+    display: flex;
 
-    canvas {
-        image-rendering: crisp-edges;
+    #map {
+        canvas {
+            image-rendering: crisp-edges;
+        }
+    }
+    #log {
+        margin-left: 2rem;
+        white-space: pre;
+        min-height: 8rem;
+        border: 1px solid white;
+        flex: 1;
+        padding: 1rem;
+        font-family: monospace;
     }
 }

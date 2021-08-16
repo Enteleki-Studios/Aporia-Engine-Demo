@@ -29,7 +29,7 @@ export class Renderer extends System {
         }
 
         const fov = 60
-        const near = 1.0
+        const near = 0.5
         const far = 50
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
 
@@ -48,6 +48,24 @@ export class Renderer extends System {
 
         // this._addSkyBox()
         this._hasWorld = false
+
+        const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
+        const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x2ab7ca })
+        const box = new THREE.Mesh(boxGeometry, boxMaterial)
+        box.receiveShadow = true
+        box.castShadow = true
+        box.position.set(64, 0.5, 68)
+        this._scene.add(box)
+
+        const box2Geometry = new THREE.BoxGeometry(1, 2, 1)
+        const box2Material = new THREE.MeshStandardMaterial({ color: 0x2ab7ca })
+        const box2 = new THREE.Mesh(box2Geometry, box2Material)
+        box2.receiveShadow = true
+        box2.castShadow = true
+        box2.position.set(62, 1, 68)
+        this._scene.add(box2)
+
+        this._scene.add(new THREE.AxesHelper(1))
     }
 
     _enableDebug() {
@@ -75,30 +93,17 @@ export class Renderer extends System {
         const { tiles } = levelComponent.resource
 
         const createWall = (x, y) => {
-            const b = new THREE.BoxBufferGeometry(2, 4, 2)
+            const b = new THREE.BoxBufferGeometry(1, 4, 1)
             const mat4 = new THREE.Matrix4()
-            mat4.makeTranslation(x * 2 + 1, 2, y * 2 + 1)
+            mat4.makeTranslation(x, 2, y)
             b.applyMatrix4(mat4)
             return b
         }
-        const mapWidth = 64
-        const mapHeight = 64
-        for (let x = 0; x < mapWidth; x += 1) {
-            for (let y = 0; y < mapHeight; y += 1) {
-                const isFloor = !tiles[x][y]
-                if (isFloor) {
-                    if (tiles[x][y - 1]) {
-                        wallGeometries.push(createWall(x, y - 1))
-                    }
-                    if (tiles[x][y + 1]) {
-                        wallGeometries.push(createWall(x, y + 1))
-                    }
-                    if (tiles[x - 1][y]) {
-                        wallGeometries.push(createWall(x - 1, y))
-                    }
-                    if (tiles[x + 1][y]) {
-                        wallGeometries.push(createWall(x + 1, y))
-                    }
+        for (let x = 0, maxX = tiles.length; x < maxX; x += 1) {
+            for (let y = 0, maxY = tiles[0].length; y < maxY; y += 1) {
+                const tile = tiles[x][y]
+                if (tile[1]) {
+                    wallGeometries.push(createWall(x, y))
                 }
             }
         }
@@ -108,6 +113,7 @@ export class Renderer extends System {
         const wallTexture = new THREE.TextureLoader().load('/resources/textures/wall.jpg')
         wallTexture.wrapS = THREE.RepeatWrapping
         wallTexture.wrapT = THREE.RepeatWrapping
+        wallTexture.repeat.set(0.25, 1)
         const wallMaterial = new THREE.MeshStandardMaterial({
             map: wallTexture,
             flatShading: true,
@@ -132,7 +138,7 @@ export class Renderer extends System {
         floorTexture.repeat.set(32, 32)
         floor.receiveShadow = true
         floor.rotation.x = -Math.PI / 2
-        floor.position.set(64, 0, 64)
+        floor.position.set(63.5, 0, 63.5)
         this._scene.add(floor)
 
         this._hasWorld = true

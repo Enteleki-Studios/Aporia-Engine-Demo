@@ -56,7 +56,14 @@ export class Movement extends System {
 
             positionComponent.quaternion.copy(_D)
 
-            _R.copy(_D)
+            if (
+                inputComponent.upHold
+                || inputComponent.downHold
+                || inputComponent.leftHold
+                || inputComponent.rightHold
+            ) {
+                _R.copy(_D)
+            }
 
             let nextAngle = 0
             if (inputComponent.upHold) {
@@ -91,6 +98,7 @@ export class Movement extends System {
             sideways.normalize()
             sideways.multiplyScalar(velocity.x * delta)
 
+            positionComponent.prevPosition.copy(positionComponent.position)
             positionComponent.position.add(forward)
             positionComponent.position.add(sideways)
 

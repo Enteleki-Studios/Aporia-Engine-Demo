@@ -1,4 +1,5 @@
 import * as ROT from 'rot-js'
+import { Vector2 } from 'three'
 import System from 'ECS/System'
 import { LEVEL, MODEL, POSITION } from 'Components/types'
 
@@ -24,7 +25,7 @@ export class Level extends System {
 
         debugCanvas.id = 'mapCanvas'
         debugCanvas.style = `width: ${this.mapSize[0] * mapScale}px; height: ${this.mapSize[0] * mapScale}px`
-        document.getElementById('debug').append(debugCanvas)
+        document.getElementById('map').append(debugCanvas)
 
         return display
     }
@@ -42,11 +43,35 @@ export class Level extends System {
         const tiles = []
         map.create((x, y, isWall) => {
             if (!y) {
-                tiles[x] = []
+                tiles[x * 2] = []
+                tiles[x * 2 + 1] = []
             }
-            tiles[x][y] = isWall
+            tiles[x * 2][y * 2] = [isWall]
+            tiles[x * 2][y * 2 + 1] = [isWall]
+            tiles[x * 2 + 1][y * 2] = [isWall]
+            tiles[x * 2 + 1][y * 2 + 1] = [isWall]
             this.display.DEBUG(x, y, isWall)
         })
+        for (let x = 0, maxX = tiles.length; x < maxX; x += 1) {
+            for (let y = 0, maxY = tiles[0].length; y < maxY; y += 1) {
+                const isFloor = !tiles[x][y][0]
+                if (isFloor) {
+                    // TODO convex corners need both x,y to not be 0
+                    if (tiles[x][y - 1][0]) {
+                        tiles[x][y - 1].push(new Vector2(0, 1))
+                    }
+                    if (tiles[x][y + 1][0]) {
+                        tiles[x][y + 1].push(new Vector2(0, -1))
+                    }
+                    if (tiles[x - 1][y][0]) {
+                        tiles[x - 1][y].push(new Vector2(1, 0))
+                    }
+                    if (tiles[x + 1][y][0]) {
+                        tiles[x + 1][y].push(new Vector2(-1, 0))
+                    }
+                }
+            }
+        }
         // const rooms = map.getRooms()
         // const [x, z] = rooms[0].getCenter()
         map.tiles = tiles

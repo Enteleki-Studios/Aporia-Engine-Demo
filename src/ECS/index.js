@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import logger from 'utils/logger'
 import ComponentManager from 'ECS/ComponentManager'
 
 export default class ECS {
@@ -37,7 +38,9 @@ export default class ECS {
 
     _update() {
         requestAnimationFrame(() => {
-            const delta = Math.min(this._clock.getDelta(), 500)
+            logger.clear()
+            const delta = Math.min(this._clock.getDelta(), 0.050)
+            logger.debug('Delta', delta)
 
             try {
                 this._systems.forEach((system) => system.tick(delta))

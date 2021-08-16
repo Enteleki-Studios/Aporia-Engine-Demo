@@ -4,5 +4,7 @@ export default function Collides(entity) {
     return {
         type: COLLIDES,
         entity,
+
+        collisions: [],
     }
 }

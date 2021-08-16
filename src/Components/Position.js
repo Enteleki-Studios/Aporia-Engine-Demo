@@ -1,4 +1,4 @@
-import { Quaternion } from 'three'
+import { Quaternion, Vector3 } from 'three'
 import { POSITION } from './types'
 
 export default function Position(entity, position) {
@@ -9,6 +9,8 @@ export default function Position(entity, position) {
         position,
         quaternion: new Quaternion(),
         rotation: new Quaternion(),
+
+        prevPosition: new Vector3(),
 
         needsUpdate: true,
     }

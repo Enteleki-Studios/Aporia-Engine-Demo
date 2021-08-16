@@ -26,6 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }))
     DungeonECS.registerSystem(new Systems.Movement())
     DungeonECS.registerSystem(new Systems.Collision())
+    DungeonECS.registerSystem(new Systems.CollisionEffects())
     DungeonECS.registerSystem(new Systems.Camera())
     DungeonECS.registerSystem(new Systems.Animation())
     DungeonECS.registerSystem(new Systems.Renderer({
@@ -49,7 +50,7 @@ window.addEventListener('DOMContentLoaded', () => {
         new Input(playerEntity),
         new Light(playerEntity, 'DirectionalLight'),
         new Model(playerEntity, { modelId: 2 }),
-        new Position(playerEntity, new THREE.Vector3(20, 0, 20)),
+        new Position(playerEntity, new THREE.Vector3(64, 0, 64)),
     ])
 
     DungeonECS.start()

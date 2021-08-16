@@ -1,6 +1,7 @@
 export { Animation } from './Animation'
 export { Camera } from './Camera'
 export { Collision } from './Collision'
+export { CollisionEffects } from './CollisionEffects'
 export { Level } from './Level'
 export { PlayerInput } from './PlayerInput'
 export { Movement } from './Movement'
