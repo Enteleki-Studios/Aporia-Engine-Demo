@@ -1,3 +1,4 @@
+const MF = '/resources/models' // Models folder
 export default [
     null,
     {
@@ -23,12 +24,29 @@ export default [
         modelPath: '/resources/models/eve/eve.fbx',
         scale: 0.015,
         animations: {
-            'Take 001': 'walk',
-            'mixamo.com': 'run',
+            // 'Take 001': 'walk',
+            // 'mixamo.com': 'run',
         },
     },
     {
-        modelPath: '/resources/models/slime/slime.fbx',
-        scale: 0.05,
+        modelPath: '/resources/models/slime/Slime.fbx',
+        scale: 0.005,
+        animations: {
+            'Armature|Slime_Idle': 'idle',
+            'Armature|Slime_Walk': 'walk',
+            'Armature|Slime_Death': 'death',
+            'Armature|Slime_Attack': 'attack',
+        },
+    },
+    {
+        modelPath: `${MF}/bat/Bat.fbx`,
+        scale: 0.003,
+        animations: {
+            'BatArmature|Bat_Flying': 'idle',
+            'BatArmature|Bat_Hit': 'hit',
+            'BatArmature|Bat_Attack': 'attack',
+            'BatArmature|Bat_Attack2': 'attack2',
+            'BatArmature|Bat_Death': 'death',
+        },
     },
 ]

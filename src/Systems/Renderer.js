@@ -7,9 +7,8 @@ import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtil
 import * as GLHelpers from 'GLHelpers'
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
-import animationDB from 'animationDB'
 
-import { LIGHT, MODEL, POSITION, ANIMATION, CAMERA, LEVEL } from 'Components/types'
+import { LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'Components/types'
 
 import System from 'ECS/System'
 
@@ -34,7 +33,6 @@ export class Renderer extends System {
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
 
         this._jobs = []
-        this._animations = new Map()
 
         if (DEBUG) {
             this._scene.add(new THREE.CameraHelper(this._camera))
@@ -161,6 +159,7 @@ export class Renderer extends System {
 
         const model = await loadFBX(modelPath, texturePath)
         model.scale.setScalar(scale)
+
         return model
     }
 
@@ -176,8 +175,8 @@ export class Renderer extends System {
         }
         this._jobs.forEach((j) => j(delta))
 
-        this.ECS.ComponentManager.getTuplesByQuery([ANIMATION, MODEL, POSITION]).forEach(
-            ([animationComponent, modelComponent, positionComponent]) => {
+        this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach(
+            ([modelComponent, positionComponent]) => {
                 if (modelComponent.resource) {
                     // Update position
                     if (positionComponent.needsUpdate) {
@@ -185,66 +184,42 @@ export class Renderer extends System {
                         modelComponent.resource.quaternion.copy(positionComponent.rotation)
                         modelComponent.needsUpdate = false
                     }
-
-                    // Update animation
-                    if (animationComponent.needsUpdate) {
-                        const animations = this._animations.get(animationComponent.entity)
-                        if (animations) {
-                            const { action } = animations[animationComponent.state]
-                            action.time = 0.0
-                            action.enabled = true
-                            action.setEffectiveTimeScale(1.0)
-                            action.setEffectiveWeight(1.0)
-                            if (animationComponent.prevState) {
-                                const { action: prevAction } = animations[animationComponent.prevState]
-                                if (animationComponent.state !== 'idle') {
-                                    const ratio = action.getClip().duration / prevAction.getClip().duration
-                                    action.time = prevAction.time * ratio
-                                }
-                                action.crossFadeFrom(prevAction, 0.5, true)
-                            }
-                            action.play()
-                            animationComponent.needsUpdate = false
-                        }
-                    }
                 } else if (!modelComponent.isLoading) {
                     modelComponent.isLoading = true
                     Renderer.createModel(modelComponent).then((resource) => {
                         modelComponent.resource = resource
                         this._scene.add(resource)
-                        if (resource.animations) {
-                            // const { animations: animationIndex } = modelDB[modelComponent.modelId]
-                            const mixer = new THREE.AnimationMixer(resource)
-                            const modelAnimations = {}
-                            // resource.animations.forEach((anim) => {
-                            //     modelAnimations[animationIndex[anim.name]] = ({
-                            //         clip: anim,
-                            //         action: mixer.clipAction(anim),
-                            //     })
-                            // })
-
-                            animationDB.forEach((animItem) => {
-                                const { name, modelPath } = animItem
-                                loadFBX(modelPath).then((anim) => {
-                                    modelAnimations[name] = ({
-                                        clip: anim.animations[0],
-                                        action: mixer.clipAction(anim.animations[0]),
-                                    })
-                                    if (name === 'idle') {
-                                        this._animations.set(modelComponent.entity, modelAnimations)
-                                    }
-                                })
-                            })
-
-                            // TODO: update animations to a proper system
-                            // Not all models will be animated
-                            this._jobs.push((d) => mixer.update(d))
-                        }
                         modelComponent.isLoading = false
                     })
                 }
             },
         )
+
+        // this.ECS.ComponentManager.getTuplesByQuery([ANIMATION]).forEach(
+        //     ([animationComponent]) => {
+        //         // Update animation
+        //         if (animationComponent.needsUpdate) {
+        //             const animations = this._animations.get(animationComponent.entity)
+        //             if (animations) {
+        //                 const { action } = animations[animationComponent.state]
+        //                 action.time = 0.0
+        //                 action.enabled = true
+        //                 action.setEffectiveTimeScale(1.0)
+        //                 action.setEffectiveWeight(1.0)
+        //                 if (animationComponent.prevState) {
+        //                     const { action: prevAction } = animations[animationComponent.prevState]
+        //                     if (animationComponent.state !== 'idle') {
+        //                         const ratio = action.getClip().duration / prevAction.getClip().duration
+        //                         action.time = prevAction.time * ratio
+        //                     }
+        //                     action.crossFadeFrom(prevAction, 0.5, true)
+        //                 }
+        //                 action.play()
+        //                 animationComponent.needsUpdate = false
+        //             }
+        //         }
+        //     },
+        // )
 
         this.ECS.ComponentManager.getTuplesByQuery([LIGHT]).forEach(([lightComponent]) => {
             if (!lightComponent.resource) {

@@ -1,5 +1,4 @@
 import System from 'ECS/System'
-import logger from 'utils/logger'
 import { COLLIDES, POSITION } from 'Components/types'
 
 export class CollisionEffects extends System {

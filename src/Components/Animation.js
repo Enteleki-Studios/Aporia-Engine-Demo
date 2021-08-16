@@ -5,7 +5,10 @@ export default function Animation(entity, state) {
         type: ANIMATION,
         entity,
         needsUpdate: true,
+        loaded: false,
+        isLoading: false,
         prevState: null,
+        animations: {},
 
         state,
     }

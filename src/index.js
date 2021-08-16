@@ -53,5 +53,19 @@ window.addEventListener('DOMContentLoaded', () => {
         new Position(playerEntity, new THREE.Vector3(64, 0, 64)),
     ])
 
+    const slimeEntity = DungeonECS.createEntity()
+    DungeonECS.addComponents([
+        new Animation(slimeEntity, 'idle'),
+        new Model(slimeEntity, { modelId: 3 }),
+        new Position(slimeEntity, new THREE.Vector3(64, 0, 66)),
+    ])
+
+    const batEntity = DungeonECS.createEntity()
+    DungeonECS.addComponents([
+        new Animation(batEntity, 'idle'),
+        new Model(batEntity, { modelId: 4 }),
+        new Position(batEntity, new THREE.Vector3(60, 1, 66)),
+    ])
+
     DungeonECS.start()
 })
