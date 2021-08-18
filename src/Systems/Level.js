@@ -56,18 +56,29 @@ export class Level extends System {
             for (let y = 0, maxY = tiles[0].length; y < maxY; y += 1) {
                 const isFloor = !tiles[x][y][0]
                 if (isFloor) {
-                    // TODO convex corners need both x,y to not be 0
                     if (tiles[x][y - 1][0]) {
-                        tiles[x][y - 1].push(new Vector2(0, 1))
+                        if (!tiles[x][y - 1][1]) {
+                            tiles[x][y - 1].push(new Vector2(0, 0))
+                        }
+                        tiles[x][y - 1][1].add(new Vector2(0, 1))
                     }
                     if (tiles[x][y + 1][0]) {
-                        tiles[x][y + 1].push(new Vector2(0, -1))
+                        if (!tiles[x][y + 1][1]) {
+                            tiles[x][y + 1].push(new Vector2(0, 0))
+                        }
+                        tiles[x][y + 1][1].add(new Vector2(0, -1))
                     }
                     if (tiles[x - 1][y][0]) {
-                        tiles[x - 1][y].push(new Vector2(1, 0))
+                        if (!tiles[x - 1][y][1]) {
+                            tiles[x - 1][y].push(new Vector2(0, 0))
+                        }
+                        tiles[x - 1][y][1].add(new Vector2(1, 0))
                     }
                     if (tiles[x + 1][y][0]) {
-                        tiles[x + 1][y].push(new Vector2(-1, 0))
+                        if (!tiles[x + 1][y][1]) {
+                            tiles[x + 1][y].push(new Vector2(0, 0))
+                        }
+                        tiles[x + 1][y][1].add(new Vector2(-1, 0))
                     }
                 }
             }
