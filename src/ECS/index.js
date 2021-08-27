@@ -40,7 +40,7 @@ export default class ECS {
         requestAnimationFrame(() => {
             logger.clear()
             const delta = Math.min(this._clock.getDelta(), 0.050)
-            logger.debug('Delta', delta)
+            // logger.debug('Delta', delta)
 
             try {
                 this._systems.forEach((system) => system.tick(delta))

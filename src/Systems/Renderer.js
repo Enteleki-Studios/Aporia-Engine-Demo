@@ -111,7 +111,7 @@ export class Renderer extends System {
         const wallTexture = new THREE.TextureLoader().load('/resources/textures/wall.jpg')
         wallTexture.wrapS = THREE.RepeatWrapping
         wallTexture.wrapT = THREE.RepeatWrapping
-        wallTexture.repeat.set(0.25, 1)
+        wallTexture.repeat.set(1, 3)
         const wallMaterial = new THREE.MeshStandardMaterial({
             map: wallTexture,
             flatShading: true,
