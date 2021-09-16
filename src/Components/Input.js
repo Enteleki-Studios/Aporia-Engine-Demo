@@ -8,6 +8,7 @@ export default function Input(entity) {
 
         forward: false,
         run: false,
+        attacking: false,
 
         upPress: false,
         upHold: false,

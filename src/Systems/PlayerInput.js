@@ -13,6 +13,7 @@ export class PlayerInput extends System {
             right: false,
             down: false,
             shift: false,
+            space: false,
             mouseX: 0,
             mouseY: 0,
         }
@@ -54,6 +55,8 @@ export class PlayerInput extends System {
     }
 
     _onKeyDown(e) {
+        e.preventDefault()
+
         switch (e.code) {
             case 'KeyW':
             case 'ArrowUp':
@@ -73,6 +76,9 @@ export class PlayerInput extends System {
                 break
             case 'ShiftLeft':
                 this._liveInput.shift = true
+                break
+            case 'Space':
+                this._liveInput.space = true
                 break
             default:
                 break
@@ -99,6 +105,9 @@ export class PlayerInput extends System {
                 break
             case 'ShiftLeft':
                 this._liveInput.shift = false
+                break
+            case 'Space':
+                this._liveInput.space = false
                 break
             default:
                 break
@@ -161,6 +170,12 @@ export class PlayerInput extends System {
             } else {
                 inputComponent.downPress = false
                 inputComponent.downHold = false
+            }
+
+            if (this._liveInput.space) {
+                inputComponent.attacking = true
+            } else {
+                inputComponent.attacking = false
             }
 
             inputComponent.pan.set(this._liveInput.mouseX, this._liveInput.mouseY, 0)

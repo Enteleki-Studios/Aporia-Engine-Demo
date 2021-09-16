@@ -36,7 +36,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     DungeonECS.addComponent(new Level(DungeonECS.createEntity(), { seed: 421 }))
 
-    DungeonECS.addComponent(new Light(DungeonECS.createEntity(), 'AmbientLight', {
+    DungeonECS.addComponent(new Light(DungeonECS.createEntity(), {
+        lightType: 'AmbientLight',
         color: 0x101010,
         intensity: 2,
     }))
@@ -48,7 +49,7 @@ window.addEventListener('DOMContentLoaded', () => {
         new Collides(playerEntity),
         new Hero(playerEntity),
         new Input(playerEntity),
-        new Light(playerEntity, 'DirectionalLight'),
+        new Light(playerEntity, { lightType: 'DirectionalLight' }),
         new Model(playerEntity, { modelId: 2 }),
         new Position(playerEntity, new THREE.Vector3(64, 0, 64)),
     ])

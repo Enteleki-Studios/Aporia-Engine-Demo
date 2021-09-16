@@ -69,6 +69,10 @@ export class Animation extends System {
                     }
                 }
 
+                if (inputComponent.attacking) {
+                    nextState = 'attack'
+                }
+
                 if (animationComponent.state !== nextState) {
                     animationComponent.prevState = animationComponent.state
                     animationComponent.state = nextState
@@ -102,7 +106,7 @@ export class Animation extends System {
                         action.setEffectiveWeight(1.0)
                         if (animationComponent.prevState) {
                             const { action: prevAction } = animations[animationComponent.prevState]
-                            if (animationComponent.state !== 'idle') {
+                            if (animationComponent.state !== 'attack') {
                                 const ratio = action.getClip().duration / prevAction.getClip().duration
                                 action.time = prevAction.time * ratio
                             }

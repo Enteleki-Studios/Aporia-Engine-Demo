@@ -23,7 +23,7 @@ export default [
     {
         modelPath: `${MF}/eve/eve.fbx`,
         scale: 0.015,
-        animationsExternal: ['idle', 'walk', 'run', 'walkBack'],
+        animationsExternal: ['idle', 'walk', 'run', 'walkBack', 'attack'],
     },
     {
         modelPath: `${MF}/slime/Slime.fbx`,

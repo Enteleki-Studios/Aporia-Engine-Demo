@@ -10,7 +10,7 @@ export default [
     },
     {
         name: 'idle',
-        modelPath: `${AF}/idleBreathe.fbx`,
+        modelPath: `${AF}/idleReady.fbx`,
     },
     {
         name: 'walk',
@@ -19,6 +19,10 @@ export default [
     {
         name: 'run',
         modelPath: `${AF}/run.fbx`,
+    },
+    {
+        name: 'attack',
+        modelPath: `${AF}/attackMelee.fbx`,
     },
     // {
     //     name: 'strafeLeft',
