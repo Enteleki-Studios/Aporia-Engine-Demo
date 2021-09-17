@@ -43,6 +43,8 @@ export class Animation extends System {
             })
         }
 
+        // console.debug(model.animations)
+
         if (animationIndex) {
             Object.entries(animationIndex).forEach(([key, name]) => {
                 const animation = model.animations.find((a) => a.name === name)

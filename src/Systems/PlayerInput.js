@@ -26,27 +26,19 @@ export class PlayerInput extends System {
         document.addEventListener('keyup', this._onKeyUp.bind(this))
 
         this._canvas.addEventListener('click', () => {
-            this._canvas.requestPointerLock = this._canvas.requestPointerLock
-                || this._canvas.mozRequestPointerLock
-                || this._canvas.webkitRequestPointerLock
             this._canvas.requestPointerLock()
         })
 
         const onMouseMove = (e) => this._onMouseMove(e)
         const onPointerLockChange = () => {
-            if (document.pointerLockElement === this._canvas
-                || document.mozPointerLockElement === this._canvas
-                || document.webkitPointerLockElement === this._canvas) {
+            if (document.pointerLockElement === this._canvas) {
                 document.addEventListener('mousemove', onMouseMove, false)
             } else {
                 document.removeEventListener('mousemove', onMouseMove, false)
             }
         }
 
-        // Hook pointer lock state change events
         document.addEventListener('pointerlockchange', onPointerLockChange, false)
-        document.addEventListener('mozpointerlockchange', onPointerLockChange, false)
-        document.addEventListener('webkitpointerlockchange', onPointerLockChange, false)
     }
 
     _onMouseMove(e) {

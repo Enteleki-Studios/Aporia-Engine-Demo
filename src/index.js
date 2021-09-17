@@ -3,8 +3,10 @@ import ECS from 'ECS'
 import * as Systems from 'Systems'
 
 import Animation from 'Components/Animation'
+import Attack from 'Components/Attack'
 import Camera from 'Components/Camera'
 import Collides from 'Components/Collides'
+import Health from 'Components/Health'
 import Hero from 'Components/Hero'
 import Input from 'Components/Input'
 import Light from 'Components/Light'
@@ -26,6 +28,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }))
     DungeonECS.registerSystem(new Systems.Movement())
     DungeonECS.registerSystem(new Systems.Collision())
+    DungeonECS.registerSystem(new Systems.Combat())
     DungeonECS.registerSystem(new Systems.CollisionEffects())
     DungeonECS.registerSystem(new Systems.Camera())
     DungeonECS.registerSystem(new Systems.Animation())
@@ -45,8 +48,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const playerEntity = DungeonECS.createEntity()
     DungeonECS.addComponents([
         new Animation(playerEntity, 'idle'),
+        new Attack(playerEntity, { damage: 5, range: 2 }),
         new Camera(playerEntity),
         new Collides(playerEntity),
+        new Health(playerEntity, { health: 20 }),
         new Hero(playerEntity),
         new Input(playerEntity),
         new Light(playerEntity, { lightType: 'DirectionalLight' }),
@@ -57,6 +62,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const slimeEntity = DungeonECS.createEntity()
     DungeonECS.addComponents([
         new Animation(slimeEntity, 'idle'),
+        new Health(slimeEntity, { health: 20 }),
         new Model(slimeEntity, { modelId: 3 }),
         new Position(slimeEntity, new THREE.Vector3(64, 0, 66)),
     ])
