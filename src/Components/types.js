@@ -1,3 +1,4 @@
+export const AI = 'AI'
 export const ANIMATION = 'ANIMATION'
 export const ATTACK = 'ATTACK'
 export const CAMERA = 'CAMERA'

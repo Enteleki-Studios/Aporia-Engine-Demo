@@ -195,32 +195,6 @@ export class Renderer extends System {
             },
         )
 
-        // this.ECS.ComponentManager.getTuplesByQuery([ANIMATION]).forEach(
-        //     ([animationComponent]) => {
-        //         // Update animation
-        //         if (animationComponent.needsUpdate) {
-        //             const animations = this._animations.get(animationComponent.entity)
-        //             if (animations) {
-        //                 const { action } = animations[animationComponent.state]
-        //                 action.time = 0.0
-        //                 action.enabled = true
-        //                 action.setEffectiveTimeScale(1.0)
-        //                 action.setEffectiveWeight(1.0)
-        //                 if (animationComponent.prevState) {
-        //                     const { action: prevAction } = animations[animationComponent.prevState]
-        //                     if (animationComponent.state !== 'idle') {
-        //                         const ratio = action.getClip().duration / prevAction.getClip().duration
-        //                         action.time = prevAction.time * ratio
-        //                     }
-        //                     action.crossFadeFrom(prevAction, 0.5, true)
-        //                 }
-        //                 action.play()
-        //                 animationComponent.needsUpdate = false
-        //             }
-        //         }
-        //     },
-        // )
-
         this.ECS.ComponentManager.getTuplesByQuery([LIGHT]).forEach(([lightComponent]) => {
             if (!lightComponent.resource) {
                 lightComponent.resource = Renderer.createLight(lightComponent)

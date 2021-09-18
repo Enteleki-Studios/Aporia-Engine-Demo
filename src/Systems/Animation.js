@@ -63,7 +63,8 @@ export class Animation extends System {
             ([animationComponent, inputComponent]) => {
                 let nextState = 'idle'
                 if (inputComponent.downHold) {
-                    nextState = 'walkBack'
+                    // nextState = 'walkBack'
+                    nextState = 'walk'
                 } else if (inputComponent.upHold || inputComponent.leftHold || inputComponent.rightHold) {
                     nextState = 'walk'
                     if (inputComponent.run) {

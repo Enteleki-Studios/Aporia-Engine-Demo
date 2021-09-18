@@ -8,12 +8,11 @@ export class Movement extends System {
 
         this._decceleration = new THREE.Vector3(-5, -0.0001, -5)
         this._acceleration = new THREE.Vector3(15, 0.01, 15)
-        this._velocity = new THREE.Vector3(0, 0, 0)
     }
 
     tick(delta) {
         this.ECS.ComponentManager.getTuplesByQuery([INPUT, POSITION]).forEach(([inputComponent, positionComponent]) => {
-            const velocity = this._velocity
+            const { velocity } = positionComponent
             const frameDecceleration = new THREE.Vector3(
                 velocity.x * this._decceleration.x,
                 velocity.y * this._decceleration.y,

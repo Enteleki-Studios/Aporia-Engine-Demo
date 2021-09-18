@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import ECS from 'ECS'
 import * as Systems from 'Systems'
 
+import AI from 'Components/AI'
 import Animation from 'Components/Animation'
 import Attack from 'Components/Attack'
 import Camera from 'Components/Camera'
@@ -26,6 +27,7 @@ window.addEventListener('DOMContentLoaded', () => {
     DungeonECS.registerSystem(new Systems.PlayerInput({
         canvas,
     }))
+    DungeonECS.registerSystem(new Systems.AIInput())
     DungeonECS.registerSystem(new Systems.Movement())
     DungeonECS.registerSystem(new Systems.Collision())
     DungeonECS.registerSystem(new Systems.Combat())
@@ -62,6 +64,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const slimeEntity = DungeonECS.createEntity()
     DungeonECS.addComponents([
         new Animation(slimeEntity, 'idle'),
+        new AI(slimeEntity),
+        new Input(slimeEntity),
+        new Collides(slimeEntity),
         new Health(slimeEntity, { health: 20 }),
         new Model(slimeEntity, { modelId: 3 }),
         new Position(slimeEntity, new THREE.Vector3(64, 0, 66)),
@@ -70,6 +75,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const batEntity = DungeonECS.createEntity()
     DungeonECS.addComponents([
         new Animation(batEntity, 'idle'),
+        new AI(batEntity),
+        new Input(batEntity),
+        new Collides(batEntity),
         new Model(batEntity, { modelId: 4 }),
         new Position(batEntity, new THREE.Vector3(60, 1, 66)),
     ])
@@ -77,6 +85,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const skelEntity = DungeonECS.createEntity()
     DungeonECS.addComponents([
         new Animation(skelEntity, 'idle'),
+        new AI(skelEntity),
+        new Input(skelEntity),
+        new Collides(skelEntity),
         new Model(skelEntity, { modelId: 5 }),
         new Position(skelEntity, new THREE.Vector3(64, 0, 70)),
     ])

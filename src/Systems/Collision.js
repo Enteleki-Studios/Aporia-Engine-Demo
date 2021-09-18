@@ -1,5 +1,5 @@
 import System from 'ECS/System'
-import logger from 'utils/logger'
+// import logger from 'utils/logger'
 import { COLLIDES, LEVEL, POSITION } from 'Components/types'
 
 const hitDistance = 1
@@ -21,7 +21,7 @@ export class Collision extends System {
                         const distance = Math.sqrt(dx * dx + dy * dy)
 
                         if (distance < hitDistance && tiles[tX][tY][0]) {
-                            logger.debug('COLLISION', distance, x, z, tX, tY)
+                            // logger.debug('COLLISION', distance, x, z, tX, tY)
                             collisionComponent.collisions.push(['WALL', tiles[tX][tY][1]])
                         }
                     }

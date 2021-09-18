@@ -9,6 +9,7 @@ export default function Position(entity, position) {
         position,
         quaternion: new Quaternion(),
         rotation: new Quaternion(),
+        velocity: new Vector3(),
 
         prevPosition: new Vector3(),
 
