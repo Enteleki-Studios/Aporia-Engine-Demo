@@ -1,3 +1,4 @@
+import { Vector3 } from 'three'
 import logger from 'utils/logger'
 import System from 'ECS/System'
 import { ATTACK, HEALTH, INPUT, POSITION } from 'Components/types'
@@ -22,21 +23,27 @@ export class Combat extends System {
                         }
                     }
 
-                    bodies.forEach(([healthComponent, defenderPositionComponent]) => {
-                        if (attackComponent.entity === healthComponent.entity) {
-                            // Don't attack ourselves
-                            return
-                        }
+                    if (dealingDamage) {
+                        bodies.forEach(([healthComponent, defenderPositionComponent]) => {
+                            if (attackComponent.entity === healthComponent.entity) {
+                                // Don't attack ourselves
+                                return
+                            }
 
-                        const { position: atkPos } = attackerPositionComponent
-                        const { position: defPos } = defenderPositionComponent
-                        if (atkPos.distanceTo(defPos) <= attackComponent.range) {
-                            logger.debug('COMBAT', healthComponent.entity, healthComponent.health)
-                            if (dealingDamage) { // TODO move this up so we have fewer loops
+                            const { position: atkPos, rotation } = attackerPositionComponent
+                            const { position: defPos } = defenderPositionComponent
+
+                            const rangeVector = defPos.clone().sub(atkPos)
+                            const rotationVector = new Vector3(0, 0, 1).applyQuaternion(rotation)
+
+                            const isInRange = rangeVector.length() <= attackComponent.range
+                            const isInFront = rotationVector.angleTo(rangeVector) <= Math.PI / 4
+
+                            if (isInRange && isInFront) {
                                 healthComponent.health -= attackComponent.damage
                             }
-                        }
-                    })
+                        })
+                    }
 
                     attackComponent.delta += delta * 1000
                 } else {

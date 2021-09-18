@@ -22,7 +22,7 @@ export default [
     },
     {
         name: 'attack',
-        modelPath: `${AF}/attackMelee.fbx`,
+        modelPath: `${AF}/attackPunch.fbx`,
     },
     // {
     //     name: 'strafeLeft',

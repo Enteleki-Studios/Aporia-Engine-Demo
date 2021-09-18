@@ -8,8 +8,8 @@ export default function Attack(entity, { damage, range } = {}) {
         damage,
         range,
 
-        spoolUp: 750,
-        coolDown: 750,
+        spoolUp: 500,
+        coolDown: 500,
 
         delta: 0,
         hasDealtDamage: false,
