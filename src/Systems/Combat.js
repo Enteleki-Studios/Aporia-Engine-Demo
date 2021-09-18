@@ -1,5 +1,4 @@
 import { Vector3 } from 'three'
-import logger from 'utils/logger'
 import System from 'ECS/System'
 import { ATTACK, HEALTH, INPUT, POSITION } from 'Components/types'
 
