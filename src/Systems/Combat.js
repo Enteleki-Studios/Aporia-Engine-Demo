@@ -1,5 +1,5 @@
 import { Vector3 } from 'three'
-import System from 'ECS/System'
+import { System } from 'ECS'
 import { ATTACK, HEALTH, INPUT, POSITION } from 'Components/types'
 
 export class Combat extends System {

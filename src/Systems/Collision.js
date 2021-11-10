@@ -1,4 +1,4 @@
-import System from 'ECS/System'
+import { System } from 'ECS'
 // import logger from 'utils/logger'
 import { COLLIDES, LEVEL, POSITION } from 'Components/types'
 

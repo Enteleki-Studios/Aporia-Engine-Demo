@@ -1,4 +1,4 @@
-import System from 'ECS/System'
+import { System } from 'ECS'
 import { AI, INPUT } from 'Components/types'
 
 export class AIInput extends System {

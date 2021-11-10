@@ -1,4 +1,4 @@
-import System from 'ECS/System'
+import { System } from 'ECS'
 import { COLLIDES, POSITION } from 'Components/types'
 
 export class CollisionEffects extends System {

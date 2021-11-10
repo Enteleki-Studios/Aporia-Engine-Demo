@@ -1,6 +1,6 @@
 import * as ROT from 'rot-js'
 import { Vector2 } from 'three'
-import System from 'ECS/System'
+import { System } from 'ECS'
 import { LEVEL, MODEL, POSITION } from 'Components/types'
 
 export class Level extends System {

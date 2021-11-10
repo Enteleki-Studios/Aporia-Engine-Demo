@@ -1,4 +1,4 @@
-import System from 'ECS/System'
+import { System } from 'ECS'
 import { INPUT, POSITION } from 'Components/types'
 import * as THREE from 'three'
 

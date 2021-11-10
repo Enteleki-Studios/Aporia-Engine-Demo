@@ -10,7 +10,7 @@ import modelDB from 'modelDB'
 
 import { LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'Components/types'
 
-import System from 'ECS/System'
+import { System } from 'ECS'
 
 const DEBUG = false
 

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import ECS from 'ECS'
+import { ECS } from 'ECS'
 import * as Systems from 'Systems'
 
 import AI from 'Components/AI'

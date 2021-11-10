@@ -1,4 +1,4 @@
-import System from 'ECS/System'
+import { System } from 'ECS'
 import { HERO, INPUT } from 'Components/types'
 
 export class PlayerInput extends System {

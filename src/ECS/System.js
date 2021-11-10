@@ -1,4 +1,4 @@
-export default class System {
+export class System {
     constructor() {
         this.ECS = null
     }
