@@ -1,6 +1,6 @@
 import { PLANE } from './types'
 
-export default function Plane(
+export function Plane(
     entity,
     {
         width,

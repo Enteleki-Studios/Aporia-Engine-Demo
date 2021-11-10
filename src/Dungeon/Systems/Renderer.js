@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils'
+import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
 import * as GLHelpers from 'GLHelpers'
 import loadFBX from 'utils/loadFBX'
@@ -106,7 +106,7 @@ export class Renderer extends System {
             }
         }
 
-        const mergedWallGeometries = BufferGeometryUtils.mergeBufferGeometries(wallGeometries, false)
+        const mergedWallGeometries = mergeBufferGeometries(wallGeometries, false)
 
         const wallTexture = new THREE.TextureLoader().load('/resources/textures/wall.jpg')
         wallTexture.wrapS = THREE.RepeatWrapping

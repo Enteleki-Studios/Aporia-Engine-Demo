@@ -1,6 +1,6 @@
 import { AI as AIType } from './types'
 
-export default function AI(entity) {
+export function AI(entity) {
     return {
         type: AIType,
         entity,

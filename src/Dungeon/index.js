@@ -2,24 +2,25 @@ import * as THREE from 'three'
 import { ECS } from 'ECS'
 import * as Systems from 'Systems'
 
-import AI from 'Components/AI'
-import Animation from 'Components/Animation'
-import Attack from 'Components/Attack'
-import Camera from 'Components/Camera'
-import Collides from 'Components/Collides'
-import Health from 'Components/Health'
-import Hero from 'Components/Hero'
-import Input from 'Components/Input'
-import Light from 'Components/Light'
-import Level from 'Components/Level'
-import Model from 'Components/Model'
-import Position from 'Components/Position'
+import {
+    AI,
+    Animation,
+    Attack,
+    Camera,
+    Collides,
+    Health,
+    Hero,
+    Input,
+    Light,
+    Level,
+    Model,
+    Position,
+} from 'Components'
 
 import 'style/root.scss'
 
-window.addEventListener('DOMContentLoaded', () => {
+export default function Dungeon(canvas) {
     const DungeonECS = new ECS()
-    const canvas = document.getElementById('WebGLCanvas')
 
     DungeonECS.registerSystem(new Systems.Level({
         size: [64, 64],
@@ -93,4 +94,4 @@ window.addEventListener('DOMContentLoaded', () => {
     ])
 
     DungeonECS.start()
-})
+}

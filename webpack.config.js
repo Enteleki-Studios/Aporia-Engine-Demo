@@ -5,13 +5,14 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 const path = require('path')
 
 module.exports = {
-    entry: './src/index.js',
+    entry: './src/index.tsx',
     target: 'web',
     stats: 'errors-warnings',
     resolve: {
         modules: [
             path.resolve(__dirname, 'node_modules'),
             path.resolve(__dirname, 'src'),
+            path.resolve(__dirname, 'src/Dungeon'),
         ],
     },
     plugins: [
@@ -38,10 +39,14 @@ module.exports = {
                     'sass-loader',
                 ],
             },
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
         ],
     },
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
         port: 2080,
         host: '0.0.0.0',
     },

@@ -1,6 +1,6 @@
 import { ATTACK } from './types'
 
-export default function Attack(entity, { damage, range } = {}) {
+export function Attack(entity, { damage, range } = {}) {
     return {
         type: ATTACK,
         entity,

@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "baseUrl": "src",
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "es6",
+        "target": "es6",
+        "jsx": "react",
+        "lib": ["dom"],
+        "allowJs": true,
+        "moduleResolution": "node",
+        "paths": {
+            "Dungeon/*": ["Dungeon/*"],
+        },
+    }
+}

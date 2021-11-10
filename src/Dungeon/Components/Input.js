@@ -1,7 +1,7 @@
 import { Vector3 } from 'three'
 import { INPUT } from './types'
 
-export default function Input(entity) {
+export function Input(entity) {
     return {
         type: INPUT,
         entity,

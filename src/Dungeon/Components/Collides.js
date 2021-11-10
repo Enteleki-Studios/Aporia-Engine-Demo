@@ -1,6 +1,6 @@
 import { COLLIDES } from './types'
 
-export default function Collides(entity) {
+export function Collides(entity) {
     return {
         type: COLLIDES,
         entity,

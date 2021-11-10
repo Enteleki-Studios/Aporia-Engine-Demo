@@ -1,7 +1,7 @@
 import { Vector3 } from 'three'
 import { CAMERA } from './types'
 
-export default function Camera(entity) {
+export function Camera(entity) {
     return {
         type: CAMERA,
         entity,

@@ -1,6 +1,6 @@
 import { MODEL } from './types'
 
-export default function Model(entity, { modelId }) {
+export function Model(entity, { modelId }) {
     return {
         type: MODEL,
         entity,

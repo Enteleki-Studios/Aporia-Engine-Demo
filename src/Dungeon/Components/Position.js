@@ -1,7 +1,7 @@
 import { Quaternion, Vector3 } from 'three'
 import { POSITION } from './types'
 
-export default function Position(entity, position) {
+export function Position(entity, position) {
     return {
         type: POSITION,
         entity,
