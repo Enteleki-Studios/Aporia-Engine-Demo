@@ -1,6 +1,5 @@
 export abstract class System {
+    ECS!: { ComponentManager: object }
     // eslint-disable-next-line
-    tick() {
-        return null
-    }
+    tick(delta: number) {}
 }

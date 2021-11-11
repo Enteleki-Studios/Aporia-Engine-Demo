@@ -1,8 +1,14 @@
 import * as THREE from 'three'
-import logger from 'utils/logger'
+import { Component } from './Component'
+import { System } from './System'
 import ComponentManager from './ComponentManager'
 
 export class ECS {
+    _lastEntityId: number
+    ComponentManager: ComponentManager
+    _clock: THREE.Clock
+    _systems: System[]
+
     constructor() {
         this.ComponentManager = new ComponentManager()
 
@@ -11,7 +17,6 @@ export class ECS {
         this._lastEntityId = 0
 
         this._systems = []
-        this._eventHandlers = new Map()
     }
 
     createEntity() {
@@ -19,15 +24,15 @@ export class ECS {
         return this._lastEntityId
     }
 
-    addComponent(component) {
+    addComponent(component: Component) {
         this.ComponentManager.addComponent(component)
     }
 
-    addComponents(components) {
+    addComponents(components: Component[]) {
         components.forEach((component) => this.addComponent(component))
     }
 
-    registerSystem(system) {
+    registerSystem(system: System) {
         system.ECS = this
         this._systems.push(system)
     }
@@ -38,7 +43,6 @@ export class ECS {
 
     _update() {
         requestAnimationFrame(() => {
-            logger.clear()
             const delta = Math.min(this._clock.getDelta(), 0.050)
             // logger.debug('Delta', delta)
 

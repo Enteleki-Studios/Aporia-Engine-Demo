@@ -1,14 +1,20 @@
+import { Component } from './Component'
+
 export default class ComponentManager {
+    _components: Component[]
+    _componentsByEntity: Map
+    _queryCache: Map
+
     constructor() {
         this._components = []
         this._componentsByEntity = new Map()
         this._queryCache = new Map()
     }
 
-    addComponent(component) {
+    addComponent(component: Component) {
         const { entity, type } = component
         if (!entity || !type) {
-            throw new Error('Component missing entity or type', component)
+            throw new Error('Component missing entity or type')
         }
 
         if (this._componentsByEntity.has(entity)) {
@@ -25,13 +31,13 @@ export default class ComponentManager {
         this._queryCache = new Map()
     }
 
-    getTuplesByQuery(queryTypes) {
+    getTuplesByQuery(queryTypes: string[]) {
         const query = queryTypes.join('.')
         if (this._queryCache.has(query)) {
             return this._queryCache.get(query)
         }
-        const tuples = []
-        this._componentsByEntity.forEach((entity) => {
+        const tuples:Component[][] = []
+        this._componentsByEntity.forEach((entity: number) => {
             if (queryTypes.every((qt) => entity.has(qt))) {
                 tuples.push(queryTypes.map((qt) => entity.get(qt)))
             }

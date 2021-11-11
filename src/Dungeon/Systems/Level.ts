@@ -4,7 +4,10 @@ import { System } from 'ECS'
 import { LEVEL, MODEL, POSITION } from 'Components/types'
 
 export class Level extends System {
-    constructor({ size }) {
+    display: ROT.Display
+    mapSize: [number, number]
+
+    constructor({ size }: { size: number }) {
         super()
         this.mapSize = size
 
@@ -20,7 +23,7 @@ export class Level extends System {
             bg: '#000',
         })
 
-        const debugCanvas = display.getContainer()
+        const debugCanvas = <HTMLElement>display.getContainer()
         const mapScale = 6
 
         debugCanvas.id = 'mapCanvas'
@@ -30,7 +33,7 @@ export class Level extends System {
         return display
     }
 
-    _createMap(seed) {
+    _createMap(seed: number) {
         ROT.RNG.setSeed(seed)
 
         const map = new ROT.Map.Digger(this.mapSize[0], this.mapSize[1], {
@@ -40,7 +43,7 @@ export class Level extends System {
             dugPercentage: 0.3,
         })
 
-        const tiles = []
+        const tiles: [number, Vector2?][][] = []
         map.create((x, y, isWall) => {
             if (!y) {
                 tiles[x * 2] = []
@@ -85,8 +88,9 @@ export class Level extends System {
         }
         // const rooms = map.getRooms()
         // const [x, z] = rooms[0].getCenter()
-        map.tiles = tiles
-        return map
+        // map.tiles = tiles
+        // return map
+        return { tiles }
     }
 
     tick() {
