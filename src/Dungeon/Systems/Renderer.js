@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import Stats from 'three/examples/jsm/libs/stats.module'
+// import Stats from 'three/examples/jsm/libs/stats.module'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
@@ -12,7 +12,7 @@ import { LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'Components/types'
 
 import { System } from 'ECS'
 
-const DEBUG = false
+const DEBUG = true
 
 export class Renderer extends System {
     constructor({ canvas, aspect }) {
@@ -68,9 +68,9 @@ export class Renderer extends System {
 
     _enableDebug() {
         // FPS counter
-        const s = new Stats()
-        document.body.appendChild(s.dom)
-        this._jobs.push(() => s.update())
+        // const s = new Stats()
+        // document.body.appendChild(s.dom)
+        // this._jobs.push(() => s.update())
 
         // Origin axes
         this._scene.add(new THREE.AxesHelper(1))

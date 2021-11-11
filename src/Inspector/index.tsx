@@ -20,8 +20,9 @@ const Inspector = ({ dungeon }: Props) => {
             <div className="header">Inspector</div>
             <div className="sidepanel">Sidepanel</div>
             <div className="preview">
-                Preview
-                <canvas ref={canvasRef} />
+                <div className="canvasContainer">
+                    <canvas width={1280} height={720} ref={canvasRef} />
+                </div>
             </div>
             <div className="log">Log</div>
         </div>

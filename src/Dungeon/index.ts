@@ -11,15 +11,17 @@ import {
     // Health,
     // Hero,
     // Input,
-    // Light,
+    Light,
     Level,
     // Model,
     // Position,
 } from './Components'
 
 export default class Dungeon {
+    ecs: object | null = null
     init(canvas: HTMLElement) {
         const DungeonECS = new ECS()
+        this.ecs = DungeonECS
 
         DungeonECS.registerSystem(new Systems.Level({
             size: [64, 64],
@@ -41,11 +43,11 @@ export default class Dungeon {
 
         DungeonECS.addComponent(new Level(DungeonECS.createEntity(), { seed: 421 }))
 
-        // DungeonECS.addComponent(new Light(DungeonECS.createEntity(), {
-        //     lightType: 'AmbientLight',
-        //     color: 0x101010,
-        //     intensity: 2,
-        // }))
+        DungeonECS.addComponent(new Light(DungeonECS.createEntity(), {
+            lightType: 'AmbientLight',
+            color: 0x101010,
+            intensity: 2,
+        }))
 
         // const playerEntity = DungeonECS.createEntity()
         // DungeonECS.addComponents([

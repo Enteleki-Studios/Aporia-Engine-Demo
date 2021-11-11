@@ -51,7 +51,7 @@ module.exports = {
     },
     devServer: {
         port: 2080,
-        host: '0.0.0.0',
+        // host: '0.0.0.0',
     },
     devtool: 'inline-source-map',
     output: {

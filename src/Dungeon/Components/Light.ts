@@ -1,20 +1,30 @@
+import { Component } from 'ECS'
 import { Vector3 } from 'three'
 import { LIGHT } from './types'
 
-export function Light(entity, { lightType, color, intensity } = {}) {
-    return {
-        type: LIGHT,
-        entity,
+interface Settings {
+    lightType: string,
+    color: number,
+    intensity: number,
+}
 
-        lightType,
-        color,
-        intensity,
+export class Light extends Component {
+    lightType: string
+    color: number
+    intensity: number
+    position: Vector3
+    target: Vector3
+    needsUpdate = true
+    resource: (object | null) = null
 
-        position: new Vector3(),
-        target: new Vector3(),
+    constructor(entity: number, { lightType, color, intensity }: Settings) {
+        super(LIGHT, entity)
 
-        needsUpdate: true,
+        this.lightType = lightType
+        this.color = color
+        this.intensity = intensity
 
-        resource: null,
+        this.position = new Vector3()
+        this.target = new Vector3()
     }
 }
