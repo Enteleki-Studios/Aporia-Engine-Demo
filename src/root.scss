@@ -3,14 +3,18 @@
 }
 
 html {
+    height: 100%;
     font-size: 100%;
     font-family: Arial, sans-serif;
-}
 
-body {
-    margin: 0;
-    background-color: #282a36;
-    padding: 2rem 0;
+    body {
+        height: 100%;
+        margin: 0;
+
+        #Root {
+            height: 100%;
+        }
+    }
 }
 
 .GLWindow {

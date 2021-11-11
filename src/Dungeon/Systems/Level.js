@@ -93,6 +93,7 @@ export class Level extends System {
         const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0]
         if (!levelComponent.resource) {
             levelComponent.resource = this._createMap(levelComponent.seed)
+            console.debug(levelComponent)
         }
 
         this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach(

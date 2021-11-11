@@ -1,9 +1,12 @@
 import * as React from 'react'
 import { render } from 'react-dom'
 
+import Inspector from 'Inspector'
+
 import Dungeon from 'Dungeon'
 
-const canvas = document.getElementById('WebGLCanvas')
-Dungeon(canvas)
+import './root.scss'
 
-render(<div>Hey</div>, document.getElementById('debug'))
+const dungeon: Dungeon = new Dungeon()
+
+render(<Inspector dungeon={dungeon} />, document.getElementById('Root'))

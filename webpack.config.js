@@ -14,9 +14,12 @@ module.exports = {
             path.resolve(__dirname, 'src'),
             path.resolve(__dirname, 'src/Dungeon'),
         ],
+        extensions: ['.ts', '.tsx', '.js', '.json'],
     },
     plugins: [
-        new ESLintPlugin(),
+        new ESLintPlugin({
+            extensions: ['js', 'ts'],
+        }),
         new MiniCssExtractPlugin(),
         new HtmlWebpackPlugin({
             title: 'index',

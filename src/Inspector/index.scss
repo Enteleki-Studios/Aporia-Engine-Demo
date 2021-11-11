@@ -1,0 +1,24 @@
+.Inspector {
+    display: grid;
+    grid-template-areas: "header header" "sidepanel preview" "log log";
+    width: 100%;
+    height: 100%;
+    background-color: #282a36;
+    color: #fff;
+
+    .header {
+        grid-area: header;
+        border-bottom: 1px solid #888;
+    }
+    .sidepanel {
+        grid-area: sidepanel;
+        border-right: 1px solid #888;
+    }
+    .preview {
+        grid-area: preview;
+    }
+    .log {
+        grid-area: log;
+        border-top: 1px solid #888;
+    }
+}
