@@ -1,6 +1,5 @@
 import * as THREE from 'three'
-import { Component } from './Component'
-import { System } from './System'
+import type { Component, System } from 'ECS'
 import ComponentManager from './ComponentManager'
 
 export class ECS {

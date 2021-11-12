@@ -1,13 +1,14 @@
 import * as ROT from 'rot-js'
 import { Vector2 } from 'three'
 import { System } from 'ECS'
-import { LEVEL, MODEL, POSITION } from 'Components/types'
+import { LEVEL, MODEL, POSITION } from '../Components/types'
+import type { Position, Level as LevelComponent } from '../Components'
 
 export class Level extends System {
     display: ROT.Display
     mapSize: [number, number]
 
-    constructor({ size }: { size: number }) {
+    constructor({ size }: { size: [number, number] }) {
         super()
         this.mapSize = size
 
@@ -24,11 +25,11 @@ export class Level extends System {
         })
 
         const debugCanvas = <HTMLElement>display.getContainer()
-        const mapScale = 6
+        // const mapScale = 6
 
         debugCanvas.id = 'mapCanvas'
-        debugCanvas.style = `width: ${this.mapSize[0] * mapScale}px; height: ${this.mapSize[0] * mapScale}px`
-        document.getElementById('map').append(debugCanvas)
+        // debugCanvas.style = `width: ${this.mapSize[0] * mapScale}px; height: ${this.mapSize[0] * mapScale}px`
+        document.getElementById('map')!.append(debugCanvas)
 
         return display
     }
@@ -55,6 +56,7 @@ export class Level extends System {
             tiles[x * 2 + 1][y * 2 + 1] = [isWall]
             this.display.DEBUG(x, y, isWall)
         })
+
         for (let x = 0, maxX = tiles.length; x < maxX; x += 1) {
             for (let y = 0, maxY = tiles[0].length; y < maxY; y += 1) {
                 const isFloor = !tiles[x][y][0]
@@ -63,25 +65,25 @@ export class Level extends System {
                         if (!tiles[x][y - 1][1]) {
                             tiles[x][y - 1].push(new Vector2(0, 0))
                         }
-                        tiles[x][y - 1][1].add(new Vector2(0, 1))
+                        tiles[x][y - 1][1]!.add(new Vector2(0, 1))
                     }
                     if (tiles[x][y + 1][0]) {
                         if (!tiles[x][y + 1][1]) {
                             tiles[x][y + 1].push(new Vector2(0, 0))
                         }
-                        tiles[x][y + 1][1].add(new Vector2(0, -1))
+                        tiles[x][y + 1][1]!.add(new Vector2(0, -1))
                     }
                     if (tiles[x - 1][y][0]) {
                         if (!tiles[x - 1][y][1]) {
                             tiles[x - 1][y].push(new Vector2(0, 0))
                         }
-                        tiles[x - 1][y][1].add(new Vector2(1, 0))
+                        tiles[x - 1][y][1]!.add(new Vector2(1, 0))
                     }
                     if (tiles[x + 1][y][0]) {
                         if (!tiles[x + 1][y][1]) {
                             tiles[x + 1][y].push(new Vector2(0, 0))
                         }
-                        tiles[x + 1][y][1].add(new Vector2(-1, 0))
+                        tiles[x + 1][y][1]!.add(new Vector2(-1, 0))
                     }
                 }
             }
@@ -94,14 +96,14 @@ export class Level extends System {
     }
 
     tick() {
-        const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0]
-        if (!levelComponent.resource) {
-            levelComponent.resource = this._createMap(levelComponent.seed)
+        const levelComponents = (this.ECS.ComponentManager.getTuplesByQuery([LEVEL]) as unknown) as LevelComponent[]
+        if (levelComponents && levelComponents[0] && !levelComponents[0].resource) {
+            levelComponents[0].resource = this._createMap(levelComponents[0].seed)
         }
 
         this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach(
             ([, positionComponent]) => {
-                const { position: { x, z } } = positionComponent
+                const { position: { x, z } } = positionComponent as Position
                 this.display.draw(Math.floor(x / 2), Math.floor(z / 2), '', '', '#cd00cd')
             },
         )

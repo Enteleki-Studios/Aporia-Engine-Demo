@@ -2,8 +2,8 @@ import { Component } from './Component'
 
 export default class ComponentManager {
     _components: Component[]
-    _componentsByEntity: Map
-    _queryCache: Map
+    _componentsByEntity: Map<number, Map<string, Component>>
+    _queryCache: Map<string, Component[][]>
 
     constructor() {
         this._components = []
@@ -13,15 +13,13 @@ export default class ComponentManager {
 
     addComponent(component: Component) {
         const { entity, type } = component
-        if (!entity || !type) {
-            throw new Error('Component missing entity or type')
-        }
 
         if (this._componentsByEntity.has(entity)) {
-            if (this._componentsByEntity.get(entity).has(type)) {
+            const entityMap = this._componentsByEntity.get(entity) as Map<string, Component>
+            if (entityMap.has(type)) {
                 throw new Error(`Cannot add the same Component '${type}' to an Entity more than once`)
             } else {
-                this._componentsByEntity.get(entity).set(type, component)
+                entityMap.set(type, component)
             }
         } else {
             this._componentsByEntity.set(component.entity, new Map([[type, component]]))
@@ -37,9 +35,9 @@ export default class ComponentManager {
             return this._queryCache.get(query)
         }
         const tuples:Component[][] = []
-        this._componentsByEntity.forEach((entity: number) => {
+        this._componentsByEntity.forEach((entity: Map<string, Component>) => {
             if (queryTypes.every((qt) => entity.has(qt))) {
-                tuples.push(queryTypes.map((qt) => entity.get(qt)))
+                tuples.push(queryTypes.map((qt) => entity.get(qt) as Component))
             }
         })
         this._queryCache.set(query, tuples)
