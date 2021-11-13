@@ -17,8 +17,8 @@ export class Light extends Component {
     needsUpdate = true
     resource: (object | null) = null
 
-    constructor(entity: number, { lightType, color, intensity }: Settings) {
-        super(LIGHT, entity)
+    constructor(entityId: number, { lightType, color, intensity }: Settings) {
+        super(LIGHT, entityId)
 
         this.lightType = lightType
         this.color = color

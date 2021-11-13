@@ -10,12 +10,13 @@
 
     .header {
         grid-area: header;
-        border-bottom: 1px solid #888;
+        border-bottom: 1px solid #444;
         padding: 0.5rem;
+        background-color: #141414;
     }
     .sidepanel {
         grid-area: sidepanel;
-        border-right: 1px solid #888;
+        border-right: 1px solid #444;
         padding: 0.5rem;
     }
     .preview {
@@ -42,6 +43,6 @@
     .log {
         padding: 0.5rem;
         grid-area: log;
-        border-top: 1px solid #888;
+        border-top: 1px solid #444;
     }
 }

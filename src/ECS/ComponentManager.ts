@@ -1,28 +1,32 @@
 import { Component } from './Component'
 
+type Entity = Map<string, Component>
+type ComponentTuple = Component[]
+type QueryResult = ComponentTuple[]
+
 export default class ComponentManager {
     #components: Component[]
-    #componentsByEntity: Map<number, Map<string, Component>>
-    #queryCache: Map<string, Component[][]>
+    #entitiesById: Map<number, Entity>
+    #queryCache: Map<string, QueryResult>
 
     constructor() {
         this.#components = []
-        this.#componentsByEntity = new Map()
+        this.#entitiesById = new Map()
         this.#queryCache = new Map()
     }
 
     addComponent(component: Component) {
-        const { entity, type } = component
+        const { entityId, type } = component
 
-        if (this.#componentsByEntity.has(entity)) {
-            const entityMap = this.#componentsByEntity.get(entity) as Map<string, Component>
+        if (this.#entitiesById.has(entityId)) {
+            const entityMap = this.#entitiesById.get(entityId) as Entity
             if (entityMap.has(type)) {
                 throw new Error(`Cannot add the same Component '${type}' to an Entity more than once`)
             } else {
                 entityMap.set(type, component)
             }
         } else {
-            this.#componentsByEntity.set(component.entity, new Map([[type, component]]))
+            this.#entitiesById.set(entityId, new Map([[type, component]]))
         }
 
         this.#components.push(component)
@@ -32,10 +36,10 @@ export default class ComponentManager {
     getTuplesByQuery(queryTypes: string[]) {
         const query = queryTypes.join('.')
         if (this.#queryCache.has(query)) {
-            return this.#queryCache.get(query) as Component[][]
+            return this.#queryCache.get(query) as QueryResult
         }
-        const tuples:Component[][] = []
-        this.#componentsByEntity.forEach((entity: Map<string, Component>) => {
+        const tuples:QueryResult = []
+        this.#entitiesById.forEach((entity: Entity) => {
             if (queryTypes.every((qt) => entity.has(qt))) {
                 tuples.push(queryTypes.map((qt) => entity.get(qt) as Component))
             }

@@ -1,10 +1,9 @@
 export abstract class Component {
     readonly type: string
+    readonly entityId: number
 
-    readonly entity: number
-
-    constructor(type: string, entity: number) {
+    constructor(type: string, entityId: number) {
         this.type = type
-        this.entity = entity
+        this.entityId = entityId
     }
 }

@@ -14,36 +14,43 @@ import { System } from 'ECS'
 const DEBUG = true
 
 export class Renderer extends System {
+    #renderer
+    #scene
+    #camera
+    #jobs
+    #hasWorld
+    #debugCamera
+    #orbitControls
+
     constructor({ canvas, aspect }) {
         super()
 
-        this._renderer = new GLHelpers.Renderer({ canvas })
+        this.#renderer = new GLHelpers.Renderer({ canvas })
 
-        this._scene = new THREE.Scene()
-        this._scene.background = new THREE.Color(0x121212)
+        this.#scene = new THREE.Scene()
+        this.#scene.background = new THREE.Color(0x121212)
         if (!DEBUG) {
-            this._scene.fog = new THREE.Fog(this._scene.background, 1, 30)
+            this.#scene.fog = new THREE.Fog(this.#scene.background, 1, 30)
         }
 
         const fov = 60
         const near = 0.5
         const far = 50
-        this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+        this.#camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
 
-        this._jobs = []
+        this.#jobs = []
 
         if (DEBUG) {
-            this._scene.add(new THREE.CameraHelper(this._camera))
-            this._debugCamera = new THREE.PerspectiveCamera(fov, aspect, near, 500)
-            this._debugCamera.position.set(20, 20, 20)
+            this.#scene.add(new THREE.CameraHelper(this.#camera))
+            this.#debugCamera = new THREE.PerspectiveCamera(fov, aspect, near, 500)
+            this.#debugCamera.position.set(20, 20, 20)
 
-            this._orbitControls = null
+            this.#orbitControls = null
 
-            this._enableDebug()
+            this.#enableDebug()
         }
 
-        // this._addSkyBox()
-        this._hasWorld = false
+        this.#hasWorld = false
 
         const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
         const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x2ab7ca })
@@ -51,7 +58,7 @@ export class Renderer extends System {
         box.receiveShadow = true
         box.castShadow = true
         box.position.set(64, 0.5, 68)
-        this._scene.add(box)
+        this.#scene.add(box)
 
         const box2Geometry = new THREE.BoxGeometry(1, 2, 1)
         const box2Material = new THREE.MeshStandardMaterial({ color: 0x2ab7ca })
@@ -59,32 +66,25 @@ export class Renderer extends System {
         box2.receiveShadow = true
         box2.castShadow = true
         box2.position.set(62, 1, 68)
-        this._scene.add(box2)
-
-        this._scene.add(new THREE.AxesHelper(1))
+        this.#scene.add(box2)
     }
 
-    _enableDebug() {
-        // FPS counter
-        // const s = new Stats()
-        // document.body.appendChild(s.dom)
-        // this._jobs.push(() => s.update())
-
+    #enableDebug() {
         // Origin axes
-        this._scene.add(new THREE.AxesHelper(1))
+        this.#scene.add(new THREE.AxesHelper(1))
 
         // Mouse camera controls
-        this._orbitControls = new OrbitControls(
-            this._debugCamera,
-            this._renderer.domElement,
+        this.#orbitControls = new OrbitControls(
+            this.#debugCamera,
+            this.#renderer.domElement,
         )
         // controls.minDistance = 3
         // controls.maxDistance = 50
         // controls.target.set(0, 0, -100)
-        this._orbitControls.update()
+        this.#orbitControls.update()
     }
 
-    _addWorld(levelComponent) {
+    #addWorld(levelComponent) {
         const wallGeometries = []
         const { tiles } = levelComponent
 
@@ -118,7 +118,7 @@ export class Renderer extends System {
         const wallMesh = new THREE.Mesh(mergedWallGeometries, wallMaterial)
         wallMesh.receiveShadow = true
         wallMesh.castShadow = true
-        this._scene.add(wallMesh)
+        this.#scene.add(wallMesh)
 
         const floorTexture = new THREE.TextureLoader().load('/resources/textures/floor.png')
         floorTexture.wrapS = THREE.RepeatWrapping
@@ -135,9 +135,9 @@ export class Renderer extends System {
         floor.receiveShadow = true
         floor.rotation.x = -Math.PI / 2
         floor.position.set(63.5, 0, 63.5)
-        this._scene.add(floor)
+        this.#scene.add(floor)
 
-        this._hasWorld = true
+        this.#hasWorld = true
     }
 
     static createLight(lightComponent) {
@@ -161,17 +161,14 @@ export class Renderer extends System {
         return model
     }
 
-    _addSkyBox() {
-        this._scene.add(new GLHelpers.SkyBox())
-    }
-
     tick(delta) {
         if (DEBUG) {
-            this._renderer.render(this._scene, this._debugCamera)
+            this.#renderer.render(this.#scene, this.#debugCamera)
         } else {
-            this._renderer.render(this._scene, this._camera)
+            this.#renderer.render(this.#scene, this.#camera)
         }
-        this._jobs.forEach((j) => j(delta))
+
+        this.#jobs.forEach((j) => j(delta))
 
         this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach(
             ([modelComponent, positionComponent]) => {
@@ -186,7 +183,7 @@ export class Renderer extends System {
                     modelComponent.isLoading = true
                     Renderer.createModel(modelComponent).then((resource) => {
                         modelComponent.resource = resource
-                        this._scene.add(resource)
+                        this.#scene.add(resource)
                         modelComponent.isLoading = false
                     })
                 }
@@ -196,16 +193,16 @@ export class Renderer extends System {
         this.ECS.ComponentManager.getTuplesByQuery([LIGHT]).forEach(([lightComponent]) => {
             if (!lightComponent.resource) {
                 lightComponent.resource = Renderer.createLight(lightComponent)
-                this._scene.add(lightComponent.resource)
+                this.#scene.add(lightComponent.resource)
                 if (lightComponent.resource.target) {
-                    this._scene.add(lightComponent.resource.target)
+                    this.#scene.add(lightComponent.resource.target)
                 }
                 if (DEBUG) {
                     if (lightComponent.resource.helper) {
-                        this._scene.add(lightComponent.resource.helper)
+                        this.#scene.add(lightComponent.resource.helper)
                     }
                     if (lightComponent.resource.shadowHelper) {
-                        this._scene.add(lightComponent.resource.shadowHelper)
+                        this.#scene.add(lightComponent.resource.shadowHelper)
                     }
                 }
             } else if (lightComponent.needsUpdate) {
@@ -219,20 +216,20 @@ export class Renderer extends System {
 
         this.ECS.ComponentManager.getTuplesByQuery([CAMERA]).forEach(([cameraComponent]) => {
             if (cameraComponent.needsUpdate) {
-                this._camera.position.copy(cameraComponent.position)
-                this._camera.lookAt(cameraComponent.lookAt)
+                this.#camera.position.copy(cameraComponent.position)
+                this.#camera.lookAt(cameraComponent.lookAt)
                 cameraComponent.needsUpdate = false
 
                 if (DEBUG) {
-                    this._orbitControls.target.copy(cameraComponent.lookAt)
-                    this._orbitControls.update()
+                    this.#orbitControls.target.copy(cameraComponent.lookAt)
+                    this.#orbitControls.update()
                 }
             }
         })
 
-        if (!this._hasWorld) {
+        if (!this.#hasWorld) {
             const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0]
-            this._addWorld(levelComponent)
+            this.#addWorld(levelComponent)
         }
     }
 }

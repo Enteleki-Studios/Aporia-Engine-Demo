@@ -17,8 +17,8 @@ const Inspector = ({ dungeon }: Props) => {
     }, [])
     return (
         <div className="Inspector">
-            <div className="header">Inspector</div>
-            <div className="sidepanel">Sidepanel</div>
+            <div className="header">ECS Inspector</div>
+            <div className="sidepanel">Entities</div>
             <div className="preview">
                 <div className="canvasContainer">
                     <canvas width={1280} height={720} ref={canvasRef} />
