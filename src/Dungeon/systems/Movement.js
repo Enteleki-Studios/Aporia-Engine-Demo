@@ -1,5 +1,5 @@
 import { System } from 'ECS'
-import { INPUT, POSITION } from 'Components/types'
+import { INPUT, POSITION } from 'components/types'
 import * as THREE from 'three'
 
 export class Movement extends System {

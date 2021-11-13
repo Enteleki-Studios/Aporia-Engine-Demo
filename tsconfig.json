@@ -12,7 +12,8 @@
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "paths": {
-            "Dungeon/*": ["Dungeon/*"],
+            "components/*": ["Dungeon/components/*"],
+            "components": ["Dungeon/components/"],
         },
     }
 }

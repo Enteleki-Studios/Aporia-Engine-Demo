@@ -1,6 +1,6 @@
 import { AnimationMixer } from 'three'
 import { System } from 'ECS'
-import { ANIMATION, INPUT, MODEL } from 'Components/types'
+import { ANIMATION, INPUT, MODEL } from 'components/types'
 
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'

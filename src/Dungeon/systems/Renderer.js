@@ -8,7 +8,7 @@ import * as GLHelpers from 'GLHelpers'
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
 
-import { LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'Components/types'
+import { LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'components/types'
 
 import { System } from 'ECS'
 

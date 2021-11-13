@@ -1,8 +1,8 @@
 import * as ROT from 'rot-js'
 import { Vector2 } from 'three'
 import { System } from 'ECS'
-import { LEVEL, MODEL, POSITION } from '../Components/types'
-import type { Position, Level as LevelComponent } from '../Components'
+import { LEVEL, MODEL, POSITION } from 'components/types'
+import type { Position, Level as LevelComponent } from 'components'
 
 export class Level extends System {
     display: ROT.Display

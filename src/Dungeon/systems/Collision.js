@@ -1,6 +1,6 @@
 import { System } from 'ECS'
 // import logger from 'utils/logger'
-import { COLLIDES, LEVEL, POSITION } from 'Components/types'
+import { COLLIDES, LEVEL, POSITION } from 'components/types'
 
 const hitDistance = 1
 const checkRadius = 2

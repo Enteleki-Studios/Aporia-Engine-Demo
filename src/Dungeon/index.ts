@@ -1,6 +1,6 @@
 // import * as THREE from 'three'
 import { ECS } from 'ECS'
-import * as Systems from './Systems'
+import * as Systems from './systems'
 
 import {
     // AI,
@@ -15,7 +15,7 @@ import {
     Level,
     // Model,
     // Position,
-} from './Components'
+} from './components'
 
 export default class Dungeon {
     ecs: object | null = null

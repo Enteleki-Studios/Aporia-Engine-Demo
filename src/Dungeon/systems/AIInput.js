@@ -1,5 +1,5 @@
 import { System } from 'ECS'
-import { AI, INPUT } from 'Components/types'
+import { AI, INPUT } from 'components/types'
 
 export class AIInput extends System {
     constructor() {

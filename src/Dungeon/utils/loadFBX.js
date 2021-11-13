@@ -15,7 +15,6 @@ export default function loadFBX(modelPath, texturePath) {
                     if (c.isMesh && c.material) {
                         c.material.map = texture
                         c.material.side = THREE.DoubleSide
-                        // c.material.wireframe = true
                     }
                 })
             }

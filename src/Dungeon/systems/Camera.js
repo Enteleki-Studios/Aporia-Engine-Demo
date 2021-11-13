@@ -1,6 +1,6 @@
 import { Vector3 } from 'three'
 import { System } from 'ECS'
-import { CAMERA, LIGHT, POSITION } from 'Components/types'
+import { CAMERA, LIGHT, POSITION } from 'components/types'
 
 // const LERP_FACTOR = 3
 let camPosition

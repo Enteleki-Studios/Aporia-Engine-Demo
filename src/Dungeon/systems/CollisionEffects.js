@@ -1,5 +1,5 @@
 import { System } from 'ECS'
-import { COLLIDES, POSITION } from 'Components/types'
+import { COLLIDES, POSITION } from 'components/types'
 
 export class CollisionEffects extends System {
     tick() {

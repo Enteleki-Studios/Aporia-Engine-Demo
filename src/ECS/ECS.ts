@@ -3,24 +3,20 @@ import type { Component, System } from 'ECS'
 import ComponentManager from './ComponentManager'
 
 export class ECS {
-    _lastEntityId: number
+    #lastEntityId = 0
+    #clock: THREE.Clock
+    #systems: System[] = []
+
     ComponentManager: ComponentManager
-    _clock: THREE.Clock
-    _systems: System[]
 
     constructor() {
+        this.#clock = new THREE.Clock()
         this.ComponentManager = new ComponentManager()
-
-        this._clock = new THREE.Clock()
-
-        this._lastEntityId = 0
-
-        this._systems = []
     }
 
     createEntity() {
-        this._lastEntityId += 1
-        return this._lastEntityId
+        this.#lastEntityId += 1
+        return this.#lastEntityId
     }
 
     addComponent(component: Component) {
@@ -33,25 +29,23 @@ export class ECS {
 
     registerSystem(system: System) {
         system.ECS = this
-        this._systems.push(system)
+        this.#systems.push(system)
     }
 
     start() {
-        this._update()
+        this.#update()
     }
 
-    _update() {
+    #update() {
         requestAnimationFrame(() => {
-            const delta = Math.min(this._clock.getDelta(), 0.050)
-            // logger.debug('Delta', delta)
+            const delta = Math.min(this.#clock.getDelta(), 0.050)
 
             try {
-                this._systems.forEach((system) => system.tick(delta))
-                this._update()
+                this.#systems.forEach((system) => system.tick(delta))
+                this.#update()
             } catch (error) {
-                /* eslint-disable no-console, no-debugger */
+                /* eslint-disable no-console */
                 console.error(error)
-                debugger
             }
         })
     }
