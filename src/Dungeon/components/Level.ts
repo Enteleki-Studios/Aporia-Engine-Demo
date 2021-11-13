@@ -1,5 +1,5 @@
 import { Component } from 'ECS'
-import type { Tiles } from '../utils/tilesGenerator'
+import type { Tiles } from 'utils/tilesGenerator'
 import { LEVEL } from './types'
 
 export class Level extends Component {

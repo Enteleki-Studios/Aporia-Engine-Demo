@@ -2,14 +2,16 @@ import { Component } from 'ECS'
 import { Vector3 } from 'three'
 import { LIGHT } from './types'
 
+type LightType = ('AmbientLight' | 'DirectionalLight')
+
 interface Settings {
-    lightType: string,
+    lightType: LightType,
     color: number,
     intensity: number,
 }
 
 export class Light extends Component {
-    lightType: string
+    lightType: LightType
     color: number
     intensity: number
     position: Vector3

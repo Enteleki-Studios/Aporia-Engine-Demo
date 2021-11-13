@@ -1,6 +1,6 @@
 // import * as THREE from 'three'
 import { ECS } from 'ECS'
-import * as Systems from './systems'
+import * as Systems from 'systems'
 import {
     // AI,
     // Animation,
@@ -14,14 +14,18 @@ import {
     Level,
     // Model,
     // Position,
-} from './components'
-import tilesGenerator from './utils/tilesGenerator'
+} from 'components'
+import tilesGenerator from 'utils/tilesGenerator'
 
 export default class Dungeon {
-    ecs: object | null = null
+    ecs: ECS
+
+    constructor() {
+        this.ecs = new ECS()
+    }
+
     init(canvas: HTMLElement) {
-        const DungeonECS = new ECS()
-        this.ecs = DungeonECS
+        const DungeonECS = this.ecs
 
         // DungeonECS.registerSystem(new Systems.Level())
         // DungeonECS.registerSystem(new Systems.PlayerInput({
