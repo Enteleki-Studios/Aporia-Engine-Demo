@@ -1,17 +1,13 @@
 import { Component } from 'ECS'
+import type { Tiles } from '../utils/tilesGenerator'
 import { LEVEL } from './types'
 
-interface Settings {
-    seed: number,
-}
-
 export class Level extends Component {
-    seed: number
-    resource: (object | null) = null
+    readonly tiles: Tiles
 
-    constructor(entity: number, { seed }: Settings) {
+    constructor(entity: number, { tiles }: { tiles: Tiles }) {
         super(LEVEL, entity)
 
-        this.seed = seed
+        this.tiles = tiles
     }
 }

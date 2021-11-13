@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 
-// import Stats from 'three/examples/jsm/libs/stats.module'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
@@ -21,7 +20,6 @@ export class Renderer extends System {
         this._renderer = new GLHelpers.Renderer({ canvas })
 
         this._scene = new THREE.Scene()
-        // this._scene.background = new THREE.Color(0xbd93f9)
         this._scene.background = new THREE.Color(0x121212)
         if (!DEBUG) {
             this._scene.fog = new THREE.Fog(this._scene.background, 1, 30)
@@ -88,7 +86,7 @@ export class Renderer extends System {
 
     _addWorld(levelComponent) {
         const wallGeometries = []
-        const { tiles } = levelComponent.resource
+        const { tiles } = levelComponent
 
         const createWall = (x, y) => {
             const b = new THREE.BoxBufferGeometry(1, 4, 1)
@@ -234,9 +232,7 @@ export class Renderer extends System {
 
         if (!this._hasWorld) {
             const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0]
-            if (levelComponent.resource) {
-                this._addWorld(levelComponent)
-            }
+            this._addWorld(levelComponent)
         }
     }
 }

@@ -1,7 +1,6 @@
 // import * as THREE from 'three'
 import { ECS } from 'ECS'
 import * as Systems from './systems'
-
 import {
     // AI,
     // Animation,
@@ -16,6 +15,7 @@ import {
     // Model,
     // Position,
 } from './components'
+import tilesGenerator from './utils/tilesGenerator'
 
 export default class Dungeon {
     ecs: object | null = null
@@ -23,9 +23,7 @@ export default class Dungeon {
         const DungeonECS = new ECS()
         this.ecs = DungeonECS
 
-        DungeonECS.registerSystem(new Systems.Level({
-            size: [64, 64],
-        }))
+        // DungeonECS.registerSystem(new Systems.Level())
         // DungeonECS.registerSystem(new Systems.PlayerInput({
         //     canvas,
         // }))
@@ -41,7 +39,9 @@ export default class Dungeon {
             aspect: (1280 / 720),
         }))
 
-        DungeonECS.addComponent(new Level(DungeonECS.createEntity(), { seed: 421 }))
+        DungeonECS.addComponent(new Level(DungeonECS.createEntity(), {
+            tiles: tilesGenerator([64, 64], 421),
+        }))
 
         DungeonECS.addComponent(new Light(DungeonECS.createEntity(), {
             lightType: 'AmbientLight',
