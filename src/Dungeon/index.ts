@@ -1,4 +1,4 @@
-// import * as THREE from 'three'
+import * as THREE from 'three'
 import { ECS } from 'ECS'
 import * as Systems from 'systems'
 import {
@@ -12,8 +12,8 @@ import {
     // Input,
     Light,
     Level,
-    // Model,
-    // Position,
+    Model,
+    Position,
 } from 'components'
 import tilesGenerator from 'utils/tilesGenerator'
 
@@ -53,19 +53,19 @@ export default class Dungeon {
             intensity: 2,
         }))
 
-        // const playerEntity = DungeonECS.createEntity()
-        // DungeonECS.addComponents([
-        //     new Animation(playerEntity, 'idle'),
-        //     new Attack(playerEntity, { damage: 5, range: 2 }),
-        //     new Camera(playerEntity),
-        //     new Collides(playerEntity),
-        //     new Health(playerEntity, { health: 20 }),
-        //     new Hero(playerEntity),
-        //     new Input(playerEntity),
-        //     new Light(playerEntity, { lightType: 'DirectionalLight' }),
-        //     new Model(playerEntity, { modelId: 2 }),
-        //     new Position(playerEntity, new THREE.Vector3(64, 0, 64)),
-        // ])
+        const playerEntity = DungeonECS.createEntity()
+        DungeonECS.addComponents([
+            // new Animation(playerEntity, 'idle'),
+            // new Attack(playerEntity, { damage: 5, range: 2 }),
+            // new Camera(playerEntity),
+            // new Collides(playerEntity),
+            // new Health(playerEntity, { health: 20 }),
+            // new Hero(playerEntity),
+            // new Input(playerEntity),
+            new Light(playerEntity, { lightType: 'DirectionalLight' }),
+            new Model(playerEntity, { modelId: 2 }),
+            new Position(playerEntity, new THREE.Vector3(64, 0, 64)),
+        ])
 
         // const slimeEntity = DungeonECS.createEntity()
         // DungeonECS.addComponents([

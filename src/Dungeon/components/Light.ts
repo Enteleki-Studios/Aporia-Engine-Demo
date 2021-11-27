@@ -6,14 +6,14 @@ type LightType = ('AmbientLight' | 'DirectionalLight')
 
 interface Settings {
     lightType: LightType,
-    color: number,
-    intensity: number,
+    color?: number,
+    intensity?: number,
 }
 
 export class Light extends Component {
     lightType: LightType
-    color: number
-    intensity: number
+    color?: number
+    intensity?: number
     position: Vector3
     target: Vector3
     needsUpdate = true
