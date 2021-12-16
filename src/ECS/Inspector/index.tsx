@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 
-import Dungeon from 'Dungeon'
+import type Dungeon from 'Dungeon'
 
 import './index.scss'
 
@@ -8,7 +8,7 @@ interface Props {
     dungeon: Dungeon,
 }
 
-const Inspector = ({ dungeon }: Props) => {
+export const Inspector = ({ dungeon }: Props) => {
     const canvasRef = React.useRef(null)
     useEffect(() => {
         if (canvasRef.current) {
@@ -28,5 +28,3 @@ const Inspector = ({ dungeon }: Props) => {
         </div>
     )
 }
-
-export default Inspector

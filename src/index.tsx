@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { render } from 'react-dom'
 
-import Inspector from 'Inspector'
+import { Inspector } from 'ECS'
 
 import Dungeon from 'Dungeon'
 
