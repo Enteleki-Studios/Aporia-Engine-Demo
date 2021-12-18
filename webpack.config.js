@@ -13,6 +13,7 @@ module.exports = {
             path.resolve(__dirname, 'node_modules'),
             path.resolve(__dirname, 'src'),
             path.resolve(__dirname, 'src/Dungeon'),
+            path.resolve(__dirname, 'src/UI'),
         ],
         extensions: ['.ts', '.tsx', '.js', '.json'],
     },

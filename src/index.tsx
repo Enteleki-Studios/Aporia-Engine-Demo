@@ -3,10 +3,12 @@ import { render } from 'react-dom'
 
 import { Inspector } from 'ECS'
 
-import Dungeon from 'Dungeon'
+import UI from 'UI'
 
 import './root.scss'
 
-const dungeon: Dungeon = new Dungeon()
-
-render(<Inspector dungeon={dungeon} />, document.getElementById('Root'))
+render(
+    <Inspector>
+        <UI />
+    </Inspector>
+, document.getElementById('Root'))

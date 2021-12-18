@@ -12,7 +12,7 @@
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "paths": {
-            "*": ["*", "Dungeon/*"],
+            "*": ["*", "Dungeon/*", "UI/*"],
         },
     }
 }

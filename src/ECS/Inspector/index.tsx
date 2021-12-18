@@ -1,30 +1,20 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, ReactNode } from 'react'
 
 import type Dungeon from 'Dungeon'
 
 import './index.scss'
 
 interface Props {
-    dungeon: Dungeon,
+    children: ReactNode,
 }
 
-export const Inspector = ({ dungeon }: Props) => {
-    const canvasRef = React.useRef(null)
-    useEffect(() => {
-        if (canvasRef.current) {
-            dungeon.init(canvasRef.current)
-        }
-    }, [])
-    return (
-        <div className="Inspector">
-            <div className="header">ECS Inspector</div>
-            <div className="sidepanel">Entities</div>
-            <div className="preview">
-                <div className="canvasContainer">
-                    <canvas width={1280} height={720} ref={canvasRef} />
-                </div>
-            </div>
-            <div className="log">Log</div>
+export const Inspector = ({ children }: Props) => (
+    <div className="Inspector">
+        <div className="header">ECS Inspector</div>
+        <div className="sidepanel">Entities</div>
+        <div className="preview">
+            {children}
         </div>
-    )
-}
+        <div className="log">Log</div>
+    </div>
+)
