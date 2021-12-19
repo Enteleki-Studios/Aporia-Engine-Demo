@@ -8,6 +8,7 @@ import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
 
 import { LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'components/types'
+import type { Camera, Level, Light, Model, Position } from 'components'
 
 import { System } from 'ECS'
 
@@ -17,12 +18,12 @@ export class Renderer extends System {
     #renderer
     #scene
     #camera
-    #jobs
+    #jobs: Array<(delta: number) => void>
     #hasWorld
-    #debugCamera
-    #orbitControls
+    #debugCamera!: THREE.PerspectiveCamera
+    #orbitControls?: OrbitControls
 
-    constructor({ canvas, aspect }) {
+    constructor({ canvas, aspect }: { canvas: HTMLElement, aspect: number }) {
         super()
 
         this.#renderer = new GLHelpers.Renderer({ canvas })
@@ -44,8 +45,6 @@ export class Renderer extends System {
             this.#scene.add(new THREE.CameraHelper(this.#camera))
             this.#debugCamera = new THREE.PerspectiveCamera(fov, aspect, near, 500)
             this.#debugCamera.position.set(20, 20, 20)
-
-            this.#orbitControls = null
 
             this.#enableDebug()
         }
@@ -84,11 +83,11 @@ export class Renderer extends System {
         this.#orbitControls.update()
     }
 
-    #addWorld(levelComponent) {
+    #addWorld(levelComponent: Level) {
         const wallGeometries = []
         const { tiles } = levelComponent
 
-        const createWall = (x, y) => {
+        const createWall = (x: number, y: number) => {
             const b = new THREE.BoxBufferGeometry(1, 4, 1)
             const mat4 = new THREE.Matrix4()
             mat4.makeTranslation(x, 2, y)
@@ -140,19 +139,20 @@ export class Renderer extends System {
         this.#hasWorld = true
     }
 
-    static createLight(lightComponent) {
+    static createLight(lightComponent: Light) {
         switch (lightComponent.lightType) {
             case 'DirectionalLight':
                 return new GLHelpers.DirectionalLight(0xFFFFFF, 0.4)
-            case 'AmbientLight':
-                return new THREE.AmbientLight(lightComponent.color, lightComponent.intensity)
+            // case 'AmbientLight':
+            //     return new THREE.AmbientLight(lightComponent.color, lightComponent.intensity)
             default:
                 throw new Error(`Unsupported light type ${lightComponent.lightType}`)
         }
     }
 
-    static async createModel(modelComponent) {
+    static async createModel(modelComponent: Model) {
         const { modelId } = modelComponent
+
         const { modelPath, texturePath, scale } = modelDB[modelId]
 
         const model = await loadFBX(modelPath, texturePath)
@@ -161,7 +161,7 @@ export class Renderer extends System {
         return model
     }
 
-    tick(delta) {
+    tick(delta: number) {
         if (DEBUG) {
             this.#renderer.render(this.#scene, this.#debugCamera)
         } else {
@@ -170,41 +170,41 @@ export class Renderer extends System {
 
         this.#jobs.forEach((j) => j(delta))
 
-        this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach(
-            ([modelComponent, positionComponent]) => {
-                if (modelComponent.resource) {
-                    // Update position
-                    if (positionComponent.needsUpdate) {
-                        modelComponent.resource.position.copy(positionComponent.position)
-                        modelComponent.resource.quaternion.copy(positionComponent.rotation)
-                        modelComponent.needsUpdate = false
-                    }
-                } else if (!modelComponent.isLoading) {
-                    modelComponent.isLoading = true
-                    Renderer.createModel(modelComponent).then((resource) => {
-                        modelComponent.resource = resource
-                        this.#scene.add(resource)
-                        modelComponent.isLoading = false
-                    })
+        this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach((tuple) => {
+            const [modelComponent, positionComponent] = tuple as [Model, Position]
+            if (modelComponent.resource) {
+                // Update position
+                if (positionComponent.needsUpdate) {
+                    modelComponent.resource.position.copy(positionComponent.position)
+                    modelComponent.resource.quaternion.copy(positionComponent.rotation)
+                    positionComponent.needsUpdate = false
                 }
-            },
-        )
+            } else if (!modelComponent.isLoading) {
+                modelComponent.isLoading = true
+                Renderer.createModel(modelComponent).then((resource) => {
+                    modelComponent.resource = resource
+                    this.#scene.add(resource)
+                    modelComponent.isLoading = false
+                })
+            }
+        })
 
-        this.ECS.ComponentManager.getTuplesByQuery([LIGHT]).forEach(([lightComponent]) => {
+        this.ECS.ComponentManager.getTuplesByQuery([LIGHT]).forEach((tuple) => {
+            const [lightComponent] = tuple as [Light]
             if (!lightComponent.resource) {
                 lightComponent.resource = Renderer.createLight(lightComponent)
                 this.#scene.add(lightComponent.resource)
                 if (lightComponent.resource.target) {
                     this.#scene.add(lightComponent.resource.target)
                 }
-                if (DEBUG) {
-                    if (lightComponent.resource.helper) {
-                        this.#scene.add(lightComponent.resource.helper)
-                    }
-                    if (lightComponent.resource.shadowHelper) {
-                        this.#scene.add(lightComponent.resource.shadowHelper)
-                    }
-                }
+                // if (DEBUG) {
+                //     if (lightComponent.resource.helper) {
+                //         this.#scene.add(lightComponent.resource.helper)
+                //     }
+                //     if (lightComponent.resource.shadowHelper) {
+                //         this.#scene.add(lightComponent.resource.shadowHelper)
+                //     }
+                // }
             } else if (lightComponent.needsUpdate) {
                 if (lightComponent.lightType === 'DirectionalLight') {
                     lightComponent.resource.position.copy(lightComponent.position)
@@ -214,13 +214,14 @@ export class Renderer extends System {
             }
         })
 
-        this.ECS.ComponentManager.getTuplesByQuery([CAMERA]).forEach(([cameraComponent]) => {
+        this.ECS.ComponentManager.getTuplesByQuery([CAMERA]).forEach((tuple) => {
+            const [cameraComponent] = tuple as [Camera]
             if (cameraComponent.needsUpdate) {
                 this.#camera.position.copy(cameraComponent.position)
                 this.#camera.lookAt(cameraComponent.lookAt)
                 cameraComponent.needsUpdate = false
 
-                if (DEBUG) {
+                if (DEBUG && this.#orbitControls) {
                     this.#orbitControls.target.copy(cameraComponent.lookAt)
                     this.#orbitControls.update()
                 }
@@ -228,7 +229,7 @@ export class Renderer extends System {
         })
 
         if (!this.#hasWorld) {
-            const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0]
+            const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0] as [Level]
             this.#addWorld(levelComponent)
         }
     }

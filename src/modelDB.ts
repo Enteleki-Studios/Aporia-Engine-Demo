@@ -1,6 +1,15 @@
 const MF = '/resources/models' // Models folder
-export default [
-    null,
+const modelDB: Array<({
+    modelPath: string,
+    texturePath?: string,
+    scale: number,
+    animations?: object,
+    animationsExternal?: string[],
+})> = [
+    {
+        modelPath: '',
+        scale: 0,
+    },
     {
         modelPath: `${MF}/rogue/Rogue.fbx`,
         texturePath: `${MF}/rogue/Rogue_Texture.png`,
@@ -60,3 +69,5 @@ export default [
         },
     },
 ]
+
+export default modelDB

@@ -1,8 +1,9 @@
 import { Component } from 'ECS'
 import { Vector3 } from 'three'
+import type { DirectionalLight } from 'GLHelpers'
 import { LIGHT } from './types'
 
-type LightType = ('AmbientLight' | 'DirectionalLight')
+type LightType = ('DirectionalLight')
 
 interface Settings {
     lightType: LightType,
@@ -17,7 +18,7 @@ export class Light extends Component {
     position: Vector3
     target: Vector3
     needsUpdate = true
-    resource: (object | null) = null
+    resource: (DirectionalLight | null) = null
 
     constructor(entityId: number, { lightType, color, intensity }: Settings) {
         super(LIGHT, entityId)

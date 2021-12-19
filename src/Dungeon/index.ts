@@ -47,11 +47,11 @@ export default class Dungeon {
             tiles: tilesGenerator([64, 64], 421),
         }))
 
-        DungeonECS.addComponent(new Light(DungeonECS.createEntity(), {
-            lightType: 'AmbientLight',
-            color: 0x101010,
-            intensity: 2,
-        }))
+        // DungeonECS.addComponent(new Light(DungeonECS.createEntity(), {
+        //     lightType: 'AmbientLight',
+        //     color: 0x101010,
+        //     intensity: 2,
+        // }))
 
         const playerEntity = DungeonECS.createEntity()
         DungeonECS.addComponents([
