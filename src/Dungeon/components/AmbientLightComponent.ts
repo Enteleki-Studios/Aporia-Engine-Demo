@@ -1,0 +1,21 @@
+import { Component } from 'ECS'
+import { AmbientLight } from 'three'
+import { AMBIENT_LIGHT } from './types'
+
+interface Settings {
+    color: number,
+    intensity: number,
+}
+
+export class AmbientLightComponent extends Component {
+    color: number
+    intensity: number
+    resource: (AmbientLight | null) = null
+
+    constructor(entityId: number, { color, intensity }: Settings) {
+        super(AMBIENT_LIGHT, entityId)
+
+        this.color = color
+        this.intensity = intensity
+    }
+}

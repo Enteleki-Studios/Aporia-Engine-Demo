@@ -2,7 +2,7 @@ import { Quaternion, Vector3 } from 'three'
 import { Component } from 'ECS'
 import { POSITION } from './types'
 
-export class Position extends Component {
+export class PositionComponent extends Component {
     position: Vector3
     quaternion: Quaternion
     rotation: Quaternion

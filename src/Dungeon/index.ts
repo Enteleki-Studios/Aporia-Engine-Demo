@@ -3,17 +3,18 @@ import { ECS } from 'ECS'
 import * as Systems from 'systems'
 import {
     // AI,
+    AmbientLightComponent,
     // Animation,
     // Attack,
-    // Camera,
+    CameraComponent,
     // Collides,
+    DirectionalLightComponent,
     // Health,
-    // Hero,
-    // Input,
-    Light,
+    HeroComponent,
+    InputComponent,
     Level,
-    Model,
-    Position,
+    ModelComponent,
+    PositionComponent,
 } from 'components'
 import tilesGenerator from 'utils/tilesGenerator'
 
@@ -36,7 +37,7 @@ export default class Dungeon {
         // DungeonECS.registerSystem(new Systems.Collision())
         // DungeonECS.registerSystem(new Systems.Combat())
         // DungeonECS.registerSystem(new Systems.CollisionEffects())
-        // DungeonECS.registerSystem(new Systems.Camera())
+        DungeonECS.registerSystem(new Systems.Camera())
         // DungeonECS.registerSystem(new Systems.Animation())
         DungeonECS.registerSystem(new Systems.Renderer({
             canvas,
@@ -47,24 +48,23 @@ export default class Dungeon {
             tiles: tilesGenerator([64, 64], 421),
         }))
 
-        // DungeonECS.addComponent(new Light(DungeonECS.createEntity(), {
-        //     lightType: 'AmbientLight',
-        //     color: 0x101010,
-        //     intensity: 2,
-        // }))
+        DungeonECS.addComponent(new AmbientLightComponent(DungeonECS.createEntity(), {
+            color: 0x101010,
+            intensity: 2,
+        }))
 
         const playerEntity = DungeonECS.createEntity()
         DungeonECS.addComponents([
             // new Animation(playerEntity, 'idle'),
             // new Attack(playerEntity, { damage: 5, range: 2 }),
-            // new Camera(playerEntity),
+            new CameraComponent(playerEntity),
             // new Collides(playerEntity),
             // new Health(playerEntity, { health: 20 }),
-            // new Hero(playerEntity),
-            // new Input(playerEntity),
-            new Light(playerEntity, { lightType: 'DirectionalLight' }),
-            new Model(playerEntity, { modelId: 2 }),
-            new Position(playerEntity, new THREE.Vector3(64, 0, 64)),
+            new HeroComponent(playerEntity),
+            new InputComponent(playerEntity),
+            new DirectionalLightComponent(playerEntity),
+            new ModelComponent(playerEntity, { modelId: 2 }),
+            new PositionComponent(playerEntity, new THREE.Vector3(64, 0, 64)),
         ])
 
         // const slimeEntity = DungeonECS.createEntity()

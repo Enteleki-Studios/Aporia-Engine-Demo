@@ -2,7 +2,7 @@ import { Vector3 } from 'three'
 import { Component } from 'ECS'
 import { CAMERA } from './types'
 
-export class Camera extends Component {
+export class CameraComponent extends Component {
     position: Vector3
     lookAt: Vector3
     needsUpdate: boolean

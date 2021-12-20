@@ -7,8 +7,15 @@ import * as GLHelpers from 'GLHelpers'
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
 
-import { LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'components/types'
-import type { Camera, Level, Light, Model, Position } from 'components'
+import { AMBIENT_LIGHT, DIRECTIONAL_LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'components/types'
+import type {
+    AmbientLightComponent,
+    DirectionalLightComponent,
+    CameraComponent,
+    Level,
+    ModelComponent,
+    PositionComponent,
+} from 'components'
 
 import { System } from 'ECS'
 
@@ -139,18 +146,7 @@ export class Renderer extends System {
         this.#hasWorld = true
     }
 
-    static createLight(lightComponent: Light) {
-        switch (lightComponent.lightType) {
-            case 'DirectionalLight':
-                return new GLHelpers.DirectionalLight(0xFFFFFF, 0.4)
-            // case 'AmbientLight':
-            //     return new THREE.AmbientLight(lightComponent.color, lightComponent.intensity)
-            default:
-                throw new Error(`Unsupported light type ${lightComponent.lightType}`)
-        }
-    }
-
-    static async createModel(modelComponent: Model) {
+    static async createModel(modelComponent: ModelComponent) {
         const { modelId } = modelComponent
 
         const { modelPath, texturePath, scale } = modelDB[modelId]
@@ -171,7 +167,7 @@ export class Renderer extends System {
         this.#jobs.forEach((j) => j(delta))
 
         this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach((tuple) => {
-            const [modelComponent, positionComponent] = tuple as [Model, Position]
+            const [modelComponent, positionComponent] = tuple as [ModelComponent, PositionComponent]
             if (modelComponent.resource) {
                 // Update position
                 if (positionComponent.needsUpdate) {
@@ -189,33 +185,40 @@ export class Renderer extends System {
             }
         })
 
-        this.ECS.ComponentManager.getTuplesByQuery([LIGHT]).forEach((tuple) => {
-            const [lightComponent] = tuple as [Light]
-            if (!lightComponent.resource) {
-                lightComponent.resource = Renderer.createLight(lightComponent)
-                this.#scene.add(lightComponent.resource)
-                if (lightComponent.resource.target) {
-                    this.#scene.add(lightComponent.resource.target)
+        this.ECS.ComponentManager.getTuplesByQuery([DIRECTIONAL_LIGHT]).forEach((tuple) => {
+            const [directionalLightComponent] = tuple as [DirectionalLightComponent]
+            if (!directionalLightComponent.resource) {
+                directionalLightComponent.resource = new GLHelpers.DirectionalLight(0xFFFFFF, 0.4)
+                this.#scene.add(directionalLightComponent.resource)
+                if (directionalLightComponent.resource.target) {
+                    this.#scene.add(directionalLightComponent.resource.target)
                 }
-                // if (DEBUG) {
-                //     if (lightComponent.resource.helper) {
-                //         this.#scene.add(lightComponent.resource.helper)
-                //     }
-                //     if (lightComponent.resource.shadowHelper) {
-                //         this.#scene.add(lightComponent.resource.shadowHelper)
-                //     }
-                // }
-            } else if (lightComponent.needsUpdate) {
-                if (lightComponent.lightType === 'DirectionalLight') {
-                    lightComponent.resource.position.copy(lightComponent.position)
-                    lightComponent.resource.target.position.copy(lightComponent.target)
-                    lightComponent.needsUpdate = false
+                if (DEBUG) {
+                    if (directionalLightComponent.resource.helper) {
+                        this.#scene.add(directionalLightComponent.resource.helper)
+                    }
+                    if (directionalLightComponent.resource.shadowHelper) {
+                        this.#scene.add(directionalLightComponent.resource.shadowHelper)
+                    }
                 }
+            } else if (directionalLightComponent.needsUpdate) {
+                directionalLightComponent.resource.position.copy(directionalLightComponent.position)
+                directionalLightComponent.resource.target.position.copy(directionalLightComponent.target)
+                directionalLightComponent.needsUpdate = false
+            }
+        })
+
+        this.ECS.ComponentManager.getTuplesByQuery([AMBIENT_LIGHT]).forEach((tuple) => {
+            const [ambientLightComponent] = tuple as [AmbientLightComponent]
+            if (!ambientLightComponent.resource) {
+                const { color, intensity } = ambientLightComponent
+                ambientLightComponent.resource = new THREE.AmbientLight(color, intensity)
+                this.#scene.add(ambientLightComponent.resource)
             }
         })
 
         this.ECS.ComponentManager.getTuplesByQuery([CAMERA]).forEach((tuple) => {
-            const [cameraComponent] = tuple as [Camera]
+            const [cameraComponent] = tuple as [CameraComponent]
             if (cameraComponent.needsUpdate) {
                 this.#camera.position.copy(cameraComponent.position)
                 this.#camera.lookAt(cameraComponent.lookAt)
