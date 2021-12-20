@@ -3,6 +3,7 @@ import { Component } from 'ECS'
 import { POSITION } from './types'
 
 export class PositionComponent extends Component {
+    type = POSITION
     position: Vector3
     quaternion: Quaternion
     rotation: Quaternion
@@ -11,7 +12,7 @@ export class PositionComponent extends Component {
     needsUpdate: boolean
 
     constructor(entityId: number, position: Vector3) {
-        super(POSITION, entityId)
+        super(entityId)
 
         this.position = position
 

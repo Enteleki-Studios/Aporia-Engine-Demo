@@ -8,12 +8,13 @@ interface Settings {
 }
 
 export class AmbientLightComponent extends Component {
+    type = AMBIENT_LIGHT
     color: number
     intensity: number
     resource: (AmbientLight | null) = null
 
     constructor(entityId: number, { color, intensity }: Settings) {
-        super(AMBIENT_LIGHT, entityId)
+        super(entityId)
 
         this.color = color
         this.intensity = intensity

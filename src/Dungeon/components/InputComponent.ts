@@ -3,6 +3,8 @@ import { Component } from 'ECS'
 import { INPUT } from './types'
 
 export class InputComponent extends Component {
+    type = INPUT
+
     forward = false
     run = false
     attacking = false
@@ -19,10 +21,5 @@ export class InputComponent extends Component {
     downPress = false
     downHold = false
 
-    pan: Vector3
-
-    constructor(entityId: number) {
-        super(INPUT, entityId)
-        this.pan = new Vector3(0, 0, 0)
-    }
+    pan = new Vector3()
 }
