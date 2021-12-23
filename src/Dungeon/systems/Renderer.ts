@@ -174,6 +174,7 @@ export class Renderer extends System {
                     modelComponent.resource.position.copy(positionComponent.position)
                     modelComponent.resource.quaternion.copy(positionComponent.rotation)
                     positionComponent.needsUpdate = false
+                    console.debug('HEYY')
                 }
             } else if (!modelComponent.isLoading) {
                 modelComponent.isLoading = true

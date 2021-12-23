@@ -53,6 +53,12 @@ module.exports = {
     devServer: {
         port: 2080,
         // host: '0.0.0.0',
+        client: {
+            overlay: {
+                errors: true,
+                warnings: false,
+            },
+        },
     },
     devtool: 'inline-source-map',
     output: {

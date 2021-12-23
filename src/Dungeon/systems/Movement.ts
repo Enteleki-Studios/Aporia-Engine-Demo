@@ -1,8 +1,12 @@
 import { System } from 'ECS'
+import type { InputComponent, PositionComponent } from 'components'
 import { INPUT, POSITION } from 'components/types'
 import * as THREE from 'three'
 
 export class Movement extends System {
+    _decceleration: THREE.Vector3
+    _acceleration: THREE.Vector3
+
     constructor() {
         super()
 
@@ -10,8 +14,9 @@ export class Movement extends System {
         this._acceleration = new THREE.Vector3(15, 0.01, 15)
     }
 
-    tick(delta) {
-        this.ECS.ComponentManager.getTuplesByQuery([INPUT, POSITION]).forEach(([inputComponent, positionComponent]) => {
+    tick(delta: number) {
+        this.ECS.ComponentManager.getTuplesByQuery([INPUT, POSITION]).forEach((tuple) => {
+            const [inputComponent, positionComponent] = tuple as [InputComponent, PositionComponent]
             const { velocity } = positionComponent
             const frameDecceleration = new THREE.Vector3(
                 velocity.x * this._decceleration.x,

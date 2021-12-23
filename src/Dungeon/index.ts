@@ -33,7 +33,7 @@ export default class Dungeon {
             canvas,
         }))
         // DungeonECS.registerSystem(new Systems.AIInput())
-        // DungeonECS.registerSystem(new Systems.Movement())
+        DungeonECS.registerSystem(new Systems.Movement())
         // DungeonECS.registerSystem(new Systems.Collision())
         // DungeonECS.registerSystem(new Systems.Combat())
         // DungeonECS.registerSystem(new Systems.CollisionEffects())
