@@ -1,8 +1,22 @@
 import { System } from 'ECS'
+import type { HeroComponent, InputComponent } from 'components'
 import { HERO, INPUT } from 'components/types'
 
 export class PlayerInput extends System {
-    constructor({ canvas }) {
+    _liveInput: {
+        up: boolean,
+        left: boolean,
+        right: boolean,
+        down: boolean,
+        shift: boolean,
+        space: boolean,
+        mouseX: number,
+        mouseY: number,
+    }
+
+    _canvas: HTMLElement
+
+    constructor({ canvas }: { canvas: HTMLElement }) {
         super()
 
         this._canvas = canvas
@@ -29,7 +43,7 @@ export class PlayerInput extends System {
             this._canvas.requestPointerLock()
         })
 
-        const onMouseMove = (e) => this._onMouseMove(e)
+        const onMouseMove = (e: MouseEvent) => this._onMouseMove(e)
         const onPointerLockChange = () => {
             if (document.pointerLockElement === this._canvas) {
                 document.addEventListener('mousemove', onMouseMove, false)
@@ -41,12 +55,12 @@ export class PlayerInput extends System {
         document.addEventListener('pointerlockchange', onPointerLockChange, false)
     }
 
-    _onMouseMove(e) {
+    _onMouseMove(e: MouseEvent) {
         this._liveInput.mouseX += e.movementX
         this._liveInput.mouseY += e.movementY
     }
 
-    _onKeyDown(e) {
+    _onKeyDown(e: KeyboardEvent) {
         e.preventDefault()
 
         switch (e.code) {
@@ -77,7 +91,7 @@ export class PlayerInput extends System {
         }
     }
 
-    _onKeyUp(e) {
+    _onKeyUp(e: KeyboardEvent) {
         switch (e.code) {
             case 'KeyW':
             case 'ArrowUp':
@@ -107,7 +121,8 @@ export class PlayerInput extends System {
     }
 
     tick() {
-        this.ECS.ComponentManager.getTuplesByQuery([HERO, INPUT]).forEach(([, inputComponent]) => {
+        this.ECS.ComponentManager.getTuplesByQuery([HERO, INPUT]).forEach((tuple) => {
+            const [, inputComponent] = tuple as [HeroComponent, InputComponent]
             if (this._liveInput.shift && !this._liveInput.down) {
                 inputComponent.run = true
             } else {

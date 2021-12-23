@@ -29,9 +29,9 @@ export default class Dungeon {
         const DungeonECS = this.ecs
 
         // DungeonECS.registerSystem(new Systems.Level())
-        // DungeonECS.registerSystem(new Systems.PlayerInput({
-        //     canvas,
-        // }))
+        DungeonECS.registerSystem(new Systems.PlayerInput({
+            canvas,
+        }))
         // DungeonECS.registerSystem(new Systems.AIInput())
         // DungeonECS.registerSystem(new Systems.Movement())
         // DungeonECS.registerSystem(new Systems.Collision())
