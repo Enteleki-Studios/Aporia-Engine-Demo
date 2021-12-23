@@ -3,7 +3,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
-import * as GLHelpers from 'GLHelpers'
+import { System } from 'ECS'
+
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
 
@@ -17,7 +18,7 @@ import type {
     PositionComponent,
 } from 'components'
 
-import { System } from 'ECS'
+import * as GLHelpers from './GLHelpers'
 
 const DEBUG = true
 
@@ -33,7 +34,11 @@ export class Renderer extends System {
     constructor({ canvas, aspect }: { canvas: HTMLElement, aspect: number }) {
         super()
 
-        this.#renderer = new GLHelpers.Renderer({ canvas })
+        this.#renderer = new THREE.WebGLRenderer({ canvas })
+        this.#renderer.outputEncoding = THREE.sRGBEncoding
+        this.#renderer.shadowMap.enabled = true
+        this.#renderer.shadowMap.type = THREE.PCFSoftShadowMap
+        this.#renderer.setPixelRatio(window.devicePixelRatio)
 
         this.#scene = new THREE.Scene()
         this.#scene.background = new THREE.Color(0x121212)
@@ -174,7 +179,6 @@ export class Renderer extends System {
                     modelComponent.resource.position.copy(positionComponent.position)
                     modelComponent.resource.quaternion.copy(positionComponent.rotation)
                     positionComponent.needsUpdate = false
-                    console.debug('HEYY')
                 }
             } else if (!modelComponent.isLoading) {
                 modelComponent.isLoading = true

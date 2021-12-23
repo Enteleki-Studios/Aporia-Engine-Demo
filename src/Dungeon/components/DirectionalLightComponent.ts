@@ -1,6 +1,6 @@
 import { Component } from 'ECS'
 import { Vector3 } from 'three'
-import type { DirectionalLight } from 'GLHelpers'
+import type { DirectionalLight } from 'systems/Renderer/GLHelpers'
 import { DIRECTIONAL_LIGHT } from './types'
 
 export class DirectionalLightComponent extends Component {
