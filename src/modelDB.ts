@@ -3,12 +3,27 @@ const modelDB: Array<({
     modelPath: string,
     texturePath?: string,
     scale: number,
-    animations?: object,
+    animations: {
+        idle?: string,
+        walk?: string,
+        run?: string,
+        death?: string,
+        attack?: string,
+        pickUp?: string,
+        enGarde?: string,
+        attack2?: string,
+        punch?: string,
+        hit?: string,
+        hitAttack?: string,
+        roll?: string,
+        spawn?: string,
+    },
     animationsExternal?: string[],
 })> = [
     {
         modelPath: '',
         scale: 0,
+        animations: {},
     },
     {
         modelPath: `${MF}/rogue/Rogue.fbx`,
@@ -29,11 +44,11 @@ const modelDB: Array<({
             roll: 'CharacterArmature|Roll',
         },
     },
-    {
-        modelPath: `${MF}/eve/eve.fbx`,
-        scale: 0.015,
-        animationsExternal: ['idle', 'walk', 'run', 'walkBack', 'attack'],
-    },
+    // {
+    //     modelPath: `${MF}/eve/eve.fbx`,
+    //     scale: 0.015,
+    //     animationsExternal: ['idle', 'walk', 'run', 'walkBack', 'attack'],
+    // },
     {
         modelPath: `${MF}/slime/Slime.fbx`,
         scale: 0.005,

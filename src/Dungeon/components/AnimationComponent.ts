@@ -1,3 +1,4 @@
+import { AnimationClip, AnimationAction } from 'three'
 import { Component } from 'ECS'
 import { ANIMATION } from './types'
 
@@ -8,7 +9,12 @@ export class AnimationComponent extends Component {
     loaded = false
     isLoading = false
     prevState: (string | null) = null
-    animations = {}
+    animations: {
+        [key: string]: {
+            clip: AnimationClip,
+            action: AnimationAction,
+        },
+    } = {}
 
     state: string
 

@@ -7,59 +7,65 @@ import type {
     ModelComponent,
 } from 'components'
 
-import loadFBX from 'utils/loadFBX'
+// import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
-import animationDB from 'animationDB'
+// import animationDB from 'animationDB'
 
 export class Animation extends System {
     _jobs: Array<(delta: number) => void>
-    _dbAnimations:Object
-    _dbLoaded: boolean
+    // _dbAnimations: object
+    // _dbLoaded: boolean
 
     constructor() {
         super()
 
-        this._dbAnimations = {}
-        this._dbLoaded = false
+        // this._dbAnimations = {}
+        // this._dbLoaded = false
 
         this._jobs = []
 
-        this.loadDBAnimations()
+        // this.loadDBAnimations()
     }
 
-    async loadDBAnimations() {
-        await Promise.all(animationDB.map(async (animItem) => {
-            const { name, modelPath: animationPath } = animItem
-            const resource = await loadFBX(animationPath)
-            const [animation] = resource.animations
-            this._dbAnimations[name] = animation
-        }))
-        this._dbLoaded = true
-    }
+    // async loadDBAnimations() {
+    //     await Promise.all(animationDB.map(async (animItem) => {
+    //         const { name, modelPath: animationPath } = animItem
+    //         const resource = await loadFBX(animationPath)
+    //         const [animation] = resource.animations
+    //         this._dbAnimations[name] = animation
+    //     }))
+    //     this._dbLoaded = true
+    // }
 
-    async loadAnimations(animationComponent: AnimationComponent, modelComponent: ModelComponent) {
+    static async loadAnimations(animationComponent: AnimationComponent, modelComponent: ModelComponent) {
         const { resource: model } = modelComponent
-        const { animations: animationIndex, animationsExternal } = modelDB[modelComponent.modelId]
+        const { animations: animationIndex } = modelDB[modelComponent.modelId]
+
+        if (!model) { // TODO can we remove this check?
+            return null
+        }
 
         const mixer = new AnimationMixer(model)
 
-        if (animationsExternal) {
-            animationsExternal.forEach((key) => {
-                animationComponent.animations[key] = {
-                    clip: this._dbAnimations[key],
-                    action: mixer.clipAction(this._dbAnimations[key]),
-                }
-            })
-        }
+        // if (animationsExternal) {
+        //     animationsExternal.forEach((key) => {
+        //         animationComponent.animations[key] = {
+        //             clip: this._dbAnimations[key],
+        //             action: mixer.clipAction(this._dbAnimations[key]),
+        //         }
+        //     })
+        // }
 
         // console.debug(model.animations)
 
-        if (animationIndex) {
+        if (model.animations && animationIndex) {
             Object.entries(animationIndex).forEach(([key, name]) => {
                 const animation = model.animations.find((a) => a.name === name)
-                animationComponent.animations[key] = {
-                    clip: animation,
-                    action: mixer.clipAction(animation),
+                if (animation) {
+                    animationComponent.animations[key] = {
+                        clip: animation,
+                        action: mixer.clipAction(animation),
+                    }
                 }
             })
         }
@@ -97,14 +103,16 @@ export class Animation extends System {
             if (
                 !animationComponent.loaded
             && !animationComponent.isLoading
-            && this._dbLoaded
+            // && this._dbLoaded
             && modelComponent.resource
             ) {
                 animationComponent.isLoading = true
-                this.loadAnimations(animationComponent, modelComponent).then((mixer) => {
-                    animationComponent.loaded = true
+                Animation.loadAnimations(animationComponent, modelComponent).then((mixer) => {
                     animationComponent.isLoading = false
-                    this._jobs.push((d) => mixer.update(d))
+                    if (mixer) {
+                        animationComponent.loaded = true
+                        this._jobs.push((d) => mixer.update(d))
+                    }
                 })
             } else if (animationComponent.loaded && animationComponent.needsUpdate) {
                 // Update animation

@@ -4,7 +4,7 @@ import * as Systems from 'systems'
 import {
     // AI,
     AmbientLightComponent,
-    // Animation,
+    AnimationComponent,
     // Attack,
     CameraComponent,
     // Collides,
@@ -38,7 +38,7 @@ export default class Dungeon {
         // DungeonECS.registerSystem(new Systems.Combat())
         // DungeonECS.registerSystem(new Systems.CollisionEffects())
         DungeonECS.registerSystem(new Systems.Camera())
-        // DungeonECS.registerSystem(new Systems.Animation())
+        DungeonECS.registerSystem(new Systems.Animation())
         DungeonECS.registerSystem(new Systems.Renderer({
             canvas,
             aspect: (1280 / 720),
@@ -55,7 +55,7 @@ export default class Dungeon {
 
         const playerEntity = DungeonECS.createEntity()
         DungeonECS.addComponents([
-            // new Animation(playerEntity, 'idle'),
+            new AnimationComponent(playerEntity, 'idle'),
             // new Attack(playerEntity, { damage: 5, range: 2 }),
             new CameraComponent(playerEntity),
             // new Collides(playerEntity),
@@ -63,7 +63,7 @@ export default class Dungeon {
             new HeroComponent(playerEntity),
             new InputComponent(playerEntity),
             new DirectionalLightComponent(playerEntity),
-            new ModelComponent(playerEntity, { modelId: 2 }),
+            new ModelComponent(playerEntity, { modelId: 1 }),
             new PositionComponent(playerEntity, new THREE.Vector3(64, 0, 64)),
         ])
 
@@ -74,7 +74,7 @@ export default class Dungeon {
         //     new Input(slimeEntity),
         //     new Collides(slimeEntity),
         //     new Health(slimeEntity, { health: 20 }),
-        //     new Model(slimeEntity, { modelId: 3 }),
+        //     new Model(slimeEntity, { modelId: 2 }),
         //     new Position(slimeEntity, new THREE.Vector3(64, 0, 66)),
         // ])
 
@@ -84,7 +84,7 @@ export default class Dungeon {
         //     new AI(batEntity),
         //     new Input(batEntity),
         //     new Collides(batEntity),
-        //     new Model(batEntity, { modelId: 4 }),
+        //     new Model(batEntity, { modelId: 3 }),
         //     new Position(batEntity, new THREE.Vector3(60, 1, 66)),
         // ])
 
@@ -94,7 +94,7 @@ export default class Dungeon {
         //     new AI(skelEntity),
         //     new Input(skelEntity),
         //     new Collides(skelEntity),
-        //     new Model(skelEntity, { modelId: 5 }),
+        //     new Model(skelEntity, { modelId: 4 }),
         //     new Position(skelEntity, new THREE.Vector3(64, 0, 70)),
         // ])
 
