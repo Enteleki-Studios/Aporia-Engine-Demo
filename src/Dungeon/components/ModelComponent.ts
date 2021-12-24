@@ -8,7 +8,7 @@ export class ModelComponent extends Component {
     isLoading = false
     resource:(null | Object3D) = null
 
-    constructor(entityId: number, { modelId }: { modelId: number }) {
+    constructor(entityId: string, { modelId }: { modelId: number }) {
         super(entityId)
 
         this.modelId = modelId

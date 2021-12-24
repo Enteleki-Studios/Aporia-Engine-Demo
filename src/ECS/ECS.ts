@@ -3,7 +3,6 @@ import type { Component, System } from 'ECS'
 import ComponentManager from './ComponentManager'
 
 export class ECS {
-    #lastEntityId = 0
     #clock: THREE.Clock
     #systems: System[] = []
 
@@ -12,11 +11,6 @@ export class ECS {
     constructor() {
         this.#clock = new THREE.Clock()
         this.ComponentManager = new ComponentManager()
-    }
-
-    createEntity() {
-        this.#lastEntityId += 1
-        return this.#lastEntityId
     }
 
     addComponent(component: Component) {

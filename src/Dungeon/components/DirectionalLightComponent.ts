@@ -10,7 +10,7 @@ export class DirectionalLightComponent extends Component {
     needsUpdate = true
     resource: (DirectionalLight | null) = null
 
-    constructor(entityId: number) {
+    constructor(entityId: string) {
         super(entityId)
 
         this.position = new Vector3()

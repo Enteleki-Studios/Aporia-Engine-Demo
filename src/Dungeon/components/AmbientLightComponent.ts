@@ -13,7 +13,7 @@ export class AmbientLightComponent extends Component {
     intensity: number
     resource: (AmbientLight | null) = null
 
-    constructor(entityId: number, { color, intensity }: Settings) {
+    constructor(entityId: string, { color, intensity }: Settings) {
         super(entityId)
 
         this.color = color

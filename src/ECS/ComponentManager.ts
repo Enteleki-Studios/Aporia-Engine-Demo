@@ -6,7 +6,7 @@ type QueryResult = ComponentTuple[]
 
 export default class ComponentManager {
     #components: Component[]
-    #entitiesById: Map<number, Entity>
+    #entitiesById: Map<string, Entity>
     #queryCache: Map<string, QueryResult>
 
     constructor() {

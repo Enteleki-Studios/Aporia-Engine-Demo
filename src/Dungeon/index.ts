@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { ECS } from 'ECS'
+import { ECS, createEntity } from 'ECS'
 import * as Systems from 'systems'
 import {
     // AI,
@@ -44,16 +44,16 @@ export default class Dungeon {
             aspect: (1280 / 720),
         }))
 
-        DungeonECS.addComponent(new Level(DungeonECS.createEntity(), {
+        DungeonECS.addComponent(new Level(createEntity(), {
             tiles: tilesGenerator([64, 64], 421),
         }))
 
-        DungeonECS.addComponent(new AmbientLightComponent(DungeonECS.createEntity(), {
+        DungeonECS.addComponent(new AmbientLightComponent(createEntity(), {
             color: 0x101010,
             intensity: 2,
         }))
 
-        const playerEntity = DungeonECS.createEntity()
+        const playerEntity = createEntity()
         DungeonECS.addComponents([
             new AnimationComponent(playerEntity, 'idle'),
             // new Attack(playerEntity, { damage: 5, range: 2 }),
@@ -67,7 +67,7 @@ export default class Dungeon {
             new PositionComponent(playerEntity, new THREE.Vector3(64, 0, 64)),
         ])
 
-        const slimeEntity = DungeonECS.createEntity()
+        const slimeEntity = createEntity()
         DungeonECS.addComponents([
             new AnimationComponent(slimeEntity, 'idle'),
             // new AI(slimeEntity),

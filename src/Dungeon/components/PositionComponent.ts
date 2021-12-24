@@ -11,7 +11,7 @@ export class PositionComponent extends Component {
     prevPosition: Vector3
     needsUpdate: boolean
 
-    constructor(entityId: number, position: Vector3) {
+    constructor(entityId: string, position: Vector3) {
         super(entityId)
 
         this.position = position

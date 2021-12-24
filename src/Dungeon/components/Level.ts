@@ -6,7 +6,7 @@ export class Level extends Component {
     type = LEVEL
     readonly tiles: Tiles
 
-    constructor(entityId: number, { tiles }: { tiles: Tiles }) {
+    constructor(entityId: string, { tiles }: { tiles: Tiles }) {
         super(entityId)
 
         this.tiles = tiles

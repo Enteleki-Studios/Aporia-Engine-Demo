@@ -5,7 +5,7 @@ export class HealthComponent extends Component {
     type = HEALTH
     health: number
 
-    constructor(entityId: number, { health }: { health: number }) {
+    constructor(entityId: string, { health }: { health: number }) {
         super(entityId)
         this.health = health
     }

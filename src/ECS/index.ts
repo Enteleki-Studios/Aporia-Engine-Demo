@@ -1,4 +1,5 @@
 export { ECS } from './ECS'
 export { Component } from './Component'
+export { createEntity } from './utils/createEntity'
 export { System } from './System'
 export { Inspector } from './Inspector'

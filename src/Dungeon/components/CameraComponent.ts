@@ -8,7 +8,7 @@ export class CameraComponent extends Component {
     lookAt: Vector3
     needsUpdate: boolean
 
-    constructor(entityId: number) {
+    constructor(entityId: string) {
         super(entityId)
 
         this.position = new Vector3()
