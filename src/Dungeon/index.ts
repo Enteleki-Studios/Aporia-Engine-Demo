@@ -1,5 +1,8 @@
 import * as THREE from 'three'
+
 import { ECS, createEntity } from 'ECS'
+import type { AppDispatch } from 'store'
+
 import * as Systems from 'systems'
 import {
     // AI,
@@ -20,12 +23,17 @@ import tilesGenerator from 'utils/tilesGenerator'
 
 export default class Dungeon {
     ecs: ECS
+    dispatch?: AppDispatch
 
     constructor() {
         this.ecs = new ECS()
     }
 
     init(canvas: HTMLElement) {
+        if (this.dispatch) {
+            this.dispatch({ type: 'TEST' })
+        }
+
         const DungeonECS = this.ecs
 
         // DungeonECS.registerSystem(new Systems.Level())
@@ -99,5 +107,9 @@ export default class Dungeon {
         // ])
 
         DungeonECS.start()
+    }
+
+    addDispatch(dispatch: AppDispatch) {
+        this.dispatch = dispatch
     }
 }

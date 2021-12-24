@@ -15,6 +15,7 @@
         "@types/react": "^17.0.38",
         "@types/react-dom": "^17.0.11",
         "@types/react-redux": "^7.1.21",
+        "@types/redux-logger": "^3.0.9",
         "@types/three": "^0.134.0",
         "@types/uuid": "^8.3.3",
         "@typescript-eslint/eslint-plugin": "^5.8.0",
@@ -45,6 +46,7 @@
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-redux": "^7.2.6",
+        "redux-logger": "^3.0.6",
         "rot-js": "^2.2.0",
         "three": "^0.135.0",
         "uuid": "^8.3.2"

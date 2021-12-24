@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
+import logger from 'redux-logger'
 
-import reducer from 'UI/models/reducers'
+import reducer from 'models/reducers'
 
 const store = configureStore({
     reducer,
+    middleware: [logger],
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
