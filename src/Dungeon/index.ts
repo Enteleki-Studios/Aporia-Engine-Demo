@@ -9,7 +9,7 @@ import {
     CameraComponent,
     // Collides,
     DirectionalLightComponent,
-    // Health,
+    HealthComponent,
     HeroComponent,
     InputComponent,
     Level,
@@ -59,7 +59,7 @@ export default class Dungeon {
             // new Attack(playerEntity, { damage: 5, range: 2 }),
             new CameraComponent(playerEntity),
             // new Collides(playerEntity),
-            // new Health(playerEntity, { health: 20 }),
+            new HealthComponent(playerEntity, { health: 20 }),
             new HeroComponent(playerEntity),
             new InputComponent(playerEntity),
             new DirectionalLightComponent(playerEntity),
@@ -67,16 +67,16 @@ export default class Dungeon {
             new PositionComponent(playerEntity, new THREE.Vector3(64, 0, 64)),
         ])
 
-        // const slimeEntity = DungeonECS.createEntity()
-        // DungeonECS.addComponents([
-        //     new Animation(slimeEntity, 'idle'),
-        //     new AI(slimeEntity),
-        //     new Input(slimeEntity),
-        //     new Collides(slimeEntity),
-        //     new Health(slimeEntity, { health: 20 }),
-        //     new Model(slimeEntity, { modelId: 2 }),
-        //     new Position(slimeEntity, new THREE.Vector3(64, 0, 66)),
-        // ])
+        const slimeEntity = DungeonECS.createEntity()
+        DungeonECS.addComponents([
+            new AnimationComponent(slimeEntity, 'idle'),
+            // new AI(slimeEntity),
+            // new Input(slimeEntity),
+            // new Collides(slimeEntity),
+            new HealthComponent(slimeEntity, { health: 20 }),
+            new ModelComponent(slimeEntity, { modelId: 2 }),
+            new PositionComponent(slimeEntity, new THREE.Vector3(64, 0, 66)),
+        ])
 
         // const batEntity = DungeonECS.createEntity()
         // DungeonECS.addComponents([

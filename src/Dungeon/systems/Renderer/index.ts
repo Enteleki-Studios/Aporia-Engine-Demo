@@ -64,7 +64,7 @@ export class Renderer extends System {
         this.#hasWorld = false
 
         const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
-        const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x2ab7ca })
+        const boxMaterial = new THREE.MeshStandardMaterial({ color: 0xca27ca })
         const box = new THREE.Mesh(boxGeometry, boxMaterial)
         box.receiveShadow = true
         box.castShadow = true
