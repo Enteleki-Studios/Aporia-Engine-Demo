@@ -19,7 +19,7 @@ module.exports = {
     },
     plugins: [
         new ESLintPlugin({
-            extensions: ['js', 'ts'],
+            extensions: ['js', 'ts', 'tsx'],
         }),
         new MiniCssExtractPlugin(),
         new HtmlWebpackPlugin({

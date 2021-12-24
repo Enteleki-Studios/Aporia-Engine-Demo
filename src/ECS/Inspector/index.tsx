@@ -1,6 +1,4 @@
-import React, { useRef, useEffect, ReactNode } from 'react'
-
-import type Dungeon from 'Dungeon'
+import React, { ReactNode } from 'react'
 
 import './index.scss'
 

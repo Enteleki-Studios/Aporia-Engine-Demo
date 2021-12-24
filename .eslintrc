@@ -19,6 +19,7 @@
         "import/resolver": "webpack"
     },
     "rules": {
+        "react/jsx-indent": ["error", 4],
         "@typescript-eslint/indent": ["error", 4, {
             "SwitchCase": 1,
         }],
@@ -34,7 +35,20 @@
         "class-methods-use-this": 1,
         "react/sort-comp": "off",
         "@typescript-eslint/lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": "true" }],
+        "react/function-component-definition": [2, {
+            "namedComponents": "arrow-function",
+            "unnamedComponents": "arrow-function",
+        }],
 
         "@typescript-eslint/naming-convention": "off",
-    }
+    },
+    "overrides": [
+        {
+            "files": "**/*.ts",
+            "rules": {
+                "react/no-unused-class-component-methods": "off",
+                "react/state-in-constructor": "off",
+            },
+        },
+    ],
 }

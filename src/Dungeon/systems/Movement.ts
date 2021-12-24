@@ -26,7 +26,8 @@ export class Movement extends System {
 
             frameDecceleration.multiplyScalar(delta)
             frameDecceleration.z = Math.sign(frameDecceleration.z) * Math.min(
-                Math.abs(frameDecceleration.z), Math.abs(velocity.z),
+                Math.abs(frameDecceleration.z),
+                Math.abs(velocity.z),
             )
 
             velocity.add(frameDecceleration)
