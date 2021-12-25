@@ -1,20 +1,26 @@
 import * as THREE from 'three'
+import type { Store } from 'redux'
+
 import type { Component, System } from 'ECS'
 import ComponentManager from './ComponentManager'
 
 export class ECS {
-    #clock: THREE.Clock
-    #systems: System[] = []
+    clock: THREE.Clock
+    systems: System[] = []
+    store?: Store
 
     ComponentManager: ComponentManager
 
     constructor() {
-        this.#clock = new THREE.Clock()
+        this.clock = new THREE.Clock()
         this.ComponentManager = new ComponentManager()
     }
 
     addComponent(component: Component) {
         this.ComponentManager.addComponent(component)
+        if (this.store) {
+            this.store.dispatch({ type: 'addComponent', component })
+        }
     }
 
     addComponents(components: Component[]) {
@@ -23,24 +29,28 @@ export class ECS {
 
     registerSystem(system: System) {
         system.ECS = this
-        this.#systems.push(system)
+        this.systems.push(system)
     }
 
     start() {
-        this.#update()
+        this.update()
     }
 
-    #update() {
+    update() {
         requestAnimationFrame(() => {
-            const delta = Math.min(this.#clock.getDelta(), 0.050)
+            const delta = Math.min(this.clock.getDelta(), 0.050)
 
             try {
-                this.#systems.forEach((system) => system.tick(delta))
-                this.#update()
+                this.systems.forEach((system) => system.tick(delta))
+                this.update()
             } catch (error) {
                 /* eslint-disable no-console */
                 console.error(error)
             }
         })
+    }
+
+    addStore(store: Store) {
+        this.store = store
     }
 }
