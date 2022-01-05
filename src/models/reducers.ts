@@ -1,4 +1,5 @@
 import { createSlice, combineReducers } from '@reduxjs/toolkit'
+import { reducer as inspector } from 'ECS/Inspector/redux'
 
 const health = createSlice({
     name: 'health',
@@ -14,4 +15,5 @@ const health = createSlice({
 
 export default combineReducers({
     health: health.reducer,
+    inspector,
 })

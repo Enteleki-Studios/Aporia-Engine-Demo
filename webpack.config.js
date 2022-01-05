@@ -52,6 +52,7 @@ module.exports = {
     },
     devServer: {
         port: 2080,
+        hot: false,
         // host: '0.0.0.0',
         client: {
             overlay: {

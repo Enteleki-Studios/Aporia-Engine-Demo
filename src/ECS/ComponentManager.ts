@@ -47,4 +47,10 @@ export default class ComponentManager {
         this.#queryCache.set(query, tuples)
         return tuples
     }
+
+    getListEntityIDs() {
+        const listEntities: string[] = []
+        this.#entitiesById.forEach((entity, id) => listEntities.push(id))
+        return listEntities
+    }
 }

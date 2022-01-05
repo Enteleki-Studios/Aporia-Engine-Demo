@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import type { Store } from 'redux'
 
 import type { Component, System } from 'ECS'
+import { actions } from './Inspector/redux'
 import ComponentManager from './ComponentManager'
 
 export class ECS {
@@ -19,7 +20,7 @@ export class ECS {
     addComponent(component: Component) {
         this.ComponentManager.addComponent(component)
         if (this.store) {
-            this.store.dispatch({ type: 'addComponent', component })
+            this.store.dispatch(actions.updateEntities(this.ComponentManager.getListEntityIDs()))
         }
     }
 
