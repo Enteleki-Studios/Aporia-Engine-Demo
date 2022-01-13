@@ -1,4 +1,4 @@
-import { Component } from './Component'
+import type { Component } from './Component'
 
 type Entity = Map<string, Component>
 type ComponentTuple = Component[]
@@ -52,5 +52,13 @@ export default class ComponentManager {
         const listEntities: string[] = []
         this.#entitiesById.forEach((entity, id) => listEntities.push(id))
         return listEntities
+    }
+
+    getComponentsSerialized() {
+        const componentsSerialized:ReturnType<Component['serialize']>[] = []
+        this.#components.forEach((component) => {
+            componentsSerialized.push(component.serialize())
+        })
+        return componentsSerialized
     }
 }

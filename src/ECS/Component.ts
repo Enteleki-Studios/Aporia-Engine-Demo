@@ -5,4 +5,11 @@ export abstract class Component {
     constructor(entityId: string) {
         this.entityId = entityId
     }
+
+    serialize() {
+        return {
+            entityId: this.entityId,
+            type: this.type,
+        }
+    }
 }
