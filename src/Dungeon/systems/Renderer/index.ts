@@ -13,14 +13,14 @@ import type {
     AmbientLightComponent,
     DirectionalLightComponent,
     CameraComponent,
-    Level,
+    LevelComponent,
     ModelComponent,
     PositionComponent,
 } from 'components'
 
 import * as GLHelpers from './GLHelpers'
 
-const DEBUG = true
+const DEBUG = false
 
 export class Renderer extends System {
     #renderer
@@ -31,7 +31,7 @@ export class Renderer extends System {
     #debugCamera!: THREE.PerspectiveCamera
     #orbitControls?: OrbitControls
 
-    constructor({ canvas, aspect }: { canvas: HTMLElement, aspect: number }) {
+    constructor({ canvas, aspect }: { canvas: HTMLCanvasElement, aspect: number }) {
         super()
 
         this.#renderer = new THREE.WebGLRenderer({ canvas })
@@ -95,7 +95,7 @@ export class Renderer extends System {
         this.#orbitControls.update()
     }
 
-    #addWorld(levelComponent: Level) {
+    #addWorld(levelComponent: LevelComponent) {
         const wallGeometries = []
         const { tiles } = levelComponent
 
@@ -237,7 +237,7 @@ export class Renderer extends System {
         })
 
         if (!this.#hasWorld) {
-            const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0] as [Level]
+            const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0] as [LevelComponent]
             this.#addWorld(levelComponent)
         }
     }

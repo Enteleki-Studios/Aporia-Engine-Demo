@@ -10,12 +10,12 @@ import {
     AnimationComponent,
     // Attack,
     CameraComponent,
-    // Collides,
+    CollisionComponent,
     DirectionalLightComponent,
     HealthComponent,
     HeroComponent,
     InputComponent,
-    Level,
+    LevelComponent,
     ModelComponent,
     PositionComponent,
 } from 'components'
@@ -29,7 +29,7 @@ export default class Dungeon {
         this.ecs = new ECS()
     }
 
-    init(canvas: HTMLElement) {
+    init(canvas: HTMLCanvasElement) {
         if (this.dispatch) {
             this.dispatch({ type: 'TEST' })
         }
@@ -42,9 +42,9 @@ export default class Dungeon {
         }))
         // DungeonECS.registerSystem(new Systems.AIInput())
         DungeonECS.registerSystem(new Systems.Movement())
-        // DungeonECS.registerSystem(new Systems.Collision())
+        DungeonECS.registerSystem(new Systems.Collision())
         // DungeonECS.registerSystem(new Systems.Combat())
-        // DungeonECS.registerSystem(new Systems.CollisionEffects())
+        DungeonECS.registerSystem(new Systems.CollisionEffects())
         DungeonECS.registerSystem(new Systems.Camera())
         DungeonECS.registerSystem(new Systems.Animation())
         DungeonECS.registerSystem(new Systems.Renderer({
@@ -52,7 +52,7 @@ export default class Dungeon {
             aspect: (1280 / 720),
         }))
 
-        DungeonECS.addComponent(new Level(createEntity(), {
+        DungeonECS.addComponent(new LevelComponent(createEntity(), {
             tiles: tilesGenerator([64, 64], 421),
         }))
 
@@ -66,7 +66,7 @@ export default class Dungeon {
             new AnimationComponent(playerEntity, 'idle'),
             // new Attack(playerEntity, { damage: 5, range: 2 }),
             new CameraComponent(playerEntity),
-            // new Collides(playerEntity),
+            new CollisionComponent(playerEntity),
             new HealthComponent(playerEntity, { health: 20 }),
             new HeroComponent(playerEntity),
             new InputComponent(playerEntity),
@@ -80,31 +80,31 @@ export default class Dungeon {
             new AnimationComponent(slimeEntity, 'idle'),
             // new AI(slimeEntity),
             // new Input(slimeEntity),
-            // new Collides(slimeEntity),
+            new CollisionComponent(slimeEntity),
             new HealthComponent(slimeEntity, { health: 20 }),
             new ModelComponent(slimeEntity, { modelId: 2 }),
             new PositionComponent(slimeEntity, new THREE.Vector3(64, 0, 66)),
         ])
 
-        // const batEntity = DungeonECS.createEntity()
-        // DungeonECS.addComponents([
-        //     new Animation(batEntity, 'idle'),
-        //     new AI(batEntity),
-        //     new Input(batEntity),
-        //     new Collides(batEntity),
-        //     new Model(batEntity, { modelId: 3 }),
-        //     new Position(batEntity, new THREE.Vector3(60, 1, 66)),
-        // ])
+        const batEntity = createEntity()
+        DungeonECS.addComponents([
+            new AnimationComponent(batEntity, 'idle'),
+            // new AI(batEntity),
+            // new Input(batEntity),
+            new CollisionComponent(batEntity),
+            new ModelComponent(batEntity, { modelId: 3 }),
+            new PositionComponent(batEntity, new THREE.Vector3(60, 1, 66)),
+        ])
 
-        // const skelEntity = DungeonECS.createEntity()
-        // DungeonECS.addComponents([
-        //     new Animation(skelEntity, 'idle'),
-        //     new AI(skelEntity),
-        //     new Input(skelEntity),
-        //     new Collides(skelEntity),
-        //     new Model(skelEntity, { modelId: 4 }),
-        //     new Position(skelEntity, new THREE.Vector3(64, 0, 70)),
-        // ])
+        const skelEntity = createEntity()
+        DungeonECS.addComponents([
+            new AnimationComponent(skelEntity, 'idle'),
+            // new AI(skelEntity),
+            // new Input(skelEntity),
+            new CollisionComponent(skelEntity),
+            new ModelComponent(skelEntity, { modelId: 4 }),
+            new PositionComponent(skelEntity, new THREE.Vector3(64, 0, 70)),
+        ])
 
         DungeonECS.start()
     }
