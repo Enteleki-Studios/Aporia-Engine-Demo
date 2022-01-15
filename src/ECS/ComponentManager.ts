@@ -4,7 +4,7 @@ type Entity = Map<string, Component>
 type ComponentTuple = Component[]
 type QueryResult = ComponentTuple[]
 
-export default class ComponentManager {
+export class ComponentManager {
     #components: Component[]
     #entitiesById: Map<string, Entity>
     #queryCache: Map<string, QueryResult>
@@ -48,7 +48,7 @@ export default class ComponentManager {
         return tuples
     }
 
-    getListEntityIDs() {
+    getListEntityIDs(): string[] {
         const listEntities: string[] = []
         this.#entitiesById.forEach((entity, id) => listEntities.push(id))
         return listEntities

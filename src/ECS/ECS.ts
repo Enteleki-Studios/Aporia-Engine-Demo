@@ -3,7 +3,7 @@ import type { Store } from 'redux'
 
 import type { Component, System } from 'ECS'
 import { actions } from './Inspector/redux'
-import ComponentManager from './ComponentManager'
+import { ComponentManager } from './ComponentManager'
 
 export class ECS {
     clock: THREE.Clock
@@ -21,6 +21,7 @@ export class ECS {
         this.ComponentManager.addComponent(component)
         if (this.store) {
             this.store.dispatch(actions.updateEntities(this.ComponentManager.getListEntityIDs()))
+            this.store.dispatch(actions.updateComponents(this.ComponentManager.getComponentsSerialized()))
         }
     }
 

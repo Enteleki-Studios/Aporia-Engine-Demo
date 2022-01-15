@@ -10,16 +10,25 @@ interface Props {
 }
 
 export const Inspector = ({ children }: Props) => {
-    const entities = useSelector(selectors.getEntities)
+    const componentsByEntity = useSelector(selectors.getComponentsByEntity)
 
     return (
         <div className="Inspector">
             <div className="header">ECS Inspector</div>
             <div className="sidepanel">
-                Entities:
-                {entities.map((e) => (
-                    <div key={e}>{e}</div>
-                ))}
+                <div>Components</div>
+                <ul>
+                    {Object.keys(componentsByEntity).map((entityId) => (
+                        <li key={entityId}>
+                            <div>{entityId}</div>
+                            <ul>
+                                {componentsByEntity[entityId].map((type) => (
+                                    <li key={type}>{type}</li>
+                                ))}
+                            </ul>
+                        </li>
+                    ))}
+                </ul>
             </div>
             <div className="preview">
                 {children}

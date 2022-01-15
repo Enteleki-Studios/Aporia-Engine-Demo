@@ -18,6 +18,15 @@
         grid-area: sidepanel;
         border-right: 1px solid #444;
         padding: 0.5rem;
+
+        ul {
+            padding-left: 1.5rem;
+            list-style: none;
+
+            li {
+                padding-top: 0.25rem;
+            }
+        }
     }
     .preview {
         grid-area: preview;
