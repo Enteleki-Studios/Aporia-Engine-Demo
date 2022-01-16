@@ -39,7 +39,7 @@ export class TextSprite extends Sprite {
         if (ctx) {
             const fontSize = 40
             const lineWidth = Math.round(fontSize / 8)
-            ctx.font = `${fontSize}px serif`
+            ctx.font = `${fontSize}px mono`
 
             const { width } = ctx.measureText(text)
             canvas.width = width + (lineWidth * 2)
@@ -48,7 +48,7 @@ export class TextSprite extends Sprite {
             ctx.fillStyle = 'white'
             ctx.strokeStyle = 'black'
             ctx.lineWidth = lineWidth
-            ctx.font = `${fontSize}px serif`
+            ctx.font = `${fontSize}px mono`
 
             ctx.strokeText(text, lineWidth, fontSize)
             ctx.fillText(text, lineWidth, fontSize)
