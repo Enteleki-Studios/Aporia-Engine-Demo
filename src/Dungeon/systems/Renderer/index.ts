@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
-import { System } from 'ECS'
+import { System, TextSprite } from 'ECS'
 
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
@@ -187,12 +187,13 @@ export class Renderer extends System {
                     group.add(resource)
 
                     const tripcode = modelComponent.entityId.split('-')[0]
-                    const sprite = new GLHelpers.TextSprite(tripcode)
+                    const sprite = new TextSprite(tripcode)
                     group.add(sprite)
                     // document.body.prepend(canvas)
 
                     const box = new THREE.Box3().setFromObject(resource)
                     sprite.position.y = box.max.y + 0.15
+                    sprite.center.set(0.5, 0) // Set origin to center bottom
 
                     modelComponent.resource = resource
                     modelComponent.group = group
