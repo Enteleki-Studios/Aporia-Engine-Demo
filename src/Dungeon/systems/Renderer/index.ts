@@ -173,18 +173,31 @@ export class Renderer extends System {
 
         this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach((tuple) => {
             const [modelComponent, positionComponent] = tuple as [ModelComponent, PositionComponent]
-            if (modelComponent.resource) {
+            if (modelComponent.group) {
                 // Update position
                 if (positionComponent.needsUpdate) {
-                    modelComponent.resource.position.copy(positionComponent.position)
-                    modelComponent.resource.quaternion.copy(positionComponent.rotation)
+                    modelComponent.group.position.copy(positionComponent.position)
+                    modelComponent.group.quaternion.copy(positionComponent.rotation)
                     positionComponent.needsUpdate = false
                 }
             } else if (!modelComponent.isLoading) {
                 modelComponent.isLoading = true
                 Renderer.createModel(modelComponent).then((resource) => {
+                    const group = new THREE.Group()
+                    group.add(resource)
+
+                    const tripcode = modelComponent.entityId.split('-')[0]
+                    const sprite = new GLHelpers.TextSprite(tripcode)
+                    group.add(sprite)
+                    // document.body.prepend(canvas)
+
+                    const box = new THREE.Box3().setFromObject(resource)
+                    sprite.position.y = box.max.y + 0.15
+
                     modelComponent.resource = resource
-                    this.#scene.add(resource)
+                    modelComponent.group = group
+
+                    this.#scene.add(group)
                     modelComponent.isLoading = false
                 })
             }
