@@ -1,7 +1,7 @@
 export { AI } from './AI'
 export { AmbientLightComponent } from './AmbientLightComponent'
 export { AnimationComponent } from './AnimationComponent'
-export { Attack } from './Attack'
+export { AttackComponent } from './AttackComponent'
 export { CameraComponent } from './CameraComponent'
 export { CollisionComponent } from './CollisionComponent'
 export { HealthComponent } from './HealthComponent'

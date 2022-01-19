@@ -8,7 +8,7 @@ import {
     // AI,
     AmbientLightComponent,
     AnimationComponent,
-    // Attack,
+    AttackComponent,
     CameraComponent,
     CollisionComponent,
     DirectionalLightComponent,
@@ -43,7 +43,7 @@ export default class Dungeon {
         // DungeonECS.registerSystem(new Systems.AIInput())
         DungeonECS.registerSystem(new Systems.Movement())
         DungeonECS.registerSystem(new Systems.Collision())
-        // DungeonECS.registerSystem(new Systems.Combat())
+        DungeonECS.registerSystem(new Systems.Combat())
         DungeonECS.registerSystem(new Systems.CollisionEffects())
         DungeonECS.registerSystem(new Systems.Camera())
         DungeonECS.registerSystem(new Systems.Animation())
@@ -64,7 +64,7 @@ export default class Dungeon {
         const playerEntity = createEntity()
         DungeonECS.addComponents([
             new AnimationComponent(playerEntity, 'idle'),
-            // new Attack(playerEntity, { damage: 5, range: 2 }),
+            new AttackComponent(playerEntity, { damage: 5, range: 2 }),
             new CameraComponent(playerEntity),
             new CollisionComponent(playerEntity),
             new HealthComponent(playerEntity, { health: 20 }),
