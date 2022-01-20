@@ -1,7 +1,10 @@
 import { System } from 'ECS'
 import { AI, INPUT } from 'components/types'
+import type { AIComponent, InputComponent } from 'components'
 
 export class AIInput extends System {
+    _timer: number
+
     constructor() {
         super()
 
@@ -12,16 +15,17 @@ export class AIInput extends System {
         return !Math.round(Math.random())
     }
 
-    tick(delta) {
-        this.ECS.ComponentManager.getTuplesByQuery([AI, INPUT]).forEach(([, inputComponent]) => {
-            if (this._timer < 0) {
+    tick(delta: number) {
+        if (this._timer < 0) {
+            this.ECS.ComponentManager.getTuplesByQuery([AI, INPUT]).forEach((tuple) => {
+                const [, inputComponent] = tuple as [AIComponent, InputComponent]
+
                 inputComponent.upHold = AIInput.randInput()
                 inputComponent.downHold = AIInput.randInput()
                 inputComponent.leftHold = AIInput.randInput()
                 inputComponent.rightHold = AIInput.randInput()
-            }
-        })
-        if (this._timer < 0) {
+            })
+
             this._timer = Math.random() * 7
         } else {
             this._timer -= delta

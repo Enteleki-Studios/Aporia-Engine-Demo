@@ -5,7 +5,7 @@ import type { AppDispatch } from 'store'
 
 import * as Systems from 'systems'
 import {
-    // AI,
+    AIComponent,
     AmbientLightComponent,
     AnimationComponent,
     AttackComponent,
@@ -30,17 +30,13 @@ export default class Dungeon {
     }
 
     init(canvas: HTMLCanvasElement) {
-        if (this.dispatch) {
-            this.dispatch({ type: 'TEST' })
-        }
-
         const DungeonECS = this.ecs
 
         // DungeonECS.registerSystem(new Systems.Level())
         DungeonECS.registerSystem(new Systems.PlayerInput({
             canvas,
         }))
-        // DungeonECS.registerSystem(new Systems.AIInput())
+        DungeonECS.registerSystem(new Systems.AIInput())
         DungeonECS.registerSystem(new Systems.Movement())
         DungeonECS.registerSystem(new Systems.Collision())
         DungeonECS.registerSystem(new Systems.Combat())
@@ -78,8 +74,8 @@ export default class Dungeon {
         const slimeEntity = createEntity()
         DungeonECS.addComponents([
             new AnimationComponent(slimeEntity, 'idle'),
-            // new AI(slimeEntity),
-            // new Input(slimeEntity),
+            new AIComponent(slimeEntity),
+            new InputComponent(slimeEntity),
             new CollisionComponent(slimeEntity),
             new HealthComponent(slimeEntity, { health: 20 }),
             new ModelComponent(slimeEntity, { modelId: 2 }),
@@ -89,8 +85,8 @@ export default class Dungeon {
         const batEntity = createEntity()
         DungeonECS.addComponents([
             new AnimationComponent(batEntity, 'idle'),
-            // new AI(batEntity),
-            // new Input(batEntity),
+            new AIComponent(batEntity),
+            new InputComponent(batEntity),
             new CollisionComponent(batEntity),
             new ModelComponent(batEntity, { modelId: 3 }),
             new PositionComponent(batEntity, new THREE.Vector3(60, 1, 66)),
@@ -99,8 +95,8 @@ export default class Dungeon {
         const skelEntity = createEntity()
         DungeonECS.addComponents([
             new AnimationComponent(skelEntity, 'idle'),
-            // new AI(skelEntity),
-            // new Input(skelEntity),
+            new AIComponent(skelEntity),
+            new InputComponent(skelEntity),
             new CollisionComponent(skelEntity),
             new ModelComponent(skelEntity, { modelId: 4 }),
             new PositionComponent(skelEntity, new THREE.Vector3(64, 0, 70)),
