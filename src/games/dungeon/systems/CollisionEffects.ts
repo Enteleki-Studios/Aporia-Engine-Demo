@@ -8,6 +8,7 @@ export class CollisionEffects extends System {
             const [collisionComponent, positionComponent] = tuple as [CollisionComponent, PositionComponent]
             const { position, prevPosition } = positionComponent
             if (collisionComponent.collisions.length) {
+                collisionComponent.numCollisions = collisionComponent.collisions.length
                 collisionComponent.collisions.forEach((collision) => {
                     const wallNormal = collision[1]
                     const xCollision = (position.x - prevPosition.x) * wallNormal.x
@@ -20,6 +21,8 @@ export class CollisionEffects extends System {
                     }
                 })
                 collisionComponent.collisions = []
+            } else {
+                collisionComponent.numCollisions = 0
             }
         })
     }

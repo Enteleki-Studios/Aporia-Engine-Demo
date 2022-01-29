@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import type { ComponentManager } from 'gengine'
 
-export type Components = ReturnType<ComponentManager['getComponentsSerialized']>
+export type Components = ReturnType<ComponentManager['getComponentsInspected']>
 
 interface InspectorState {
     entities: string[],

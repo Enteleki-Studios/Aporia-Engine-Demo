@@ -10,20 +10,32 @@ interface Props {
 }
 
 export const Inspector = ({ children }: Props) => {
-    const componentsByEntity = useSelector(selectors.getComponentsByEntity)
+    const componentsByEntityId = useSelector(selectors.getComponentsByEntityId)
 
     return (
         <div className="Inspector">
             <div className="header">ECS Inspector</div>
             <div className="sidepanel">
-                <div>Components</div>
-                <ul>
-                    {Object.keys(componentsByEntity).map((entityId) => (
-                        <li key={entityId}>
+                <div>Entities</div>
+                <ul className="entities">
+                    {Object.keys(componentsByEntityId).map((entityId) => (
+                        <li key={entityId} className="entity">
                             <div>{entityId}</div>
-                            <ul>
-                                {componentsByEntity[entityId].map((type) => (
-                                    <li key={type}>{type}</li>
+                            <ul className="components">
+                                {componentsByEntityId[entityId].map((component) => (
+                                    <li key={component.type} className="component">
+                                        <ul className="componentProperties">
+                                            {Object.keys(component).map((componentProp) => (
+                                                <li
+                                                    key={componentProp}
+                                                    className={`componentProp ${componentProp}`}
+                                                >
+                                                    <span>{`${componentProp}:`}</span>
+                                                    <span>{component[componentProp]}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </li>
                                 ))}
                             </ul>
                         </li>

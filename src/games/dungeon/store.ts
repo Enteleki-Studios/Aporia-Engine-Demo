@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
-import logger from 'redux-logger'
+// import logger from 'redux-logger'
 
 import reducer from 'models/reducers'
 
 const store = configureStore({
     reducer,
-    middleware: [logger],
+    // middleware: [logger],
 })
 
 export type RootState = ReturnType<typeof store.getState>

@@ -5,7 +5,7 @@ import type { AppDispatch } from 'store'
 
 import * as Systems from 'systems'
 import {
-    AIComponent,
+    // AIComponent,
     AmbientLightComponent,
     AnimationComponent,
     AttackComponent,
@@ -74,7 +74,7 @@ export class Dungeon {
         const slimeEntity = createEntity()
         DungeonECS.addComponents([
             new AnimationComponent(slimeEntity, 'idle'),
-            new AIComponent(slimeEntity),
+            // new AIComponent(slimeEntity),
             new InputComponent(slimeEntity),
             new CollisionComponent(slimeEntity),
             new HealthComponent(slimeEntity, { health: 20 }),
@@ -85,7 +85,7 @@ export class Dungeon {
         const batEntity = createEntity()
         DungeonECS.addComponents([
             new AnimationComponent(batEntity, 'idle'),
-            new AIComponent(batEntity),
+            // new AIComponent(batEntity),
             new InputComponent(batEntity),
             new CollisionComponent(batEntity),
             new ModelComponent(batEntity, { modelId: 3 }),
@@ -95,7 +95,7 @@ export class Dungeon {
         const skelEntity = createEntity()
         DungeonECS.addComponents([
             new AnimationComponent(skelEntity, 'idle'),
-            new AIComponent(skelEntity),
+            // new AIComponent(skelEntity),
             new InputComponent(skelEntity),
             new CollisionComponent(skelEntity),
             new ModelComponent(skelEntity, { modelId: 4 }),

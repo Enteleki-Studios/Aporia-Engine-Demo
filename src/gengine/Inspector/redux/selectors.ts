@@ -4,17 +4,17 @@ import type { State, Components } from '.'
 export const getEntities = (state: State) => state.inspector.entities
 export const getComponents = (state: State) => state.inspector.components
 
-export const getComponentsByEntity = createSelector(
+export const getComponentsByEntityId = createSelector(
     getComponents,
     (components: Components) => {
-        const componentsByEntity: { [key: string]: string[] } = {}
+        const componentsByEntityId: { [key: string]: { [key: string]: string }[] } = {}
         components.forEach((c) => {
-            if (componentsByEntity[c.entityId]) {
-                componentsByEntity[c.entityId].push(c.type)
+            if (componentsByEntityId[c.entityId]) {
+                componentsByEntityId[c.entityId].push(c)
             } else {
-                componentsByEntity[c.entityId] = [c.type]
+                componentsByEntityId[c.entityId] = [c]
             }
         })
-        return componentsByEntity
+        return componentsByEntityId
     },
 )

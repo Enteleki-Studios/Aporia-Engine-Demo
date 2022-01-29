@@ -9,4 +9,11 @@ export class HealthComponent extends Component {
         super(entityId)
         this.health = health
     }
+
+    inspect() {
+        return {
+            ...super.inspect(),
+            health: this.health,
+        }
+    }
 }

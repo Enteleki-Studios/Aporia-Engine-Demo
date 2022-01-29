@@ -6,7 +6,16 @@ export abstract class Component {
         this.entityId = entityId
     }
 
+    // Return save data
     serialize() {
+        return {
+            entityId: this.entityId,
+            type: this.type,
+        }
+    }
+
+    // Return select properties for the Inspector
+    inspect() {
         return {
             entityId: this.entityId,
             type: this.type,

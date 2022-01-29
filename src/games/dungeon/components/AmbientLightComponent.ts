@@ -19,4 +19,12 @@ export class AmbientLightComponent extends Component {
         this.color = color
         this.intensity = intensity
     }
+
+    inspect() {
+        return {
+            ...super.inspect(),
+            color: `#${this.color.toString(16)}`,
+            intensity: this.intensity,
+        }
+    }
 }

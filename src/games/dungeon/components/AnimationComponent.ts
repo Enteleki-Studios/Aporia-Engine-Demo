@@ -23,4 +23,11 @@ export class AnimationComponent extends Component {
 
         this.state = state
     }
+
+    inspect() {
+        return {
+            ...super.inspect(),
+            state: this.state,
+        }
+    }
 }

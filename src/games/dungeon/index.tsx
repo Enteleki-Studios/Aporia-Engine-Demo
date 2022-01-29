@@ -22,3 +22,10 @@ render(
     </Provider>,
     document.getElementById('Root'),
 )
+
+// render(
+//     <Provider store={store}>
+//         <UI dungeon={dungeon} />
+//     </Provider>,
+//     document.getElementById('Root'),
+// )

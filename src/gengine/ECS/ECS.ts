@@ -21,7 +21,7 @@ export class ECS {
         this.ComponentManager.addComponent(component)
         if (this.store) {
             this.store.dispatch(actions.updateEntities(this.ComponentManager.getListEntityIDs()))
-            this.store.dispatch(actions.updateComponents(this.ComponentManager.getComponentsSerialized()))
+            this.store.dispatch(actions.updateComponents(this.ComponentManager.getComponentsInspected()))
         }
     }
 
@@ -44,6 +44,10 @@ export class ECS {
 
             try {
                 this.systems.forEach((system) => system.tick(delta))
+                if (this.store) {
+                    this.store.dispatch(actions.updateComponents(this.ComponentManager.getComponentsInspected()))
+                }
+
                 this.update()
             } catch (error) {
                 /* eslint-disable no-console */

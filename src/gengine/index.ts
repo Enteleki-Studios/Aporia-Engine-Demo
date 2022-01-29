@@ -9,6 +9,7 @@ export { Inspector } from './Inspector'
 
 // Utils
 export { createEntity } from './utils/createEntity'
+export * as arrayUtils from './utils/arrayUtils'
 
 // THREEJS
 export { TextSprite } from './three/TextSprite'

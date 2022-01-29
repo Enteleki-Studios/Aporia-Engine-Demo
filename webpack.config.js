@@ -5,17 +5,40 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const path = require('path')
 
+const games = ['dungeon']
+
+const entries = {}
+const modules = []
+const htmlPlugins = []
+
+games.forEach((name) => {
+    entries[name] = `./src/games/${name}/index.tsx`
+    modules.push(path.resolve(__dirname, `src/games/${name}`))
+    htmlPlugins.push(
+        new HtmlWebpackPlugin({
+            title: name,
+            filename: `${name}/index.html`,
+            template: `src/games/${name}/index.html`,
+            chunks: [name],
+            minify: false,
+        }),
+    )
+})
+
 module.exports = {
-    entry: {
-        dungeon: './src/games/dungeon/index.tsx',
+    entry: { ...entries },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name]/[name].bundle.js',
     },
     target: 'web',
     stats: 'errors-warnings',
+    devtool: 'inline-source-map',
     resolve: {
         modules: [
             path.resolve(__dirname, 'node_modules'),
             path.resolve(__dirname, 'src'),
-            path.resolve(__dirname, 'src/games/dungeon'),
+            ...modules,
         ],
         extensions: ['.ts', '.tsx', '.js', '.json'],
     },
@@ -24,14 +47,10 @@ module.exports = {
         new ESLintPlugin({
             extensions: ['js', 'ts', 'tsx'],
         }),
-        new MiniCssExtractPlugin(),
-        new HtmlWebpackPlugin({
-            title: 'dungeon',
-            filename: 'dungeon.html',
-            template: 'src/games/dungeon/index.html',
-            chunks: ['dungeon'],
-            minify: false,
+        new MiniCssExtractPlugin({
+            filename: '[name]/[name].css',
         }),
+        ...htmlPlugins,
         new CopyPlugin({
             patterns: [
                 { from: 'resources', to: 'resources' },
@@ -65,10 +84,5 @@ module.exports = {
                 warnings: false,
             },
         },
-    },
-    devtool: 'inline-source-map',
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: '[name].bundle.js',
     },
 };

@@ -1,5 +1,5 @@
 import { Quaternion, Vector3 } from 'three'
-import { Component } from 'gengine'
+import { Component, arrayUtils } from 'gengine'
 import { POSITION } from './types'
 
 export class PositionComponent extends Component {
@@ -21,5 +21,15 @@ export class PositionComponent extends Component {
         this.velocity = new Vector3()
         this.prevPosition = new Vector3()
         this.needsUpdate = true
+    }
+
+    inspect() {
+        return {
+            ...super.inspect(),
+            position: arrayUtils.trimNumberArrayToString(this.position.toArray()),
+            quaternion: arrayUtils.trimNumberArrayToString(this.quaternion.toArray()),
+            rotation: arrayUtils.trimNumberArrayToString(this.rotation.toArray()),
+            velocity: arrayUtils.trimNumberArrayToString(this.velocity.toArray()),
+        }
     }
 }

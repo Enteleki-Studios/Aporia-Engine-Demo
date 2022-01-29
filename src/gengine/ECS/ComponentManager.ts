@@ -54,10 +54,10 @@ export class ComponentManager {
         return listEntities
     }
 
-    getComponentsSerialized() {
-        const componentsSerialized:ReturnType<Component['serialize']>[] = []
+    getComponentsInspected() {
+        const componentsSerialized:ReturnType<Component['inspect']>[] = []
         this.#components.forEach((component) => {
-            componentsSerialized.push(component.serialize())
+            componentsSerialized.push(component.inspect())
         })
         return componentsSerialized
     }

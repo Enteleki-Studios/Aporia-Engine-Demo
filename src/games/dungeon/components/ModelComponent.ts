@@ -14,4 +14,11 @@ export class ModelComponent extends Component {
 
         this.modelId = modelId
     }
+
+    inspect() {
+        return {
+            ...super.inspect(),
+            modelId: this.modelId,
+        }
+    }
 }
