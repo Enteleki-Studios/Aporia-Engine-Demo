@@ -2,29 +2,35 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin').default
 const ESLintPlugin = require('eslint-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const path = require('path')
 
 module.exports = {
-    entry: './src/index.tsx',
+    entry: {
+        dungeon: './src/games/dungeon/index.tsx',
+    },
     target: 'web',
     stats: 'errors-warnings',
     resolve: {
         modules: [
             path.resolve(__dirname, 'node_modules'),
             path.resolve(__dirname, 'src'),
-            path.resolve(__dirname, 'src/Dungeon'),
-            path.resolve(__dirname, 'src/UI'),
+            path.resolve(__dirname, 'src/games/dungeon'),
         ],
         extensions: ['.ts', '.tsx', '.js', '.json'],
     },
     plugins: [
+        new CleanWebpackPlugin(),
         new ESLintPlugin({
             extensions: ['js', 'ts', 'tsx'],
         }),
         new MiniCssExtractPlugin(),
         new HtmlWebpackPlugin({
-            title: 'index',
-            template: 'src/index.html',
+            title: 'dungeon',
+            filename: 'dungeon.html',
+            template: 'src/games/dungeon/index.html',
+            chunks: ['dungeon'],
+            minify: false,
         }),
         new CopyPlugin({
             patterns: [
@@ -46,14 +52,13 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
-                exclude: /node_modules/,
+                exclude: /node_modules/
             },
         ],
     },
     devServer: {
         port: 2080,
         hot: false,
-        // host: '0.0.0.0',
         client: {
             overlay: {
                 errors: true,
@@ -64,6 +69,6 @@ module.exports = {
     devtool: 'inline-source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
+        filename: '[name].bundle.js',
     },
 };

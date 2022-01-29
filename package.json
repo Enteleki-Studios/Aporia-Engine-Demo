@@ -1,7 +1,7 @@
 {
-    "name": "ecs",
+    "name": "gamedev",
     "version": "1.0.0",
-    "description": "game engine",
+    "description": "game dev monorepo",
     "repository": "github.com",
     "main": "index.js",
     "scripts": {
@@ -20,6 +20,7 @@
         "@types/uuid": "^8.3.4",
         "@typescript-eslint/eslint-plugin": "^5.9.1",
         "@typescript-eslint/parser": "^5.9.1",
+        "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^10.2.0",
         "css-loader": "^6.5.1",
         "eslint": "^8.7.0",
