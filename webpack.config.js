@@ -18,7 +18,7 @@ games.forEach((name) => {
         new HtmlWebpackPlugin({
             title: name,
             filename: `${name}/index.html`,
-            template: `src/games/${name}/index.html`,
+            template: `src/gengine/html/standardHTMLTemplate.html`,
             chunks: [name],
             minify: false,
         }),
