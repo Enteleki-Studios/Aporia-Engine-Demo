@@ -12,10 +12,13 @@
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "paths": {
+            "gengine": ["gengine"],
+            "dungeon/*": ["games/dungeon/*"],
+            "zombieHorde/*": ["games/zombieHorde/*"],
             "*": [
-                "*",
                 "games/dungeon/*",
-            ],
-        },
+                "games/zombieHorde/*"
+            ]
+        }
     }
 }

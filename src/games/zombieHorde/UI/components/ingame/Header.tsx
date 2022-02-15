@@ -5,8 +5,7 @@ import './Header.scss'
 export default () => (
     <div className="Header">
         <ul>
-            <li>Health: ---</li>
-            <li>Mana: ---</li>
+            <li>ZOMBIES</li>
         </ul>
     </div>
 )

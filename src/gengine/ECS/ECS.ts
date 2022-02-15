@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import type { Store } from 'redux'
 
 import type { Component, System } from 'gengine'
-import { actions } from 'gengine/Inspector/redux'
+import { actions } from '../Inspector/redux'
 import { ComponentManager } from './ComponentManager'
 
 export class ECS {

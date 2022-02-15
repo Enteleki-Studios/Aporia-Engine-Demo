@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 
 import { ECS, createEntity } from 'gengine'
-import type { AppDispatch } from 'store'
+import type { AppDispatch } from 'dungeon/store'
 
-import * as Systems from 'systems'
+import * as Systems from 'dungeon/systems'
 import {
     // AIComponent,
     AmbientLightComponent,
@@ -18,7 +18,7 @@ import {
     LevelComponent,
     ModelComponent,
     PositionComponent,
-} from 'components'
+} from 'dungeon/components'
 import tilesGenerator from 'utils/tilesGenerator'
 
 export class Dungeon {

@@ -5,6 +5,9 @@ $darkBlue: #282a36;
 $darkGrey: #444;
 
 $colors: (
+    default: (
+        background: $white,
+    ),
     panel: (
         background: $darkBlue,
         foreground: $white,
@@ -29,7 +32,7 @@ $colors: (
 
 .Inspector {
     display: grid;
-    grid-template-areas: "header header" "sidepanel preview" "log log";
+    grid-template-areas: "header preview" "sidepanel preview" "log preview";
     grid-template-rows: auto 1fr 20rem;
     grid-template-columns: 25rem 1fr;
     width: 100%;
@@ -37,10 +40,12 @@ $colors: (
     background-color: color(panel, background);
     color: color(panel, foreground);
     font-family: mono;
+    border-right: 1px solid color(panel, border);
 
     .header {
         grid-area: header;
         border-bottom: 1px solid color(panel, border);
+        border-right: 1px solid color(panel, border);
         padding: 0.5rem;
         background-color: #141414;
     }
@@ -88,19 +93,17 @@ $colors: (
             }
         }
     }
-    .preview {
-        grid-area: preview;
-        background: #222;
-
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
     .log {
         padding: 0.5rem;
         grid-area: log;
-        border-top: 1px solid #444;
+        border-right: 1px solid color(panel, border);
+        border-top: 1px solid color(panel, border);
+    }
+    .preview {
+        grid-area: preview;
+        background-color: color(default, background);
+
+        width: 100%;
+        height: 100%;
     }
 }

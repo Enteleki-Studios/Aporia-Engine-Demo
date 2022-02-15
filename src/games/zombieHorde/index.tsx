@@ -3,11 +3,12 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 
 import { Inspector } from 'gengine'
-import { ZombieHorde } from 'zombieHorde'
 
-import store from 'store'
+import { ZombieHorde } from 'zombieHorde/zombieHorde'
+import store from 'zombieHorde/store'
+import UI from 'zombieHorde/UI'
 
-import UI from 'UI'
+import './root.scss'
 
 const zombieHorde = new ZombieHorde()
 zombieHorde.ecs.addStore(store)

@@ -3,11 +3,10 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 
 import { Inspector } from 'gengine'
-import { Dungeon } from 'dungeon'
 
-import store from 'store'
-
-import UI from 'UI'
+import { Dungeon } from 'dungeon/dungeon'
+import store from 'dungeon/store'
+import UI from 'dungeon/UI'
 
 import './root.scss'
 
