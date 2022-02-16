@@ -14,4 +14,5 @@ export * as arrayUtils from './utils/arrayUtils'
 
 // THREEJS
 export { BasicRenderer } from './three/BasicRenderer'
+export { DefaultGrid } from './three/DefaultGrid'
 export { TextSprite } from './three/TextSprite'

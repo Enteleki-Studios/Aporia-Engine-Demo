@@ -29,7 +29,7 @@
         "no-param-reassign": ["error", { "props": false }],
         "no-underscore-dangle": "off",
         "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-unused-vars": "warn",
         "max-len": ["warn", 120],
         "import/prefer-default-export": "off",
         "object-curly-newline": "off",

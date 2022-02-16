@@ -1,6 +1,16 @@
-import { Color, PCFSoftShadowMap, PerspectiveCamera, Scene, sRGBEncoding, WebGLRenderer } from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import {
+    Color,
+    PCFSoftShadowMap,
+    PerspectiveCamera,
+    Scene,
+    sRGBEncoding,
+    WebGLRenderer,
+    AxesHelper,
+} from 'three'
 
 import { System } from '../ECS/System'
+import { DefaultGrid } from './DefaultGrid'
 
 export class BasicRenderer extends System {
     camera
@@ -25,10 +35,18 @@ export class BasicRenderer extends System {
         const fov = 60
         const aspect = canvas.clientWidth / canvas.clientHeight
         const near = 0.5
-        const far = 50
+        const far = 500
         this.camera = new PerspectiveCamera(fov, aspect, near, far)
+        this.camera.position.set(10, 10, 10)
 
         this.jobs = []
+
+        this.scene.add(new DefaultGrid())
+
+        this.scene.add(new AxesHelper(1))
+
+        const orbit = new OrbitControls(this.camera, canvas)
+        orbit.update()
     }
 
     tick(delta: number) {
