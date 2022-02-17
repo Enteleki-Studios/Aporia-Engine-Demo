@@ -7,10 +7,10 @@ import {
     sRGBEncoding,
     WebGLRenderer,
     AxesHelper,
+    GridHelper,
 } from 'three'
 
 import { System } from '../ECS/System'
-import { DefaultGrid } from './DefaultGrid'
 
 export class BasicRenderer extends System {
     camera
@@ -41,8 +41,7 @@ export class BasicRenderer extends System {
 
         this.jobs = []
 
-        this.scene.add(new DefaultGrid())
-
+        this.scene.add(new GridHelper(64, 64, 0x880000, 0x333333))
         this.scene.add(new AxesHelper(1))
 
         const orbit = new OrbitControls(this.camera, canvas)
