@@ -4,6 +4,11 @@ export { Component } from './ECS/Component'
 export { System } from './ECS/System'
 export type { ComponentManager } from './ECS/ComponentManager'
 
+// Components
+export { HeroComponent } from './components/HeroComponent'
+export { PositionComponent } from './components/PositionComponent'
+export { SpriteComponent } from './components/SpriteComponent'
+
 // Inspector
 export { Inspector } from './Inspector'
 export { reducer as inspectorReducer } from './Inspector/redux'
