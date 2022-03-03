@@ -5,7 +5,7 @@ import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUt
 
 import { System, TextSprite } from 'gengine'
 
-import loadFBX from 'utils/loadFBX'
+import loadFBX from 'dungeon/utils/loadFBX'
 import modelDB from 'modelDB'
 
 import { AMBIENT_LIGHT, DIRECTIONAL_LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'components/types'
@@ -156,7 +156,7 @@ export class Renderer extends System {
 
         const { modelPath, texturePath, scale } = modelDB[modelId]
 
-        const model = await loadFBX(modelPath, texturePath)
+        const model: THREE.Object3D = await loadFBX(modelPath, texturePath)
         model.scale.setScalar(scale)
 
         return model

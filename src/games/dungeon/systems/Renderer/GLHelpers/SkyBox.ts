@@ -1,6 +1,12 @@
-import * as THREE from 'three'
+import {
+    Mesh,
+    Color,
+    SphereGeometry,
+    ShaderMaterial,
+    BackSide,
+} from 'three'
 
-export class SkyBox extends THREE.Mesh {
+export class SkyBox extends Mesh {
     constructor() {
         super()
 
@@ -30,18 +36,18 @@ export class SkyBox extends THREE.Mesh {
         `
 
         const uniforms = {
-            topColor: { value: new THREE.Color(0xbd93f9) },
-            bottomColor: { value: new THREE.Color(0x44475a) },
+            topColor: { value: new Color(0xbd93f9) },
+            bottomColor: { value: new Color(0x44475a) },
             offset: { value: 33 },
             exponent: { value: 0.6 },
         }
 
-        this.geometry = new THREE.SphereGeometry(400, 32, 15)
-        this.material = new THREE.ShaderMaterial({
+        this.geometry = new SphereGeometry(400, 32, 15)
+        this.material = new ShaderMaterial({
             uniforms,
             vertexShader,
             fragmentShader,
-            side: THREE.BackSide,
+            side: BackSide,
         })
     }
 }
