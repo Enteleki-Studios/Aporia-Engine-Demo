@@ -5,7 +5,10 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const path = require('path')
 
-const games = ['dungeon', 'zombieHorde']
+const games = [
+    'dungeon',
+    // 'zombieHorde',
+]
 
 const entries = {}
 const modules = []

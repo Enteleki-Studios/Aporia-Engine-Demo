@@ -39,7 +39,7 @@ $colors: (
     height: 100%;
     background-color: color(panel, background);
     color: color(panel, foreground);
-    font-family: mono;
+    font-family: monospace;
     border-right: 1px solid color(panel, border);
 
     .header {
