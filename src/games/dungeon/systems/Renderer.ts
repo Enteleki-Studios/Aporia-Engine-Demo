@@ -3,22 +3,19 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
-import { System, TextSprite } from 'gengine'
+import { System, TextSprite, DirectionalLight, DirectionalLightComponent } from 'gengine'
 
 import loadFBX from 'dungeon/utils/loadFBX'
 import modelDB from 'modelDB'
 
-import { AMBIENT_LIGHT, DIRECTIONAL_LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'components/types'
+import { AMBIENT_LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'components/types'
 import type {
     AmbientLightComponent,
-    DirectionalLightComponent,
     CameraComponent,
     LevelComponent,
     ModelComponent,
     PositionComponent,
 } from 'components'
-
-import * as GLHelpers from './GLHelpers'
 
 const DEBUG = false
 
@@ -30,6 +27,7 @@ export class Renderer extends System {
     #hasWorld
     #debugCamera!: THREE.PerspectiveCamera
     #orbitControls?: OrbitControls
+    directionalLight?: DirectionalLight
 
     constructor({ canvas, aspect }: { canvas: HTMLCanvasElement, aspect: number }) {
         super()
@@ -204,25 +202,25 @@ export class Renderer extends System {
             }
         })
 
-        this.ECS.ComponentManager.getTuplesByQuery([DIRECTIONAL_LIGHT]).forEach((tuple) => {
+        this.ECS.ComponentManager.getTuplesByQuery(['DIRECTIONAL_LIGHT']).forEach((tuple) => {
             const [directionalLightComponent] = tuple as [DirectionalLightComponent]
-            if (!directionalLightComponent.resource) {
-                directionalLightComponent.resource = new GLHelpers.DirectionalLight(0xFFFFFF, 0.4)
-                this.#scene.add(directionalLightComponent.resource)
-                if (directionalLightComponent.resource.target) {
-                    this.#scene.add(directionalLightComponent.resource.target)
+            if (!this.directionalLight) {
+                this.directionalLight = new DirectionalLight(0xFFFFFF, 0.4)
+                this.#scene.add(this.directionalLight)
+                if (this.directionalLight.target) {
+                    this.#scene.add(this.directionalLight.target)
                 }
                 if (DEBUG) {
-                    if (directionalLightComponent.resource.helper) {
-                        this.#scene.add(directionalLightComponent.resource.helper)
+                    if (this.directionalLight.helper) {
+                        this.#scene.add(this.directionalLight.helper)
                     }
-                    if (directionalLightComponent.resource.shadowHelper) {
-                        this.#scene.add(directionalLightComponent.resource.shadowHelper)
+                    if (this.directionalLight.shadowHelper) {
+                        this.#scene.add(this.directionalLight.shadowHelper)
                     }
                 }
             } else if (directionalLightComponent.needsUpdate) {
-                directionalLightComponent.resource.position.copy(directionalLightComponent.position)
-                directionalLightComponent.resource.target.position.copy(directionalLightComponent.target)
+                this.directionalLight.position.copy(directionalLightComponent.position)
+                this.directionalLight.target.position.copy(directionalLightComponent.target)
                 directionalLightComponent.needsUpdate = false
             }
         })

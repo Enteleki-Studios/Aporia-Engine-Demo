@@ -24,5 +24,3 @@ export class DirectionalLight extends THREE.DirectionalLight {
         this.shadowHelper = new THREE.CameraHelper(this.shadow.camera)
     }
 }
-
-export default DirectionalLight
