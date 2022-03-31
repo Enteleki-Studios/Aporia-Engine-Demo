@@ -1,6 +1,11 @@
-import { Mesh, MeshBasicMaterial, PlaneGeometry, Sprite, SpriteMaterial, TextureLoader, Vector3 } from 'three'
+import {
+    Mesh,
+    MeshBasicMaterial,
+    PlaneGeometry,
+    Vector3,
+} from 'three'
 
-import { BasicRenderer, PositionComponent, SpriteComponent } from 'gengine'
+import { BasicRenderer, PositionComponent, SpriteComponent, ResourceManager } from 'gengine'
 
 import { GROUND } from 'zombieHorde/components/componentTypes'
 
@@ -10,6 +15,7 @@ export class Renderer extends BasicRenderer {
     constructor(args: { canvas: HTMLCanvasElement }) {
         super(args)
 
+        // this.camera = new OrthographicCamera(-15, 15, -15, 15, 0.5, 500)
         this.camera.position.set(0, 30, 0)
         this.camera.lookAt(new Vector3(0, 0, 0))
     }
@@ -19,16 +25,11 @@ export class Renderer extends BasicRenderer {
 
         this.ECS.ComponentManager.getTuplesByQuery(['POSITION', 'SPRITE']).forEach((tuple) => {
             const [positionComponent, spriteComponent] = tuple as [PositionComponent, SpriteComponent]
-            if (!spriteComponent.isLoaded && !spriteComponent.isLoading) {
-                const spriteTex = new TextureLoader().load(spriteComponent.url)
-                spriteComponent.isLoading = true
-                const spriteMat = new SpriteMaterial({ map: spriteTex })
-                const sprite = new Sprite(spriteMat)
-                spriteComponent.isLoaded = true
-                spriteComponent.isLoading = false
-
-                sprite.position.copy(positionComponent.position)
-                this.scene.add(sprite)
+            const { entityId } = spriteComponent
+            if (!ResourceManager.get(entityId) && !ResourceManager.isLoading(entityId)) {
+                this.scene.add(ResourceManager.loadSprite(spriteComponent))
+            } else {
+                ResourceManager.get(entityId).position.copy(positionComponent.position)
             }
         })
 

@@ -1,4 +1,12 @@
-import { ECS, createEntity, HeroComponent, SpriteComponent, PositionComponent } from 'gengine'
+import {
+    ECS,
+    createEntity,
+    HeroComponent,
+    SpriteComponent,
+    PositionComponent,
+    VelocityComponent,
+    MovementSystem,
+} from 'gengine'
 
 import * as components from 'zombieHorde/components'
 import * as systems from 'zombieHorde/systems'
@@ -11,6 +19,7 @@ export class ZombieHorde {
     }
 
     init(canvas: HTMLCanvasElement) {
+        this.ecs.registerSystem(new MovementSystem())
         this.ecs.registerSystem(new systems.Renderer({
             canvas,
         }))
@@ -23,6 +32,7 @@ export class ZombieHorde {
             new PositionComponent(heroEntity, {
                 position: [-5, 0, -5],
             }),
+            new VelocityComponent(heroEntity, { velocity: [0.02, 0, 0] }),
             new SpriteComponent(
                 heroEntity,
                 {

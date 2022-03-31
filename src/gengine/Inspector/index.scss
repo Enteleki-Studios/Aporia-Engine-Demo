@@ -59,6 +59,8 @@ $colors: (
             list-style: none;
 
             &.entities {
+                font-size: 0.9rem;
+
                 .entity {
                     border: 1px solid color(card, border);
                     padding: 0.25rem;

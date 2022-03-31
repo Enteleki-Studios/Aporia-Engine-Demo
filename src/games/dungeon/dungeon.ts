@@ -102,6 +102,12 @@ export class Dungeon {
             new PositionComponent(skelEntity, new THREE.Vector3(64, 0, 70)),
         ])
 
+        const sprigEntity = createEntity()
+        DungeonECS.addComponents([
+            new ModelComponent(sprigEntity, { modelId: 5 }),
+            new PositionComponent(sprigEntity, new THREE.Vector3(62, 0, 64)),
+        ])
+
         DungeonECS.start()
     }
 

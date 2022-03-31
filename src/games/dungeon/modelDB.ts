@@ -83,6 +83,11 @@ const modelDB: Array<({
             spawn: 'SkeletonArmature|Skeleton_Spawn',
         },
     },
+    {
+        modelPath: `${MF}/sprig/sprig.fbx`,
+        scale: 0.01,
+        animations: {},
+    },
 ]
 
 export default modelDB

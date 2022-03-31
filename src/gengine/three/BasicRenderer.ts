@@ -8,12 +8,13 @@ import {
     WebGLRenderer,
     AxesHelper,
     GridHelper,
+    Camera,
 } from 'three'
 
 import { System } from '../ECS/System'
 
 export class BasicRenderer extends System {
-    camera
+    camera: Camera
     renderer
     scene
 

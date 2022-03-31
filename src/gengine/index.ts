@@ -8,6 +8,13 @@ export type { ComponentManager } from './ECS/ComponentManager'
 export { HeroComponent } from './components/HeroComponent'
 export { PositionComponent } from './components/PositionComponent'
 export { SpriteComponent } from './components/SpriteComponent'
+export { VelocityComponent } from './components/VelocityComponent'
+
+// Systems
+export { MovementSystem } from './systems/MovementSystem'
+
+// Managers
+export { ResourceManager } from './managers/ResourceManager'
 
 // Inspector
 export { Inspector } from './Inspector'
