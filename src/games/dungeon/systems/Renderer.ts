@@ -3,7 +3,14 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
-import { System, TextSprite, DirectionalLight, DirectionalLightComponent, ModelComponent } from 'gengine'
+import {
+    DefaultTextureGrid,
+    DirectionalLight,
+    DirectionalLightComponent,
+    ModelComponent,
+    System,
+    TextSprite,
+} from 'gengine'
 
 import loadFBX from 'dungeon/utils/loadFBX'
 import modelDB from 'modelDB'
@@ -177,20 +184,7 @@ export class Renderer extends System {
         wallMesh.castShadow = true
         this.scene.add(wallMesh)
 
-        const floorTexture = new THREE.TextureLoader().load('/resources/textures/grid.jpg')
-        floorTexture.wrapS = THREE.RepeatWrapping
-        floorTexture.wrapT = THREE.RepeatWrapping
-        floorTexture.minFilter = THREE.LinearFilter
-
-        const floor = new THREE.Mesh(
-            new THREE.PlaneGeometry(128, 128),
-            new THREE.MeshStandardMaterial({
-                map: floorTexture,
-            }),
-        )
-        floorTexture.repeat.set(32, 32)
-        floor.receiveShadow = true
-        floor.rotation.x = -Math.PI / 2
+        const floor = new DefaultTextureGrid(128)
         floor.position.set(63.5, 0, 63.5)
         this.scene.add(floor)
 
@@ -214,9 +208,11 @@ export class Renderer extends System {
         } else {
             this.renderer.render(this.scene, this.camera)
         }
-        this.renderer.render(this.hudScene, this.hudCamera)
 
         this.jobs.forEach((j) => j(delta))
+
+        this.renderer.render(this.hudScene, this.hudCamera)
+
 
         this.ECS.ComponentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
             ['MODEL', POSITION],

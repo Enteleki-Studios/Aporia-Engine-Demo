@@ -31,6 +31,7 @@ export * as arrayUtils from './utils/arrayUtils'
 // THREEJS
 export { BasicRenderer } from './three/BasicRenderer'
 export { DefaultGrid } from './three/DefaultGrid'
+export { DefaultTextureGrid } from './three/DefaultTextureGrid'
 export { TextSprite } from './three/TextSprite'
 export { DirectionalLight } from './three/DirectionalLight'
 // export { SkyBox } from './three/SkyBox'
