@@ -16,6 +16,9 @@ html {
             height: 100%;
             overflow: auto;
             background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     }
 }
@@ -28,9 +31,10 @@ ul {
 .UI {
     position: relative;
     padding-top: 3rem;
+    max-width: 90%;
 
     canvas {
         display: block;
-        margin: auto;
+        max-width:100%
     }
 }

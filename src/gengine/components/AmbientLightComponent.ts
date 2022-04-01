@@ -1,6 +1,6 @@
-import { Component } from 'gengine'
 import { AmbientLight } from 'three'
-import { AMBIENT_LIGHT } from './types'
+import { Component } from '../ECS/Component'
+import { AMBIENT_LIGHT } from './componentTypes'
 
 interface Settings {
     color: number,

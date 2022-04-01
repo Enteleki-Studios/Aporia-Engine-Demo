@@ -40,7 +40,6 @@ export class Camera extends System {
 
             // cameraComponent.lookAt.lerp(positionComponent.position, delta * LERP_FACTOR)
             cameraComponent.lookAt.copy(lookPosition)
-            cameraComponent.needsUpdate = true
 
             directionalLightComponent.position.set(
                 positionComponent.position.x + 10,

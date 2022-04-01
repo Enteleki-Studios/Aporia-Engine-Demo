@@ -5,6 +5,7 @@ export { System } from './ECS/System'
 export { ComponentManager } from './ECS/ComponentManager'
 
 // Components
+export { AmbientLightComponent } from './components/AmbientLightComponent'
 export { HeroComponent } from './components/HeroComponent'
 export { PositionComponent } from './components/PositionComponent'
 export { SpriteComponent } from './components/SpriteComponent'

@@ -13,14 +13,14 @@ import {
     HUDLayer,
     DebugInfoTexture,
     ComponentManager,
+    AmbientLightComponent,
 } from 'gengine'
 
 import loadFBX from 'dungeon/utils/loadFBX'
 import modelDB from 'modelDB'
 
-import { AMBIENT_LIGHT, POSITION, CAMERA, LEVEL } from 'components/types'
+import { POSITION, CAMERA, LEVEL } from 'components/types'
 import type {
-    AmbientLightComponent,
     CameraComponent,
     LevelComponent,
     PositionComponent,
@@ -36,12 +36,13 @@ export class Renderer {
     hudLayer
     jobs: Array<(delta: number) => void>
     hasWorld
-    debugCamera!: THREE.PerspectiveCamera
+    debugCamera: THREE.PerspectiveCamera
     orbitControls?: OrbitControls
     directionalLight?: DirectionalLight
 
     constructor({ canvas, aspect }: { canvas: HTMLCanvasElement, aspect: number }) {
         this.jobs = []
+        this.hasWorld = false
 
         this.renderer = new THREE.WebGLRenderer({
             canvas,
@@ -66,16 +67,12 @@ export class Renderer {
         const near = 0.5
         const far = 50
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+        this.debugCamera = new THREE.PerspectiveCamera(fov, aspect, near, 500)
+        this.debugCamera.position.set(20, 20, 20)
 
         if (DEBUG) {
-            this.scene.add(new THREE.CameraHelper(this.camera))
-            this.debugCamera = new THREE.PerspectiveCamera(fov, aspect, near, 500)
-            this.debugCamera.position.set(20, 20, 20)
-
             this.enableDebug()
         }
-
-        this.hasWorld = false
 
         const debugTex = new DebugInfoTexture(canvas.width, canvas.height)
         this.hudLayer = new HUDLayer(canvas.width, canvas.height, debugTex)
@@ -96,8 +93,9 @@ export class Renderer {
         const axesMat = axes.material as LineBasicMaterial
         axesMat.depthTest = false
         axes.renderOrder = 1
-        // this.scene.add(new THREE.AxesHelper(1))
         this.scene.add(axes)
+
+        this.scene.add(new THREE.CameraHelper(this.camera))
 
         // Mouse camera controls
         this.orbitControls = new OrbitControls(
@@ -237,7 +235,7 @@ export class Renderer {
             }
         })
 
-        componentManager.getTuplesByQuery([AMBIENT_LIGHT]).forEach((tuple) => {
+        componentManager.getTuplesByQuery(['AMBIENT_LIGHT']).forEach((tuple) => {
             const [ambientLightComponent] = tuple as [AmbientLightComponent]
             if (!ambientLightComponent.resource) {
                 const { color, intensity } = ambientLightComponent
@@ -248,15 +246,12 @@ export class Renderer {
 
         componentManager.getTuplesByQuery([CAMERA]).forEach((tuple) => {
             const [cameraComponent] = tuple as [CameraComponent]
-            if (cameraComponent.needsUpdate) {
-                this.camera.position.copy(cameraComponent.position)
-                this.camera.lookAt(cameraComponent.lookAt)
-                cameraComponent.needsUpdate = false
+            this.camera.position.copy(cameraComponent.position)
+            this.camera.lookAt(cameraComponent.lookAt)
 
-                if (DEBUG && this.orbitControls) {
-                    // this.orbitControls.target.copy(cameraComponent.lookAt)
-                    this.orbitControls.update()
-                }
+            if (DEBUG && this.orbitControls) {
+                // this.orbitControls.target.copy(cameraComponent.lookAt)
+                this.orbitControls.update()
             }
         })
 

@@ -60,8 +60,8 @@ export class CustomGridTexture extends Texture {
             gridCtx.strokeRect(
                 borderWidth / 2,
                 borderWidth / 2,
-                size - borderWidth / 2,
-                size - borderWidth / 2,
+                size - borderWidth,
+                size - borderWidth,
             )
 
             // Text

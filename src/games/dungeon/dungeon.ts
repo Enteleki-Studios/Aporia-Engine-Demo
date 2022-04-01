@@ -1,7 +1,15 @@
 import * as THREE from 'three'
 import { Clock } from 'three'
 
-import { ECS, createEntity, DirectionalLightComponent, HeroComponent, ModelComponent, ComponentManager } from 'gengine'
+import {
+    AmbientLightComponent,
+    ComponentManager,
+    DirectionalLightComponent,
+    ECS,
+    HeroComponent,
+    ModelComponent,
+    createEntity,
+} from 'gengine'
 
 import { AppDispatch } from 'dungeon/store'
 
@@ -34,17 +42,23 @@ const loop = () => {
 }
 
 const init = (canvas: HTMLCanvasElement) => {
-    ecs.registerSystem(new Systems.Camera())
+    // canvas.width = 1280
+    // canvas.height = 720
+    canvas.width = 1920
+    canvas.height = 1080
+
     renderer = new Systems.Renderer({
         canvas,
-        aspect: (1280 / 720),
+        aspect: (canvas.width / canvas.height),
     })
+
+    ecs.registerSystem(new Systems.Camera())
 
     ecs.addComponent(new Components.LevelComponent(createEntity(), {
         tiles: tilesGenerator([64, 64], 421),
     }))
 
-    ecs.addComponent(new Components.AmbientLightComponent(createEntity(), {
+    ecs.addComponent(new AmbientLightComponent(createEntity(), {
         color: 0x101010,
         intensity: 1,
     }))

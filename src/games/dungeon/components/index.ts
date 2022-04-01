@@ -1,4 +1,3 @@
-export { AmbientLightComponent } from './AmbientLightComponent'
 export { AnimationComponent } from './AnimationComponent'
 export { AttackComponent } from './AttackComponent'
 export { CameraComponent } from './CameraComponent'
