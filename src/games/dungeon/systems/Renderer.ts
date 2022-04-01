@@ -33,11 +33,17 @@ export class Renderer extends System {
     constructor({ canvas, aspect }: { canvas: HTMLCanvasElement, aspect: number }) {
         super()
 
-        this.renderer = new THREE.WebGLRenderer({ canvas })
+        this.renderer = new THREE.WebGLRenderer({
+            canvas,
+            antialias: true,
+        })
+
         this.renderer.outputEncoding = THREE.sRGBEncoding
         this.renderer.shadowMap.enabled = true
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
         this.renderer.setPixelRatio(window.devicePixelRatio)
+
+        this.renderer.debug.checkShaderErrors = true
         this.renderer.autoClear = false
 
         this.scene = new THREE.Scene()
@@ -82,8 +88,12 @@ export class Renderer extends System {
         this.jobs = []
 
         this.jobs.push((delta: number) => {
-            hudCtx?.clearRect(0, 0, 200, 20)
+            hudCtx?.clearRect(0, 0, 200, 200)
             hudCtx?.fillText(`${Math.floor(1 / delta)} fps`, 5, 15)
+            hudCtx?.fillText(`geometries: ${this.renderer.info.memory.geometries}`, 5, 30)
+            hudCtx?.fillText(`textures: ${this.renderer.info.memory.textures}`, 5, 45)
+            hudCtx?.fillText(`calls: ${this.renderer.info.render.calls}`, 5, 60)
+            hudCtx?.fillText(`triangles: ${this.renderer.info.render.triangles}`, 5, 75)
             hudTex.needsUpdate = true
         })
 
@@ -168,7 +178,7 @@ export class Renderer extends System {
         const floorTexture = new THREE.TextureLoader().load('/resources/textures/grid.jpg')
         floorTexture.wrapS = THREE.RepeatWrapping
         floorTexture.wrapT = THREE.RepeatWrapping
-        floorTexture.minFilter = THREE.NearestFilter
+        floorTexture.minFilter = THREE.LinearFilter
 
         const floor = new THREE.Mesh(
             new THREE.PlaneGeometry(128, 128),
