@@ -1,4 +1,3 @@
-export { AIInput } from './AIInput'
 export { Animation } from './Animation'
 export { Camera } from './Camera'
 export { Collision } from './Collision'

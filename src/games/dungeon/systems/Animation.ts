@@ -36,7 +36,10 @@ export class Animation extends System {
     //     this._dbLoaded = true
     // }
 
-    static async loadAnimations(animationComponent: AnimationComponent, modelComponent: ModelComponent<typeof modelDB>) {
+    static async loadAnimations(
+        animationComponent: AnimationComponent,
+        modelComponent: ModelComponent<typeof modelDB>,
+    ) {
         const { resource: model } = modelComponent
         const { animations: animationIndex } = modelDB[modelComponent.modelName]
 

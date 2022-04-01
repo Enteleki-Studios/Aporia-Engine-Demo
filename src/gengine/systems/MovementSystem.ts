@@ -4,10 +4,10 @@ import type { PositionComponent } from '../components/PositionComponent'
 import type { VelocityComponent } from '../components/VelocityComponent'
 
 export class MovementSystem extends System {
-    tick(delta: number) {
+    tick() {
         this.ECS.ComponentManager.getTuplesByQuery([POSITION, VELOCITY]).forEach((tuple) => {
             const [positionComponent, velocityComponent] = tuple as [PositionComponent, VelocityComponent]
-            // positionComponent.position.add(velocityComponent.velocity)
+            positionComponent.position.add(velocityComponent.velocity)
         })
     }
 }

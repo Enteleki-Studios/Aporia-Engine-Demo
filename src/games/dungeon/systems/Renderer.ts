@@ -168,7 +168,9 @@ export class Renderer extends System {
 
         this.#jobs.forEach((j) => j(delta))
 
-        this.ECS.ComponentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(['MODEL', POSITION]).forEach((tuple) => {
+        this.ECS.ComponentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
+            ['MODEL', POSITION],
+        ).forEach((tuple) => {
             const [modelComponent, positionComponent] = tuple
             if (modelComponent.group) {
                 // Update position
@@ -201,7 +203,9 @@ export class Renderer extends System {
             }
         })
 
-        this.ECS.ComponentManager.getTuplesByQueryGeneric<[DirectionalLightComponent]>(['DIRECTIONAL_LIGHT']).forEach((tuple) => {
+        this.ECS.ComponentManager.getTuplesByQueryGeneric<[DirectionalLightComponent]>(
+            ['DIRECTIONAL_LIGHT'],
+        ).forEach((tuple) => {
             const [directionalLightComponent] = tuple as [DirectionalLightComponent]
             if (!this.directionalLight) {
                 this.directionalLight = new DirectionalLight(0xFFFFFF, 0.4)

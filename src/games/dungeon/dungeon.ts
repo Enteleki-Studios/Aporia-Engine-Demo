@@ -24,7 +24,6 @@ export class Dungeon {
         // DungeonECS.registerSystem(new Systems.PlayerInput({
         // canvas,
         // }))
-        // DungeonECS.registerSystem(new Systems.AIInput())
         // DungeonECS.registerSystem(new Systems.Movement())
         // DungeonECS.registerSystem(new Systems.Collision())
         // DungeonECS.registerSystem(new Systems.Combat())
@@ -62,7 +61,6 @@ export class Dungeon {
         // const slimeEntity = createEntity()
         // DungeonECS.addComponents([
         //     new AnimationComponent(slimeEntity, 'idle'),
-        //     // new AIComponent(slimeEntity),
         //     new InputComponent(slimeEntity),
         //     new CollisionComponent(slimeEntity),
         //     new HealthComponent(slimeEntity, { health: 20 }),
@@ -73,7 +71,6 @@ export class Dungeon {
         // const batEntity = createEntity()
         // DungeonECS.addComponents([
         //     new AnimationComponent(batEntity, 'idle'),
-        //     // new AIComponent(batEntity),
         //     new InputComponent(batEntity),
         //     new CollisionComponent(batEntity),
         //     new ModelComponent(batEntity, { modelId: 3 }),
@@ -83,7 +80,6 @@ export class Dungeon {
         // const skelEntity = createEntity()
         // DungeonECS.addComponents([
         //     new AnimationComponent(skelEntity, 'idle'),
-        //     // new AIComponent(skelEntity),
         //     new InputComponent(skelEntity),
         //     new CollisionComponent(skelEntity),
         //     new ModelComponent(skelEntity, { modelId: 4 }),
