@@ -29,7 +29,7 @@ games.forEach((name) => {
 })
 
 module.exports = {
-    entry: { ...entries },
+    entry: entries,
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name]/[name].bundle.js',

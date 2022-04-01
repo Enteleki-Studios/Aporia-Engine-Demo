@@ -14,6 +14,8 @@ html {
 
         #Root {
             height: 100%;
+            overflow: auto;
+            background-color: #212121;
         }
     }
 }
@@ -25,8 +27,10 @@ ul {
 
 .UI {
     position: relative;
+    padding-top: 3rem;
 
     canvas {
         display: block;
+        margin: auto;
     }
 }

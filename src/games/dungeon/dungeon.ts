@@ -44,7 +44,7 @@ const init = (canvas: HTMLCanvasElement) => {
         new Components.PositionComponent(playerEntity, new THREE.Vector3(64, 0, 64)),
     ])
 
-    dispatch({ type: 'hey' })
+    dispatch({ type: 'example' })
 
     ecs.start()
 }

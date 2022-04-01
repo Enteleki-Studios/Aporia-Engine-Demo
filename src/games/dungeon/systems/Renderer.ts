@@ -19,46 +19,46 @@ import type {
 const DEBUG = false
 
 export class Renderer extends System {
-    #renderer
-    #scene
-    #camera
-    #jobs: Array<(delta: number) => void>
-    #hasWorld
-    #debugCamera!: THREE.PerspectiveCamera
-    #orbitControls?: OrbitControls
+    renderer
+    scene
+    camera
+    jobs: Array<(delta: number) => void>
+    hasWorld
+    debugCamera!: THREE.PerspectiveCamera
+    orbitControls?: OrbitControls
     directionalLight?: DirectionalLight
 
     constructor({ canvas, aspect }: { canvas: HTMLCanvasElement, aspect: number }) {
         super()
 
-        this.#renderer = new THREE.WebGLRenderer({ canvas })
-        this.#renderer.outputEncoding = THREE.sRGBEncoding
-        this.#renderer.shadowMap.enabled = true
-        this.#renderer.shadowMap.type = THREE.PCFSoftShadowMap
-        this.#renderer.setPixelRatio(window.devicePixelRatio)
+        this.renderer = new THREE.WebGLRenderer({ canvas })
+        this.renderer.outputEncoding = THREE.sRGBEncoding
+        this.renderer.shadowMap.enabled = true
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+        this.renderer.setPixelRatio(window.devicePixelRatio)
 
-        this.#scene = new THREE.Scene()
-        this.#scene.background = new THREE.Color(0x121212)
+        this.scene = new THREE.Scene()
+        this.scene.background = new THREE.Color(0x121212)
         if (!DEBUG) {
-            this.#scene.fog = new THREE.Fog(this.#scene.background, 1, 30)
+            this.scene.fog = new THREE.Fog(this.scene.background, 1, 30)
         }
 
         const fov = 60
         const near = 0.5
         const far = 50
-        this.#camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+        this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
 
-        this.#jobs = []
+        this.jobs = []
 
         if (DEBUG) {
-            this.#scene.add(new THREE.CameraHelper(this.#camera))
-            this.#debugCamera = new THREE.PerspectiveCamera(fov, aspect, near, 500)
-            this.#debugCamera.position.set(20, 20, 20)
+            this.scene.add(new THREE.CameraHelper(this.camera))
+            this.debugCamera = new THREE.PerspectiveCamera(fov, aspect, near, 500)
+            this.debugCamera.position.set(20, 20, 20)
 
-            this.#enableDebug()
+            this.enableDebug()
         }
 
-        this.#hasWorld = false
+        this.hasWorld = false
 
         const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
         const boxMaterial = new THREE.MeshStandardMaterial({ color: 0xca27ca })
@@ -66,7 +66,7 @@ export class Renderer extends System {
         box.receiveShadow = true
         box.castShadow = true
         box.position.set(64, 0.5, 68)
-        this.#scene.add(box)
+        this.scene.add(box)
 
         const box2Geometry = new THREE.BoxGeometry(1, 2, 1)
         const box2Material = new THREE.MeshStandardMaterial({ color: 0x2ab7ca })
@@ -74,25 +74,25 @@ export class Renderer extends System {
         box2.receiveShadow = true
         box2.castShadow = true
         box2.position.set(62, 1, 68)
-        this.#scene.add(box2)
+        this.scene.add(box2)
     }
 
-    #enableDebug() {
+    enableDebug() {
         // Origin axes
-        this.#scene.add(new THREE.AxesHelper(1))
+        this.scene.add(new THREE.AxesHelper(1))
 
         // Mouse camera controls
-        this.#orbitControls = new OrbitControls(
-            this.#debugCamera,
-            this.#renderer.domElement,
+        this.orbitControls = new OrbitControls(
+            this.debugCamera,
+            this.renderer.domElement,
         )
         // controls.minDistance = 3
         // controls.maxDistance = 50
         // controls.target.set(0, 0, -100)
-        this.#orbitControls.update()
+        this.orbitControls.update()
     }
 
-    #addWorld(levelComponent: LevelComponent) {
+    addWorld(levelComponent: LevelComponent) {
         const wallGeometries = []
         const { tiles } = levelComponent
 
@@ -126,7 +126,7 @@ export class Renderer extends System {
         const wallMesh = new THREE.Mesh(mergedWallGeometries, wallMaterial)
         wallMesh.receiveShadow = true
         wallMesh.castShadow = true
-        this.#scene.add(wallMesh)
+        this.scene.add(wallMesh)
 
         const floorTexture = new THREE.TextureLoader().load('/resources/textures/floor.png')
         floorTexture.wrapS = THREE.RepeatWrapping
@@ -143,9 +143,9 @@ export class Renderer extends System {
         floor.receiveShadow = true
         floor.rotation.x = -Math.PI / 2
         floor.position.set(63.5, 0, 63.5)
-        this.#scene.add(floor)
+        this.scene.add(floor)
 
-        this.#hasWorld = true
+        this.hasWorld = true
     }
 
     static async createModel(modelComponent: ModelComponent<typeof modelDB>) {
@@ -161,12 +161,12 @@ export class Renderer extends System {
 
     tick(delta: number) {
         if (DEBUG) {
-            this.#renderer.render(this.#scene, this.#debugCamera)
+            this.renderer.render(this.scene, this.debugCamera)
         } else {
-            this.#renderer.render(this.#scene, this.#camera)
+            this.renderer.render(this.scene, this.camera)
         }
 
-        this.#jobs.forEach((j) => j(delta))
+        this.jobs.forEach((j) => j(delta))
 
         this.ECS.ComponentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
             ['MODEL', POSITION],
@@ -197,7 +197,7 @@ export class Renderer extends System {
                     modelComponent.resource = resource
                     modelComponent.group = group
 
-                    this.#scene.add(group)
+                    this.scene.add(group)
                     modelComponent.isLoading = false
                 })
             }
@@ -209,16 +209,16 @@ export class Renderer extends System {
             const [directionalLightComponent] = tuple as [DirectionalLightComponent]
             if (!this.directionalLight) {
                 this.directionalLight = new DirectionalLight(0xFFFFFF, 0.4)
-                this.#scene.add(this.directionalLight)
+                this.scene.add(this.directionalLight)
                 if (this.directionalLight.target) {
-                    this.#scene.add(this.directionalLight.target)
+                    this.scene.add(this.directionalLight.target)
                 }
                 if (DEBUG) {
                     if (this.directionalLight.helper) {
-                        this.#scene.add(this.directionalLight.helper)
+                        this.scene.add(this.directionalLight.helper)
                     }
                     if (this.directionalLight.shadowHelper) {
-                        this.#scene.add(this.directionalLight.shadowHelper)
+                        this.scene.add(this.directionalLight.shadowHelper)
                     }
                 }
             } else if (directionalLightComponent.needsUpdate) {
@@ -233,27 +233,27 @@ export class Renderer extends System {
             if (!ambientLightComponent.resource) {
                 const { color, intensity } = ambientLightComponent
                 ambientLightComponent.resource = new THREE.AmbientLight(color, intensity)
-                this.#scene.add(ambientLightComponent.resource)
+                this.scene.add(ambientLightComponent.resource)
             }
         })
 
         this.ECS.ComponentManager.getTuplesByQuery([CAMERA]).forEach((tuple) => {
             const [cameraComponent] = tuple as [CameraComponent]
             if (cameraComponent.needsUpdate) {
-                this.#camera.position.copy(cameraComponent.position)
-                this.#camera.lookAt(cameraComponent.lookAt)
+                this.camera.position.copy(cameraComponent.position)
+                this.camera.lookAt(cameraComponent.lookAt)
                 cameraComponent.needsUpdate = false
 
-                if (DEBUG && this.#orbitControls) {
-                    this.#orbitControls.target.copy(cameraComponent.lookAt)
-                    this.#orbitControls.update()
+                if (DEBUG && this.orbitControls) {
+                    this.orbitControls.target.copy(cameraComponent.lookAt)
+                    this.orbitControls.update()
                 }
             }
         })
 
-        if (!this.#hasWorld) {
+        if (!this.hasWorld) {
             const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0] as [LevelComponent]
-            this.#addWorld(levelComponent)
+            this.addWorld(levelComponent)
         }
     }
 }
