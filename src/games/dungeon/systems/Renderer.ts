@@ -88,13 +88,15 @@ export class Renderer extends System {
         this.jobs = []
 
         this.jobs.push((delta: number) => {
-            hudCtx?.clearRect(0, 0, 200, 200)
-            hudCtx?.fillText(`${Math.floor(1 / delta)} fps`, 5, 15)
-            hudCtx?.fillText(`geometries: ${this.renderer.info.memory.geometries}`, 5, 30)
-            hudCtx?.fillText(`textures: ${this.renderer.info.memory.textures}`, 5, 45)
-            hudCtx?.fillText(`calls: ${this.renderer.info.render.calls}`, 5, 60)
-            hudCtx?.fillText(`triangles: ${this.renderer.info.render.triangles}`, 5, 75)
-            hudTex.needsUpdate = true
+            if (hudCtx) {
+                hudCtx.clearRect(0, 0, 200, 200)
+                hudCtx.fillText(`${Math.floor(1 / delta)} fps`, 5, 15)
+                hudCtx.fillText(`geometries: ${this.renderer.info.memory.geometries}`, 5, 30)
+                hudCtx.fillText(`textures: ${this.renderer.info.memory.textures}`, 5, 45)
+                hudCtx.fillText(`calls: ${this.renderer.info.render.calls}`, 5, 60)
+                hudCtx.fillText(`triangles: ${this.renderer.info.render.triangles}`, 5, 75)
+                hudTex.needsUpdate = true
+            }
         })
 
         if (DEBUG) {
