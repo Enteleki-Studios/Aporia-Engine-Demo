@@ -16,7 +16,7 @@ import type {
     PositionComponent,
 } from 'components'
 
-const DEBUG = false
+const DEBUG = true
 
 export class Renderer extends System {
     renderer
@@ -128,10 +128,10 @@ export class Renderer extends System {
         wallMesh.castShadow = true
         this.scene.add(wallMesh)
 
-        const floorTexture = new THREE.TextureLoader().load('/resources/textures/floor.png')
+        const floorTexture = new THREE.TextureLoader().load('/resources/textures/grid.jpg')
         floorTexture.wrapS = THREE.RepeatWrapping
         floorTexture.wrapT = THREE.RepeatWrapping
-        // floorTexture.minFilter = THREE.NearestFilter
+        floorTexture.minFilter = THREE.NearestFilter
 
         const floor = new THREE.Mesh(
             new THREE.PlaneGeometry(128, 128),
