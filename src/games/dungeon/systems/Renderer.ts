@@ -22,6 +22,8 @@ export class Renderer extends System {
     renderer
     scene
     camera
+    hudScene
+    hudCamera
     jobs: Array<(delta: number) => void>
     hasWorld
     debugCamera!: THREE.PerspectiveCamera
@@ -36,6 +38,7 @@ export class Renderer extends System {
         this.renderer.shadowMap.enabled = true
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
         this.renderer.setPixelRatio(window.devicePixelRatio)
+        this.renderer.autoClear = false
 
         this.scene = new THREE.Scene()
         this.scene.background = new THREE.Color(0x121212)
@@ -48,7 +51,41 @@ export class Renderer extends System {
         const far = 50
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
 
+        const hudCanvas = document.createElement('canvas')
+        hudCanvas.width = canvas.width
+        hudCanvas.height = canvas.height
+        const hudCtx = hudCanvas.getContext('2d')
+        if (hudCtx) {
+            hudCtx.font = 'Normal 10px monospace'
+            hudCtx.fillStyle = 'rgba(255, 255, 255, 0.7)'
+            hudCtx.fillText('Initializing...', 5, 15)
+        }
+
+        this.hudScene = new THREE.Scene()
+        this.hudCamera = new THREE.OrthographicCamera(
+            -canvas.width / 2,
+            canvas.width / 2,
+            canvas.height / 2,
+            -canvas.height / 2,
+            0,
+            30,
+        )
+
+        const hudTex = new THREE.Texture(hudCanvas)
+        hudTex.needsUpdate = true
+        const hudMat = new THREE.MeshBasicMaterial({ map: hudTex })
+        hudMat.transparent = true
+        const hudPlaneGeo = new THREE.PlaneGeometry(hudCanvas.width, hudCanvas.height)
+        const hudPlane = new THREE.Mesh(hudPlaneGeo, hudMat)
+        this.hudScene.add(hudPlane)
+
         this.jobs = []
+
+        this.jobs.push((delta: number) => {
+            hudCtx?.clearRect(0, 0, 200, 20)
+            hudCtx?.fillText(`${Math.floor(1 / delta)} fps`, 5, 15)
+            hudTex.needsUpdate = true
+        })
 
         if (DEBUG) {
             this.scene.add(new THREE.CameraHelper(this.camera))
@@ -165,6 +202,7 @@ export class Renderer extends System {
         } else {
             this.renderer.render(this.scene, this.camera)
         }
+        this.renderer.render(this.hudScene, this.hudCamera)
 
         this.jobs.forEach((j) => j(delta))
 
