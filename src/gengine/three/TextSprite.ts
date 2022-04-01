@@ -51,7 +51,7 @@ export class TextSprite extends Sprite {
         const { canvas, text, settings } = this
         const {
             resolution = 40,
-            font = 'mono',
+            font = 'monospace',
             color = 'white',
             borderWidth = 5,
             borderColor = 'black',

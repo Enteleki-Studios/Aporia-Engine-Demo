@@ -1,6 +1,7 @@
 import * as THREE from 'three'
+import { Clock } from 'three'
 
-import { ECS, createEntity, DirectionalLightComponent, HeroComponent, ModelComponent } from 'gengine'
+import { ECS, createEntity, DirectionalLightComponent, HeroComponent, ModelComponent, ComponentManager } from 'gengine'
 
 import { AppDispatch } from 'dungeon/store'
 
@@ -10,16 +11,34 @@ import tilesGenerator from 'utils/tilesGenerator'
 
 import modelDB from 'modelDB'
 
-const ecs = new ECS()
+const componentManager = new ComponentManager()
+const ecs = new ECS(componentManager)
+const clock = new Clock()
+
 let dispatch: AppDispatch
+let renderer: Systems.Renderer
+
+const loop = () => {
+    requestAnimationFrame(() => {
+        const delta = Math.min(clock.getDelta(), 0.050)
+
+        try {
+            ecs.tick(delta)
+            renderer.tick(delta, componentManager)
+            loop()
+        } catch (error) {
+            /* eslint-disable no-console */
+            console.error(error)
+        }
+    })
+}
 
 const init = (canvas: HTMLCanvasElement) => {
     ecs.registerSystem(new Systems.Camera())
-    ecs.registerSystem(new Systems.Animation())
-    ecs.registerSystem(new Systems.Renderer({
+    renderer = new Systems.Renderer({
         canvas,
         aspect: (1280 / 720),
-    }))
+    })
 
     ecs.addComponent(new Components.LevelComponent(createEntity(), {
         tiles: tilesGenerator([64, 64], 421),
@@ -27,12 +46,12 @@ const init = (canvas: HTMLCanvasElement) => {
 
     ecs.addComponent(new Components.AmbientLightComponent(createEntity(), {
         color: 0x101010,
-        intensity: 2,
+        intensity: 1,
     }))
 
     const playerEntity = createEntity()
     ecs.addComponents([
-        new Components.AnimationComponent(playerEntity, 'walk'),
+        // new Components.AnimationComponent(playerEntity, 'walk'),
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
         new Components.CameraComponent(playerEntity),
         // new Components.CollisionComponent(playerEntity),
@@ -41,12 +60,12 @@ const init = (canvas: HTMLCanvasElement) => {
         // new Components.InputComponent(playerEntity),
         new DirectionalLightComponent(playerEntity),
         new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'rogue' }),
-        new Components.PositionComponent(playerEntity, new THREE.Vector3(64, 0, 64)),
+        new Components.PositionComponent(playerEntity, new THREE.Vector3(0, 0, 4)),
     ])
 
-    dispatch({ type: 'example' })
+    dispatch({ type: 'TEST' })
 
-    ecs.start()
+    loop()
 }
 
 const addDispatch = (d: AppDispatch) => {
@@ -59,6 +78,7 @@ export default {
     addDispatch,
 }
 
+// ecs.registerSystem(new Systems.Animation())
 // DungeonECS.registerSystem(new Systems.Level())
 // DungeonECS.registerSystem(new Systems.PlayerInput({
 // canvas,

@@ -20,5 +20,8 @@
                 "games/zombieHorde/*"
             ]
         }
-    }
+    },
+    "exclude": [
+        "src/games/zombieHorde"
+    ]
 }

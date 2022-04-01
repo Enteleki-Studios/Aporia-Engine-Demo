@@ -1,16 +1,41 @@
-import { LineSegments, WireframeGeometry, PlaneGeometry, LineBasicMaterial } from 'three'
+import {
+    LinearFilter,
+    Mesh,
+    MeshStandardMaterial,
+    PlaneGeometry,
+    RepeatWrapping,
+    Texture,
+} from 'three'
 
-export class DefaultGrid extends LineSegments {
-    constructor(size = 64) {
+import { CustomGridTexture, CustomGridSettings } from './CustomGridTexture'
+
+interface DefaultGridSettings extends CustomGridSettings {
+    texture?: Texture
+    gridWidth?: number
+}
+
+export class DefaultGrid extends Mesh {
+    constructor(
+        size: number,
+        settings?: DefaultGridSettings,
+    ) {
+        const floorTexture = settings?.texture || new CustomGridTexture(settings)
+        floorTexture.wrapS = RepeatWrapping
+        floorTexture.wrapT = RepeatWrapping
+        floorTexture.minFilter = LinearFilter
+
+        const gridWidth = settings?.gridWidth || 4
+        floorTexture.repeat.set(size / gridWidth, size / gridWidth)
+
         super(
-            new WireframeGeometry(
-                new PlaneGeometry(size, size, size, size),
-            ),
-            new LineBasicMaterial({
-                opacity: 0.25,
-                transparent: true,
+            new PlaneGeometry(size, size),
+            new MeshStandardMaterial({
+                map: floorTexture,
             }),
         )
+
+        this.receiveShadow = true
+
         this.rotation.x = -Math.PI / 2
     }
 }

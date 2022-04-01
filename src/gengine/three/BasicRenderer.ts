@@ -23,7 +23,10 @@ export class BasicRenderer extends System {
     constructor({ canvas }: { canvas: HTMLCanvasElement }) {
         super()
 
-        this.renderer = new WebGLRenderer({ canvas })
+        this.renderer = new WebGLRenderer({
+            canvas,
+            antialias: true,
+        })
 
         this.renderer.outputEncoding = sRGBEncoding
         this.renderer.shadowMap.enabled = true

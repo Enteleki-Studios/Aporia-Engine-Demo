@@ -3,7 +3,7 @@ import type { Store } from 'redux'
 
 import type { Component, System } from 'gengine'
 import { actions } from '../Inspector/redux'
-import { ComponentManager } from './ComponentManager'
+import type { ComponentManager } from './ComponentManager'
 
 export class ECS {
     clock: THREE.Clock
@@ -12,17 +12,16 @@ export class ECS {
 
     ComponentManager: ComponentManager
 
-    constructor() {
+    constructor(componentManager: ComponentManager) {
         this.clock = new THREE.Clock()
-        this.ComponentManager = new ComponentManager()
+        this.ComponentManager = componentManager
     }
 
     addComponent(component: Component) {
         this.ComponentManager.addComponent(component)
-        if (this.store) {
-            this.store.dispatch(actions.updateEntities(this.ComponentManager.getListEntityIDs()))
-            this.store.dispatch(actions.updateComponents(this.ComponentManager.getComponentsInspected()))
-        }
+
+        this.store?.dispatch(actions.updateEntities(this.ComponentManager.getListEntityIDs()))
+        this.store?.dispatch(actions.updateComponents(this.ComponentManager.getComponentsInspected()))
     }
 
     addComponents(components: Component[]) {
@@ -34,29 +33,8 @@ export class ECS {
         this.systems.push(system)
     }
 
-    start() {
-        this.update()
-    }
-
-    update() {
-        requestAnimationFrame(() => {
-            const delta = Math.min(this.clock.getDelta(), 0.050)
-
-            try {
-                this.systems.forEach((system) => system.tick(delta))
-                if (this.store) {
-                    this.store.dispatch(actions.updateComponents(this.ComponentManager.getComponentsInspected()))
-                }
-
-                this.update()
-            } catch (error) {
-                /* eslint-disable no-console */
-                console.error(error)
-            }
-        })
-    }
-
-    addStore(store: Store) {
-        this.store = store
+    tick(delta: number) {
+        this.systems.forEach((system) => system.tick(delta))
     }
 }
+// this.store.dispatch(actions.updateComponents(this.ComponentManager.getComponentsInspected()))

@@ -1,16 +1,18 @@
 import * as THREE from 'three'
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
+// import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
 import {
-    DefaultTextureGrid,
+    DefaultGrid,
     DirectionalLight,
     DirectionalLightComponent,
     ModelComponent,
-    System,
     TextSprite,
-    CustomGridTexture,
+    DefaultCube,
+    HUDLayer,
+    DebugInfoTexture,
+    ComponentManager,
 } from 'gengine'
 
 import loadFBX from 'dungeon/utils/loadFBX'
@@ -23,15 +25,15 @@ import type {
     LevelComponent,
     PositionComponent,
 } from 'components'
+import { LineBasicMaterial } from 'three'
 
 const DEBUG = true
 
-export class Renderer extends System {
+export class Renderer {
     renderer
     scene
     camera
-    hudScene
-    hudCamera
+    hudLayer
     jobs: Array<(delta: number) => void>
     hasWorld
     debugCamera!: THREE.PerspectiveCamera
@@ -39,7 +41,7 @@ export class Renderer extends System {
     directionalLight?: DirectionalLight
 
     constructor({ canvas, aspect }: { canvas: HTMLCanvasElement, aspect: number }) {
-        super()
+        this.jobs = []
 
         this.renderer = new THREE.WebGLRenderer({
             canvas,
@@ -65,48 +67,6 @@ export class Renderer extends System {
         const far = 50
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
 
-        const hudCanvas = document.createElement('canvas')
-        hudCanvas.width = canvas.width
-        hudCanvas.height = canvas.height
-        const hudCtx = hudCanvas.getContext('2d')
-        if (hudCtx) {
-            hudCtx.font = 'Normal 10px monospace'
-            hudCtx.fillStyle = 'rgba(255, 255, 255, 0.7)'
-            hudCtx.fillText('Initializing...', 5, 15)
-        }
-
-        this.hudScene = new THREE.Scene()
-        this.hudCamera = new THREE.OrthographicCamera(
-            -canvas.width / 2,
-            canvas.width / 2,
-            canvas.height / 2,
-            -canvas.height / 2,
-            0,
-            30,
-        )
-
-        const hudTex = new THREE.Texture(hudCanvas)
-        hudTex.needsUpdate = true
-        const hudMat = new THREE.MeshBasicMaterial({ map: hudTex })
-        hudMat.transparent = true
-        const hudPlaneGeo = new THREE.PlaneGeometry(hudCanvas.width, hudCanvas.height)
-        const hudPlane = new THREE.Mesh(hudPlaneGeo, hudMat)
-        this.hudScene.add(hudPlane)
-
-        this.jobs = []
-
-        this.jobs.push((delta: number) => {
-            if (hudCtx) {
-                hudCtx.clearRect(0, 0, 200, 200)
-                hudCtx.fillText(`${Math.floor(1 / delta)} fps`, 5, 15)
-                hudCtx.fillText(`geometries: ${this.renderer.info.memory.geometries}`, 5, 30)
-                hudCtx.fillText(`textures: ${this.renderer.info.memory.textures}`, 5, 45)
-                hudCtx.fillText(`calls: ${this.renderer.info.render.calls}`, 5, 60)
-                hudCtx.fillText(`triangles: ${this.renderer.info.render.triangles}`, 5, 75)
-                hudTex.needsUpdate = true
-            }
-        })
-
         if (DEBUG) {
             this.scene.add(new THREE.CameraHelper(this.camera))
             this.debugCamera = new THREE.PerspectiveCamera(fov, aspect, near, 500)
@@ -117,26 +77,27 @@ export class Renderer extends System {
 
         this.hasWorld = false
 
-        const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
-        const boxMaterial = new THREE.MeshStandardMaterial({ color: 0xca27ca })
-        const box = new THREE.Mesh(boxGeometry, boxMaterial)
-        box.receiveShadow = true
-        box.castShadow = true
-        box.position.set(64, 0.5, 68)
-        this.scene.add(box)
+        const debugTex = new DebugInfoTexture(canvas.width, canvas.height)
+        this.hudLayer = new HUDLayer(canvas.width, canvas.height, debugTex)
+        this.jobs.push((delta: number) => {
+            debugTex.update({ delta, renderer: this.renderer })
+        })
 
-        const box2Geometry = new THREE.BoxGeometry(1, 2, 1)
-        const box2Material = new THREE.MeshStandardMaterial({ color: 0x2ab7ca })
-        const box2 = new THREE.Mesh(box2Geometry, box2Material)
-        box2.receiveShadow = true
-        box2.castShadow = true
-        box2.position.set(62, 1, 68)
-        this.scene.add(box2)
+        const box1 = new DefaultCube(1, 0xca27ca)
+        box1.position.set(1, 0, 8)
+        const box2 = new DefaultCube(1, 2, 1, 0x2ab7ca)
+        box2.position.set(-1, 0, 8)
+        this.scene.add(box1, box2)
     }
 
     enableDebug() {
         // Origin axes
-        this.scene.add(new THREE.AxesHelper(1))
+        const axes = new THREE.AxesHelper(1)
+        const axesMat = axes.material as LineBasicMaterial
+        axesMat.depthTest = false
+        axes.renderOrder = 1
+        // this.scene.add(new THREE.AxesHelper(1))
+        this.scene.add(axes)
 
         // Mouse camera controls
         this.orbitControls = new OrbitControls(
@@ -149,44 +110,44 @@ export class Renderer extends System {
         this.orbitControls.update()
     }
 
+    // eslint-disable-next-line
     addWorld(levelComponent: LevelComponent) {
-        const wallGeometries = []
-        const { tiles } = levelComponent
+        // const wallGeometries = []
+        // const { tiles } = levelComponent
 
-        const createWall = (x: number, y: number) => {
-            const b = new THREE.BoxBufferGeometry(1, 4, 1)
-            const mat4 = new THREE.Matrix4()
-            mat4.makeTranslation(x, 2, y)
-            b.applyMatrix4(mat4)
-            return b
-        }
-        for (let x = 0, maxX = tiles.length; x < maxX; x += 1) {
-            for (let y = 0, maxY = tiles[0].length; y < maxY; y += 1) {
-                const tile = tiles[x][y]
-                if (tile[1]) {
-                    wallGeometries.push(createWall(x, y))
-                }
-            }
-        }
+        // const createWall = (x: number, y: number) => {
+        //     const b = new THREE.BoxBufferGeometry(1, 4, 1)
+        //     const mat4 = new THREE.Matrix4()
+        //     mat4.makeTranslation(x, 2, y)
+        //     b.applyMatrix4(mat4)
+        //     return b
+        // }
+        // for (let x = 0, maxX = tiles.length; x < maxX; x += 1) {
+        //     for (let y = 0, maxY = tiles[0].length; y < maxY; y += 1) {
+        //         const tile = tiles[x][y]
+        //         if (tile[1]) {
+        //             wallGeometries.push(createWall(x, y))
+        //         }
+        //     }
+        // }
 
-        const mergedWallGeometries = mergeBufferGeometries(wallGeometries, false)
+        // const mergedWallGeometries = mergeBufferGeometries(wallGeometries, false)
 
-        const wallTexture = new THREE.TextureLoader().load('/resources/textures/wall.jpg')
-        wallTexture.wrapS = THREE.RepeatWrapping
-        wallTexture.wrapT = THREE.RepeatWrapping
-        wallTexture.repeat.set(1, 3)
-        const wallMaterial = new THREE.MeshStandardMaterial({
-            map: wallTexture,
-            flatShading: true,
-            side: THREE.FrontSide,
-        })
-        const wallMesh = new THREE.Mesh(mergedWallGeometries, wallMaterial)
-        wallMesh.receiveShadow = true
-        wallMesh.castShadow = true
-        this.scene.add(wallMesh)
+        // const wallTexture = new THREE.TextureLoader().load('/resources/textures/wall.jpg')
+        // wallTexture.wrapS = THREE.RepeatWrapping
+        // wallTexture.wrapT = THREE.RepeatWrapping
+        // wallTexture.repeat.set(1, 3)
+        // const wallMaterial = new THREE.MeshStandardMaterial({
+        //     map: wallTexture,
+        //     flatShading: true,
+        //     side: THREE.FrontSide,
+        // })
+        // const wallMesh = new THREE.Mesh(mergedWallGeometries, wallMaterial)
+        // wallMesh.receiveShadow = true
+        // wallMesh.castShadow = true
+        // this.scene.add(wallMesh)
 
-        const floor = new DefaultTextureGrid(128, new CustomGridTexture())
-        floor.position.set(63.5, 0, 63.5)
+        const floor = new DefaultGrid(32, { text: 'Dungeon\n1m' })
         this.scene.add(floor)
 
         this.hasWorld = true
@@ -203,7 +164,7 @@ export class Renderer extends System {
         return model
     }
 
-    tick(delta: number) {
+    tick(delta: number, componentManager: ComponentManager) {
         if (DEBUG) {
             this.renderer.render(this.scene, this.debugCamera)
         } else {
@@ -212,9 +173,9 @@ export class Renderer extends System {
 
         this.jobs.forEach((j) => j(delta))
 
-        this.renderer.render(this.hudScene, this.hudCamera)
+        this.renderer.render(this.hudLayer.scene, this.hudLayer.camera)
 
-        this.ECS.ComponentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
+        componentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
             ['MODEL', POSITION],
         ).forEach((tuple) => {
             const [modelComponent, positionComponent] = tuple
@@ -233,6 +194,8 @@ export class Renderer extends System {
 
                     const tripcode = modelComponent.entityId.split('-')[0]
                     const sprite = new TextSprite(tripcode)
+                    sprite.renderOrder = 1
+                    sprite.material.depthTest = false
                     group.add(sprite)
                     // document.body.prepend(canvas)
 
@@ -249,7 +212,7 @@ export class Renderer extends System {
             }
         })
 
-        this.ECS.ComponentManager.getTuplesByQueryGeneric<[DirectionalLightComponent]>(
+        componentManager.getTuplesByQueryGeneric<[DirectionalLightComponent]>(
             ['DIRECTIONAL_LIGHT'],
         ).forEach((tuple) => {
             const [directionalLightComponent] = tuple as [DirectionalLightComponent]
@@ -274,7 +237,7 @@ export class Renderer extends System {
             }
         })
 
-        this.ECS.ComponentManager.getTuplesByQuery([AMBIENT_LIGHT]).forEach((tuple) => {
+        componentManager.getTuplesByQuery([AMBIENT_LIGHT]).forEach((tuple) => {
             const [ambientLightComponent] = tuple as [AmbientLightComponent]
             if (!ambientLightComponent.resource) {
                 const { color, intensity } = ambientLightComponent
@@ -283,7 +246,7 @@ export class Renderer extends System {
             }
         })
 
-        this.ECS.ComponentManager.getTuplesByQuery([CAMERA]).forEach((tuple) => {
+        componentManager.getTuplesByQuery([CAMERA]).forEach((tuple) => {
             const [cameraComponent] = tuple as [CameraComponent]
             if (cameraComponent.needsUpdate) {
                 this.camera.position.copy(cameraComponent.position)
@@ -291,14 +254,14 @@ export class Renderer extends System {
                 cameraComponent.needsUpdate = false
 
                 if (DEBUG && this.orbitControls) {
-                    this.orbitControls.target.copy(cameraComponent.lookAt)
+                    // this.orbitControls.target.copy(cameraComponent.lookAt)
                     this.orbitControls.update()
                 }
             }
         })
 
         if (!this.hasWorld) {
-            const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0] as [LevelComponent]
+            const [levelComponent] = componentManager.getTuplesByQuery([LEVEL])[0] as [LevelComponent]
             this.addWorld(levelComponent)
         }
     }

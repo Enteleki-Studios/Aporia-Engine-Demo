@@ -2,7 +2,7 @@
 export { ECS } from './ECS/ECS'
 export { Component } from './ECS/Component'
 export { System } from './ECS/System'
-export type { ComponentManager } from './ECS/ComponentManager'
+export { ComponentManager } from './ECS/ComponentManager'
 
 // Components
 export { HeroComponent } from './components/HeroComponent'
@@ -31,8 +31,10 @@ export * as arrayUtils from './utils/arrayUtils'
 // THREEJS
 export { BasicRenderer } from './three/BasicRenderer'
 export { CustomGridTexture } from './three/CustomGridTexture'
+export { DebugInfoTexture } from './three/DebugInfoTexture'
+export { DefaultCube } from './three/DefaultCube'
 export { DefaultGrid } from './three/DefaultGrid'
-export { DefaultTextureGrid } from './three/DefaultTextureGrid'
+export { HUDLayer } from './three/HUDLayer'
 export { TextSprite } from './three/TextSprite'
 export { DirectionalLight } from './three/DirectionalLight'
 // export { SkyBox } from './three/SkyBox'

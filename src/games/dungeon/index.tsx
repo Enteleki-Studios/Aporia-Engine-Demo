@@ -4,13 +4,10 @@ import { Provider } from 'react-redux'
 
 // import { Inspector } from 'gengine'
 
-import dungeon from 'dungeon/dungeon'
 import store from 'dungeon/store'
 import UI from 'dungeon/UI'
 
 import './root.scss'
-
-dungeon.ecs.addStore(store)
 
 // render(
 //     <Provider store={store}>

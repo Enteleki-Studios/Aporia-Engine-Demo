@@ -3,6 +3,21 @@ import {
     Texture,
 } from 'three'
 
+export interface CustomGridSettings {
+    size?: number
+    backgroundColor?: number
+    borderColor?: number
+    borderWidth?: number
+    minorGridSegments?: number
+    minorGridColor?: number
+    minorGridWidth?: number
+    text?: string
+    lineHeight?: number
+    font?: string
+    textOffsetX?: number
+    textOffsetY?: number
+}
+
 export class CustomGridTexture extends Texture {
     constructor({
         size = 512,
@@ -10,14 +25,14 @@ export class CustomGridTexture extends Texture {
         borderColor = 0xcccccc,
         borderWidth = 6,
         minorGridSegments = 4,
-        minorGridColor = 0x888888,
+        minorGridColor = 0x666666,
         minorGridWidth = 4,
-        text = 'Prototype\n1m\n512 x 512',
+        text = 'Prototype',
         lineHeight = 25,
         font = 'Normal 18px monospace',
         textOffsetX = 15,
         textOffsetY = 30,
-    } = {}) {
+    }: CustomGridSettings = {}) {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
