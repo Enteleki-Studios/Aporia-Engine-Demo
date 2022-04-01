@@ -10,6 +10,7 @@ import {
     ModelComponent,
     System,
     TextSprite,
+    CustomGridTexture,
 } from 'gengine'
 
 import loadFBX from 'dungeon/utils/loadFBX'
@@ -184,7 +185,7 @@ export class Renderer extends System {
         wallMesh.castShadow = true
         this.scene.add(wallMesh)
 
-        const floor = new DefaultTextureGrid(128)
+        const floor = new DefaultTextureGrid(128, new CustomGridTexture())
         floor.position.set(63.5, 0, 63.5)
         this.scene.add(floor)
 
@@ -212,7 +213,6 @@ export class Renderer extends System {
         this.jobs.forEach((j) => j(delta))
 
         this.renderer.render(this.hudScene, this.hudCamera)
-
 
         this.ECS.ComponentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
             ['MODEL', POSITION],

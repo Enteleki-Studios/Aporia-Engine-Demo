@@ -5,13 +5,14 @@ import {
     PlaneGeometry,
     RepeatWrapping,
     TextureLoader,
+    Texture,
 } from 'three'
 
 const GRID_SEGMENTS = 4
 
 export class DefaultTextureGrid extends Mesh {
-    constructor(size = 128) {
-        const floorTexture = new TextureLoader().load('/resources/textures/grid.jpg')
+    constructor(size = 128, texture?: Texture) {
+        const floorTexture = texture || new TextureLoader().load('/resources/textures/grid.jpg')
         floorTexture.wrapS = RepeatWrapping
         floorTexture.wrapT = RepeatWrapping
         floorTexture.minFilter = LinearFilter

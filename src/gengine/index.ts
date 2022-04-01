@@ -30,6 +30,7 @@ export * as arrayUtils from './utils/arrayUtils'
 
 // THREEJS
 export { BasicRenderer } from './three/BasicRenderer'
+export { CustomGridTexture } from './three/CustomGridTexture'
 export { DefaultGrid } from './three/DefaultGrid'
 export { DefaultTextureGrid } from './three/DefaultTextureGrid'
 export { TextSprite } from './three/TextSprite'
