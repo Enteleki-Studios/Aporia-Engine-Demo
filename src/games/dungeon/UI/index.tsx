@@ -4,9 +4,9 @@ import { useAppDispatch } from 'hooks'
 
 import Header from 'UI/components/ingame/Header'
 
-import type { Dungeon } from 'dungeon'
+import dungeon from 'dungeon/dungeon'
 
-const UI = ({ dungeon }: { dungeon: Dungeon }) => {
+const UI = () => {
     const canvasRef = React.useRef(null)
     const dispatch = useAppDispatch()
     useEffect(() => {

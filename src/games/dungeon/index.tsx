@@ -4,13 +4,12 @@ import { Provider } from 'react-redux'
 
 // import { Inspector } from 'gengine'
 
-import { Dungeon } from 'dungeon/dungeon'
+import dungeon from 'dungeon/dungeon'
 import store from 'dungeon/store'
 import UI from 'dungeon/UI'
 
 import './root.scss'
 
-const dungeon: Dungeon = new Dungeon()
 dungeon.ecs.addStore(store)
 
 // render(
@@ -24,7 +23,7 @@ dungeon.ecs.addStore(store)
 
 render(
     <Provider store={store}>
-        <UI dungeon={dungeon} />
+        <UI />
     </Provider>,
     document.getElementById('Root'),
 )
