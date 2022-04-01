@@ -1,11 +1,13 @@
 import * as THREE from 'three'
 
-import { ECS, createEntity, DirectionalLightComponent } from 'gengine'
+import { ECS, createEntity, DirectionalLightComponent, HeroComponent, ModelComponent } from 'gengine'
 import type { AppDispatch } from 'dungeon/store'
 
 import * as Systems from 'dungeon/systems'
 import * as Components from 'dungeon/components'
 import tilesGenerator from 'utils/tilesGenerator'
+
+import modelDB from 'modelDB'
 
 export class Dungeon {
     ecs: ECS
@@ -49,11 +51,11 @@ export class Dungeon {
             // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
             new Components.CameraComponent(playerEntity),
             // new Components.CollisionComponent(playerEntity),
-            // new Components.HealthComponent(playerEntity, { health: 20 }),
-            new Components.HeroComponent(playerEntity),
+            // new HealthComponent(playerEntity, { health: 20 }),
+            new HeroComponent(playerEntity),
             // new Components.InputComponent(playerEntity),
             new DirectionalLightComponent(playerEntity),
-            new Components.ModelComponent(playerEntity, { modelId: 1 }),
+            new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'rogue' }),
             new Components.PositionComponent(playerEntity, new THREE.Vector3(64, 0, 64)),
         ])
 

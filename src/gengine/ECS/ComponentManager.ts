@@ -48,6 +48,21 @@ export class ComponentManager {
         return tuples
     }
 
+    getTuplesByQueryGeneric<R extends Component[]>(queryTypes: string[]) {
+        const query = queryTypes.join('.')
+        if (this.#queryCache.has(query)) {
+            return this.#queryCache.get(query) as R[]
+        }
+        const tuples:Component[][] = []
+        this.#entitiesById.forEach((entity: Entity) => {
+            if (queryTypes.every((qt) => entity.has(qt))) {
+                tuples.push(queryTypes.map((qt) => entity.get(qt) as Component))
+            }
+        })
+        this.#queryCache.set(query, tuples)
+        return tuples as R[]
+    }
+
     getListEntityIDs(): string[] {
         const listEntities: string[] = []
         this.#entitiesById.forEach((entity, id) => listEntities.push(id))

@@ -1,10 +1,9 @@
 import { AnimationMixer } from 'three'
-import { System } from 'gengine'
-import { ANIMATION, INPUT, MODEL } from 'components/types'
+import { System, ModelComponent } from 'gengine'
+import { ANIMATION, INPUT } from 'components/types'
 import type {
     AnimationComponent,
     InputComponent,
-    ModelComponent,
 } from 'components'
 
 // import loadFBX from 'utils/loadFBX'
@@ -37,9 +36,9 @@ export class Animation extends System {
     //     this._dbLoaded = true
     // }
 
-    static async loadAnimations(animationComponent: AnimationComponent, modelComponent: ModelComponent) {
+    static async loadAnimations(animationComponent: AnimationComponent, modelComponent: ModelComponent<typeof modelDB>) {
         const { resource: model } = modelComponent
-        const { animations: animationIndex } = modelDB[modelComponent.modelId]
+        const { animations: animationIndex } = modelDB[modelComponent.modelName]
 
         if (!model) { // TODO can we remove this check?
             return null
@@ -98,8 +97,8 @@ export class Animation extends System {
             }
         })
 
-        this.ECS.ComponentManager.getTuplesByQuery([ANIMATION, MODEL]).forEach((tuple) => {
-            const [animationComponent, modelComponent] = tuple as [AnimationComponent, ModelComponent]
+        this.ECS.ComponentManager.getTuplesByQuery([ANIMATION, 'MODEL']).forEach((tuple) => {
+            const [animationComponent, modelComponent] = tuple as [AnimationComponent, ModelComponent<typeof modelDB>]
             if (
                 !animationComponent.loaded
             && !animationComponent.isLoading

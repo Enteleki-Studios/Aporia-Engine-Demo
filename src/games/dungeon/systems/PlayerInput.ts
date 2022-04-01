@@ -1,6 +1,6 @@
-import { System } from 'gengine'
-import type { HeroComponent, InputComponent } from 'components'
-import { HERO, INPUT } from 'components/types'
+import { System, HeroComponent } from 'gengine'
+import type { InputComponent } from 'components'
+import { INPUT } from 'components/types'
 
 export class PlayerInput extends System {
     _liveInput: {
@@ -121,7 +121,7 @@ export class PlayerInput extends System {
     }
 
     tick() {
-        this.ECS.ComponentManager.getTuplesByQuery([HERO, INPUT]).forEach((tuple) => {
+        this.ECS.ComponentManager.getTuplesByQuery(['HERO', INPUT]).forEach((tuple) => {
             const [, inputComponent] = tuple as [HeroComponent, InputComponent]
             if (this._liveInput.shift && !this._liveInput.down) {
                 inputComponent.run = true

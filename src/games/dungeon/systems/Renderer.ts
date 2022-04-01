@@ -3,17 +3,16 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
-import { System, TextSprite, DirectionalLight, DirectionalLightComponent } from 'gengine'
+import { System, TextSprite, DirectionalLight, DirectionalLightComponent, ModelComponent } from 'gengine'
 
 import loadFBX from 'dungeon/utils/loadFBX'
 import modelDB from 'modelDB'
 
-import { AMBIENT_LIGHT, MODEL, POSITION, CAMERA, LEVEL } from 'components/types'
+import { AMBIENT_LIGHT, POSITION, CAMERA, LEVEL } from 'components/types'
 import type {
     AmbientLightComponent,
     CameraComponent,
     LevelComponent,
-    ModelComponent,
     PositionComponent,
 } from 'components'
 
@@ -149,10 +148,10 @@ export class Renderer extends System {
         this.#hasWorld = true
     }
 
-    static async createModel(modelComponent: ModelComponent) {
-        const { modelId } = modelComponent
+    static async createModel(modelComponent: ModelComponent<typeof modelDB>) {
+        const { modelName } = modelComponent
 
-        const { modelPath, texturePath, scale } = modelDB[modelId]
+        const { modelPath, texturePath, scale } = modelDB[modelName]
 
         const model: THREE.Object3D = await loadFBX(modelPath, texturePath)
         model.scale.setScalar(scale)
@@ -169,8 +168,8 @@ export class Renderer extends System {
 
         this.#jobs.forEach((j) => j(delta))
 
-        this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach((tuple) => {
-            const [modelComponent, positionComponent] = tuple as [ModelComponent, PositionComponent]
+        this.ECS.ComponentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(['MODEL', POSITION]).forEach((tuple) => {
+            const [modelComponent, positionComponent] = tuple
             if (modelComponent.group) {
                 // Update position
                 if (positionComponent.needsUpdate) {
@@ -202,7 +201,7 @@ export class Renderer extends System {
             }
         })
 
-        this.ECS.ComponentManager.getTuplesByQuery(['DIRECTIONAL_LIGHT']).forEach((tuple) => {
+        this.ECS.ComponentManager.getTuplesByQueryGeneric<[DirectionalLightComponent]>(['DIRECTIONAL_LIGHT']).forEach((tuple) => {
             const [directionalLightComponent] = tuple as [DirectionalLightComponent]
             if (!this.directionalLight) {
                 this.directionalLight = new DirectionalLight(0xFFFFFF, 0.4)

@@ -9,7 +9,10 @@ export { HeroComponent } from './components/HeroComponent'
 export { PositionComponent } from './components/PositionComponent'
 export { SpriteComponent } from './components/SpriteComponent'
 export { VelocityComponent } from './components/VelocityComponent'
+
 export { DirectionalLightComponent } from './components/DirectionalLightComponent' // TODO: refactor
+export { ModelComponent } from './components/ModelComponent'
+export { HealthComponent } from './components/HealthComponent'
 
 // Systems
 export { MovementSystem } from './systems/MovementSystem'

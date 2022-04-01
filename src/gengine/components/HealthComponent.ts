@@ -1,5 +1,5 @@
-import { Component } from 'gengine'
-import { HEALTH } from './types'
+import { Component } from '../ECS/Component'
+import { HEALTH } from './componentTypes'
 
 export class HealthComponent extends Component {
     type = HEALTH

@@ -1,12 +1,12 @@
 import { Vector3 } from 'three'
-import { System } from 'gengine'
-import { ATTACK, HEALTH, INPUT, POSITION } from 'components/types'
-import type { AttackComponent, HealthComponent, InputComponent, PositionComponent } from 'components'
+import { System, HealthComponent } from 'gengine'
+import { ATTACK, INPUT, POSITION } from 'components/types'
+import type { AttackComponent, InputComponent, PositionComponent } from 'components'
 
 export class Combat extends System {
     tick(delta:number) {
         const bodies = this.ECS.ComponentManager.getTuplesByQuery(
-            [HEALTH, POSITION],
+            ['HEALTH', POSITION],
         ) as [HealthComponent, PositionComponent][]
 
         this.ECS.ComponentManager.getTuplesByQuery([ATTACK, INPUT, POSITION]).forEach((tuple) => {
