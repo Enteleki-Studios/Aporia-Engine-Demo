@@ -7,8 +7,12 @@ import {
     DirectionalLightComponent,
     ECS,
     HeroComponent,
+    InputManager,
     ModelComponent,
     createEntity,
+    DEFAULT_KEYMAP,
+    inputSystem,
+    InputComponent,
 } from 'gengine'
 
 import { AppDispatch } from 'dungeon/store'
@@ -21,6 +25,8 @@ import tilesGenerator from 'utils/tilesGenerator'
 import modelDB from 'modelDB'
 
 const componentManager = new ComponentManager()
+let inputManager: InputManager
+
 const ecs = new ECS(componentManager)
 const clock = new Clock()
 
@@ -33,6 +39,7 @@ const loop = () => {
 
         try {
             ecs.tick(delta)
+            inputSystem(componentManager, inputManager)
             renderer.tick(componentManager) // TODO refactor how this is called
             renderer.render(delta)
             loop()
@@ -45,6 +52,7 @@ const loop = () => {
 
 const init = (canvas: HTMLCanvasElement) => {
     renderer = new Renderer({ canvas })
+    inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
 
     ecs.registerSystem(new Systems.Camera())
 
@@ -65,7 +73,7 @@ const init = (canvas: HTMLCanvasElement) => {
         // new Components.CollisionComponent(playerEntity),
         // new HealthComponent(playerEntity, { health: 20 }),
         new HeroComponent(playerEntity),
-        // new Components.InputComponent(playerEntity),
+        new InputComponent(playerEntity),
         new DirectionalLightComponent(playerEntity),
         new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'rogue' }),
         new Components.PositionComponent(playerEntity, new THREE.Vector3(0, 0, 4)),

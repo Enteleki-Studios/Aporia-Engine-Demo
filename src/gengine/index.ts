@@ -7,6 +7,7 @@ export { ComponentManager } from './ECS/ComponentManager'
 // Components
 export { AmbientLightComponent } from './components/AmbientLightComponent'
 export { HeroComponent } from './components/HeroComponent'
+export { InputComponent } from './components/InputComponent'
 export { PositionComponent } from './components/PositionComponent'
 export { SpriteComponent } from './components/SpriteComponent'
 export { VelocityComponent } from './components/VelocityComponent'
@@ -16,6 +17,7 @@ export { ModelComponent } from './components/ModelComponent'
 export { HealthComponent } from './components/HealthComponent'
 
 // Systems
+export { inputSystem } from './systems/inputSystem'
 export { MovementSystem } from './systems/MovementSystem'
 
 // Managers
@@ -41,3 +43,6 @@ export { HUDLayer } from './three/HUDLayer'
 export { TextSprite } from './three/TextSprite'
 export { DirectionalLight } from './three/DirectionalLight'
 // export { SkyBox } from './three/SkyBox'
+
+// Constants
+export * from './constants'
