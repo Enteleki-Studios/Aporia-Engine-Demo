@@ -15,6 +15,7 @@ import { AppDispatch } from 'dungeon/store'
 
 import * as Systems from 'dungeon/systems'
 import * as Components from 'dungeon/components'
+import { Renderer } from 'dungeon/Renderer'
 import tilesGenerator from 'utils/tilesGenerator'
 
 import modelDB from 'modelDB'
@@ -24,7 +25,7 @@ const ecs = new ECS(componentManager)
 const clock = new Clock()
 
 let dispatch: AppDispatch
-let renderer: Systems.Renderer
+let renderer: Renderer
 
 const loop = () => {
     requestAnimationFrame(() => {
@@ -42,15 +43,7 @@ const loop = () => {
 }
 
 const init = (canvas: HTMLCanvasElement) => {
-    // canvas.width = 1280
-    // canvas.height = 720
-    canvas.width = 1920
-    canvas.height = 1080
-
-    renderer = new Systems.Renderer({
-        canvas,
-        aspect: (canvas.width / canvas.height),
-    })
+    renderer = new Renderer({ canvas })
 
     ecs.registerSystem(new Systems.Camera())
 

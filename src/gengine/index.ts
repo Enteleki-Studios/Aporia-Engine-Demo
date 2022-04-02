@@ -30,6 +30,7 @@ export { createEntity } from './utils/createEntity'
 export * as arrayUtils from './utils/arrayUtils'
 
 // THREEJS
+export { AxesHelper } from './three/AxesHelper'
 export { BasicRenderer } from './three/BasicRenderer'
 export { CustomGridTexture } from './three/CustomGridTexture'
 export { DebugInfoTexture } from './three/DebugInfoTexture'
