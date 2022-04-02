@@ -39,9 +39,9 @@ const loop = () => {
         const delta = Math.min(clock.getDelta(), 0.050)
 
         try {
-            ecs.tick(delta)
             inputSystem(componentManager, inputManager)
             movementSystem(delta, componentManager)
+            Systems.cameraSystem(componentManager)
             renderer.tick(componentManager) // TODO refactor how this is called
             renderer.render(delta)
             loop()
@@ -55,8 +55,6 @@ const loop = () => {
 const init = (canvas: HTMLCanvasElement, debugCanvas: HTMLCanvasElement) => {
     renderer = new Renderer({ canvas, debugCanvas })
     inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
-
-    ecs.registerSystem(new Systems.Camera())
 
     ecs.addComponent(new Components.LevelComponent(createEntity(), {
         tiles: tilesGenerator([64, 64], 421),

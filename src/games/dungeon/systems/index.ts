@@ -1,5 +1,5 @@
 export { Animation } from './Animation'
-export { Camera } from './Camera'
+export { cameraSystem } from './Camera'
 export { Collision } from './Collision'
 export { CollisionEffects } from './CollisionEffects'
 // export { Combat } from './Combat'
