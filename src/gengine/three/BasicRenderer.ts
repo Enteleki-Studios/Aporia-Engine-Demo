@@ -109,8 +109,8 @@ export class BasicRenderer {
                 h.visible = true
             })
             this.debugRenderer.render(this.scene, this.debugCamera)
-            this.debugOverlayTexture.update({ delta, renderer: this.debugRenderer })
-            this.debugRenderer.render(this.debugOverlay.scene, this.debugOverlay.camera)
+            // this.debugOverlayTexture.update({ delta, renderer: this.debugRenderer })
+            // this.debugRenderer.render(this.debugOverlay.scene, this.debugOverlay.camera)
             this.debugHelpers.forEach((h) => {
                 h.visible = this.debug
             })
