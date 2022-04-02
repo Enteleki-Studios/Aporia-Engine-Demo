@@ -19,6 +19,7 @@ export { HealthComponent } from './components/HealthComponent'
 export { MovementSystem } from './systems/MovementSystem'
 
 // Managers
+export { InputManager } from './managers/InputManager'
 export { ResourceManager } from './managers/ResourceManager'
 
 // Inspector

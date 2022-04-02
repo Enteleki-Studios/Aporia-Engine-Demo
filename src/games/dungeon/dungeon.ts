@@ -33,7 +33,7 @@ const loop = () => {
 
         try {
             ecs.tick(delta)
-            renderer.tick(componentManager)
+            renderer.tick(componentManager) // TODO refactor how this is called
             renderer.render(delta)
             loop()
         } catch (error) {
