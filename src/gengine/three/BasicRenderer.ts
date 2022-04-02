@@ -19,24 +19,29 @@ export class BasicRenderer {
     debugCamera
     renderer
     scene
+
     grid
+
     debugHelpers: Object3D[] = []
     debug = false
     orbitControls?: OrbitControls
     showDebugOverlay = false
     debugOverlay
     debugOverlayTexture
+    debugRenderer?: WebGLRenderer
 
     jobs: Array<(delta: number) => void>
 
     constructor({
         canvas,
+        debugCanvas,
         fov = 60,
         aspect = 1,
         near = 0.5,
         far = 500,
     }: {
         canvas: HTMLCanvasElement
+        debugCanvas?: HTMLCanvasElement
         fov?: number
         aspect?: number
         near?: number
@@ -64,10 +69,18 @@ export class BasicRenderer {
         this.debugCamera = new PerspectiveCamera(fov, aspect, near, far)
         this.debugCamera.position.set(20, 20, 20)
 
-        this.setSize(1920, 1080)
-
         this.grid = new DefaultGrid(32)
         this.scene.add(this.grid)
+
+        if (debugCanvas) {
+            this.debugRenderer = new WebGLRenderer({ canvas: debugCanvas, antialias: true })
+            this.debugRenderer.outputEncoding = sRGBEncoding
+            this.debugRenderer.autoClear = false
+            this.orbitControls = new OrbitControls(this.debugCamera, this.debugRenderer.domElement)
+        }
+
+        // this.setSize(1920, 1080)
+        this.setSize(1280, 720)
 
         this.debugHelpers.push(
             new AxesHelper(),
@@ -82,13 +95,25 @@ export class BasicRenderer {
     }
 
     render(delta: number) {
-        this.renderer.render(this.scene, this.debug ? this.debugCamera : this.camera)
+        this.renderer.render(this.scene, this.camera)
 
         this.jobs.forEach((job) => job(delta))
 
         if (this.showDebugOverlay) {
             this.debugOverlayTexture.update({ delta, renderer: this.renderer })
             this.renderer.render(this.debugOverlay.scene, this.debugOverlay.camera)
+        }
+
+        if (this.debugRenderer) {
+            this.debugHelpers.forEach((h) => {
+                h.visible = true
+            })
+            this.debugRenderer.render(this.scene, this.debugCamera)
+            this.debugOverlayTexture.update({ delta, renderer: this.debugRenderer })
+            this.debugRenderer.render(this.debugOverlay.scene, this.debugOverlay.camera)
+            this.debugHelpers.forEach((h) => {
+                h.visible = this.debug
+            })
         }
     }
 
@@ -106,19 +131,14 @@ export class BasicRenderer {
         this.debugHelpers.forEach((h) => {
             h.visible = shouldDebug
         })
-
-        if (shouldDebug) {
-            this.orbitControls = new OrbitControls(this.debugCamera, this.renderer.domElement)
-        } else if (this.orbitControls) {
-            this.orbitControls.dispose()
-            this.orbitControls = undefined
-        }
     }
 
     setSize(width: number, height: number) {
-        this.renderer.setSize(width, height)
-        this.renderer.domElement.style.width = 'initial'
-        this.renderer.domElement.style.height = 'initial'
+        this.renderer.setSize(width, height, false)
+
+        if (this.debugRenderer) {
+            this.debugRenderer.setSize(width, height, false)
+        }
 
         this.camera.aspect = width / height
         this.camera.updateProjectionMatrix()

@@ -14,7 +14,7 @@ html {
 
         #Root {
             height: 100%;
-            overflow: auto;
+            overflow-y: auto;
             background-color: #161616;
             display: flex;
             justify-content: center;
@@ -30,11 +30,17 @@ ul {
 
 .UI {
     position: relative;
-    padding-top: 3rem;
-    max-width: 90%;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
 
-    canvas {
-        display: block;
-        max-width:100%
+    .canvasContainer {
+        flex: 1;
+        border: 1px solid #333;
+
+        canvas {
+            display: block;
+            width: 100%;
+        }
     }
 }

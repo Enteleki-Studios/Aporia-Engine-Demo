@@ -15,7 +15,8 @@ export class DebugInfoTexture extends Texture {
 
         const context = canvas.getContext('2d')
         if (context) {
-            context.font = `Normal ${height / 72}px monospace`
+            // context.font = `Normal ${height / 72}px monospace` // TODO add scaling
+            context.font = `Normal ${height / 50}px monospace`
             context.fillStyle = 'rgba(255, 255, 255, 0.7)'
             context.fillText('Initializing...', 5, 15)
         }
@@ -27,7 +28,8 @@ export class DebugInfoTexture extends Texture {
         this.canvas = canvas
         this.context = context
 
-        this.lineHeight = height / 60
+        // this.lineHeight = height / 60
+        this.lineHeight = height / 40
         this.lineOffset = this.lineHeight
     }
 

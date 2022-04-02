@@ -39,21 +39,24 @@ export class Renderer extends BasicRenderer {
 
     hasWorld = false
 
-    constructor({ canvas }: { canvas: HTMLCanvasElement }) {
-        super({ canvas })
+    constructor({
+        canvas,
+        debugCanvas,
+    }: { canvas: HTMLCanvasElement, debugCanvas: HTMLCanvasElement }) {
+        super({ canvas, debugCanvas })
 
         // this.setSize(1280, 720)
 
-        this.debugMode(true)
+        // this.debugMode(true)
         this.showDebugOverlay = true
 
         this.scene.remove(this.grid)
         this.grid = new DefaultGrid(32, { text: 'Dungeon\n1m' }) // TODO add ability to update grid settings
         this.scene.add(this.grid)
 
-        if (!this.debug) {
-            this.scene.fog = new THREE.Fog(0x161616, 1, 30)
-        }
+        // if (!this.debug) {
+        //     this.scene.fog = new THREE.Fog(0x161616, 1, 30)
+        // }
 
         const box1 = new DefaultCube(1, 0xca27ca)
         box1.position.set(1, 0, 8)

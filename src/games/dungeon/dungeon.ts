@@ -52,8 +52,8 @@ const loop = () => {
     })
 }
 
-const init = (canvas: HTMLCanvasElement) => {
-    renderer = new Renderer({ canvas })
+const init = (canvas: HTMLCanvasElement, debugCanvas: HTMLCanvasElement) => {
+    renderer = new Renderer({ canvas, debugCanvas })
     inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
 
     ecs.registerSystem(new Systems.Camera())
