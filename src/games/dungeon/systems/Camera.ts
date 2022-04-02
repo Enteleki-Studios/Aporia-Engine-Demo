@@ -1,7 +1,7 @@
 import { Vector3 } from 'three'
-import { System, DirectionalLightComponent } from 'gengine'
-import { CAMERA, POSITION } from 'components/types'
-import type { CameraComponent, PositionComponent } from 'components'
+import { System, DirectionalLightComponent, PositionComponent } from 'gengine'
+import { CAMERA } from 'components/types'
+import type { CameraComponent } from 'components'
 
 // const LERP_FACTOR = 3
 let camPosition
@@ -9,7 +9,7 @@ let lookPosition
 
 export class Camera extends System {
     tick() {
-        this.ECS.ComponentManager.getTuplesByQuery([CAMERA, 'DIRECTIONAL_LIGHT', POSITION]).forEach((tuple) => {
+        this.ECS.ComponentManager.getTuplesByQuery([CAMERA, 'DIRECTIONAL_LIGHT', 'POSITION']).forEach((tuple) => {
             const [
                 cameraComponent,
                 directionalLightComponent,

@@ -1,10 +1,10 @@
-import { System } from 'gengine'
-import { COLLISION, POSITION } from 'components/types'
-import type { CollisionComponent, PositionComponent } from 'components'
+import { System, PositionComponent } from 'gengine'
+import { COLLISION } from 'components/types'
+import type { CollisionComponent } from 'components'
 
 export class CollisionEffects extends System {
     tick() {
-        this.ECS.ComponentManager.getTuplesByQuery([COLLISION, POSITION]).forEach((tuple) => {
+        this.ECS.ComponentManager.getTuplesByQuery([COLLISION, 'POSITION']).forEach((tuple) => {
             const [collisionComponent, positionComponent] = tuple as [CollisionComponent, PositionComponent]
             const { position, prevPosition } = positionComponent
             if (collisionComponent.collisions.length) {

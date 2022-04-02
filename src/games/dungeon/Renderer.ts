@@ -10,18 +10,17 @@ import {
     ComponentManager,
     AmbientLightComponent,
     BasicRenderer,
+    PositionComponent,
 } from 'gengine'
 
 import loadFBX from 'dungeon/utils/loadFBX'
 import modelDB from 'modelDB'
 
 import {
-    POSITION,
     CAMERA,
 } from 'components/types'
 import type {
     CameraComponent,
-    PositionComponent,
 } from 'components'
 
 async function createModel(modelComponent: ModelComponent<typeof modelDB>) {
@@ -67,7 +66,7 @@ export class Renderer extends BasicRenderer {
         // super.render(delta, componentManager)
 
         componentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
-            ['MODEL', POSITION],
+            ['MODEL', 'POSITION'],
         ).forEach(([modelComponent, positionComponent]) => {
             if (modelComponent.group) {
                 // Update position

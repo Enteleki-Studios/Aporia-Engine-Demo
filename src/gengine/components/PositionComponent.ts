@@ -1,4 +1,4 @@
-import { Vector3 } from 'three'
+import { Quaternion, Vector3 } from 'three'
 import { Component } from '../ECS/Component'
 import { trimNumberArrayToString } from '../utils/arrayUtils'
 import { POSITION } from './componentTypes'
@@ -10,6 +10,13 @@ interface PositionSettings {
 export class PositionComponent extends Component {
     type = POSITION
     position: Vector3
+
+    // TODO refactor which props we need
+    prevPosition = new Vector3()
+    rotation = new Quaternion()
+    quaternion: Quaternion = new Quaternion()
+    needsUpdate = true
+    velocity = new Vector3()
 
     constructor(entityId: string, { position }: PositionSettings) {
         super(entityId)

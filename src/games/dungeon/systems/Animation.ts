@@ -1,10 +1,7 @@
 import { AnimationMixer } from 'three'
-import { System, ModelComponent } from 'gengine'
-import { ANIMATION, INPUT } from 'components/types'
-import type {
-    AnimationComponent,
-    InputComponent,
-} from 'components'
+import { System, ModelComponent, InputComponent } from 'gengine'
+import { ANIMATION } from 'components/types'
+import type { AnimationComponent } from 'components'
 
 // import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
@@ -76,22 +73,26 @@ export class Animation extends System {
     }
 
     tick(delta: number) {
-        this.ECS.ComponentManager.getTuplesByQuery([ANIMATION, INPUT]).forEach((tuple) => {
+        this.ECS.ComponentManager.getTuplesByQuery([ANIMATION, 'INPUT']).forEach((tuple) => {
             const [animationComponent, inputComponent] = tuple as [AnimationComponent, InputComponent]
             let nextState = 'idle'
-            if (inputComponent.downHold) {
+            if (inputComponent.input.down.hold) {
                 // nextState = 'walkBack'
                 nextState = 'walk'
-            } else if (inputComponent.upHold || inputComponent.leftHold || inputComponent.rightHold) {
+            } else if (
+                inputComponent.input.up.hold
+                || inputComponent.input.left.hold
+                || inputComponent.input.right.hold
+            ) {
                 nextState = 'walk'
-                if (inputComponent.run) {
+                if (inputComponent.input.run.hold) {
                     nextState = 'run'
                 }
             }
 
-            if (inputComponent.attacking) {
-                nextState = 'attack'
-            }
+            // if (inputComponent.attacking) {
+            //     nextState = 'attack'
+            // }
 
             if (animationComponent.state !== nextState) {
                 animationComponent.prevState = animationComponent.state

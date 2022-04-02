@@ -7,6 +7,6 @@ export const DEFAULT_KEYMAP: Record<string, string> = {
     KeyW: 'up',
     KeyS: 'down',
     KeyD: 'right',
-    ShiftLeft: 'shift',
+    ShiftLeft: 'run',
     Space: 'space',
 }

@@ -1,10 +1,9 @@
-import { System } from 'gengine'
+import { System, PositionComponent } from 'gengine'
 // import logger from 'utils/logger'
-import { COLLISION, LEVEL, POSITION } from 'components/types'
+import { COLLISION, LEVEL } from 'components/types'
 import type {
     CollisionComponent,
     LevelComponent,
-    PositionComponent,
 } from 'components'
 
 const hitDistance = 1
@@ -15,7 +14,7 @@ export class Collision extends System {
         const [levelComponent] = this.ECS.ComponentManager.getTuplesByQuery([LEVEL])[0] as [LevelComponent]
         const { tiles } = levelComponent
 
-        this.ECS.ComponentManager.getTuplesByQuery([COLLISION, POSITION]).forEach((tuple) => {
+        this.ECS.ComponentManager.getTuplesByQuery([COLLISION, 'POSITION']).forEach((tuple) => {
             const [collisionComponent, positionComponent] = tuple as [CollisionComponent, PositionComponent]
             const { position: { x, z } } = positionComponent
             const currentTile = [Math.floor(x), Math.floor(z)]

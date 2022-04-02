@@ -18,6 +18,7 @@ export { HealthComponent } from './components/HealthComponent'
 
 // Systems
 export { inputSystem } from './systems/inputSystem'
+export { movementSystem } from './systems/movement'
 export { MovementSystem } from './systems/MovementSystem'
 
 // Managers

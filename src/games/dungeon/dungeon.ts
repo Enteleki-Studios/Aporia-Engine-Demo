@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import { Clock } from 'three'
 
 import {
@@ -12,7 +11,9 @@ import {
     createEntity,
     DEFAULT_KEYMAP,
     inputSystem,
+    movementSystem,
     InputComponent,
+    PositionComponent,
 } from 'gengine'
 
 import { AppDispatch } from 'dungeon/store'
@@ -40,6 +41,7 @@ const loop = () => {
         try {
             ecs.tick(delta)
             inputSystem(componentManager, inputManager)
+            movementSystem(delta, componentManager)
             renderer.tick(componentManager) // TODO refactor how this is called
             renderer.render(delta)
             loop()
@@ -76,7 +78,7 @@ const init = (canvas: HTMLCanvasElement) => {
         new InputComponent(playerEntity),
         new DirectionalLightComponent(playerEntity),
         new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'rogue' }),
-        new Components.PositionComponent(playerEntity, new THREE.Vector3(0, 0, 4)),
+        new PositionComponent(playerEntity, { position: [0, 0, 4] }),
     ])
 
     dispatch({ type: 'TEST' })
