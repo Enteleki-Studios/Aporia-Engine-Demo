@@ -11,7 +11,6 @@ import {
 } from 'three'
 import { DefaultGrid } from './DefaultGrid'
 import { AxesHelper } from './AxesHelper'
-import { ComponentManager } from '../ECS/ComponentManager'
 import { DebugInfoTexture } from './DebugInfoTexture'
 import { HUDLayer } from './HUDLayer'
 
@@ -82,7 +81,7 @@ export class BasicRenderer {
         this.debugMode(false)
     }
 
-    tick(delta: number, componentManager: ComponentManager) {
+    render(delta: number) {
         this.renderer.render(this.scene, this.debug ? this.debugCamera : this.camera)
 
         this.jobs.forEach((job) => job(delta))

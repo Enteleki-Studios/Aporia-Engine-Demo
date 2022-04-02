@@ -33,7 +33,8 @@ const loop = () => {
 
         try {
             ecs.tick(delta)
-            renderer.tick(delta, componentManager)
+            renderer.tick(componentManager)
+            renderer.render(delta)
             loop()
         } catch (error) {
             /* eslint-disable no-console */

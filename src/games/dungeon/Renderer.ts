@@ -1,7 +1,5 @@
 import * as THREE from 'three'
 
-// import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils'
-
 import {
     DefaultGrid,
     DirectionalLight,
@@ -17,14 +15,25 @@ import {
 import loadFBX from 'dungeon/utils/loadFBX'
 import modelDB from 'modelDB'
 
-import { POSITION, CAMERA, LEVEL } from 'components/types'
+import {
+    POSITION,
+    CAMERA,
+} from 'components/types'
 import type {
     CameraComponent,
-    LevelComponent,
     PositionComponent,
 } from 'components'
 
-const DEBUG = true
+async function createModel(modelComponent: ModelComponent<typeof modelDB>) {
+    const { modelName } = modelComponent
+
+    const { modelPath, texturePath, scale } = modelDB[modelName]
+
+    const model: THREE.Object3D = await loadFBX(modelPath, texturePath)
+    model.scale.setScalar(scale)
+
+    return model
+}
 
 export class Renderer extends BasicRenderer {
     directionalLight?: DirectionalLight
@@ -36,7 +45,7 @@ export class Renderer extends BasicRenderer {
 
         // this.setSize(1280, 720)
 
-        this.debugMode(DEBUG)
+        this.debugMode(true)
         this.showDebugOverlay = true
 
         this.scene.remove(this.grid)
@@ -54,59 +63,8 @@ export class Renderer extends BasicRenderer {
         this.scene.add(box1, box2)
     }
 
-    // eslint-disable-next-line
-    addWorld(levelComponent: LevelComponent) {
-        // const wallGeometries = []
-        // const { tiles } = levelComponent
-
-        // const createWall = (x: number, y: number) => {
-        //     const b = new THREE.BoxBufferGeometry(1, 4, 1)
-        //     const mat4 = new THREE.Matrix4()
-        //     mat4.makeTranslation(x, 2, y)
-        //     b.applyMatrix4(mat4)
-        //     return b
-        // }
-        // for (let x = 0, maxX = tiles.length; x < maxX; x += 1) {
-        //     for (let y = 0, maxY = tiles[0].length; y < maxY; y += 1) {
-        //         const tile = tiles[x][y]
-        //         if (tile[1]) {
-        //             wallGeometries.push(createWall(x, y))
-        //         }
-        //     }
-        // }
-
-        // const mergedWallGeometries = mergeBufferGeometries(wallGeometries, false)
-
-        // const wallTexture = new THREE.TextureLoader().load('/resources/textures/wall.jpg')
-        // wallTexture.wrapS = THREE.RepeatWrapping
-        // wallTexture.wrapT = THREE.RepeatWrapping
-        // wallTexture.repeat.set(1, 3)
-        // const wallMaterial = new THREE.MeshStandardMaterial({
-        //     map: wallTexture,
-        //     flatShading: true,
-        //     side: THREE.FrontSide,
-        // })
-        // const wallMesh = new THREE.Mesh(mergedWallGeometries, wallMaterial)
-        // wallMesh.receiveShadow = true
-        // wallMesh.castShadow = true
-        // this.scene.add(wallMesh)
-
-        this.hasWorld = true
-    }
-
-    static async createModel(modelComponent: ModelComponent<typeof modelDB>) {
-        const { modelName } = modelComponent
-
-        const { modelPath, texturePath, scale } = modelDB[modelName]
-
-        const model: THREE.Object3D = await loadFBX(modelPath, texturePath)
-        model.scale.setScalar(scale)
-
-        return model
-    }
-
-    tick(delta: number, componentManager: ComponentManager) {
-        super.tick(delta, componentManager)
+    tick(componentManager: ComponentManager) {
+        // super.render(delta, componentManager)
 
         componentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
             ['MODEL', POSITION],
@@ -120,7 +78,7 @@ export class Renderer extends BasicRenderer {
                 }
             } else if (!modelComponent.isLoading) {
                 modelComponent.isLoading = true
-                Renderer.createModel(modelComponent).then((resource) => {
+                createModel(modelComponent).then((resource) => {
                     const group = new THREE.Group()
                     group.add(resource)
 
@@ -177,10 +135,49 @@ export class Renderer extends BasicRenderer {
             this.camera.position.copy(cameraComponent.position)
             this.camera.lookAt(cameraComponent.lookAt)
         })
-
-        if (!this.hasWorld) {
-            const [levelComponent] = componentManager.getTuplesByQueryGeneric<[LevelComponent]>([LEVEL])[0]
-            this.addWorld(levelComponent)
-        }
     }
 }
+
+// if (!this.hasWorld) {
+//     const [levelComponent] = componentManager.getTuplesByQueryGeneric<[LevelComponent]>([LEVEL])[0]
+//     this.addWorld(levelComponent)
+// }
+
+// addWorld(levelComponent: LevelComponent) {
+//     const wallGeometries = []
+//     const { tiles } = levelComponent
+
+//     const createWall = (x: number, y: number) => {
+//         const b = new THREE.BoxBufferGeometry(1, 4, 1)
+//         const mat4 = new THREE.Matrix4()
+//         mat4.makeTranslation(x, 2, y)
+//         b.applyMatrix4(mat4)
+//         return b
+//     }
+//     for (let x = 0, maxX = tiles.length; x < maxX; x += 1) {
+//         for (let y = 0, maxY = tiles[0].length; y < maxY; y += 1) {
+//             const tile = tiles[x][y]
+//             if (tile[1]) {
+//                 wallGeometries.push(createWall(x, y))
+//             }
+//         }
+//     }
+
+//     const mergedWallGeometries = mergeBufferGeometries(wallGeometries, false)
+
+//     const wallTexture = new THREE.TextureLoader().load('/resources/textures/wall.jpg')
+//     wallTexture.wrapS = THREE.RepeatWrapping
+//     wallTexture.wrapT = THREE.RepeatWrapping
+//     wallTexture.repeat.set(1, 3)
+//     const wallMaterial = new THREE.MeshStandardMaterial({
+//         map: wallTexture,
+//         flatShading: true,
+//         side: THREE.FrontSide,
+//     })
+//     const wallMesh = new THREE.Mesh(mergedWallGeometries, wallMaterial)
+//     wallMesh.receiveShadow = true
+//     wallMesh.castShadow = true
+//     this.scene.add(wallMesh)
+
+//     this.hasWorld = true
+// }
