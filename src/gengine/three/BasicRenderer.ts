@@ -24,7 +24,7 @@ export class BasicRenderer {
 
     debugHelpers: Object3D[] = []
     debug = false
-    orbitControls?: OrbitControls
+    debugOrbitControls?: OrbitControls
     showDebugOverlay = false
     debugOverlay
     debugOverlayTexture
@@ -76,7 +76,7 @@ export class BasicRenderer {
             this.debugRenderer = new WebGLRenderer({ canvas: debugCanvas, antialias: true })
             this.debugRenderer.outputEncoding = sRGBEncoding
             this.debugRenderer.autoClear = false
-            this.orbitControls = new OrbitControls(this.debugCamera, this.debugRenderer.domElement)
+            this.debugOrbitControls = new OrbitControls(this.debugCamera, this.debugRenderer.domElement)
         }
 
         // this.setSize(1920, 1080)
