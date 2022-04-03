@@ -78,8 +78,9 @@ export class BasicRenderer {
 
         this.debugOrbitControls = new OrbitControls(this.debugCamera, this.renderer.domElement)
 
-        // this.setSize(1920, 1080)
-        this.setSize(1280, 720)
+        this.setSize(1920, 1080)
+        // this.setSize(1280, 720)
+        // this.setSize(2560, 1440)
 
         this.addHelpers(
             new AxesHelper(),

@@ -1,16 +1,19 @@
 export class InputManager {
-    private liveInput: Record<string, boolean>
+    private actions: Record<string, boolean>
     private mouseInput: Record<string, number>
-    private keymap: Record<string, string>
+    private expandedKeymap: Record<string, string>
     private domElement: HTMLElement
 
     constructor({ domElement, keymap }: { domElement: HTMLElement, keymap: Record<string, string> }) {
         this.domElement = domElement
-        this.keymap = keymap
 
-        this.liveInput = {}
-        Object.values(keymap).forEach((input) => {
-            this.liveInput[input] = false
+        this.expandedKeymap = {}
+        this.actions = {}
+
+        Object.keys(keymap).forEach((action) => {
+            this.actions[action] = false
+            this.expandedKeymap[keymap[action]] = action
+            // TODO allow for many-to-many action <-> keycode
         })
 
         this.mouseInput = {
@@ -25,9 +28,9 @@ export class InputManager {
         document.addEventListener('keydown', this.onKeyDown.bind(this))
         document.addEventListener('keyup', this.onKeyUp.bind(this))
 
-        this.domElement.addEventListener('click', () => {
-            this.domElement.requestPointerLock()
-        })
+        // this.domElement.addEventListener('click', () => {
+        //     this.domElement.requestPointerLock()
+        // })
 
         const onMouseMove = (e: MouseEvent) => this.onMouseMove(e)
         const onPointerLockChange = () => {
@@ -49,18 +52,18 @@ export class InputManager {
     private onKeyDown(e: KeyboardEvent) {
         e.preventDefault()
 
-        if (this.keymap[e.code]) {
-            this.liveInput[this.keymap[e.code]] = true
+        if (this.expandedKeymap[e.code]) {
+            this.actions[this.expandedKeymap[e.code]] = true
         }
     }
 
     private onKeyUp(e: KeyboardEvent) {
-        if (this.keymap[e.code]) {
-            this.liveInput[this.keymap[e.code]] = false
+        if (this.expandedKeymap[e.code]) {
+            this.actions[this.expandedKeymap[e.code]] = false
         }
     }
 
     readInput() {
-        return this.liveInput
+        return this.actions
     }
 }
