@@ -2,4 +2,4 @@
 
 Typescript + Three.js
 
-Custom game engine with ECS
+Custom game engine
