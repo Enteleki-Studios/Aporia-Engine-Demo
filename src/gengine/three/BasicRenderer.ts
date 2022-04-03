@@ -8,6 +8,7 @@ import {
     WebGLRenderer,
     Object3D,
     CameraHelper,
+    Vector4,
 } from 'three'
 import { DefaultGrid } from './DefaultGrid'
 import { AxesHelper } from './AxesHelper'
@@ -19,6 +20,10 @@ export class BasicRenderer {
     debugCamera
     renderer
     scene
+    width = 0
+    height = 0
+    aspect = 1
+    viewport = new Vector4()
 
     grid
 
@@ -28,20 +33,18 @@ export class BasicRenderer {
     showDebugOverlay = false
     debugOverlay
     debugOverlayTexture
-    debugRenderer?: WebGLRenderer
+    debugViewport = new Vector4()
 
     jobs: Array<(delta: number) => void>
 
     constructor({
         canvas,
-        debugCanvas,
         fov = 60,
         aspect = 1,
         near = 0.5,
         far = 500,
     }: {
         canvas: HTMLCanvasElement
-        debugCanvas?: HTMLCanvasElement
         fov?: number
         aspect?: number
         near?: number
@@ -59,6 +62,7 @@ export class BasicRenderer {
         this.renderer.setPixelRatio(window.devicePixelRatio)
         this.renderer.debug.checkShaderErrors = true
         this.renderer.autoClear = false
+        this.renderer.setScissorTest(true)
 
         this.scene = new Scene()
         this.scene.background = new Color(0x161616)
@@ -72,21 +76,15 @@ export class BasicRenderer {
         this.grid = new DefaultGrid(32)
         this.scene.add(this.grid)
 
-        if (debugCanvas) {
-            this.debugRenderer = new WebGLRenderer({ canvas: debugCanvas, antialias: true })
-            this.debugRenderer.outputEncoding = sRGBEncoding
-            this.debugRenderer.autoClear = false
-            this.debugOrbitControls = new OrbitControls(this.debugCamera, this.debugRenderer.domElement)
-        }
+        this.debugOrbitControls = new OrbitControls(this.debugCamera, this.renderer.domElement)
 
         // this.setSize(1920, 1080)
         this.setSize(1280, 720)
 
-        this.debugHelpers.push(
+        this.addHelpers(
             new AxesHelper(),
             new CameraHelper(this.camera),
         )
-        this.scene.add(...this.debugHelpers)
 
         this.debugOverlayTexture = new DebugInfoTexture(canvas.width, canvas.height)
         this.debugOverlay = new HUDLayer(canvas.width, canvas.height, this.debugOverlayTexture)
@@ -95,6 +93,8 @@ export class BasicRenderer {
     }
 
     render(delta: number) {
+        this.renderer.setViewport(this.viewport)
+        this.renderer.setScissor(this.viewport)
         this.renderer.render(this.scene, this.camera)
 
         this.jobs.forEach((job) => job(delta))
@@ -104,22 +104,24 @@ export class BasicRenderer {
             this.renderer.render(this.debugOverlay.scene, this.debugOverlay.camera)
         }
 
-        if (this.debugRenderer) {
+        if (this.debug) {
             this.debugHelpers.forEach((h) => {
                 h.visible = true
             })
-            this.debugRenderer.render(this.scene, this.debugCamera)
-            // this.debugOverlayTexture.update({ delta, renderer: this.debugRenderer })
-            // this.debugRenderer.render(this.debugOverlay.scene, this.debugOverlay.camera)
+            this.renderer.setViewport(this.debugViewport)
+            this.renderer.setScissor(this.debugViewport)
+            this.renderer.render(this.scene, this.debugCamera)
+            this.debugOverlayTexture.update({ delta, renderer: this.renderer })
+            this.renderer.render(this.debugOverlay.scene, this.debugOverlay.camera)
             this.debugHelpers.forEach((h) => {
-                h.visible = this.debug
+                h.visible = false
             })
         }
     }
 
     addHelpers(...helpers: Object3D[]) {
         helpers.forEach((h) => {
-            h.visible = this.debug
+            h.visible = false
             this.debugHelpers.push(h)
             this.scene.add(h)
         })
@@ -127,22 +129,30 @@ export class BasicRenderer {
 
     debugMode(shouldDebug = true) {
         this.debug = shouldDebug
-
-        this.debugHelpers.forEach((h) => {
-            h.visible = shouldDebug
-        })
+        this.updateViewports()
     }
 
     setSize(width: number, height: number) {
-        this.renderer.setSize(width, height, false)
+        this.width = width
+        this.height = height
+        this.aspect = width / height
 
-        if (this.debugRenderer) {
-            this.debugRenderer.setSize(width, height, false)
-        }
-
-        this.camera.aspect = width / height
+        this.camera.aspect = this.aspect
         this.camera.updateProjectionMatrix()
         this.debugCamera.aspect = width / height
         this.debugCamera.updateProjectionMatrix()
+
+        this.renderer.setSize(width, height, false)
+
+        this.updateViewports()
+    }
+
+    updateViewports() {
+        if (this.debug) {
+            this.viewport.set(0, this.height / 4, this.width / 2, this.height / 2)
+            this.debugViewport.set(this.width / 2, this.height / 4, this.width / 2, this.height / 2)
+        } else {
+            this.viewport.set(0, 0, this.width, this.height)
+        }
     }
 }

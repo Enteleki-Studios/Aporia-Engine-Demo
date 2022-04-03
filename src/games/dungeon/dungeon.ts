@@ -50,8 +50,8 @@ const loop = () => {
     })
 }
 
-const init = (canvas: HTMLCanvasElement, debugCanvas: HTMLCanvasElement) => {
-    renderer = new Renderer({ canvas, debugCanvas })
+const init = (canvas: HTMLCanvasElement) => {
+    renderer = new Renderer({ canvas })
     inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
 
     componentManager.addComponent(new Components.LevelComponent(createEntity(), {

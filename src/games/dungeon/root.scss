@@ -16,9 +16,6 @@ html {
             height: 100%;
             overflow-y: auto;
             background-color: #161616;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
     }
 }
@@ -31,16 +28,9 @@ ul {
 .UI {
     position: relative;
     padding: 1rem;
-    display: flex;
-    gap: 1rem;
 
-    .canvasContainer {
-        flex: 1;
-        border: 1px solid #333;
-
-        canvas {
-            display: block;
-            width: 100%;
-        }
+    canvas {
+        display: block;
+        width: 100%;
     }
 }

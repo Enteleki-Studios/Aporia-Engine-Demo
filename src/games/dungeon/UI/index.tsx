@@ -8,25 +8,19 @@ import dungeon from 'dungeon/dungeon'
 
 const UI = () => {
     const canvasRef = React.useRef(null)
-    const debugCanvasRef = React.useRef(null)
     const dispatch = useAppDispatch()
     useEffect(() => {
         dungeon.addDispatch(dispatch)
 
-        if (canvasRef.current && debugCanvasRef.current) {
-            dungeon.init(canvasRef.current, debugCanvasRef.current)
+        if (canvasRef.current) {
+            dungeon.init(canvasRef.current)
         }
     })
 
     return (
         <div className="UI">
             {/* <Header /> */}
-            <div className="canvasContainer">
-                <canvas ref={canvasRef} />
-            </div>
-            <div className="canvasContainer">
-                <canvas ref={debugCanvasRef} />
-            </div>
+            <canvas ref={canvasRef} />
         </div>
     )
 }

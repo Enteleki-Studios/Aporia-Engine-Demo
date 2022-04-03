@@ -39,15 +39,12 @@ export class Renderer extends BasicRenderer {
 
     hasWorld = false
 
-    constructor({
-        canvas,
-        debugCanvas,
-    }: { canvas: HTMLCanvasElement, debugCanvas: HTMLCanvasElement }) {
-        super({ canvas, debugCanvas })
+    constructor({ canvas }: { canvas: HTMLCanvasElement }) {
+        super({ canvas })
 
         // this.setSize(1280, 720)
 
-        // this.debugMode(true)
+        this.debugMode(true)
         this.showDebugOverlay = true
 
         this.scene.remove(this.grid)
