@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import type { ComponentManager } from '../ECS/ComponentManager'
+import type { ComponentManager } from '../managers/ComponentManager'
 import type { PositionComponent } from '../components/PositionComponent'
 import type { InputComponent } from '../components/InputComponent'
 

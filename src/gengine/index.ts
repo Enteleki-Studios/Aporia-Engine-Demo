@@ -1,8 +1,5 @@
 // ECS
-export { ECS } from './ECS/ECS'
 export { Component } from './ECS/Component'
-export { System } from './ECS/System'
-export { ComponentManager } from './ECS/ComponentManager'
 
 // Components
 export { AmbientLightComponent } from './components/AmbientLightComponent'
@@ -19,9 +16,9 @@ export { HealthComponent } from './components/HealthComponent'
 // Systems
 export { inputSystem } from './systems/inputSystem'
 export { movementSystem } from './systems/movement'
-export { MovementSystem } from './systems/MovementSystem'
 
 // Managers
+export { ComponentManager } from './managers/ComponentManager'
 export { InputManager } from './managers/InputManager'
 export { ResourceManager } from './managers/ResourceManager'
 

@@ -4,7 +4,6 @@ import {
     AmbientLightComponent,
     ComponentManager,
     DirectionalLightComponent,
-    ECS,
     HeroComponent,
     InputManager,
     ModelComponent,
@@ -28,7 +27,6 @@ import modelDB from 'modelDB'
 const componentManager = new ComponentManager()
 let inputManager: InputManager
 
-const ecs = new ECS(componentManager)
 const clock = new Clock()
 
 let dispatch: AppDispatch
@@ -56,17 +54,17 @@ const init = (canvas: HTMLCanvasElement, debugCanvas: HTMLCanvasElement) => {
     renderer = new Renderer({ canvas, debugCanvas })
     inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
 
-    ecs.addComponent(new Components.LevelComponent(createEntity(), {
+    componentManager.addComponent(new Components.LevelComponent(createEntity(), {
         tiles: tilesGenerator([64, 64], 421),
     }))
 
-    ecs.addComponent(new AmbientLightComponent(createEntity(), {
+    componentManager.addComponent(new AmbientLightComponent(createEntity(), {
         color: 0x101010,
         intensity: 1,
     }))
 
     const playerEntity = createEntity()
-    ecs.addComponents([
+    componentManager.addComponents([
         // new Components.AnimationComponent(playerEntity, 'walk'),
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
         new Components.CameraComponent(playerEntity),
@@ -89,7 +87,6 @@ const addDispatch = (d: AppDispatch) => {
 }
 
 export default {
-    ecs,
     init,
     addDispatch,
 }

@@ -1,5 +1,5 @@
 import { InputComponent } from '../components/InputComponent'
-import type { ComponentManager } from '../ECS/ComponentManager'
+import type { ComponentManager } from '../managers/ComponentManager'
 import { InputManager } from '../managers/InputManager'
 
 export const inputSystem = (componentManager: ComponentManager, inputManager: InputManager) => {
