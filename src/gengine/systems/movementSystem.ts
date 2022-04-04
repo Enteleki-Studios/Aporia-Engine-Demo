@@ -8,7 +8,7 @@ const _acceleration = new THREE.Vector3(15, 0.01, 15)
 
 export const movementSystem = (delta: number, componentManager: ComponentManager) => {
     componentManager.getTuplesByQueryGeneric<[InputComponent, PositionComponent]>(
-        ['input', 'POSITION'],
+        ['input', 'position'],
     ).forEach(([inputComponent, positionComponent]) => {
         const { velocity } = positionComponent
         const frameDecceleration = new THREE.Vector3(

@@ -1,9 +1,8 @@
 import { Vector3 } from 'three'
 import { Component } from '../ECS/Component'
-import { DIRECTIONAL_LIGHT } from './componentTypes'
 
 export class DirectionalLightComponent extends Component {
-    type = DIRECTIONAL_LIGHT
+    type = 'directionalLight'
     position: Vector3
     target: Vector3
     needsUpdate = true

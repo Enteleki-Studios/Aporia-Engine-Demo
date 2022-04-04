@@ -1,9 +1,8 @@
 import { Vector3 } from 'three'
 import { Component } from 'gengine'
-import { CAMERA } from './types'
 
 export class CameraComponent extends Component {
-    type = CAMERA
+    type = 'camera'
     position: Vector3
     lookAt: Vector3
 

@@ -1,8 +1,7 @@
 import { Component } from '../ECS/Component'
-import { HEALTH } from './componentTypes'
 
 export class HealthComponent extends Component {
-    type = HEALTH
+    type = 'health'
     health: number
 
     constructor(entityId: string, { health }: { health: number }) {

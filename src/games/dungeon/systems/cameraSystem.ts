@@ -1,6 +1,5 @@
 import { Vector3 } from 'three'
 import type { DirectionalLightComponent, PositionComponent, ComponentManager } from 'gengine'
-import { CAMERA } from 'components/types'
 import type { CameraComponent } from 'components'
 
 // const LERP_FACTOR = 3
@@ -9,7 +8,7 @@ let lookPosition
 
 export const cameraSystem = (componentManager: ComponentManager) => {
     componentManager.getTuplesByQueryGeneric<[CameraComponent, DirectionalLightComponent, PositionComponent]>(
-        [CAMERA, 'DIRECTIONAL_LIGHT', 'POSITION'],
+        ['camera', 'directionalLight', 'position'],
     ).forEach(([cameraComponent, directionalLightComponent, positionComponent]) => {
         camPosition = new Vector3(0, 0, 1)
         camPosition.applyQuaternion(positionComponent.quaternion)

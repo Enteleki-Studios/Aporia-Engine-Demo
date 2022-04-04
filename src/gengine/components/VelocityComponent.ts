@@ -1,7 +1,6 @@
 import { Quaternion, Vector3 } from 'three'
 import { Component } from '../ECS/Component'
 import { trimNumberArrayToString } from '../utils/arrayUtils'
-import { VELOCITY } from './componentTypes'
 
 interface VelocitySettings {
     velocity?: [number, number, number],
@@ -9,7 +8,7 @@ interface VelocitySettings {
 }
 
 export class VelocityComponent extends Component {
-    type = VELOCITY
+    type = 'velocity'
     velocity: Vector3
     quaternion: Quaternion
 

@@ -1,12 +1,11 @@
 import { Component } from '../ECS/Component'
-import { SPRITE } from './componentTypes'
 
 interface SpriteSettings {
     url: string
 }
 
 export class SpriteComponent extends Component {
-    type = SPRITE
+    type = 'sprite'
     isLoaded = false
     isLoading = false
     url: string

@@ -1,14 +1,13 @@
 import { Quaternion, Vector3 } from 'three'
 import { Component } from '../ECS/Component'
 import { trimNumberArrayToString } from '../utils/arrayUtils'
-import { POSITION } from './componentTypes'
 
 interface PositionSettings {
     position?: [number, number, number],
 }
 
 export class PositionComponent extends Component {
-    type = POSITION
+    type = 'position'
     position: Vector3
 
     // TODO refactor which props we need

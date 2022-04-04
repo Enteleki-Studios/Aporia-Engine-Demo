@@ -1,6 +1,5 @@
 import { AmbientLight } from 'three'
 import { Component } from '../ECS/Component'
-import { AMBIENT_LIGHT } from './componentTypes'
 
 interface Settings {
     color: number,
@@ -8,7 +7,7 @@ interface Settings {
 }
 
 export class AmbientLightComponent extends Component {
-    type = AMBIENT_LIGHT
+    type = 'ambientLight'
     color: number
     intensity: number
     resource: (AmbientLight | null) = null

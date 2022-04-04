@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { AmbientLight, Object3D, Group, Box3 } from 'three'
 
 import {
     DefaultGrid,
@@ -16,19 +16,14 @@ import {
 import loadFBX from 'dungeon/utils/loadFBX'
 import modelDB from 'modelDB'
 
-import {
-    CAMERA,
-} from 'components/types'
-import type {
-    CameraComponent,
-} from 'components'
+import type { CameraComponent } from 'components'
 
 async function createModel(modelComponent: ModelComponent<typeof modelDB>) {
     const { modelName } = modelComponent
 
     const { modelPath, texturePath, scale } = modelDB[modelName]
 
-    const model: THREE.Object3D = await loadFBX(modelPath, texturePath)
+    const model: Object3D = await loadFBX(modelPath, texturePath)
     model.scale.setScalar(scale)
 
     return model
@@ -66,7 +61,7 @@ export class Renderer extends BasicRenderer {
         // super.render(delta, componentManager)
 
         componentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
-            ['MODEL', 'POSITION'],
+            ['model', 'position'],
         ).forEach(([modelComponent, positionComponent]) => {
             if (modelComponent.group) {
                 // Update position
@@ -78,7 +73,7 @@ export class Renderer extends BasicRenderer {
             } else if (!modelComponent.isLoading) {
                 modelComponent.isLoading = true
                 createModel(modelComponent).then((resource) => {
-                    const group = new THREE.Group()
+                    const group = new Group()
                     group.add(resource)
 
                     const tripcode = modelComponent.entityId.split('-')[0]
@@ -88,7 +83,7 @@ export class Renderer extends BasicRenderer {
                     group.add(sprite)
                     // document.body.prepend(canvas)
 
-                    const box = new THREE.Box3().setFromObject(resource)
+                    const box = new Box3().setFromObject(resource)
                     sprite.position.y = box.max.y + 0.15
                     sprite.center.set(0.5, 0) // Set origin to center bottom
 
@@ -102,7 +97,7 @@ export class Renderer extends BasicRenderer {
         })
 
         componentManager.getTuplesByQueryGeneric<[DirectionalLightComponent]>(
-            ['DIRECTIONAL_LIGHT'],
+            ['directionalLight'],
         ).forEach(([directionalLightComponent]) => {
             if (!this.directionalLight) {
                 this.directionalLight = new DirectionalLight(0xFFFFFF, 0.4)
@@ -119,17 +114,17 @@ export class Renderer extends BasicRenderer {
         })
 
         componentManager.getTuplesByQueryGeneric<[AmbientLightComponent]>(
-            ['AMBIENT_LIGHT'],
+            ['ambientLight'],
         ).forEach(([ambientLightComponent]) => {
             if (!ambientLightComponent.resource) {
                 const { color, intensity } = ambientLightComponent
-                ambientLightComponent.resource = new THREE.AmbientLight(color, intensity)
+                ambientLightComponent.resource = new AmbientLight(color, intensity)
                 this.scene.add(ambientLightComponent.resource)
             }
         })
 
         componentManager.getTuplesByQueryGeneric<[CameraComponent]>(
-            [CAMERA],
+            ['camera'],
         ).forEach(([cameraComponent]) => {
             this.camera.position.copy(cameraComponent.position)
             this.camera.lookAt(cameraComponent.lookAt)
