@@ -66,7 +66,7 @@ const init = (canvas: HTMLCanvasElement) => {
 
     const playerEntity = createEntity()
     componentManager.addComponents([
-        new Components.AnimationComponent(playerEntity, 'walk'),
+        new Components.AnimationComponent(playerEntity, 'idle'),
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
         new Components.CameraComponent(playerEntity),
         // new Components.CollisionComponent(playerEntity),
@@ -75,8 +75,28 @@ const init = (canvas: HTMLCanvasElement) => {
         new InputComponent(playerEntity),
         new DirectionalLightComponent(playerEntity),
         new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'rogue' }),
-        new PositionComponent(playerEntity, { position: [0, 0, 4] }),
+        new PositionComponent(playerEntity, { position: [0, 0, -1] }),
     ])
+
+    const skelEntity = createEntity()
+    componentManager.addComponents([
+        new Components.AnimationComponent(skelEntity, 'idle'),
+        new ModelComponent(skelEntity, { modelName: 'skeleton' }),
+        new PositionComponent(skelEntity, { position: [1, 0, 2] }),
+    ])
+
+    const items = ['chest_gold', 'barrel', 'column', 'entrance', 'rock_1', 'torch', 'stoneWall']
+    items.forEach((item) => {
+        const entityId = createEntity()
+        componentManager.addComponents([
+            new ModelComponent(entityId, { modelName: item }),
+            new PositionComponent(entityId, { position: [
+                Math.floor(Math.random() * 20) - 10,
+                0,
+                Math.floor(Math.random() * 20) - 10,
+            ] }),
+        ])
+    })
 
     dispatch({ type: 'TEST' })
 
@@ -121,14 +141,6 @@ export default {
 //     new PositionComponent(batEntity, new THREE.Vector3(60, 1, 66)),
 // ])
 
-// const skelEntity = createEntity()
-// DungeonECS.addComponents([
-//     new AnimationComponent(skelEntity, 'idle'),
-//     new InputComponent(skelEntity),
-//     new CollisionComponent(skelEntity),
-//     new ModelComponent(skelEntity, { modelId: 4 }),
-//     new PositionComponent(skelEntity, new THREE.Vector3(64, 0, 70)),
-// ])
 
 // const sprigEntity = createEntity()
 // DungeonECS.addComponents([

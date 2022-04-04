@@ -3,7 +3,7 @@ import { Component } from '../ECS/Component'
 import { trimNumberArrayToString } from '../utils/arrayUtils'
 
 interface PositionSettings {
-    position?: [number, number, number],
+    position: [number, number, number],
 }
 
 export class PositionComponent extends Component {
@@ -17,7 +17,7 @@ export class PositionComponent extends Component {
     needsUpdate = true
     velocity = new Vector3()
 
-    constructor(entityId: string, { position }: PositionSettings) {
+    constructor(entityId: string, { position }: PositionSettings = { position: [0, 0, 0] }) {
         super(entityId)
 
         this.position = new Vector3().fromArray(position || [0, 0, 0])

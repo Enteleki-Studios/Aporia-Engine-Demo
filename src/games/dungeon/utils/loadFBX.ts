@@ -1,12 +1,12 @@
-import { Object3D, Texture, Mesh, sRGBEncoding, TextureLoader, MeshBasicMaterial, DoubleSide } from 'three'
+import { Texture, Mesh, sRGBEncoding, TextureLoader, MeshBasicMaterial, DoubleSide, Group } from 'three'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 const loader = new FBXLoader()
 const textureLoader = new TextureLoader()
 
-export default function loadFBX(modelPath: string, texturePath?: string): Promise<Object3D> {
+export default function loadFBX(modelPath: string, texturePath?: string): Promise<Group> {
     return new Promise((resolve) => {
-        loader.load(modelPath, (model: Object3D) => {
+        loader.load(modelPath, (model: Group) => {
             let texture: Texture | null = null
 
             if (texturePath) {

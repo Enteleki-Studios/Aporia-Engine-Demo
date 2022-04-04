@@ -1,4 +1,4 @@
-import { AmbientLight, Object3D, Group, Box3 } from 'three'
+import { AmbientLight, Mesh, Group, Box3 } from 'three'
 
 import {
     DefaultGrid,
@@ -21,10 +21,14 @@ import type { CameraComponent } from 'components'
 async function createModel(modelComponent: ModelComponent<typeof modelDB>) {
     const { modelName } = modelComponent
 
-    const { modelPath, texturePath, scale } = modelDB[modelName]
+    const { modelPath, texturePath, scale, translate } = modelDB[modelName]
 
-    const model: Object3D = await loadFBX(modelPath, texturePath)
+    const model: Group = await loadFBX(modelPath, texturePath)
     model.scale.setScalar(scale)
+    if (translate) {
+        const obj = model.children[0] as Mesh
+        obj.geometry.translate(...translate)
+    }
 
     return model
 }
@@ -50,11 +54,11 @@ export class Renderer extends BasicRenderer {
         //     this.scene.fog = new THREE.Fog(0x161616, 1, 30)
         // }
 
-        const box1 = new DefaultCube(1, 0xca27ca)
-        box1.position.set(1, 0, 8)
-        const box2 = new DefaultCube(1, 2, 1, 0x2ab7ca)
-        box2.position.set(-1, 0, 8)
-        this.scene.add(box1, box2)
+        // const box1 = new DefaultCube(1, 0xca27ca)
+        // box1.position.set(1, 0, 8)
+        // const box2 = new DefaultCube(1, 2, 1, 0x2ab7ca)
+        // box2.position.set(-1, 0, 8)
+        // this.scene.add(box1, box2)
     }
 
     tick(componentManager: ComponentManager) {
@@ -81,7 +85,6 @@ export class Renderer extends BasicRenderer {
                     sprite.renderOrder = 1
                     sprite.material.depthTest = false
                     group.add(sprite)
-                    // document.body.prepend(canvas)
 
                     const box = new Box3().setFromObject(resource)
                     sprite.position.y = box.max.y + 0.15
