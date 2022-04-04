@@ -1,8 +1,8 @@
-import * as THREE from 'three'
+import { DirectionalLight as ThreeDL, CameraHelper, DirectionalLightHelper } from 'three'
 
-export class DirectionalLight extends THREE.DirectionalLight {
-    helper: THREE.DirectionalLightHelper
-    shadowHelper: THREE.CameraHelper
+export class DirectionalLight extends ThreeDL {
+    helper: DirectionalLightHelper
+    shadowHelper: CameraHelper
 
     constructor(color: number, intensity: number) {
         super(color, intensity)
@@ -20,7 +20,7 @@ export class DirectionalLight extends THREE.DirectionalLight {
         this.shadow.camera.top = d
         this.shadow.camera.bottom = -d
 
-        this.helper = new THREE.DirectionalLightHelper(this, 1)
-        this.shadowHelper = new THREE.CameraHelper(this.shadow.camera)
+        this.helper = new DirectionalLightHelper(this, 1)
+        this.shadowHelper = new CameraHelper(this.shadow.camera)
     }
 }
