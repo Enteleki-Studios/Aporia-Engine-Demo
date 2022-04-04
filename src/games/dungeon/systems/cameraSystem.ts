@@ -6,7 +6,7 @@ import type { CameraComponent } from 'components'
 let camPosition
 let lookPosition
 
-export const cameraSystem = (componentManager: ComponentManager) => {
+export function cameraSystem(componentManager: ComponentManager) {
     componentManager.getTuplesByQueryGeneric<[CameraComponent, DirectionalLightComponent, PositionComponent]>(
         ['camera', 'directionalLight', 'position'],
     ).forEach(([cameraComponent, directionalLightComponent, positionComponent]) => {

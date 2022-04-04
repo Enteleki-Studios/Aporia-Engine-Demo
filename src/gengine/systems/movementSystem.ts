@@ -6,7 +6,7 @@ import type { InputComponent } from '../components/InputComponent'
 const _decceleration = new Vector3(-5, -0.0001, -5)
 const _acceleration = new Vector3(15, 0.01, 15)
 
-export const movementSystem = (delta: number, componentManager: ComponentManager) => {
+export function movementSystem(delta: number, componentManager: ComponentManager) {
     componentManager.getTuplesByQueryGeneric<[InputComponent, PositionComponent]>(
         ['input', 'position'],
     ).forEach(([inputComponent, positionComponent]) => {

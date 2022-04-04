@@ -2,7 +2,7 @@ import { InputComponent } from '../components/InputComponent'
 import type { ComponentManager } from '../managers/ComponentManager'
 import { InputManager } from '../managers/InputManager'
 
-export const inputSystem = (componentManager: ComponentManager, inputManager: InputManager) => {
+export function inputSystem(componentManager: ComponentManager, inputManager: InputManager) {
     const liveInput = inputManager.readInput()
 
     componentManager.getTuplesByQueryGeneric<[InputComponent]>(['input']).forEach(([inputComponent]) => {
