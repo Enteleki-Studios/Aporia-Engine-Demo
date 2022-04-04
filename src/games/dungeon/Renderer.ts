@@ -6,7 +6,7 @@ import {
     DirectionalLightComponent,
     ModelComponent,
     TextSprite,
-    DefaultCube,
+    // DefaultCube,
     ComponentManager,
     AmbientLightComponent,
     BasicRenderer,
@@ -54,11 +54,7 @@ export class Renderer extends BasicRenderer {
         //     this.scene.fog = new THREE.Fog(0x161616, 1, 30)
         // }
 
-        // const box1 = new DefaultCube(1, 0xca27ca)
-        // box1.position.set(1, 0, 8)
-        // const box2 = new DefaultCube(1, 2, 1, 0x2ab7ca)
-        // box2.position.set(-1, 0, 8)
-        // this.scene.add(box1, box2)
+        // this.scene.add(new DefaultCube())
     }
 
     tick(componentManager: ComponentManager) {

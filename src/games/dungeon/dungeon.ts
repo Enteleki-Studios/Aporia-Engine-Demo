@@ -141,7 +141,6 @@ export default {
 //     new PositionComponent(batEntity, new THREE.Vector3(60, 1, 66)),
 // ])
 
-
 // const sprigEntity = createEntity()
 // DungeonECS.addComponents([
 //     new ModelComponent(sprigEntity, { modelId: 5 }),
