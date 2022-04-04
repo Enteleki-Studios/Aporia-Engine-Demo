@@ -1,6 +1,4 @@
 export const AMBIENT_LIGHT = 'AMBIENT_LIGHT'
-export const ANIMATION = 'ANIMATION'
 export const ATTACK = 'ATTACK'
-export const CAMERA = 'CAMERA'
 export const COLLISION = 'COLLISION'
 export const LEVEL = 'LEVEL'

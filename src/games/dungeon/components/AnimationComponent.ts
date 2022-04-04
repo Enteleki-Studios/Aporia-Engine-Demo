@@ -1,9 +1,8 @@
 import { AnimationClip, AnimationAction } from 'three'
 import { Component } from 'gengine'
-import { ANIMATION } from './types'
 
 export class AnimationComponent extends Component {
-    type = ANIMATION
+    type = 'animation'
 
     needsUpdate = true
     loaded = false

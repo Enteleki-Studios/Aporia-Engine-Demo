@@ -40,6 +40,7 @@ const loop = () => {
             inputSystem(componentManager, inputManager)
             movementSystem(delta, componentManager)
             Systems.cameraSystem(componentManager)
+            Systems.animationSystem(delta, componentManager)
             renderer.tick(componentManager) // TODO refactor how this is called
             renderer.render(delta)
             loop()
@@ -65,7 +66,7 @@ const init = (canvas: HTMLCanvasElement) => {
 
     const playerEntity = createEntity()
     componentManager.addComponents([
-        // new Components.AnimationComponent(playerEntity, 'walk'),
+        new Components.AnimationComponent(playerEntity, 'walk'),
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
         new Components.CameraComponent(playerEntity),
         // new Components.CollisionComponent(playerEntity),

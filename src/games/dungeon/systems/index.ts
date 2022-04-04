@@ -1,4 +1,4 @@
-// export { Animation } from './Animation'
+export { animationSystem } from './animationSystem'
 export { cameraSystem } from './cameraSystem'
 // export { Collision } from './Collision'
 // export { CollisionEffects } from './CollisionEffects'
