@@ -112,16 +112,6 @@ export default {
     addDispatch,
 }
 
-// ecs.registerSystem(new Systems.Animation())
-// DungeonECS.registerSystem(new Systems.Level())
-// DungeonECS.registerSystem(new Systems.PlayerInput({
-// canvas,
-// }))
-// DungeonECS.registerSystem(new Systems.Movement())
-// DungeonECS.registerSystem(new Systems.Collision())
-// DungeonECS.registerSystem(new Systems.Combat())
-// DungeonECS.registerSystem(new Systems.CollisionEffects())
-
 // const slimeEntity = createEntity()
 // DungeonECS.addComponents([
 //     new AnimationComponent(slimeEntity, 'idle'),

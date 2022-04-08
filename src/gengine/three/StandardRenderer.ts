@@ -14,7 +14,7 @@ import { AxesHelper } from './AxesHelper'
 import { DebugInfoTexture } from './DebugInfoTexture'
 import { HUDLayer } from './HUDLayer'
 
-export class BasicRenderer {
+export class StandardRenderer {
     camera
     debugCamera
     renderer

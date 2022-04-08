@@ -32,14 +32,14 @@ export * as arrayUtils from './utils/arrayUtils'
 
 // THREEJS
 export { AxesHelper } from './three/AxesHelper'
-export { BasicRenderer } from './three/BasicRenderer'
 export { CustomGridTexture } from './three/CustomGridTexture'
 export { DebugInfoTexture } from './three/DebugInfoTexture'
 export { DefaultCube } from './three/DefaultCube'
 export { DefaultGrid } from './three/DefaultGrid'
-export { HUDLayer } from './three/HUDLayer'
-export { TextSprite } from './three/TextSprite'
 export { DirectionalLight } from './three/DirectionalLight'
+export { HUDLayer } from './three/HUDLayer'
+export { StandardRenderer } from './three/StandardRenderer'
+export { TextSprite } from './three/TextSprite'
 // export { SkyBox } from './three/SkyBox'
 
 // Constants

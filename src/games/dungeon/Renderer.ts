@@ -8,7 +8,7 @@ import {
     // DefaultCube,
     ComponentManager,
     AmbientLightComponent,
-    BasicRenderer,
+    StandardRenderer,
     PositionComponent,
     DefaultGrid,
 } from 'gengine'
@@ -33,7 +33,7 @@ async function createModel(modelComponent: ModelComponent<typeof modelDB>) {
     return model
 }
 
-export class Renderer extends BasicRenderer {
+export class Renderer extends StandardRenderer {
     directionalLight?: DirectionalLight
 
     hasWorld = false
@@ -43,7 +43,7 @@ export class Renderer extends BasicRenderer {
 
         this.setSize(1920, 1080)
 
-        this.setDebugMode('sideBySide')
+        // this.setDebugMode('sideBySide')
         this.showDebugOverlay = true
 
         this.scene.add(new DefaultGrid(32, { text: 'Dungeon' }))
