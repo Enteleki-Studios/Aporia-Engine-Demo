@@ -1,7 +1,6 @@
 import { AmbientLight, Mesh, Group, Box3 } from 'three'
 
 import {
-    DefaultGrid,
     DirectionalLight,
     DirectionalLightComponent,
     ModelComponent,
@@ -11,6 +10,7 @@ import {
     AmbientLightComponent,
     BasicRenderer,
     PositionComponent,
+    DefaultGrid,
 } from 'gengine'
 
 import loadFBX from 'dungeon/utils/loadFBX'
@@ -41,14 +41,12 @@ export class Renderer extends BasicRenderer {
     constructor({ canvas }: { canvas: HTMLCanvasElement }) {
         super({ canvas })
 
-        // this.setSize(1280, 720)
+        this.setSize(1920, 1080)
 
-        this.debugMode(true)
+        this.setDebugMode('sideBySide')
         this.showDebugOverlay = true
 
-        this.scene.remove(this.grid)
-        this.grid = new DefaultGrid(32, { text: 'Dungeon\n1m' }) // TODO add ability to update grid settings
-        this.scene.add(this.grid)
+        this.scene.add(new DefaultGrid(32, { text: 'Dungeon' }))
 
         // if (!this.debug) {
         //     this.scene.fog = new THREE.Fog(0x161616, 1, 30)
@@ -81,6 +79,7 @@ export class Renderer extends BasicRenderer {
                     sprite.renderOrder = 1
                     sprite.material.depthTest = false
                     group.add(sprite)
+                    this.registerHelper(sprite)
 
                     const box = new Box3().setFromObject(resource)
                     sprite.position.y = box.max.y + 0.15

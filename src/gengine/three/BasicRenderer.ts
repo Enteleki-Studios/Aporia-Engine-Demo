@@ -10,7 +10,6 @@ import {
     CameraHelper,
     Vector4,
 } from 'three'
-import { DefaultGrid } from './DefaultGrid'
 import { AxesHelper } from './AxesHelper'
 import { DebugInfoTexture } from './DebugInfoTexture'
 import { HUDLayer } from './HUDLayer'
@@ -25,14 +24,13 @@ export class BasicRenderer {
     aspect = 1
     viewport = new Vector4()
 
-    grid
-
     debugHelpers: Object3D[] = []
     debug = false
-    debugOrbitControls?: OrbitControls
+    debugMode: 'game' | 'debug' | 'sideBySide' = 'game'
+    debugOrbitControls: OrbitControls
     showDebugOverlay = false
-    debugOverlay
-    debugOverlayTexture
+    debugOverlay: HUDLayer
+    debugOverlayTexture: DebugInfoTexture
     debugViewport = new Vector4()
 
     jobs: Array<(delta: number) => void>
@@ -73,14 +71,9 @@ export class BasicRenderer {
         this.debugCamera = new PerspectiveCamera(fov, aspect, near, far)
         this.debugCamera.position.set(20, 20, 20)
 
-        this.grid = new DefaultGrid(32)
-        this.scene.add(this.grid)
-
         this.debugOrbitControls = new OrbitControls(this.debugCamera, this.renderer.domElement)
 
-        this.setSize(1920, 1080)
-        // this.setSize(1280, 720)
-        // this.setSize(2560, 1440)
+        this.setSize(1280, 720)
 
         this.addHelpers(
             new AxesHelper(),
@@ -90,17 +83,19 @@ export class BasicRenderer {
         this.debugOverlayTexture = new DebugInfoTexture(canvas.width, canvas.height)
         this.debugOverlay = new HUDLayer(canvas.width, canvas.height, this.debugOverlayTexture)
 
-        this.debugMode(false)
+        this.updateViewports()
     }
 
     render(delta: number) {
-        this.renderer.setViewport(this.viewport)
-        this.renderer.setScissor(this.viewport)
-        this.renderer.render(this.scene, this.camera)
+        if (this.debugMode !== 'debug') {
+            this.renderer.setViewport(this.viewport)
+            this.renderer.setScissor(this.viewport)
+            this.renderer.render(this.scene, this.camera)
+        }
 
         this.jobs.forEach((job) => job(delta))
 
-        if (this.showDebugOverlay) {
+        if (this.showDebugOverlay && this.debugMode !== 'debug') {
             this.debugOverlayTexture.update({ delta, renderer: this.renderer })
             this.renderer.render(this.debugOverlay.scene, this.debugOverlay.camera)
         }
@@ -122,14 +117,20 @@ export class BasicRenderer {
 
     addHelpers(...helpers: Object3D[]) {
         helpers.forEach((h) => {
-            h.visible = false
-            this.debugHelpers.push(h)
+            this.registerHelper(h)
             this.scene.add(h)
         })
     }
 
-    debugMode(shouldDebug = true) {
-        this.debug = shouldDebug
+    registerHelper(helper: Object3D) {
+        helper.visible = false
+        this.debugHelpers.push(helper)
+    }
+
+    setDebugMode(mode: ('game' | 'debug' | 'sideBySide')) {
+        this.debugMode = mode
+        this.debug = mode !== 'game'
+
         this.updateViewports()
     }
 
@@ -150,11 +151,12 @@ export class BasicRenderer {
     }
 
     updateViewports() {
-        if (this.debug) {
+        if (this.debugMode === 'sideBySide') {
             this.viewport.set(0, this.height / 4, this.width / 2, this.height / 2)
             this.debugViewport.set(this.width / 2, this.height / 4, this.width / 2, this.height / 2)
         } else {
             this.viewport.set(0, 0, this.width, this.height)
+            this.debugViewport.set(0, 0, this.width, this.height)
         }
     }
 }
