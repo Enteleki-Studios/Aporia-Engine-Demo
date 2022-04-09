@@ -88,15 +88,11 @@ const init = (canvas: HTMLCanvasElement) => {
     ])
 
     const items = ['chest_gold', 'barrel', 'column', 'entrance', 'rock_1', 'torch', 'stoneWall']
-    items.forEach((item) => {
+    items.forEach((item, i) => {
         const entityId = createEntity()
         componentManager.addComponents([
             new ModelComponent(entityId, { modelName: item }),
-            new PositionComponent(entityId, { position: [
-                Math.floor(Math.random() * 20) - 10,
-                0,
-                Math.floor(Math.random() * 20) - 10,
-            ] }),
+            new PositionComponent(entityId, { position: [i * 3 - 8, 0, 8] }),
         ])
     })
 

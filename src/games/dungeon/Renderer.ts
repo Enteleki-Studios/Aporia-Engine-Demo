@@ -5,7 +5,6 @@ import {
     DirectionalLightComponent,
     ModelComponent,
     TextSprite,
-    // DefaultCube,
     ComponentManager,
     AmbientLightComponent,
     StandardRenderer,
@@ -44,15 +43,11 @@ export class Renderer extends StandardRenderer {
         this.setSize(1920, 1080)
 
         // this.setDebugMode('sideBySide')
-        // this.setDebugMode('debug')
+        this.setDebugMode('debug')
 
         this.scene.add(new DefaultGrid(32, { text: 'Dungeon' }))
 
-        // if (!this.debug) {
-        //     this.scene.fog = new THREE.Fog(0x161616, 1, 30)
-        // }
-
-        // this.scene.add(new DefaultCube())
+        // this.scene.fog = new Fog(0x161616, 1, 30)
     }
 
     tick(componentManager: ComponentManager) {
