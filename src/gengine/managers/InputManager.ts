@@ -1,10 +1,17 @@
+import type { Keymap } from '../constants'
+
+type Callback = () => void
+type KeyCode = string
+type Action = string
+type MapsToAction = Action | Callback
+
 export class InputManager {
-    private actions: Record<string, boolean>
+    private actions: Record<Action, boolean>
+    private expandedKeymap: Record<KeyCode, MapsToAction | MapsToAction[]>
     private mouseInput: Record<string, number>
-    private expandedKeymap: Record<string, string>
     private domElement: HTMLElement
 
-    constructor({ domElement, keymap }: { domElement: HTMLElement, keymap: Record<string, string> }) {
+    constructor({ domElement, keymap }: { domElement: HTMLElement, keymap: Keymap }) {
         this.domElement = domElement
 
         this.expandedKeymap = {}
@@ -12,8 +19,14 @@ export class InputManager {
 
         Object.keys(keymap).forEach((action) => {
             this.actions[action] = false
-            this.expandedKeymap[keymap[action]] = action
-            // TODO allow for many-to-many action <-> keycode
+            const keyCodes = keymap[action]
+            if (typeof keyCodes === 'string') {
+                this.expandedKeymap[keyCodes] = action
+            } else {
+                keyCodes.forEach((keycode) => {
+                    this.expandedKeymap[keycode] = action
+                })
+            }
         })
 
         this.mouseInput = {
@@ -51,19 +64,37 @@ export class InputManager {
 
     private onKeyDown(e: KeyboardEvent) {
         e.preventDefault()
-
-        if (this.expandedKeymap[e.code]) {
-            this.actions[this.expandedKeymap[e.code]] = true
-        }
+        this.handleKey(e.code, true)
     }
 
     private onKeyUp(e: KeyboardEvent) {
-        if (this.expandedKeymap[e.code]) {
-            this.actions[this.expandedKeymap[e.code]] = false
+        this.handleKey(e.code, false)
+    }
+
+    private handleKey(code: KeyCode, isPress: boolean) {
+        const handlers = this.expandedKeymap[code]
+
+        if (handlers) {
+            if (typeof handlers === 'string') {
+                this.actions[handlers] = isPress
+            } else if (Array.isArray(handlers)) {
+                handlers.forEach((handler) => {
+                    if (typeof handler === 'string') {
+                        this.actions[handler] = isPress
+                    } else {
+                        handler()
+                    }
+                })
+            } else {
+                handlers()
+            }
         }
     }
 
     readInput() {
         return this.actions
     }
+
+    // addEventListener(action: Action, callback: Callback) {
+    // }
 }

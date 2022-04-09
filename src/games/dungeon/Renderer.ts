@@ -37,8 +37,8 @@ export class Renderer extends StandardRenderer {
 
     hasWorld = false
 
-    constructor({ canvas }: { canvas: HTMLCanvasElement }) {
-        super({ canvas })
+    constructor(params: { canvas: HTMLCanvasElement }) {
+        super(params)
 
         this.setSize(1920, 1080)
 
@@ -51,8 +51,6 @@ export class Renderer extends StandardRenderer {
     }
 
     tick(componentManager: ComponentManager) {
-        // super.render(delta, componentManager)
-
         componentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
             ['model', 'position'],
         ).forEach(([modelComponent, positionComponent]) => {

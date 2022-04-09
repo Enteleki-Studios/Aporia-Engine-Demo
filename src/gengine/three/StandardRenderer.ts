@@ -14,6 +14,14 @@ import { AxesHelper } from './AxesHelper'
 
 type DebugMode = 'game' | 'debug' | 'sideBySide'
 
+interface StandardRendererParams {
+    canvas: HTMLCanvasElement
+    fov?: number
+    aspect?: number
+    near?: number
+    far?: number
+}
+
 export class StandardRenderer {
     camera
     debugCamera
@@ -40,13 +48,7 @@ export class StandardRenderer {
         aspect = 1,
         near = 0.5,
         far = 500,
-    }: {
-        canvas: HTMLCanvasElement
-        fov?: number
-        aspect?: number
-        near?: number
-        far?: number
-    }) {
+    }: StandardRendererParams) {
         this.jobs = []
 
         this.renderer = new WebGLRenderer({

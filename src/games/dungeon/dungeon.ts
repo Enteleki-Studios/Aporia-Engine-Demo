@@ -74,7 +74,7 @@ const init = (canvas: HTMLCanvasElement) => {
         // new Components.CollisionComponent(playerEntity),
         // new HealthComponent(playerEntity, { health: 20 }),
         new HeroComponent(playerEntity),
-        new InputComponent(playerEntity),
+        new InputComponent(playerEntity, DEFAULT_KEYMAP),
         new DirectionalLightComponent(playerEntity),
         new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'rogue' }),
         new PositionComponent(playerEntity, { position: [0, 0, -1] }),
