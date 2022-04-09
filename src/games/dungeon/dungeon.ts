@@ -55,6 +55,8 @@ const init = (canvas: HTMLCanvasElement) => {
     renderer = new Renderer({ canvas })
     inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
 
+    canvas.insertAdjacentElement('afterend', renderer.infoDomElement)
+
     componentManager.addComponent(new Components.LevelComponent(createEntity(), {
         tiles: tilesGenerator([64, 64], 421),
     }))

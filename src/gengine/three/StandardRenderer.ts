@@ -11,8 +11,8 @@ import {
     Vector4,
 } from 'three'
 import { AxesHelper } from './AxesHelper'
-import { DebugInfoTexture } from './DebugInfoTexture'
-import { HUDLayer } from './HUDLayer'
+
+type DebugMode = 'game' | 'debug' | 'sideBySide'
 
 export class StandardRenderer {
     camera
@@ -26,12 +26,11 @@ export class StandardRenderer {
 
     debugHelpers: Object3D[] = []
     debug = false
-    debugMode: 'game' | 'debug' | 'sideBySide' = 'game'
+    debugMode: DebugMode = 'game'
     debugOrbitControls: OrbitControls
-    showDebugOverlay = false
-    debugOverlay: HUDLayer
-    debugOverlayTexture: DebugInfoTexture
     debugViewport = new Vector4()
+
+    private _infoDomElement?: HTMLDivElement
 
     jobs: Array<(delta: number) => void>
 
@@ -80,9 +79,6 @@ export class StandardRenderer {
             new CameraHelper(this.camera),
         )
 
-        this.debugOverlayTexture = new DebugInfoTexture(canvas.width, canvas.height)
-        this.debugOverlay = new HUDLayer(canvas.width, canvas.height, this.debugOverlayTexture)
-
         this.updateViewports()
     }
 
@@ -91,24 +87,18 @@ export class StandardRenderer {
             this.renderer.setViewport(this.viewport)
             this.renderer.setScissor(this.viewport)
             this.renderer.render(this.scene, this.camera)
+            this.updateInfoDomElement(delta)
         }
 
         this.jobs.forEach((job) => job(delta))
 
-        if (this.showDebugOverlay && this.debugMode !== 'debug') {
-            this.debugOverlayTexture.update({ delta, renderer: this.renderer })
-            this.renderer.render(this.debugOverlay.scene, this.debugOverlay.camera)
-        }
-
-        if (this.debug) {
+        if (this.debugMode !== 'game') {
             this.debugHelpers.forEach((h) => {
                 h.visible = true
             })
             this.renderer.setViewport(this.debugViewport)
             this.renderer.setScissor(this.debugViewport)
             this.renderer.render(this.scene, this.debugCamera)
-            this.debugOverlayTexture.update({ delta, renderer: this.renderer })
-            this.renderer.render(this.debugOverlay.scene, this.debugOverlay.camera)
             this.debugHelpers.forEach((h) => {
                 h.visible = false
             })
@@ -127,10 +117,8 @@ export class StandardRenderer {
         this.debugHelpers.push(helper)
     }
 
-    setDebugMode(mode: ('game' | 'debug' | 'sideBySide')) {
+    setDebugMode(mode: DebugMode) {
         this.debugMode = mode
-        this.debug = mode !== 'game'
-
         this.updateViewports()
     }
 
@@ -157,6 +145,28 @@ export class StandardRenderer {
         } else {
             this.viewport.set(0, 0, this.width, this.height)
             this.debugViewport.set(0, 0, this.width, this.height)
+        }
+    }
+
+    get infoDomElement(): HTMLDivElement {
+        if (!this._infoDomElement) {
+            this._infoDomElement = document.createElement('div')
+            this._infoDomElement.className = 'GENGINE_INFO'
+            this._infoDomElement.innerText = 'info: no update'
+        }
+        return this._infoDomElement
+    }
+
+    updateInfoDomElement(delta: number) {
+        if (this._infoDomElement) {
+            const { geometries, textures } = this.renderer.info.memory
+            const { calls, triangles } = this.renderer.info.render
+            this._infoDomElement.innerText = `${Math.floor(1 / delta)} fps
+                geometries: ${geometries}
+                textures: ${textures}
+                calls: ${calls}
+                triangles: ${triangles}
+            `
         }
     }
 }
