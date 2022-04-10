@@ -41,13 +41,11 @@ export function animationSystem(delta: number, componentManager: ComponentManage
         ['animation', 'input'],
     ).forEach(([animationComponent, inputComponent]) => {
         let nextState = 'idle'
-        if (inputComponent.input.down.hold) {
-            // nextState = 'walkBack'
-            nextState = 'walk'
-        } else if (
+        if (
             inputComponent.input.up.hold
         || inputComponent.input.left.hold
         || inputComponent.input.right.hold
+        || inputComponent.input.down.hold
         ) {
             nextState = 'walk'
             if (inputComponent.input.run.hold) {

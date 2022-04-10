@@ -39,7 +39,7 @@ const loop = () => {
         try {
             inputSystem(componentManager, inputManager)
             movementSystem(delta, componentManager)
-            Systems.cameraSystem(componentManager)
+            Systems.cameraSystem(delta, componentManager)
             Systems.animationSystem(delta, componentManager)
             renderer.tick(componentManager) // TODO refactor how this is called
             renderer.render(delta)
@@ -53,6 +53,8 @@ const loop = () => {
 
 const init = (canvas: HTMLCanvasElement) => {
     renderer = new Renderer({ canvas })
+    // renderer.setDebugMode('debug')
+
     inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
 
     canvas.insertAdjacentElement('afterend', renderer.infoDomElement)

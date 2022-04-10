@@ -43,7 +43,6 @@ export class Renderer extends StandardRenderer {
         this.setSize(1920, 1080)
 
         // this.setDebugMode('sideBySide')
-        this.setDebugMode('debug')
 
         this.scene.add(new DefaultGrid(32, { text: 'Dungeon' }))
 

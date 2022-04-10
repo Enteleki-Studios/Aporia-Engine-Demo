@@ -4,9 +4,22 @@ import { Component } from '../ECS/Component'
 export class InputComponent extends Component {
     type = 'input'
     input: Record<string, { press: boolean, hold: boolean }> = {}
+    mouse: {
+        pan: {
+            x: number
+            y: number
+        }
+    }
 
     constructor(entityId: string, keymap: Keymap) {
         super(entityId)
+
+        this.mouse = {
+            pan: {
+                x: 0,
+                y: 0,
+            },
+        }
 
         Object.keys(keymap).forEach((action) => {
             this.input[action] = {

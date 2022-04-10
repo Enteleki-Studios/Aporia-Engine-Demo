@@ -4,6 +4,8 @@ import { InputManager } from '../managers/InputManager'
 
 export function inputSystem(componentManager: ComponentManager, inputManager: InputManager) {
     const liveInput = inputManager.readInput()
+    const { panX, panY } = inputManager.readMouse()
+    inputManager.resetMouse()
 
     componentManager.getTuplesByQueryGeneric<[InputComponent]>(['input']).forEach(([inputComponent]) => {
         Object.keys(liveInput).forEach((action) => {
@@ -23,5 +25,8 @@ export function inputSystem(componentManager: ComponentManager, inputManager: In
             }
             actionInput.press = liveInput[action]
         })
+
+        inputComponent.mouse.pan.x = panX
+        inputComponent.mouse.pan.y = panY
     })
 }

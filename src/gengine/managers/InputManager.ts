@@ -8,7 +8,7 @@ type MapsToAction = Action | Callback
 export class InputManager {
     private actions: Record<Action, boolean>
     private expandedKeymap: Record<KeyCode, MapsToAction | MapsToAction[]>
-    private mouseInput: Record<string, number>
+    private mouseInput: { panX: number, panY: number }
     private domElement: HTMLElement
 
     constructor({ domElement, keymap }: { domElement: HTMLElement, keymap: Keymap }) {
@@ -30,8 +30,8 @@ export class InputManager {
         })
 
         this.mouseInput = {
-            mouseX: 0,
-            mouseY: 0,
+            panX: 0,
+            panY: 0,
         }
 
         this.initInputHandlers()
@@ -41,9 +41,9 @@ export class InputManager {
         document.addEventListener('keydown', this.onKeyDown.bind(this))
         document.addEventListener('keyup', this.onKeyUp.bind(this))
 
-        // this.domElement.addEventListener('click', () => {
-        //     this.domElement.requestPointerLock()
-        // })
+        this.domElement.addEventListener('click', () => {
+            this.domElement.requestPointerLock()
+        })
 
         const onMouseMove = (e: MouseEvent) => this.onMouseMove(e)
         const onPointerLockChange = () => {
@@ -58,8 +58,8 @@ export class InputManager {
     }
 
     private onMouseMove(e: MouseEvent) {
-        this.mouseInput.mouseX += e.movementX
-        this.mouseInput.mouseY += e.movementY
+        this.mouseInput.panX += e.movementX
+        this.mouseInput.panY += e.movementY
     }
 
     private onKeyDown(e: KeyboardEvent) {
@@ -93,6 +93,15 @@ export class InputManager {
 
     readInput() {
         return this.actions
+    }
+
+    readMouse() {
+        return this.mouseInput
+    }
+
+    resetMouse() {
+        this.mouseInput.panX = 0
+        this.mouseInput.panY = 0
     }
 
     // addEventListener(action: Action, callback: Callback) {
