@@ -64,8 +64,8 @@ const init = (canvas: HTMLCanvasElement) => {
     }))
 
     componentManager.addComponent(new AmbientLightComponent(createEntity(), {
-        color: 0x101010,
-        intensity: 1,
+        color: 0xffffff,
+        intensity: 0.2,
     }))
 
     const playerEntity = createEntity()
