@@ -1,5 +1,6 @@
 export { animationSystem } from './animationSystem'
 export { cameraSystem } from './cameraSystem'
+export { rendererSystem } from './rendererSystem'
 // export { Collision } from './Collision'
 // export { CollisionEffects } from './CollisionEffects'
 // export { Combat } from './Combat'

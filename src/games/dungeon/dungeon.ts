@@ -41,7 +41,7 @@ const loop = () => {
             movementSystem(delta, componentManager)
             Systems.cameraSystem(componentManager)
             Systems.animationSystem(delta, componentManager)
-            renderer.tick(componentManager) // TODO refactor how this is called
+            Systems.rendererSystem(componentManager, renderer) // TODO refactor how this is called
             renderer.render(delta)
             loop()
         } catch (error) {

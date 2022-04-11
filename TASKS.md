@@ -17,6 +17,7 @@
     - make camera system generic and move to gengine
 
 - Rendering
+    - Renderer system should use a resource manager instead of using the renderer directly
 
 - Resources
     - implement proper resource manager
