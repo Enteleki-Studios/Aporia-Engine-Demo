@@ -50,6 +50,7 @@ module.exports = {
         new CleanWebpackPlugin(),
         new ESLintPlugin({
             extensions: ['js', 'ts', 'tsx'],
+            threads: true,
         }),
         new MiniCssExtractPlugin({
             filename: '[name]/[name].css',
