@@ -39,7 +39,7 @@ const loop = () => {
         try {
             inputSystem(componentManager, inputManager)
             movementSystem(delta, componentManager)
-            Systems.cameraSystem(delta, componentManager)
+            Systems.cameraSystem(componentManager)
             Systems.animationSystem(delta, componentManager)
             renderer.tick(componentManager) // TODO refactor how this is called
             renderer.render(delta)
@@ -78,7 +78,7 @@ const init = (canvas: HTMLCanvasElement) => {
         new HeroComponent(playerEntity),
         new InputComponent(playerEntity, DEFAULT_KEYMAP),
         new DirectionalLightComponent(playerEntity),
-        new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'rogue' }),
+        new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'wizard' }),
         new PositionComponent(playerEntity, { position: [0, 0, -1] }),
     ])
 

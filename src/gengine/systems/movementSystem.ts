@@ -3,18 +3,25 @@ import type { ComponentManager } from '../managers/ComponentManager'
 import type { PositionComponent } from '../components/PositionComponent'
 import type { InputComponent } from '../components/InputComponent'
 
-const decceleration = new Vector3(-5, -0.0001, -5)
-const accelerationSetting = new Vector3(15, 0.01, 15)
+const deceleration = new Vector3(-5, -0.0001, -5)
+const acceleration = new Vector3(15, 0.01, 15)
+
+const RUN_BOOST = 2
+const ROTATION_SPEED = 8
+const Y_AXIS = new Vector3(0, 1, 0)
+
+const Q = new Quaternion()
 
 export function movementSystem(delta: number, componentManager: ComponentManager) {
     componentManager.getTuplesByQueryGeneric<[InputComponent, PositionComponent]>(
         ['input', 'position'],
     ).forEach(([inputComponent, positionComponent]) => {
-        const { velocity } = positionComponent
+        const { velocity, quaternion: direction } = positionComponent
+
         const frameDeceleration = new Vector3(
-            velocity.x * decceleration.x,
-            velocity.y * decceleration.y,
-            velocity.z * decceleration.z,
+            velocity.x * deceleration.x,
+            velocity.y * deceleration.y,
+            velocity.z * deceleration.z,
         )
 
         frameDeceleration.multiplyScalar(delta)
@@ -26,68 +33,63 @@ export function movementSystem(delta: number, componentManager: ComponentManager
 
         velocity.add(frameDeceleration)
 
-        const A = new Vector3(0, 1, 0)
-        const Q = new Quaternion()
-
-        const acceleration = accelerationSetting.clone()
-        if (inputComponent.input.run.hold) {
-            acceleration.multiplyScalar(2)
-        }
+        // TODO diagonal movement shouldn't be faster
+        const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
 
         if (inputComponent.input.up.hold) {
-            velocity.z += acceleration.z * delta
+            velocity.z += acceleration.z * delta * boost
         }
         if (inputComponent.input.down.hold) {
-            velocity.z -= acceleration.z * delta
+            velocity.z -= acceleration.z * delta * boost
         }
         if (inputComponent.input.left.hold) {
-            velocity.x += acceleration.x * delta
+            velocity.x += acceleration.x * delta * boost
         }
         if (inputComponent.input.right.hold) {
-            velocity.x -= acceleration.x * delta
+            velocity.x -= acceleration.x * delta * boost
         }
 
-        const direction = positionComponent.quaternion.clone()
-
-        Q.setFromAxisAngle(A, -2 * Math.PI * inputComponent.mouse.pan.x * delta * acceleration.y)
+        // Set Q to difference in direction
+        Q.setFromAxisAngle(Y_AXIS, -2 * Math.PI * inputComponent.mouse.pan.x * delta * acceleration.y)
+        // Apply difference to component direction
         direction.multiply(Q)
 
-        positionComponent.quaternion.copy(direction)
+        const targetRotation = positionComponent.rotation.clone()
 
-        const rotation = positionComponent.rotation.clone()
         if (
             inputComponent.input.up.hold
         || inputComponent.input.down.hold
         || inputComponent.input.left.hold
         || inputComponent.input.right.hold
         ) {
-            rotation.copy(direction)
+            // Reset rotation to face direction
+            targetRotation.copy(direction)
         }
 
-        let nextAngle = 0
+        let targetAngle = 0
         if (inputComponent.input.up.hold) {
             if (inputComponent.input.left.hold) {
-                nextAngle = Math.PI / 4
+                targetAngle = Math.PI / 4
             } else if (inputComponent.input.right.hold) {
-                nextAngle = Math.PI / -4
+                targetAngle = Math.PI / -4
             }
         } else if (inputComponent.input.down.hold) {
-            nextAngle = Math.PI
+            targetAngle = Math.PI
             if (inputComponent.input.left.hold) {
-                nextAngle = (Math.PI / 4) * 3
+                targetAngle = (Math.PI / 4) * 3
             } else if (inputComponent.input.right.hold) {
-                nextAngle = (Math.PI / 4) * -3
+                targetAngle = (Math.PI / 4) * -3
             }
         } else if (inputComponent.input.left.hold) {
-            nextAngle = Math.PI / 2
+            targetAngle = Math.PI / 2
         } else if (inputComponent.input.right.hold) {
-            nextAngle = Math.PI / -2
+            targetAngle = Math.PI / -2
         }
 
-        Q.setFromAxisAngle(A, nextAngle)
-        rotation.multiply(Q)
+        Q.setFromAxisAngle(Y_AXIS, targetAngle)
+        targetRotation.multiply(Q)
 
-        positionComponent.rotation.slerp(rotation, delta * 8)
+        positionComponent.rotation.slerp(targetRotation, delta * ROTATION_SPEED)
 
         const forward = new Vector3(0, 0, 1)
         forward.applyQuaternion(direction)
