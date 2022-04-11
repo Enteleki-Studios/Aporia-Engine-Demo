@@ -89,14 +89,27 @@ const init = (canvas: HTMLCanvasElement) => {
         new PositionComponent(skelEntity, { position: [1, 0, 2] }),
     ])
 
-    const items = ['chest_gold', 'barrel', 'column', 'entrance', 'rock_1', 'torch', 'stoneWall']
+    const items = ['chest_gold', 'barrel', 'column', 'entrance', 'rock_1', 'torch', 'stoneWall', 'cart', 'crate']
     items.forEach((item, i) => {
         const entityId = createEntity()
         componentManager.addComponents([
             new ModelComponent(entityId, { modelName: item }),
-            new PositionComponent(entityId, { position: [i * 3 - 8, 0, 8] }),
+            new PositionComponent(entityId, { position: [i * 3 - 12, 0, 8] }),
         ])
     })
+
+    const makePos: () => [number, number, number] = () => ([
+        Math.random() * 30 - 15,
+        0,
+        Math.random() * 30 - 15,
+    ])
+    for (let i = 0; i < 200; i += 1) {
+        const entityId = createEntity()
+        componentManager.addComponents([
+            new ModelComponent(entityId, { modelName: 'grass' }),
+            new PositionComponent(entityId, { position: makePos() }),
+        ])
+    }
 
     dispatch({ type: 'TEST' })
 

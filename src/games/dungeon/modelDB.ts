@@ -55,47 +55,9 @@ interface Model {
 }
 
 const modelDB: Record<string, Model> = {
-    rogue: {
-        modelPath: `${MF}/rogue/Rogue.fbx`,
-        texturePath: `${MF}/rogue/Rogue_Texture.png`,
-        scale: 0.006,
-        animations: {
-            idle: 'CharacterArmature|Idle',
-            walk: 'CharacterArmature|Walk',
-            run: 'CharacterArmature|Run',
-            death: 'CharacterArmature|Death',
-            attack: 'CharacterArmature|Dagger_Attack',
-            pickUp: 'CharacterArmature|PickUp',
-            enGarde: 'CharacterArmature|Attacking_Idle',
-            attack2: 'CharacterArmature|Dagger_Attack2',
-            punch: 'CharacterArmature|Punch',
-            hit: 'CharacterArmature|RecieveHit',
-            hitAttack: 'CharacterArmature|RecieveHit_Attacking',
-            roll: 'CharacterArmature|Roll',
-        },
-    },
     wizard: {
-        modelPath: `${MF}/wizard/Wizard.fbx`,
-        texturePath: `${MF}/wizard/Wizard_Texture.png`,
-        scale: 0.006,
-        animations: {
-            idle: 'CharacterArmature|Idle',
-            walk: 'CharacterArmature|Walk',
-            run: 'CharacterArmature|Run',
-            death: 'CharacterArmature|Death',
-            attack: 'CharacterArmature|Dagger_Attack',
-            pickUp: 'CharacterArmature|PickUp',
-            enGarde: 'CharacterArmature|Attacking_Idle',
-            attack2: 'CharacterArmature|Dagger_Attack2',
-            punch: 'CharacterArmature|Punch',
-            hit: 'CharacterArmature|RecieveHit',
-            hitAttack: 'CharacterArmature|RecieveHit_Attacking',
-            roll: 'CharacterArmature|Roll',
-        },
-    },
-    warrior: {
-        modelPath: `${MF}/warrior/Warrior.fbx`,
-        texturePath: `${MF}/warrior/Warrior_Texture.png`,
+        modelPath: `${MF}/characters/wizard/Wizard.fbx`,
+        texturePath: `${MF}/characters/wizard/Wizard_Texture.png`,
         scale: 0.006,
         animations: {
             idle: 'CharacterArmature|Idle',
@@ -152,6 +114,19 @@ const modelDB: Record<string, Model> = {
         modelPath: `${MF}/items/ModularStoneWall.fbx`,
         scale: 0.01,
         translate: [0, 0, 1],
+    },
+
+    grass: {
+        modelPath: `${MF}/decorative/Grass.fbx`,
+        scale: 0.005,
+    },
+    crate: {
+        modelPath: `${MF}/decorative/Crate.fbx`,
+        scale: 0.01,
+    },
+    cart: {
+        modelPath: `${MF}/decorative/Cart.fbx`,
+        scale: 0.01,
     },
 }
 
