@@ -1,4 +1,4 @@
-import { AmbientLight, Mesh, Group, Box3 } from 'three'
+import { AmbientLight, Mesh, Group, Box3, CircleGeometry, MeshBasicMaterial, DoubleSide } from 'three'
 
 import {
     DirectionalLight,
@@ -59,6 +59,17 @@ export function rendererSystem(componentManager: ComponentManager, renderer: Ren
                 const box = new Box3().setFromObject(resource)
                 sprite.position.y = box.max.y + 0.15
                 sprite.center.set(0.5, 0) // Set origin to center bottom
+
+                const collisionGeo = new CircleGeometry(0.5, 20)
+                collisionGeo.rotateX(-Math.PI / 2)
+                const collisionMat = new MeshBasicMaterial({
+                    color: 0xff0000,
+                    transparent: true,
+                    opacity: 0.3,
+                    depthTest: false,
+                })
+                const collisionHelper = new Mesh(collisionGeo, collisionMat)
+                group.add(collisionHelper)
 
                 modelComponent.resource = resource
                 modelComponent.group = group
