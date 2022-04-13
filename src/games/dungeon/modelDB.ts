@@ -75,7 +75,7 @@ const modelDB: Record<string, Model> = {
         },
     },
     skeleton: {
-        modelPath: `${MF}/skeleton/Skeleton.fbx`,
+        modelPath: `${MF}/enemies/skeleton/Skeleton.fbx`,
         scale: 0.0035,
         animations: {
             idle: 'SkeletonArmature|Skeleton_Idle',

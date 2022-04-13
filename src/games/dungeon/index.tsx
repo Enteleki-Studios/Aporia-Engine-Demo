@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 
 // import { Inspector } from 'gengine'
@@ -18,9 +18,10 @@ import './root.scss'
 //     document.getElementById('Root'),
 // )
 
-render(
+const root = createRoot(document.getElementById('Root') as Element)
+
+root.render(
     <Provider store={store}>
         <UI />
     </Provider>,
-    document.getElementById('Root'),
 )
