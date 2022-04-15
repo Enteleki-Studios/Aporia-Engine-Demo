@@ -13,6 +13,7 @@ import {
     movementSystem,
     InputComponent,
     PositionComponent,
+    HitboxComponent,
 } from 'gengine'
 
 import { AppDispatch } from 'dungeon/store'
@@ -39,6 +40,7 @@ const loop = () => {
         try {
             inputSystem(componentManager, inputManager)
             movementSystem(delta, componentManager)
+            Systems.collisionSystem(componentManager)
             Systems.cameraSystem(componentManager)
             Systems.animationSystem(delta, componentManager)
             Systems.rendererSystem(componentManager, renderer) // TODO refactor how this is called
@@ -54,6 +56,7 @@ const loop = () => {
 const init = (canvas: HTMLCanvasElement) => {
     renderer = new Renderer({ canvas })
     // renderer.setDebugMode('debug')
+    // renderer.setDebugMode('sideBySide')
 
     inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
 
@@ -73,7 +76,8 @@ const init = (canvas: HTMLCanvasElement) => {
         new Components.AnimationComponent(playerEntity, 'idle'),
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
         new Components.CameraComponent(playerEntity),
-        new Components.CollidesComponent(playerEntity, 0.5),
+        new Components.CollidesComponent(playerEntity),
+        new HitboxComponent(playerEntity, 0.5),
         // new HealthComponent(playerEntity, { health: 20 }),
         new HeroComponent(playerEntity),
         new InputComponent(playerEntity, DEFAULT_KEYMAP),
@@ -95,6 +99,7 @@ const init = (canvas: HTMLCanvasElement) => {
         componentManager.addComponents([
             new ModelComponent(entityId, { modelName: item }),
             new PositionComponent(entityId, { position: [i * 3 - 12, 0, 8] }),
+            new HitboxComponent(entityId, 0.5),
         ])
     })
 

@@ -1,4 +1,4 @@
-import { AmbientLight, Mesh, Group, Box3, CircleGeometry, MeshBasicMaterial, DoubleSide } from 'three'
+import { AmbientLight, Mesh, Group, Box3, CircleGeometry, MeshBasicMaterial } from 'three'
 
 import {
     DirectionalLight,

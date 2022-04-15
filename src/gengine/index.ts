@@ -4,6 +4,7 @@ export { Component } from './ECS/Component'
 // Components
 export { AmbientLightComponent } from './components/AmbientLightComponent'
 export { HeroComponent } from './components/HeroComponent'
+export { HitboxComponent } from './components/HitboxComponent'
 export { InputComponent } from './components/InputComponent'
 export { PositionComponent } from './components/PositionComponent'
 export { SpriteComponent } from './components/SpriteComponent'
