@@ -52,6 +52,7 @@ interface Model {
     scale: number,
     animations?: Record<string, string>,
     translate?: [number, number, number],
+    radius?: number,
 }
 
 const modelDB: Record<string, Model> = {
@@ -73,6 +74,7 @@ const modelDB: Record<string, Model> = {
             hitAttack: 'CharacterArmature|RecieveHit_Attacking',
             roll: 'CharacterArmature|Roll',
         },
+        radius: 0.5,
     },
     skeleton: {
         modelPath: `${MF}/enemies/skeleton/Skeleton.fbx`,
@@ -85,18 +87,22 @@ const modelDB: Record<string, Model> = {
             death: 'SkeletonArmature|Skeleton_Death',
             spawn: 'SkeletonArmature|Skeleton_Spawn',
         },
+        radius: 0.5,
     },
     barrel: {
         modelPath: `${MF}/items/Barrel.fbx`,
         scale: 0.01,
+        radius: 0.5,
     },
     chest_gold: {
         modelPath: `${MF}/items/Chest_gold.fbx`,
         scale: 0.01,
+        radius: 0.5,
     },
     column: {
         modelPath: `${MF}/items/Column.fbx`,
         scale: 0.01,
+        radius: 1,
     },
     entrance: {
         modelPath: `${MF}/items/Entrance.fbx`,
@@ -109,6 +115,7 @@ const modelDB: Record<string, Model> = {
     torch: {
         modelPath: `${MF}/items/Torch.fbx`,
         scale: 0.005,
+        radius: 0.25,
     },
     stoneWall: {
         modelPath: `${MF}/items/ModularStoneWall.fbx`,
@@ -123,6 +130,7 @@ const modelDB: Record<string, Model> = {
     crate: {
         modelPath: `${MF}/decorative/Crate.fbx`,
         scale: 0.01,
+        radius: 0.5,
     },
     cart: {
         modelPath: `${MF}/decorative/Cart.fbx`,

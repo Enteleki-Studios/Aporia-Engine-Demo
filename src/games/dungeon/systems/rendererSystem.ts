@@ -8,6 +8,7 @@ import {
     ComponentManager,
     AmbientLightComponent,
     PositionComponent,
+    HitboxComponent,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -60,16 +61,19 @@ export function rendererSystem(componentManager: ComponentManager, renderer: Ren
                 sprite.position.y = box.max.y + 0.15
                 sprite.center.set(0.5, 0) // Set origin to center bottom
 
-                const collisionGeo = new CircleGeometry(0.5, 20)
-                collisionGeo.rotateX(-Math.PI / 2)
-                const collisionMat = new MeshBasicMaterial({
-                    color: 0xff0000,
-                    transparent: true,
-                    opacity: 0.3,
-                    depthTest: false,
-                })
-                const collisionHelper = new Mesh(collisionGeo, collisionMat)
-                group.add(collisionHelper)
+                if (componentManager.has(modelComponent.entityId, 'hitbox')) {
+                    const hitbox = componentManager.get<HitboxComponent>(modelComponent.entityId, 'hitbox')
+                    const collisionGeo = new CircleGeometry(hitbox.radius, 20)
+                    collisionGeo.rotateX(-Math.PI / 2)
+                    const collisionMat = new MeshBasicMaterial({
+                        color: 0xff0000,
+                        transparent: true,
+                        opacity: 0.3,
+                        depthTest: false,
+                    })
+                    const collisionHelper = new Mesh(collisionGeo, collisionMat)
+                    group.add(collisionHelper)
+                }
 
                 modelComponent.resource = resource
                 modelComponent.group = group

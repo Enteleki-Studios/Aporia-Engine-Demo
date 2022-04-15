@@ -77,7 +77,7 @@ const init = (canvas: HTMLCanvasElement) => {
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
         new Components.CameraComponent(playerEntity),
         new Components.CollidesComponent(playerEntity),
-        new HitboxComponent(playerEntity, 0.5),
+        new HitboxComponent(playerEntity, modelDB.wizard.radius),
         // new HealthComponent(playerEntity, { health: 20 }),
         new HeroComponent(playerEntity),
         new InputComponent(playerEntity, DEFAULT_KEYMAP),
@@ -99,7 +99,7 @@ const init = (canvas: HTMLCanvasElement) => {
         componentManager.addComponents([
             new ModelComponent(entityId, { modelName: item }),
             new PositionComponent(entityId, { position: [i * 3 - 12, 0, 8] }),
-            new HitboxComponent(entityId, 0.5),
+            new HitboxComponent(entityId, modelDB[item].radius),
         ])
     })
 

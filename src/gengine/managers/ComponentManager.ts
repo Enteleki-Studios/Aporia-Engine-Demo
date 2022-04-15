@@ -59,4 +59,12 @@ export class ComponentManager {
         })
         return componentsSerialized
     }
+
+    has(entityId: string, componentType: string) {
+        return !!this.entitiesById.get(entityId)?.has(componentType)
+    }
+
+    get<C extends Component>(entityId: string, componentType: string) {
+        return this.entitiesById.get(entityId)?.get(componentType) as C
+    }
 }
