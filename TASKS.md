@@ -1,6 +1,9 @@
 - Animation
 
 - Collision
+    - Collisions should work in 3D without a hard-coded axis
+    - Support for rectangular hitboxes (non-axis aligned)
+    - Add spacial manager for efficient entity selection
 
 - Combat
 

@@ -18,8 +18,8 @@ export function cameraSystem(componentManager: ComponentManager) {
 
         lookPosition.set(0, 0, 1)
         lookPosition.applyQuaternion(positionComponent.quaternion)
-        lookPosition.multiplyScalar(4) // Look in front
-        lookPosition.y += 1 // Look a little higher
+        // lookPosition.multiplyScalar(4) // Look in front
+        lookPosition.y += 2 // Look a little higher
         lookPosition.add(positionComponent.position)
         cameraComponent.lookAt.copy(lookPosition)
 
