@@ -33,24 +33,30 @@ const clock = new Clock()
 let dispatch: AppDispatch
 let renderer: Renderer
 
-const loop = () => {
-    requestAnimationFrame(() => {
-        const delta = Math.min(clock.getDelta(), 0.050)
+let delta = 0
 
-        try {
-            inputSystem(componentManager, inputManager)
-            movementSystem(delta, componentManager)
-            Systems.collisionSystem(componentManager)
-            Systems.cameraSystem(componentManager)
-            Systems.animationSystem(delta, componentManager)
-            Systems.rendererSystem(componentManager, renderer) // TODO refactor how this is called
-            renderer.render(delta)
-            loop()
-        } catch (error) {
-            /* eslint-disable no-console */
-            console.error(error)
-        }
-    })
+const tick = () => {
+    delta = Math.min(clock.getDelta(), 0.05)
+
+    try {
+        inputSystem(componentManager, inputManager)
+        movementSystem(delta, componentManager)
+
+        Systems.collisionSystem(componentManager)
+
+        Systems.cameraSystem(componentManager)
+        Systems.sunSystem(componentManager)
+
+        Systems.animationSystem(delta, componentManager)
+
+        Systems.rendererSystem(componentManager, renderer)
+        renderer.render(delta)
+
+        requestAnimationFrame(tick)
+    } catch (error) {
+        /* eslint-disable no-console */
+        console.error(error)
+    }
 }
 
 const init = (canvas: HTMLCanvasElement) => {
@@ -118,7 +124,7 @@ const init = (canvas: HTMLCanvasElement) => {
 
     dispatch({ type: 'TEST' })
 
-    loop()
+    tick()
 }
 
 const addDispatch = (d: AppDispatch) => {
