@@ -3,7 +3,6 @@ import type { DirectionalLightComponent, PositionComponent, ComponentManager } f
 import type { CameraComponent } from 'components'
 
 const camPosition = new Vector3()
-const lookPosition = new Vector3()
 
 export function cameraSystem(componentManager: ComponentManager) {
     componentManager.getTuplesByQueryGeneric<[CameraComponent, DirectionalLightComponent, PositionComponent]>(
@@ -16,12 +15,8 @@ export function cameraSystem(componentManager: ComponentManager) {
         camPosition.add(positionComponent.position) // Move it into position
         cameraComponent.position.copy(camPosition) // Save new position
 
-        lookPosition.set(0, 0, 1)
-        lookPosition.applyQuaternion(positionComponent.quaternion)
-        // lookPosition.multiplyScalar(4) // Look in front
-        lookPosition.y += 2 // Look a little higher
-        lookPosition.add(positionComponent.position)
-        cameraComponent.lookAt.copy(lookPosition)
+        cameraComponent.lookAt.copy(positionComponent.position)
+        cameraComponent.lookAt.setY(2) // Look a little higher
 
         directionalLightComponent.position.set(
             positionComponent.position.x + 10,
