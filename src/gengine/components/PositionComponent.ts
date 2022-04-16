@@ -1,6 +1,5 @@
 import { Quaternion, Vector3 } from 'three'
 import { Component } from '../ECS/Component'
-import { trimNumberArrayToString } from '../utils/arrayUtils'
 
 interface PositionSettings {
     position: [number, number, number],
@@ -21,12 +20,5 @@ export class PositionComponent extends Component {
         super(entityId)
 
         this.position = new Vector3().fromArray(position || [0, 0, 0])
-    }
-
-    inspect() {
-        return {
-            ...super.inspect(),
-            position: trimNumberArrayToString(this.position.toArray()),
-        }
     }
 }

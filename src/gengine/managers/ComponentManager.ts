@@ -53,9 +53,9 @@ export class ComponentManager {
     }
 
     getComponentsInspected() {
-        const componentsSerialized:ReturnType<Component['inspect']>[] = []
+        const componentsSerialized:ReturnType<Component['serialize']>[] = []
         this.components.forEach((component) => {
-            componentsSerialized.push(component.inspect())
+            componentsSerialized.push(component.serialize())
         })
         return componentsSerialized
     }

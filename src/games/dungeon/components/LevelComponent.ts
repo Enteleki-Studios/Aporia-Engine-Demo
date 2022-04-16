@@ -1,9 +1,8 @@
 import { Component } from 'gengine'
 import type { Tiles } from 'utils/tilesGenerator'
-import { LEVEL } from './types'
 
 export class LevelComponent extends Component {
-    type = LEVEL
+    type = 'level'
     readonly tiles: Tiles
 
     constructor(entityId: string, { tiles }: { tiles: Tiles }) {

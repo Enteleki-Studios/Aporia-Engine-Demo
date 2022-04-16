@@ -10,6 +10,5 @@ export function sunSystem(componentManager: ComponentManager) {
             positionComponent.position.z + 10,
         )
         directionalLightComponent.target.copy(positionComponent.position)
-        directionalLightComponent.needsUpdate = true
     })
 }

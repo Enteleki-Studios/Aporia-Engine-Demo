@@ -1,8 +1,7 @@
 import { Component } from 'gengine'
-import { ATTACK } from './types'
 
 export class AttackComponent extends Component {
-    type = ATTACK
+    type = 'attack'
     damage: number
     range: number
     spoolUp: number

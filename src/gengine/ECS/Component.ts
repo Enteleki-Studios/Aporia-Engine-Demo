@@ -13,12 +13,4 @@ export abstract class Component {
             type: this.type,
         }
     }
-
-    // Return select properties for the Inspector
-    inspect() {
-        return {
-            entityId: this.entityId,
-            type: this.type,
-        }
-    }
 }

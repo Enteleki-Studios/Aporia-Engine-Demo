@@ -15,13 +15,4 @@ export class SpriteComponent extends Component {
 
         this.url = url
     }
-
-    inspect() {
-        return {
-            ...super.inspect(),
-            url: this.url,
-            isLoaded: this.isLoaded.toString(),
-            isLoading: this.isLoading.toString(),
-        }
-    }
 }

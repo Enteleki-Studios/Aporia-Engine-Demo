@@ -1,6 +1,5 @@
 import { Quaternion, Vector3 } from 'three'
 import { Component } from '../ECS/Component'
-import { trimNumberArrayToString } from '../utils/arrayUtils'
 
 interface VelocitySettings {
     velocity?: [number, number, number],
@@ -17,12 +16,5 @@ export class VelocityComponent extends Component {
 
         this.velocity = new Vector3().fromArray(velocity || [0, 0, 0])
         this.quaternion = new Quaternion().fromArray(quaternion || [0, 0, 0, 0])
-    }
-
-    inspect() {
-        return {
-            ...super.inspect(),
-            velocity: trimNumberArrayToString(this.velocity.toArray()),
-        }
     }
 }

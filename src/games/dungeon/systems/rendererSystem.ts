@@ -73,6 +73,7 @@ export function rendererSystem(componentManager: ComponentManager, renderer: Ren
                     })
                     const collisionHelper = new Mesh(collisionGeo, collisionMat)
                     group.add(collisionHelper)
+                    renderer.registerHelper(collisionHelper)
                 }
 
                 modelComponent.resource = resource
@@ -94,10 +95,9 @@ export function rendererSystem(componentManager: ComponentManager, renderer: Ren
 
             renderer.addHelpers(renderer.directionalLight.helper, renderer.directionalLight.shadowHelper)
             renderer.addHelpers(renderer.directionalLight.shadowHelper)
-        } else if (directionalLightComponent.needsUpdate) {
+        } else {
             renderer.directionalLight.position.copy(directionalLightComponent.position)
             renderer.directionalLight.target.position.copy(directionalLightComponent.target)
-            directionalLightComponent.needsUpdate = false
         }
     })
 
