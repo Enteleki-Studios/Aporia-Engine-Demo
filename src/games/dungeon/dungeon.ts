@@ -66,6 +66,17 @@ const init = (canvas: HTMLCanvasElement) => {
 
     inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
 
+    inputManager.addActionListener('debug', () => {
+        const { debugMode } = renderer
+        if (debugMode === 'game') {
+            renderer.setDebugMode('debug')
+            inputManager.disablePointerLock()
+        } else {
+            renderer.setDebugMode('game')
+            inputManager.allowPointerLock()
+        }
+    })
+
     canvas.insertAdjacentElement('afterend', renderer.infoDomElement)
 
     componentManager.addComponent(new Components.LevelComponent(createEntity(), {

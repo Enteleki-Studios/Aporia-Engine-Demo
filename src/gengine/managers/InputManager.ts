@@ -3,28 +3,26 @@ import type { Keymap } from '../constants'
 type Callback = () => void
 type KeyCode = string
 type Action = string
-type MapsToAction = Action | Callback
 
 export class InputManager {
-    private actions: Record<Action, boolean>
-    private expandedKeymap: Record<KeyCode, MapsToAction | MapsToAction[]>
+    private actions: Record<Action, boolean> = {}
+    private actionListeners: Record<Action, Callback[]> = {}
+    private expandedKeymap: Record<KeyCode, Action[]> = {}
     private mouseInput: { panX: number, panY: number }
     private domElement: HTMLElement
+    private pointerLockEnabled = true
 
     constructor({ domElement, keymap }: { domElement: HTMLElement, keymap: Keymap }) {
         this.domElement = domElement
-
-        this.expandedKeymap = {}
-        this.actions = {}
 
         Object.keys(keymap).forEach((action) => {
             this.actions[action] = false
             const keyCodes = keymap[action]
             if (typeof keyCodes === 'string') {
-                this.expandedKeymap[keyCodes] = action
+                this.registerAction(keyCodes, action)
             } else {
-                keyCodes.forEach((keycode) => {
-                    this.expandedKeymap[keycode] = action
+                keyCodes.forEach((keyCode) => {
+                    this.registerAction(keyCode, action)
                 })
             }
         })
@@ -37,15 +35,31 @@ export class InputManager {
         this.initInputHandlers()
     }
 
+    private registerAction(keyCode: KeyCode, action: Action) {
+        if (this.expandedKeymap[keyCode]) {
+            const currentActions = this.expandedKeymap[keyCode]
+            if (Array.isArray(currentActions)) {
+                currentActions.push(action)
+            } else {
+                this.expandedKeymap[keyCode] = [currentActions, action]
+            }
+        } else {
+            this.expandedKeymap[keyCode] = [action]
+        }
+    }
+
     private initInputHandlers() {
         document.addEventListener('keydown', this.onKeyDown.bind(this))
         document.addEventListener('keyup', this.onKeyUp.bind(this))
 
         this.domElement.addEventListener('click', () => {
-            this.domElement.requestPointerLock()
+            if (this.pointerLockEnabled) {
+                this.domElement.requestPointerLock()
+            }
         })
 
         const onMouseMove = (e: MouseEvent) => this.onMouseMove(e)
+
         const onPointerLockChange = () => {
             if (document.pointerLockElement === this.domElement) {
                 document.addEventListener('mousemove', onMouseMove, false)
@@ -72,22 +86,18 @@ export class InputManager {
     }
 
     private handleKey(code: KeyCode, isPress: boolean) {
-        const handlers = this.expandedKeymap[code]
+        const actions = this.expandedKeymap[code]
+        if (actions) {
+            actions.forEach((action) => {
+                this.actions[action] = isPress
 
-        if (handlers) {
-            if (typeof handlers === 'string') {
-                this.actions[handlers] = isPress
-            } else if (Array.isArray(handlers)) {
-                handlers.forEach((handler) => {
-                    if (typeof handler === 'string') {
-                        this.actions[handler] = isPress
-                    } else {
-                        handler()
+                if (isPress) {
+                    const callbacks = this.actionListeners[action]
+                    if (callbacks && callbacks.length) {
+                        callbacks.forEach((c) => { c() })
                     }
-                })
-            } else {
-                handlers()
-            }
+                }
+            })
         }
     }
 
@@ -104,6 +114,36 @@ export class InputManager {
         this.mouseInput.panY = 0
     }
 
-    // addEventListener(action: Action, callback: Callback) {
-    // }
+    allowPointerLock() {
+        this.pointerLockEnabled = true
+    }
+
+    disablePointerLock() {
+        this.pointerLockEnabled = false
+        document.exitPointerLock()
+    }
+
+    addActionListener(action: Action, callback: Callback) {
+        const currentCallbacks = this.actionListeners[action]
+        if (currentCallbacks) {
+            currentCallbacks.push(callback)
+        } else {
+            this.actionListeners[action] = [callback]
+        }
+    }
+
+    removeActionListener(action: Action, callback?: Callback) {
+        const currentCallbacks = this.actionListeners[action]
+        if (currentCallbacks && currentCallbacks.length) {
+            if (callback) {
+                for (let i = currentCallbacks.length - 1; i >= 0; i -= 1) {
+                    if (currentCallbacks[i] === callback) {
+                        currentCallbacks.splice(i, 1)
+                    }
+                }
+            } else {
+                this.actionListeners[action] = []
+            }
+        }
+    }
 }

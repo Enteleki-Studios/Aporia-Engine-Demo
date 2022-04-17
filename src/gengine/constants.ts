@@ -7,4 +7,5 @@ export const DEFAULT_KEYMAP: Keymap = {
     right: ['ArrowRight', 'KeyD'],
     run: 'ShiftLeft',
     attack: 'Space',
+    debug: 'Backquote',
 }
