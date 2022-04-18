@@ -102,8 +102,6 @@ export function movementSystem(delta: number, componentManager: ComponentManager
 
         positionComponent.rotation.slerp(targetRotation, delta * ROTATION_SPEED)
 
-        // positionComponent.prevPosition.copy(positionComponent.position)
-
         positionComponent.needsUpdate = true
     })
 }

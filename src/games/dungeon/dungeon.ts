@@ -44,7 +44,7 @@ const tick = () => {
         inputSystem(componentManager, inputManager)
         movementSystem(delta, componentManager)
 
-        Systems.collisionSystem(componentManager)
+        Systems.collisionSystem(delta, componentManager)
 
         applyVelocitySystem(delta, componentManager)
 

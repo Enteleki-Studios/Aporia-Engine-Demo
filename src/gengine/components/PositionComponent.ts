@@ -10,7 +10,6 @@ export class PositionComponent extends Component {
     position: Vector3
 
     // TODO refactor which props we need
-    prevPosition = new Vector3()
     rotation = new Quaternion() // Model rotation
     quaternion: Quaternion = new Quaternion() // "Forwards" direction
     needsUpdate = true
