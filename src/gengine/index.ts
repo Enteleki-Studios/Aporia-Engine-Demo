@@ -15,6 +15,7 @@ export { ModelComponent } from './components/ModelComponent'
 export { HealthComponent } from './components/HealthComponent'
 
 // Systems
+export { applyVelocitySystem } from './systems/applyVelocitySystem'
 export { inputSystem } from './systems/inputSystem'
 export { movementSystem } from './systems/movementSystem'
 

@@ -14,7 +14,6 @@ export class PositionComponent extends Component {
     rotation = new Quaternion() // Model rotation
     quaternion: Quaternion = new Quaternion() // "Forwards" direction
     needsUpdate = true
-    velocity = new Vector3()
 
     constructor(entityId: string, { position }: PositionSettings = { position: [0, 0, 0] }) {
         super(entityId)

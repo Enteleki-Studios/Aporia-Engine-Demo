@@ -14,6 +14,8 @@ import {
     InputComponent,
     PositionComponent,
     HitboxComponent,
+    applyVelocitySystem,
+    VelocityComponent,
 } from 'gengine'
 
 import { AppDispatch } from 'dungeon/store'
@@ -43,6 +45,8 @@ const tick = () => {
         movementSystem(delta, componentManager)
 
         Systems.collisionSystem(componentManager)
+
+        applyVelocitySystem(delta, componentManager)
 
         Systems.cameraSystem(componentManager)
         Systems.sunSystem(componentManager)
@@ -101,6 +105,7 @@ const init = (canvas: HTMLCanvasElement) => {
         new DirectionalLightComponent(playerEntity),
         new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'wizard' }),
         new PositionComponent(playerEntity, { position: [0, 0, -1] }),
+        new VelocityComponent(playerEntity, {}),
     ])
 
     const skelEntity = createEntity()
