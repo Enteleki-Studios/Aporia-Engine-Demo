@@ -15,6 +15,9 @@ import {
     PositionComponent,
     HitboxComponent,
     applyVelocitySystem,
+    thirdPersonCameraSystem,
+    CameraComponent,
+    CameraTargetComponent,
     VelocityComponent,
 } from 'gengine'
 
@@ -42,13 +45,13 @@ const tick = () => {
 
     try {
         inputSystem(componentManager, inputManager)
+        thirdPersonCameraSystem(delta, componentManager)
         movementSystem(delta, componentManager)
 
         Systems.collisionSystem(delta, componentManager)
 
         applyVelocitySystem(delta, componentManager)
 
-        Systems.cameraSystem(componentManager)
         Systems.sunSystem(componentManager)
 
         Systems.animationSystem(delta, componentManager)
@@ -92,12 +95,18 @@ const init = (canvas: HTMLCanvasElement) => {
         intensity: 0.2,
     }))
 
+    const cameraEntity = createEntity()
+    componentManager.addComponents([
+        new CameraComponent(cameraEntity),
+        new InputComponent(cameraEntity, DEFAULT_KEYMAP),
+    ])
+
     const playerEntity = createEntity()
     componentManager.addComponents([
         new Components.AnimationComponent(playerEntity, 'idle'),
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
-        new Components.CameraComponent(playerEntity),
         new Components.CollidesComponent(playerEntity),
+        new CameraTargetComponent(playerEntity),
         new HitboxComponent(playerEntity, modelDB.wizard.radius),
         // new HealthComponent(playerEntity, { health: 20 }),
         new HeroComponent(playerEntity),

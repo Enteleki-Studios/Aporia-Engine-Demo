@@ -1,8 +1,5 @@
-import { ComponentManager, HitboxComponent, PositionComponent, VelocityComponent } from 'gengine'
+import { ComponentManager, HitboxComponent, PositionComponent, VelocityComponent, Y_AXIS } from 'gengine'
 import { CollidesComponent } from 'dungeon/components'
-import { Vector3 } from 'three'
-
-const Y_AXIS = new Vector3(0, 1, 0)
 
 export function collisionSystem(delta: number, componentManager: ComponentManager) {
     const solidComponents = componentManager.getTuplesByQueryGeneric<[HitboxComponent, PositionComponent]>(

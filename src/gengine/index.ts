@@ -3,6 +3,8 @@ export { Component } from './ECS/Component'
 
 // Components
 export { AmbientLightComponent } from './components/AmbientLightComponent'
+export { CameraComponent } from './components/CameraComponent'
+export { CameraTargetComponent } from './components/CameraTargetComponent'
 export { HeroComponent } from './components/HeroComponent'
 export { HitboxComponent } from './components/HitboxComponent'
 export { InputComponent } from './components/InputComponent'
@@ -18,6 +20,7 @@ export { HealthComponent } from './components/HealthComponent'
 export { applyVelocitySystem } from './systems/applyVelocitySystem'
 export { inputSystem } from './systems/inputSystem'
 export { movementSystem } from './systems/movementSystem'
+export { thirdPersonCameraSystem } from './systems/thirdPersonCameraSystem'
 
 // Managers
 export { ComponentManager } from './managers/ComponentManager'

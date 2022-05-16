@@ -1,5 +1,4 @@
 export { animationSystem } from './animationSystem'
-export { cameraSystem } from './cameraSystem'
 export { collisionSystem } from './collisionSystem'
 export { rendererSystem } from './rendererSystem'
 export { sunSystem } from './sunSystem'

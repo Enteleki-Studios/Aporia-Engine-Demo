@@ -9,14 +9,13 @@ import {
     AmbientLightComponent,
     PositionComponent,
     HitboxComponent,
+    CameraComponent,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
 
 import loadFBX from 'dungeon/utils/loadFBX'
 import modelDB from 'modelDB'
-
-import type { CameraComponent } from 'components'
 
 async function createModel(modelComponent: ModelComponent<typeof modelDB>) {
     const { modelName } = modelComponent
@@ -39,11 +38,8 @@ export function rendererSystem(componentManager: ComponentManager, renderer: Ren
     ).forEach(([modelComponent, positionComponent]) => {
         if (modelComponent.group) {
             // Update position
-            if (positionComponent.needsUpdate) {
-                modelComponent.group.position.copy(positionComponent.position)
-                modelComponent.group.quaternion.copy(positionComponent.rotation)
-                positionComponent.needsUpdate = false
-            }
+            modelComponent.group.position.copy(positionComponent.position)
+            modelComponent.group.quaternion.copy(positionComponent.rotation)
         } else if (!modelComponent.isLoading) {
             modelComponent.isLoading = true
             createModel(modelComponent).then((resource) => {
@@ -114,7 +110,8 @@ export function rendererSystem(componentManager: ComponentManager, renderer: Ren
     componentManager.getTuplesByQueryGeneric<[CameraComponent]>(
         ['camera'],
     ).forEach(([cameraComponent]) => {
-        renderer.camera.position.copy(cameraComponent.position)
+        // renderer.camera.position.copy(cameraComponent.position)
+        renderer.camera.position.lerp(cameraComponent.position, 0.5)
         renderer.camera.lookAt(cameraComponent.lookAt)
     })
 }

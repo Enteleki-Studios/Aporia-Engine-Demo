@@ -8,11 +8,7 @@ interface PositionSettings {
 export class PositionComponent extends Component {
     type = 'position'
     position: Vector3
-
-    // TODO refactor which props we need
     rotation = new Quaternion() // Model rotation
-    quaternion: Quaternion = new Quaternion() // "Forwards" direction
-    needsUpdate = true
 
     constructor(entityId: string, { position }: PositionSettings = { position: [0, 0, 0] }) {
         super(entityId)

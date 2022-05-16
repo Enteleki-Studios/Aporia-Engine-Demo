@@ -3,28 +3,27 @@ import type { ComponentManager } from '../managers/ComponentManager'
 import type { PositionComponent } from '../components/PositionComponent'
 import type { VelocityComponent } from '../components/VelocityComponent'
 import type { InputComponent } from '../components/InputComponent'
+import type { CameraComponent } from '../components/CameraComponent'
+import { Y_AXIS } from '../constants'
 
 const deceleration = new Vector3(-5, -0.0001, -5)
 const acceleration = new Vector3(15, 0.01, 15)
 
 const RUN_BOOST = 2
 const ROTATION_SPEED = 8
-const Y_AXIS = new Vector3(0, 1, 0)
 
 const Q = new Quaternion()
 
 export function movementSystem(delta: number, componentManager: ComponentManager) {
+    const cameraComponent = componentManager.getTuplesByQueryGeneric<[CameraComponent]>(
+        ['camera'],
+    )[0][0]
+
     componentManager.getTuplesByQueryGeneric<[InputComponent, PositionComponent, VelocityComponent]>(
         ['input', 'position', 'velocity'],
     ).forEach(([inputComponent, positionComponent, velocityComponent]) => {
-        const { quaternion: direction } = positionComponent
+        const { direction } = cameraComponent
         const { velocity } = velocityComponent
-
-        // Update forwards direction
-        // Set Q to difference in direction
-        Q.setFromAxisAngle(Y_AXIS, -2 * Math.PI * inputComponent.mouse.pan.x * delta * acceleration.y)
-        // Apply difference to component direction
-        direction.multiply(Q)
 
         // Calculate deceleration
         const frameDeceleration = velocity.clone().multiply(deceleration).multiplyScalar(delta)
@@ -101,7 +100,5 @@ export function movementSystem(delta: number, componentManager: ComponentManager
         targetRotation.multiply(Q)
 
         positionComponent.rotation.slerp(targetRotation, delta * ROTATION_SPEED)
-
-        positionComponent.needsUpdate = true
     })
 }
