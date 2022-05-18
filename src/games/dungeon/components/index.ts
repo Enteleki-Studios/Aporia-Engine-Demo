@@ -1,5 +1,4 @@
 export { AnimationComponent } from './AnimationComponent'
 export { AttackComponent } from './AttackComponent'
-export { CameraComponent } from './CameraComponent'
 export { CollidesComponent } from './CollidesComponent'
 export { LevelComponent } from './LevelComponent'

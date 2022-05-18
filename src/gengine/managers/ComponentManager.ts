@@ -4,6 +4,12 @@ type Entity = Map<string, Component>
 type ComponentTuple = Component[]
 type QueryResult = ComponentTuple[]
 
+// type AnyConstructor = abstract new (...args: any) => any
+type ComponentConstructor = typeof Component
+type InstanceTuple<T extends [...ComponentConstructor[]]> = {
+    [K in keyof T]: T[K] extends ComponentConstructor ? InstanceType<T[K]> : T[K]
+}
+
 export class ComponentManager {
     components: Component[]
     entitiesById: Map<string, Entity>
@@ -50,6 +56,22 @@ export class ComponentManager {
         })
         this.queryCache.set(query, tuples)
         return tuples as R[]
+    }
+
+    getTuplesByClass<C extends [...ComponentConstructor[]]>(...componentClasses: C) {
+        const queryTypes = componentClasses.map((c) => (c.name === 'PositionComponent' ? 'position' : c.name))
+        const query = queryTypes.join('.')
+        if (this.queryCache.has(query)) {
+            return this.queryCache.get(query) as InstanceTuple<C>[]
+        }
+        const tuples:Component[][] = []
+        this.entitiesById.forEach((entity: Entity) => {
+            if (queryTypes.every((qt) => entity.has(qt))) {
+                tuples.push(queryTypes.map((qt) => entity.get(qt) as Component))
+            }
+        })
+        this.queryCache.set(query, tuples)
+        return tuples as InstanceTuple<C>[]
     }
 
     getComponentsInspected() {
