@@ -1,8 +1,10 @@
-import type { DirectionalLightComponent, PositionComponent, ComponentManager } from 'gengine'
+import type { ComponentManager } from 'gengine'
+import { DirectionalLightComponent, PositionComponent } from 'gengine'
 
 export function sunSystem(componentManager: ComponentManager) {
-    componentManager.getTuplesByQueryGeneric<[DirectionalLightComponent, PositionComponent]>(
-        ['directionalLight', 'position'],
+    componentManager.getTuplesByClass(
+        DirectionalLightComponent,
+        PositionComponent,
     ).forEach(([directionalLightComponent, positionComponent]) => {
         directionalLightComponent.position.set(
             positionComponent.position.x + 10,

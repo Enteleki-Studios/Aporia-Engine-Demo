@@ -49,6 +49,7 @@
             "rules": {
                 "react/no-unused-class-component-methods": "off",
                 "react/state-in-constructor": "off",
+                "react/prefer-stateless-function": "off",
             },
         },
     ],

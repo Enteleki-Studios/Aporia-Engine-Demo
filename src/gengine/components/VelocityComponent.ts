@@ -6,7 +6,6 @@ interface VelocitySettings {
 }
 
 export class VelocityComponent extends Component {
-    type = 'velocity'
     velocity = new Vector3()
 
     constructor(entityId: string, { velocity }: VelocitySettings) {

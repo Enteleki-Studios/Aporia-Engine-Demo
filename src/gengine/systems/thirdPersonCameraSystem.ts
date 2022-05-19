@@ -1,22 +1,17 @@
 import { Quaternion } from 'three'
 import { PositionComponent } from '../components/PositionComponent'
 import type { ComponentManager } from '../managers/ComponentManager'
-import type { CameraComponent } from '../components/CameraComponent'
-import type { InputComponent } from '../components/InputComponent'
+import { CameraComponent } from '../components/CameraComponent'
+import { InputComponent } from '../components/InputComponent'
 import { CameraTargetComponent } from '../components/CameraTargetComponent'
 import { Y_AXIS } from '../constants'
 
 const forwardQ = new Quaternion()
 
 export function thirdPersonCameraSystem(delta: number, componentManager: ComponentManager) {
-    // const cameraTargets = componentManager.getTuplesByQueryGeneric<[CameraTargetComponent, PositionComponent]>(
-    //     ['cameraTarget', 'position'],
-    // )
     const cameraTargets = componentManager.getTuplesByClass(CameraTargetComponent, PositionComponent)
 
-    componentManager.getTuplesByQueryGeneric<[CameraComponent, InputComponent]>(
-        ['camera', 'input'],
-    ).forEach(([cameraComponent, inputComponent]) => {
+    componentManager.getTuplesByClass(CameraComponent, InputComponent).forEach(([cameraComponent, inputComponent]) => {
         const { direction, position: camPosition } = cameraComponent
         const { position: targetPosition } = cameraTargets[0][1]
 

@@ -7,7 +7,7 @@ export function inputSystem(componentManager: ComponentManager, inputManager: In
     const { panX, panY } = inputManager.readMouse()
     inputManager.resetMouse()
 
-    componentManager.getTuplesByQueryGeneric<[InputComponent]>(['input']).forEach(([inputComponent]) => {
+    componentManager.getTuplesByClass(InputComponent).forEach(([inputComponent]) => {
         Object.keys(liveInput).forEach((action) => {
             const actionInput = inputComponent.input[action]
             if (liveInput[action]) {

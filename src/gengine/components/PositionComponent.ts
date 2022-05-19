@@ -6,7 +6,6 @@ interface PositionSettings {
 }
 
 export class PositionComponent extends Component {
-    type = 'position'
     position: Vector3
     rotation = new Quaternion() // Model rotation
 

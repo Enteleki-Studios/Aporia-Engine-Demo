@@ -1,7 +1,6 @@
 import { Component } from 'gengine'
 
 export class AttackComponent extends Component {
-    type = 'attack'
     damage: number
     range: number
     spoolUp: number

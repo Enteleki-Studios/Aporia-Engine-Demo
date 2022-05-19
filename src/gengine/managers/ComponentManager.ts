@@ -4,8 +4,9 @@ type Entity = Map<string, Component>
 type ComponentTuple = Component[]
 type QueryResult = ComponentTuple[]
 
-// type AnyConstructor = abstract new (...args: any) => any
-type ComponentConstructor = typeof Component
+// eslint-disable-next-line
+type ComponentConstructor = abstract new (...args: any) => any
+// type ComponentConstructor = typeof Component
 type InstanceTuple<T extends [...ComponentConstructor[]]> = {
     [K in keyof T]: T[K] extends ComponentConstructor ? InstanceType<T[K]> : T[K]
 }
@@ -22,17 +23,18 @@ export class ComponentManager {
     }
 
     addComponent(component: Component) {
-        const { entityId, type } = component
+        const { entityId } = component
+        const { name } = component.constructor
 
         if (this.entitiesById.has(entityId)) {
             const entityMap = this.entitiesById.get(entityId) as Entity
-            if (entityMap.has(type)) {
-                throw new Error(`Cannot add the same Component '${type}' to an Entity more than once`)
+            if (entityMap.has(name)) {
+                throw new Error(`Cannot add the same Component '${name}' to an Entity more than once`)
             } else {
-                entityMap.set(type, component)
+                entityMap.set(name, component)
             }
         } else {
-            this.entitiesById.set(entityId, new Map([[type, component]]))
+            this.entitiesById.set(entityId, new Map([[name, component]]))
         }
 
         this.components.push(component)
@@ -43,23 +45,8 @@ export class ComponentManager {
         components.forEach((c) => { this.addComponent(c) })
     }
 
-    getTuplesByQueryGeneric<R extends Component[]>(queryTypes: string[]) {
-        const query = queryTypes.join('.')
-        if (this.queryCache.has(query)) {
-            return this.queryCache.get(query) as R[]
-        }
-        const tuples:Component[][] = []
-        this.entitiesById.forEach((entity: Entity) => {
-            if (queryTypes.every((qt) => entity.has(qt))) {
-                tuples.push(queryTypes.map((qt) => entity.get(qt) as Component))
-            }
-        })
-        this.queryCache.set(query, tuples)
-        return tuples as R[]
-    }
-
     getTuplesByClass<C extends [...ComponentConstructor[]]>(...componentClasses: C) {
-        const queryTypes = componentClasses.map((c) => (c.name === 'PositionComponent' ? 'position' : c.name))
+        const queryTypes = componentClasses.map((c) => c.name)
         const query = queryTypes.join('.')
         if (this.queryCache.has(query)) {
             return this.queryCache.get(query) as InstanceTuple<C>[]
@@ -74,12 +61,14 @@ export class ComponentManager {
         return tuples as InstanceTuple<C>[]
     }
 
+    /* eslint-disable class-methods-use-this */
     getComponentsInspected() {
-        const componentsSerialized:ReturnType<Component['serialize']>[] = []
-        this.components.forEach((component) => {
-            componentsSerialized.push(component.serialize())
-        })
-        return componentsSerialized
+        // const componentsSerialized:ReturnType<Component['serialize']>[] = []
+        // this.components.forEach((component) => {
+        //     componentsSerialized.push(component.serialize())
+        // })
+        // return componentsSerialized
+        return [{ entityId: 'temp' }]
     }
 
     has(entityId: string, componentType: string) {

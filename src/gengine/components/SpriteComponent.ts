@@ -5,7 +5,6 @@ interface SpriteSettings {
 }
 
 export class SpriteComponent extends Component {
-    type = 'sprite'
     isLoaded = false
     isLoading = false
     url: string

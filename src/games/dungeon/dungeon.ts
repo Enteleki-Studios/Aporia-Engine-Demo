@@ -26,7 +26,7 @@ import { AppDispatch } from 'dungeon/store'
 import * as Systems from 'dungeon/systems'
 import * as Components from 'dungeon/components'
 import { Renderer } from 'dungeon/Renderer'
-import tilesGenerator from 'utils/tilesGenerator'
+// import tilesGenerator from 'utils/tilesGenerator'
 
 import modelDB from 'modelDB'
 
@@ -85,10 +85,6 @@ const init = (canvas: HTMLCanvasElement) => {
     })
 
     canvas.insertAdjacentElement('afterend', renderer.infoDomElement)
-
-    componentManager.addComponent(new Components.LevelComponent(createEntity(), {
-        tiles: tilesGenerator([64, 64], 421),
-    }))
 
     componentManager.addComponent(new AmbientLightComponent(createEntity(), {
         color: 0xaaaaff,

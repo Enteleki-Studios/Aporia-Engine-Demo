@@ -2,7 +2,6 @@ import type { Object3D } from 'three'
 import { Component } from '../ECS/Component'
 
 export class ModelComponent<ModelDB> extends Component {
-    type = 'model'
     readonly modelName: keyof ModelDB
     isLoading = false
     resource: (null | Object3D) = null

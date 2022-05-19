@@ -1,9 +1,9 @@
 import { Vector3, Quaternion } from 'three'
 import type { ComponentManager } from '../managers/ComponentManager'
-import type { PositionComponent } from '../components/PositionComponent'
-import type { VelocityComponent } from '../components/VelocityComponent'
-import type { InputComponent } from '../components/InputComponent'
-import type { CameraComponent } from '../components/CameraComponent'
+import { PositionComponent } from '../components/PositionComponent'
+import { VelocityComponent } from '../components/VelocityComponent'
+import { InputComponent } from '../components/InputComponent'
+import { CameraComponent } from '../components/CameraComponent'
 import { Y_AXIS } from '../constants'
 
 const deceleration = new Vector3(-5, -0.0001, -5)
@@ -15,12 +15,12 @@ const ROTATION_SPEED = 8
 const Q = new Quaternion()
 
 export function movementSystem(delta: number, componentManager: ComponentManager) {
-    const cameraComponent = componentManager.getTuplesByQueryGeneric<[CameraComponent]>(
-        ['camera'],
-    )[0][0]
+    const cameraComponent = componentManager.getTuplesByClass(CameraComponent)[0][0]
 
-    componentManager.getTuplesByQueryGeneric<[InputComponent, PositionComponent, VelocityComponent]>(
-        ['input', 'position', 'velocity'],
+    componentManager.getTuplesByClass(
+        InputComponent,
+        PositionComponent,
+        VelocityComponent,
     ).forEach(([inputComponent, positionComponent, velocityComponent]) => {
         const { direction } = cameraComponent
         const { velocity } = velocityComponent

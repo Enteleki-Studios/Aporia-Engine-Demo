@@ -1,5 +1,3 @@
 import { Component } from '../ECS/Component'
 
-export class CameraTargetComponent extends Component {
-    type = 'CameraTargetComponent'
-}
+export class CameraTargetComponent extends Component {}

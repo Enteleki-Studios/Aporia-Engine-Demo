@@ -2,8 +2,6 @@ import { AnimationClip, AnimationAction } from 'three'
 import { Component } from 'gengine'
 
 export class AnimationComponent extends Component {
-    type = 'animation'
-
     needsUpdate = true
     loaded = false
     isLoading = false

@@ -2,14 +2,13 @@ import { ComponentManager, HitboxComponent, PositionComponent, VelocityComponent
 import { CollidesComponent } from 'dungeon/components'
 
 export function collisionSystem(delta: number, componentManager: ComponentManager) {
-    const solidComponents = componentManager.getTuplesByQueryGeneric<[HitboxComponent, PositionComponent]>(
-        ['hitbox', 'position'],
-    )
+    const solidComponents = componentManager.getTuplesByClass(HitboxComponent, PositionComponent)
 
-    const movingComponents = componentManager.getTuplesByQueryGeneric<
-    [CollidesComponent, HitboxComponent, PositionComponent, VelocityComponent]
-    >(
-        ['collides', 'hitbox', 'position', 'velocity'],
+    const movingComponents = componentManager.getTuplesByClass(
+        CollidesComponent,
+        HitboxComponent,
+        PositionComponent,
+        VelocityComponent,
     )
 
     movingComponents.forEach(([, movingHitboxComponent, movingPositionComponent, movingVelocityComponent]) => {

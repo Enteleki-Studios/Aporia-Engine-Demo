@@ -33,8 +33,9 @@ async function createModel(modelComponent: ModelComponent<typeof modelDB>) {
 }
 
 export function rendererSystem(componentManager: ComponentManager, renderer: Renderer) {
-    componentManager.getTuplesByQueryGeneric<[ModelComponent<typeof modelDB>, PositionComponent]>(
-        ['model', 'position'],
+    componentManager.getTuplesByClass(
+        ModelComponent,
+        PositionComponent,
     ).forEach(([modelComponent, positionComponent]) => {
         if (modelComponent.group) {
             // Update position
@@ -81,8 +82,8 @@ export function rendererSystem(componentManager: ComponentManager, renderer: Ren
         }
     })
 
-    componentManager.getTuplesByQueryGeneric<[DirectionalLightComponent]>(
-        ['directionalLight'],
+    componentManager.getTuplesByClass(
+        DirectionalLightComponent,
     ).forEach(([directionalLightComponent]) => {
         if (!renderer.directionalLight) {
             renderer.directionalLight = new DirectionalLight(0xFFFFFF, 0.4)
@@ -97,8 +98,8 @@ export function rendererSystem(componentManager: ComponentManager, renderer: Ren
         }
     })
 
-    componentManager.getTuplesByQueryGeneric<[AmbientLightComponent]>(
-        ['ambientLight'],
+    componentManager.getTuplesByClass(
+        AmbientLightComponent,
     ).forEach(([ambientLightComponent]) => {
         if (!ambientLightComponent.resource) {
             const { color, intensity } = ambientLightComponent
@@ -107,8 +108,8 @@ export function rendererSystem(componentManager: ComponentManager, renderer: Ren
         }
     })
 
-    componentManager.getTuplesByQueryGeneric<[CameraComponent]>(
-        ['camera'],
+    componentManager.getTuplesByClass(
+        CameraComponent,
     ).forEach(([cameraComponent]) => {
         // renderer.camera.position.copy(cameraComponent.position)
         renderer.camera.position.lerp(cameraComponent.position, 0.5)

@@ -7,7 +7,6 @@ interface Settings {
 }
 
 export class AmbientLightComponent extends Component {
-    type = 'ambientLight'
     color: number
     intensity: number
     resource: (AmbientLight | null) = null

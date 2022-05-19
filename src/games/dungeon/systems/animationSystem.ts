@@ -1,5 +1,5 @@
 import { AnimationMixer } from 'three'
-import type { ModelComponent, InputComponent, ComponentManager } from 'gengine'
+import { ModelComponent, InputComponent, ComponentManager } from 'gengine'
 import { AnimationComponent } from 'components'
 
 import modelDB from 'modelDB'
@@ -37,8 +37,9 @@ async function loadAnimations(
 }
 
 export function animationSystem(delta: number, componentManager: ComponentManager) {
-    componentManager.getTuplesByQueryGeneric<[AnimationComponent, InputComponent]>(
-        ['animation', 'input'],
+    componentManager.getTuplesByClass(
+        AnimationComponent,
+        InputComponent,
     ).forEach(([animationComponent, inputComponent]) => {
         let nextState = 'idle'
         if (
@@ -64,8 +65,9 @@ export function animationSystem(delta: number, componentManager: ComponentManage
         }
     })
 
-    componentManager.getTuplesByQueryGeneric<[AnimationComponent, ModelComponent<typeof modelDB>]>(
-        ['animation', 'model'],
+    componentManager.getTuplesByClass(
+        AnimationComponent,
+        ModelComponent,
     ).forEach(([animationComponent, modelComponent]) => {
         if (
             !animationComponent.loaded
