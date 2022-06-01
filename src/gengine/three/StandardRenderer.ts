@@ -38,11 +38,6 @@ export class StandardRenderer {
     debugOrbitControls: OrbitControls
     debugViewport = new Vector4()
 
-    fps = 0
-    fpsAvg = 0
-    fpsTick = 0
-    fpsFrames = 20
-
     private _infoDomElement?: HTMLDivElement
 
     jobs: Array<(delta: number) => void>
@@ -169,16 +164,9 @@ export class StandardRenderer {
             const { geometries, textures } = this.renderer.info.memory
             const { calls, triangles } = this.renderer.info.render
 
-            this.fpsAvg += Math.floor(1 / delta)
-            this.fpsTick += 1
+            this._infoDomElement.innerText = `${Math.floor(1 / delta)} fps
+                ${delta * 1000} ms
 
-            if (this.fpsTick === this.fpsFrames) {
-                this.fps = Math.floor(this.fpsAvg / this.fpsTick)
-                this.fpsAvg = 0
-                this.fpsTick = 0
-            }
-
-            this._infoDomElement.innerText = `${this.fps} fps
                 geometries: ${geometries}
                 textures: ${textures}
                 calls: ${calls}
