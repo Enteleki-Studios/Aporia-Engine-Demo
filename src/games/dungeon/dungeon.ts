@@ -19,6 +19,8 @@ import {
     CameraComponent,
     CameraTargetComponent,
     VelocityComponent,
+    SunTargetComponent,
+    sunSystem,
 } from 'gengine'
 
 import { AppDispatch } from 'dungeon/store'
@@ -47,16 +49,16 @@ const tick = () => {
         inputSystem(componentManager, inputManager)
         thirdPersonCameraSystem(delta, componentManager)
         movementSystem(delta, componentManager)
+        sunSystem(componentManager)
 
         Systems.collisionSystem(delta, componentManager)
 
         applyVelocitySystem(delta, componentManager)
 
-        Systems.sunSystem(componentManager)
-
         Systems.animationSystem(delta, componentManager)
 
         Systems.rendererSystem(componentManager, renderer)
+
         renderer.render(delta)
 
         requestAnimationFrame(tick)
@@ -90,6 +92,7 @@ const init = (canvas: HTMLCanvasElement) => {
         color: 0xaaaaff,
         intensity: 0.2,
     }))
+    componentManager.addComponent(new DirectionalLightComponent(createEntity(), [10, 15, 10]))
 
     const cameraEntity = createEntity()
     componentManager.addComponents([
@@ -103,11 +106,11 @@ const init = (canvas: HTMLCanvasElement) => {
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
         new Components.CollidesComponent(playerEntity),
         new CameraTargetComponent(playerEntity),
+        new SunTargetComponent(playerEntity),
         new HitboxComponent(playerEntity, modelDB.wizard.radius),
         // new HealthComponent(playerEntity, { health: 20 }),
         new HeroComponent(playerEntity),
         new InputComponent(playerEntity, DEFAULT_KEYMAP),
-        new DirectionalLightComponent(playerEntity),
         new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'wizard' }),
         new PositionComponent(playerEntity, { position: [0, 0, -1] }),
         new VelocityComponent(playerEntity, {}),

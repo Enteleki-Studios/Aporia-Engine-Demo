@@ -10,9 +10,10 @@ export { HitboxComponent } from './components/HitboxComponent'
 export { InputComponent } from './components/InputComponent'
 export { PositionComponent } from './components/PositionComponent'
 export { SpriteComponent } from './components/SpriteComponent'
+export { SunTargetComponent } from './components/SunTargetComponent'
 export { VelocityComponent } from './components/VelocityComponent'
 
-export { DirectionalLightComponent } from './components/DirectionalLightComponent' // TODO: refactor
+export { DirectionalLightComponent } from './components/DirectionalLightComponent'
 export { ModelComponent } from './components/ModelComponent'
 export { HealthComponent } from './components/HealthComponent'
 
@@ -21,6 +22,7 @@ export { applyVelocitySystem } from './systems/applyVelocitySystem'
 export { inputSystem } from './systems/inputSystem'
 export { movementSystem } from './systems/movementSystem'
 export { thirdPersonCameraSystem } from './systems/thirdPersonCameraSystem'
+export { sunSystem } from './systems/sunSystem'
 
 // Managers
 export { ComponentManager } from './managers/ComponentManager'
