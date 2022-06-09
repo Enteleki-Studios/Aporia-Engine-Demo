@@ -7,6 +7,6 @@ export function applyVelocitySystem(delta: number, componentManager: ComponentMa
         PositionComponent,
         VelocityComponent,
     ).forEach(([positionComponent, velocityComponent]) => {
-        positionComponent.position.add(velocityComponent.velocity.clone().multiplyScalar(delta))
+        positionComponent.position.addScaledVector(velocityComponent.velocity, delta)
     })
 }
