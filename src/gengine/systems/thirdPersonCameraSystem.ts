@@ -1,4 +1,4 @@
-import { Quaternion } from 'three'
+import { Quaternion, Vector3 } from 'three'
 import { PositionComponent } from '../components/PositionComponent'
 import type { ComponentManager } from '../managers/ComponentManager'
 import { CameraComponent } from '../components/CameraComponent'
@@ -7,12 +7,13 @@ import { CameraTargetComponent } from '../components/CameraTargetComponent'
 import { Y_AXIS } from '../constants'
 
 const forwardQ = new Quaternion()
+const camPosition = new Vector3()
 
 export function thirdPersonCameraSystem(delta: number, componentManager: ComponentManager) {
     const cameraTargets = componentManager.getTuplesByClass(CameraTargetComponent, PositionComponent)
 
     componentManager.getTuplesByClass(CameraComponent, InputComponent).forEach(([cameraComponent, inputComponent]) => {
-        const { direction, position: camPosition } = cameraComponent
+        const { direction } = cameraComponent
         const { position: targetPosition } = cameraTargets[0][1]
 
         // Update forwards direction
@@ -28,7 +29,10 @@ export function thirdPersonCameraSystem(delta: number, componentManager: Compone
         camPosition.y += 5 // Move it up
         camPosition.add(targetPosition) // Move it into position
 
-        cameraComponent.lookAt.copy(targetPosition)
+        cameraComponent.position.lerp(camPosition, 1 - (0.005 ** delta))
+        cameraComponent.lookAt.lerp(targetPosition, 1 - (0.00001 ** delta))
+        // cameraComponent.position.copy(camPosition)
+        // cameraComponent.lookAt.copy(targetPosition)
         cameraComponent.lookAt.setY(2) // Look a little higher
     })
 }

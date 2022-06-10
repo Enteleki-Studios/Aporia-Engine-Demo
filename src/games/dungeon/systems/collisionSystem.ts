@@ -22,10 +22,10 @@ export function collisionSystem(delta: number, componentManager: ComponentManage
 
             // Minimum distance
             const testDist = (movingHitboxComponent.radius + solidHitboxComponent.radius) ** 2
-            // Distance between next position and solid object
             const nextPosition = movingPositionComponent.position.clone().add(
                 movementVector.clone().multiplyScalar(delta),
             )
+            // Distance between next position and solid object
             const distance = nextPosition.distanceToSquared(solidPositionComponent.position)
 
             if (distance <= testDist) {

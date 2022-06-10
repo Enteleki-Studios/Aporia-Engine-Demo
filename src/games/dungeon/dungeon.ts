@@ -44,20 +44,19 @@ let delta = 0
 
 const tick = () => {
     delta = Math.min(clock.getDelta(), 0.05)
-    // delta *= Math.random()
 
     try {
         inputSystem(componentManager, inputManager)
         movementSystem(delta, componentManager)
-        sunSystem(componentManager)
 
         Systems.collisionSystem(delta, componentManager)
 
         applyVelocitySystem(delta, componentManager)
 
-        Systems.animationSystem(delta, componentManager)
-
         thirdPersonCameraSystem(delta, componentManager)
+        sunSystem(componentManager)
+
+        Systems.animationSystem(delta, componentManager)
 
         Systems.rendererSystem(componentManager, renderer)
 

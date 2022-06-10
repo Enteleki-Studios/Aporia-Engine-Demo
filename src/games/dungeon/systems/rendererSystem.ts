@@ -111,8 +111,7 @@ export function rendererSystem(componentManager: ComponentManager, renderer: Ren
     componentManager.getTuplesByClass(
         CameraComponent,
     ).forEach(([cameraComponent]) => {
-        // renderer.camera.position.copy(cameraComponent.position)
-        renderer.camera.position.lerp(cameraComponent.position, 0.5)
+        renderer.camera.position.copy(cameraComponent.position)
         renderer.camera.lookAt(cameraComponent.lookAt)
     })
 }
