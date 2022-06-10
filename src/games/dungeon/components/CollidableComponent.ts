@@ -2,6 +2,6 @@ import { Vector3 } from 'three'
 
 import { Component } from 'gengine'
 
-export class CollidesComponent extends Component {
+export class CollidableComponent extends Component {
     collisions: Vector3[] = []
 }

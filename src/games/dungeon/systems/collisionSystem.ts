@@ -1,11 +1,11 @@
 import { ComponentManager, HitboxComponent, PositionComponent, VelocityComponent, Y_AXIS } from 'gengine'
-import { CollidesComponent } from 'dungeon/components'
+import { CollidableComponent } from 'dungeon/components'
 
 export function collisionSystem(delta: number, componentManager: ComponentManager) {
     const solidComponents = componentManager.getTuplesByClass(HitboxComponent, PositionComponent)
 
     const movingComponents = componentManager.getTuplesByClass(
-        CollidesComponent,
+        CollidableComponent,
         HitboxComponent,
         PositionComponent,
         VelocityComponent,

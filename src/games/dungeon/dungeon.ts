@@ -105,7 +105,7 @@ const init = (canvas: HTMLCanvasElement) => {
     componentManager.addComponents([
         new Components.AnimationComponent(playerEntity, 'idle'),
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
-        new Components.CollidesComponent(playerEntity),
+        new Components.CollidableComponent(playerEntity),
         new CameraTargetComponent(playerEntity),
         new SunTargetComponent(playerEntity),
         new HitboxComponent(playerEntity, modelDB.wizard.radius),
