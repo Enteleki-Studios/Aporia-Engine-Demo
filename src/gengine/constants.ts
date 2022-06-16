@@ -12,6 +12,10 @@ export const DEFAULT_KEYMAP: Keymap = {
     debug: 'Backquote',
 }
 
+// Utilities
 export const X_AXIS = new Vector3(1, 0, 0)
 export const Y_AXIS = new Vector3(0, 1, 0)
 export const Z_AXIS = new Vector3(0, 0, 1)
+
+// Engine defaults
+export const WORLD_MAX_DELTA = 0.05

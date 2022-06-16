@@ -1,5 +1,3 @@
-import { Clock } from 'three'
-
 import {
     AmbientLightComponent,
     ComponentManager,
@@ -21,6 +19,7 @@ import {
     VelocityComponent,
     SunTargetComponent,
     sunSystem,
+    World,
 } from 'gengine'
 
 import { AppDispatch } from 'dungeon/store'
@@ -32,10 +31,10 @@ import { Renderer } from 'dungeon/Renderer'
 
 import modelDB from 'modelDB'
 
+const world = new World()
+
 const componentManager = new ComponentManager()
 let inputManager: InputManager
-
-const clock = new Clock()
 
 let dispatch: AppDispatch
 let renderer: Renderer
@@ -43,7 +42,8 @@ let renderer: Renderer
 let delta = 0
 
 const tick = () => {
-    delta = Math.min(clock.getDelta(), 0.05)
+    world.tick()
+    delta = world.getTimeElapsedS()
 
     try {
         inputSystem(componentManager, inputManager)
