@@ -1,14 +1,13 @@
 import { v4 as uuid } from 'uuid'
 
 import type { Component } from './Component'
+import { ECSFilter } from './ECSFilter'
 import { Entity, EntityId } from './Entity'
+import { System } from './System'
 
 export class ECS {
-    entitiesById: Map<EntityId, Entity>
-
-    constructor() {
-        this.entitiesById = new Map()
-    }
+    entitiesById = new Map<EntityId, Entity>()
+    filters = new Set<ECSFilter>()
 
     createEntity() {
         const id = uuid().toUpperCase()
@@ -16,7 +15,7 @@ export class ECS {
 
         this.entitiesById.set(id, entity)
 
-        return entity
+        return id
     }
 
     getEntity(entityId: EntityId) {
@@ -35,16 +34,34 @@ export class ECS {
         if (entity) {
             components.forEach((component) => {
                 entity.addComponent_Unsafe(component)
-                // TODO Add entity to query caches
             })
+            this.updateFiltersForEntity(entity)
         } else {
             throw new Error(`Entity does not exist ${entityId}`)
         }
     }
 
+    registerFilters(filters: ECSFilter[]) {
+        filters.forEach(this.filters.add)
+    }
+
+    updateFiltersForEntity(entity: Entity) {
+        this.filters.forEach((filter) => {
+            if (entity.hasAll(filter.components)) {
+                filter.entities.add(entity)
+            } else {
+                filter.entities.delete(entity)
+            }
+        })
+    }
+
     // removeComponents() {}
 
-    // registerSystem() {}
+    registerSystem(system: System) {
+        this.registerFilters(system.filters)
+    }
+
+    // disableSystem() {}
 
     // unregisterSystem() {} // Do we need this?
 

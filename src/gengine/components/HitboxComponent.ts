@@ -3,8 +3,8 @@ import { Component } from '../ECS/Component'
 export class HitboxComponent extends Component {
     radius
 
-    constructor(entityId: string, radius = 1) {
-        super(entityId)
+    constructor(radius = 1) {
+        super()
 
         this.radius = radius
     }

@@ -7,8 +7,8 @@ export class ModelComponent<ModelDB> extends Component {
     resource: (null | Object3D) = null
     group: (null | Object3D) = null
 
-    constructor(entityId: string, { modelName }: { modelName: keyof ModelDB }) {
-        super(entityId)
+    constructor({ modelName }: { modelName: keyof ModelDB }) {
+        super()
 
         this.modelName = modelName
     }

@@ -8,8 +8,8 @@ interface VelocitySettings {
 export class VelocityComponent extends Component {
     velocity = new Vector3()
 
-    constructor(entityId: string, { velocity }: VelocitySettings) {
-        super(entityId)
+    constructor({ velocity }: VelocitySettings) {
+        super()
 
         if (velocity) {
             this.velocity.fromArray(velocity)

@@ -2,21 +2,21 @@ import {
     AmbientLightComponent,
     ComponentManager,
     DirectionalLightComponent,
-    HeroComponent,
+    // HeroComponent,
     InputManager,
     ModelComponent,
     createEntity,
     DEFAULT_KEYMAP,
-    inputSystem,
-    movementSystem,
+    // inputSystem,
+    // movementSystem,
     InputComponent,
     PositionComponent,
-    HitboxComponent,
-    applyVelocitySystem,
+    // HitboxComponent,
+    // applyVelocitySystem,
     thirdPersonCameraSystem,
     CameraComponent,
     CameraTargetComponent,
-    VelocityComponent,
+    // VelocityComponent,
     SunTargetComponent,
     sunSystem,
     World,
@@ -25,7 +25,7 @@ import {
 import { AppDispatch } from 'dungeon/store'
 
 import * as Systems from 'dungeon/systems'
-import * as Components from 'dungeon/components'
+// import * as Components from 'dungeon/components'
 import { Renderer } from 'dungeon/Renderer'
 // import tilesGenerator from 'utils/tilesGenerator'
 
@@ -45,37 +45,32 @@ const tick = () => {
     world.tick()
     delta = world.getTimeElapsedS()
 
-    try {
-        inputSystem(componentManager, inputManager)
-        movementSystem(delta, componentManager)
+    // inputSystem(componentManager, inputManager)
+    // movementSystem(delta, componentManager)
 
-        Systems.collisionSystem(delta, componentManager)
+    // Systems.collisionSystem(delta, componentManager)
 
-        applyVelocitySystem(delta, componentManager)
+    // applyVelocitySystem(delta, componentManager)
 
-        thirdPersonCameraSystem(delta, componentManager)
-        sunSystem(componentManager)
+    thirdPersonCameraSystem(delta, componentManager)
+    sunSystem(componentManager)
 
-        Systems.animationSystem(delta, componentManager)
+    // Systems.animationSystem(delta, componentManager)
 
-        Systems.rendererSystem(componentManager, renderer)
+    Systems.rendererSystem(componentManager, renderer)
 
-        renderer.render(delta)
+    renderer.render(delta)
 
-        requestAnimationFrame(tick)
-    } catch (error) {
-        /* eslint-disable no-console */
-        console.error(error)
-    }
+    requestAnimationFrame(tick)
 }
 
 const init = (canvas: HTMLCanvasElement) => {
     renderer = new Renderer({ canvas })
     // renderer.setDebugMode('debug')
     // renderer.setDebugMode('sideBySide')
+    canvas.insertAdjacentElement('afterend', renderer.infoDomElement)
 
     inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
-
     inputManager.addActionListener('debug', () => {
         const { debugMode } = renderer
         if (debugMode === 'game') {
@@ -87,8 +82,6 @@ const init = (canvas: HTMLCanvasElement) => {
         }
     })
 
-    canvas.insertAdjacentElement('afterend', renderer.infoDomElement)
-
     componentManager.addComponent(new AmbientLightComponent(createEntity(), {
         color: 0xaaaaff,
         intensity: 0.2,
@@ -97,55 +90,25 @@ const init = (canvas: HTMLCanvasElement) => {
 
     const cameraEntity = createEntity()
     componentManager.addComponents([
-        new CameraComponent(cameraEntity),
+        new CameraComponent(),
         new InputComponent(cameraEntity, DEFAULT_KEYMAP),
     ])
 
     const playerEntity = createEntity()
     componentManager.addComponents([
-        new Components.AnimationComponent(playerEntity, 'idle'),
+        // new Components.AnimationComponent(playerEntity, 'idle'),
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
-        new Components.CollidableComponent(playerEntity),
-        new CameraTargetComponent(playerEntity),
-        new SunTargetComponent(playerEntity),
-        new HitboxComponent(playerEntity, modelDB.wizard.radius),
+        // new Components.CollidableComponent(playerEntity),
+        new CameraTargetComponent(),
+        new SunTargetComponent(),
+        // new HitboxComponent(playerEntity, modelDB.wizard.radius),
         // new HealthComponent(playerEntity, { health: 20 }),
-        new HeroComponent(playerEntity),
-        new InputComponent(playerEntity, DEFAULT_KEYMAP),
-        new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'wizard' }),
-        new PositionComponent(playerEntity, { position: [0, 0, -1] }),
-        new VelocityComponent(playerEntity, {}),
+        // new HeroComponent(playerEntity),
+        // new InputComponent(playerEntity, DEFAULT_KEYMAP),
+        // new ModelComponent<typeof modelDB>(playerEntity, { modelName: 'wizard' }),
+        new PositionComponent({ position: [0, 0, -1] }),
+        // new VelocityComponent(playerEntity, {}),
     ])
-
-    const skelEntity = createEntity()
-    componentManager.addComponents([
-        new Components.AnimationComponent(skelEntity, 'idle'),
-        new ModelComponent(skelEntity, { modelName: 'skeleton' }),
-        new PositionComponent(skelEntity, { position: [1, 0, 2] }),
-    ])
-
-    const items = ['chest_gold', 'barrel', 'column', 'entrance', 'rock_1', 'torch', 'stoneWall', 'cart', 'crate']
-    items.forEach((item, i) => {
-        const entityId = createEntity()
-        componentManager.addComponents([
-            new ModelComponent(entityId, { modelName: item }),
-            new PositionComponent(entityId, { position: [i * 3 - 12, 0, 8] }),
-            new HitboxComponent(entityId, modelDB[item].radius),
-        ])
-    })
-
-    const makePos: () => [number, number, number] = () => ([
-        Math.random() * 30 - 15,
-        0,
-        Math.random() * 30 - 15,
-    ])
-    for (let i = 0; i < 200; i += 1) {
-        const entityId = createEntity()
-        componentManager.addComponents([
-            new ModelComponent(entityId, { modelName: 'grass' }),
-            new PositionComponent(entityId, { position: makePos() }),
-        ])
-    }
 
     dispatch({ type: 'TEST' })
 
@@ -160,6 +123,36 @@ export default {
     init,
     addDispatch,
 }
+
+// const skelEntity = createEntity()
+// componentManager.addComponents([
+//     new Components.AnimationComponent(skelEntity, 'idle'),
+//     new ModelComponent(skelEntity, { modelName: 'skeleton' }),
+//     new PositionComponent(skelEntity, { position: [1, 0, 2] }),
+// ])
+
+// const items = ['chest_gold', 'barrel', 'column', 'entrance', 'rock_1', 'torch', 'stoneWall', 'cart', 'crate']
+// items.forEach((item, i) => {
+//     const entityId = createEntity()
+//     componentManager.addComponents([
+//         new ModelComponent(entityId, { modelName: item }),
+//         new PositionComponent(entityId, { position: [i * 3 - 12, 0, 8] }),
+//         new HitboxComponent(entityId, modelDB[item].radius),
+//     ])
+// })
+
+// const makePos: () => [number, number, number] = () => ([
+//     Math.random() * 30 - 15,
+//     0,
+//     Math.random() * 30 - 15,
+// ])
+// for (let i = 0; i < 200; i += 1) {
+//     const entityId = createEntity()
+//     componentManager.addComponents([
+//         new ModelComponent(entityId, { modelName: 'grass' }),
+//         new PositionComponent(entityId, { position: makePos() }),
+//     ])
+// }
 
 // const slimeEntity = createEntity()
 // DungeonECS.addComponents([

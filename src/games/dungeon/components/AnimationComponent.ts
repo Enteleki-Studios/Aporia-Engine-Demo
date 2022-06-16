@@ -15,9 +15,8 @@ export class AnimationComponent extends Component {
 
     state: string
 
-    constructor(entityId: string, state: string) {
-        super(entityId)
-
+    constructor(state: string) {
+        super()
         this.state = state
     }
 }

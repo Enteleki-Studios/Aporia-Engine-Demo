@@ -8,8 +8,8 @@ export class AttackComponent extends Component {
     delta: number
     hasDealtDamage: boolean
 
-    constructor(entityId: string, { damage, range }: { damage: number, range: number }) {
-        super(entityId)
+    constructor({ damage, range }: { damage: number, range: number }) {
+        super()
 
         this.damage = damage
         this.range = range

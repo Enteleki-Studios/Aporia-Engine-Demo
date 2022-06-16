@@ -1,7 +1,4 @@
-import { Component, ComponentConstructor } from './Component'
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-type AnyComponentConstructor = Function
+import { Component, ComponentConstructor, AnyComponentConstructor } from './Component'
 
 export type EntityId = string
 
@@ -25,7 +22,11 @@ export class Entity {
         return this.components.get(compClass) as T
     }
 
-    has(...compClasses: AnyComponentConstructor[]) {
-        return compClasses.every((c) => this.components.has(c))
+    has(compClass: AnyComponentConstructor) {
+        return this.components.has(compClass)
+    }
+
+    hasAll(compClasses: AnyComponentConstructor[]) {
+        return compClasses.every(this.has)
     }
 }

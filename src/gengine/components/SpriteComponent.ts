@@ -9,8 +9,8 @@ export class SpriteComponent extends Component {
     isLoading = false
     url: string
 
-    constructor(entityId: string, { url }: SpriteSettings) {
-        super(entityId)
+    constructor({ url }: SpriteSettings) {
+        super()
 
         this.url = url
     }

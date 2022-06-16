@@ -3,6 +3,7 @@ export { World } from './World'
 
 // ECS
 export { ECS } from './ECS/ECS'
+export { ECSFilter } from './ECS/ECSFilter'
 export { Entity } from './ECS/Entity'
 export { Component } from './ECS/Component'
 export { System } from './ECS/System'

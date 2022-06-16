@@ -6,8 +6,8 @@ export class DirectionalLightComponent extends Component {
     position = new Vector3()
     target = new Vector3()
 
-    constructor(entityId: string, offset: [number, number, number]) {
-        super(entityId)
+    constructor(offset: [number, number, number]) {
+        super()
         this.offset = offset
     }
 }

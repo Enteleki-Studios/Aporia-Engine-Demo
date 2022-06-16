@@ -10,8 +10,8 @@ export class InputComponent extends Component {
         }
     }
 
-    constructor(entityId: string, keymap: Keymap) {
-        super(entityId)
+    constructor(keymap: Keymap) {
+        super()
 
         this.mouse = {
             pan: {
