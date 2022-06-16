@@ -18,5 +18,6 @@ export class World {
 
     tick() {
         this.delta = Math.min(this.clock.getDelta(), this.MAX_DELTA)
+        // TODO Tick ECS after systems run (clear removed entities, etc)
     }
 }
