@@ -1,3 +1,3 @@
-export { animationSystem } from './animationSystem'
-export { collisionSystem } from './collisionSystem'
-export { rendererSystem } from './rendererSystem'
+export { AnimationSystem } from './AnimationSystem'
+export { CollisionSystem } from './CollisionSystem'
+export { RendererSystem } from './RendererSystem'

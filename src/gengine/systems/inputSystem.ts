@@ -1,32 +1,47 @@
-import { InputComponent } from '../components/InputComponent'
-import type { ComponentManager } from '../managers/ComponentManager'
+import { System } from '../ECS/System'
+import { ECSFilter } from '../ECS/ECSFilter'
 import { InputManager } from '../managers/InputManager'
+import { InputComponent } from '../components/InputComponent'
 
-export function inputSystem(componentManager: ComponentManager, inputManager: InputManager) {
-    const liveInput = inputManager.readInput()
-    const { panX, panY } = inputManager.readMouse()
-    inputManager.resetMouse()
+export class InputSystem extends System {
+    inputFilter = new ECSFilter([InputComponent])
 
-    componentManager.getTuplesByClass(InputComponent).forEach(([inputComponent]) => {
-        Object.keys(liveInput).forEach((action) => {
-            const actionInput = inputComponent.input[action]
-            if (liveInput[action]) {
-                if (!actionInput.hold) {
-                    if (actionInput.press) {
-                        actionInput.press = false
-                        actionInput.hold = true
-                    } else {
-                        actionInput.press = true
+    filters = [this.inputFilter]
+
+    inputManager: InputManager
+
+    constructor(inputManager: InputManager) {
+        super()
+        this.inputManager = inputManager
+    }
+
+    tick() {
+        const liveInput = this.inputManager.readInput()
+        const { panX, panY } = this.inputManager.readMouse()
+        this.inputManager.resetMouse()
+
+        this.inputFilter.entities.forEach((entity) => {
+            const inputComponent = entity.get(InputComponent)
+            Object.keys(liveInput).forEach((action) => {
+                const actionInput = inputComponent.input[action]
+                if (liveInput[action]) {
+                    if (!actionInput.hold) {
+                        if (actionInput.press) {
+                            actionInput.press = false
+                            actionInput.hold = true
+                        } else {
+                            actionInput.press = true
+                        }
                     }
+                } else {
+                    actionInput.press = false
+                    actionInput.hold = false
                 }
-            } else {
-                actionInput.press = false
-                actionInput.hold = false
-            }
-            actionInput.press = liveInput[action]
-        })
+                actionInput.press = liveInput[action]
+            })
 
-        inputComponent.mouse.pan.x = panX
-        inputComponent.mouse.pan.y = panY
-    })
+            inputComponent.mouse.pan.x = panX
+            inputComponent.mouse.pan.y = panY
+        })
+    }
 }

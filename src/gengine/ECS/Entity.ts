@@ -27,6 +27,6 @@ export class Entity {
     }
 
     hasAll(compClasses: AnyComponentConstructor[]) {
-        return compClasses.every(this.has)
+        return compClasses.every((c) => this.has(c))
     }
 }

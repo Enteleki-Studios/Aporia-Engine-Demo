@@ -5,11 +5,12 @@ import {
     DirectionalLightComponent,
     ModelComponent,
     TextSprite,
-    ComponentManager,
     AmbientLightComponent,
     PositionComponent,
     HitboxComponent,
     CameraComponent,
+    System,
+    ECSFilter,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -32,86 +33,101 @@ async function createModel(modelComponent: ModelComponent<typeof modelDB>) {
     return model
 }
 
-export function rendererSystem(componentManager: ComponentManager, renderer: Renderer) {
-    componentManager.getTuplesByClass(
-        ModelComponent,
-        PositionComponent,
-    ).forEach(([modelComponent, positionComponent]) => {
-        if (modelComponent.group) {
-            // Update position
-            modelComponent.group.position.copy(positionComponent.position)
-            modelComponent.group.quaternion.copy(positionComponent.rotation)
-        } else if (!modelComponent.isLoading) {
-            modelComponent.isLoading = true
-            createModel(modelComponent).then((resource) => {
-                const group = new Group()
-                group.add(resource)
+export class RendererSystem extends System {
+    renderer: Renderer
 
-                const tripcode = modelComponent.entityId.split('-')[0]
-                const sprite = new TextSprite(tripcode)
-                sprite.renderOrder = 1
-                sprite.material.depthTest = false
-                group.add(sprite)
-                renderer.registerHelper(sprite)
+    modelFilter = new ECSFilter([ModelComponent, PositionComponent])
+    directionalLightFilter = new ECSFilter([DirectionalLightComponent])
+    ambientLightFilter = new ECSFilter([AmbientLightComponent])
+    cameraFilter = new ECSFilter([CameraComponent])
 
-                const box = new Box3().setFromObject(resource)
-                sprite.position.y = box.max.y + 0.15
-                sprite.center.set(0.5, 0) // Set origin to center bottom
+    filters = [this.modelFilter, this.directionalLightFilter, this.ambientLightFilter, this.cameraFilter]
 
-                if (componentManager.has(modelComponent.entityId, 'hitbox')) {
-                    const hitbox = componentManager.get<HitboxComponent>(modelComponent.entityId, 'hitbox')
-                    const collisionGeo = new CircleGeometry(hitbox.radius, 20)
-                    collisionGeo.rotateX(-Math.PI / 2)
-                    const collisionMat = new MeshBasicMaterial({
-                        color: 0xff0000,
-                        transparent: true,
-                        opacity: 0.3,
-                        depthTest: false,
-                    })
-                    const collisionHelper = new Mesh(collisionGeo, collisionMat)
-                    group.add(collisionHelper)
-                    renderer.registerHelper(collisionHelper)
-                }
+    constructor(renderer: Renderer) {
+        super()
 
-                modelComponent.resource = resource
-                modelComponent.group = group
+        this.renderer = renderer
+    }
 
-                renderer.scene.add(group)
-                modelComponent.isLoading = false
-            })
-        }
-    })
+    tick() {
+        this.modelFilter.entities.forEach((entity) => {
+            const modelComponent = entity.get(ModelComponent)
+            const positionComponent = entity.get(PositionComponent)
+            if (modelComponent.group) {
+                // Update position
+                modelComponent.group.position.copy(positionComponent.position)
+                modelComponent.group.quaternion.copy(positionComponent.rotation)
+            } else if (!modelComponent.isLoading) {
+                modelComponent.isLoading = true
+                createModel(modelComponent).then((resource) => {
+                    const group = new Group()
+                    group.add(resource)
 
-    componentManager.getTuplesByClass(
-        DirectionalLightComponent,
-    ).forEach(([directionalLightComponent]) => {
-        if (!renderer.directionalLight) {
-            renderer.directionalLight = new DirectionalLight(0xFFFFFF, 0.4)
-            renderer.scene.add(renderer.directionalLight)
-            renderer.scene.add(renderer.directionalLight.target)
+                    const labelText = entity.id.split('-')[0]
+                    const sprite = new TextSprite(labelText)
+                    sprite.renderOrder = 1
+                    sprite.material.depthTest = false
+                    group.add(sprite)
+                    this.renderer.registerHelper(sprite)
 
-            renderer.addHelpers(renderer.directionalLight.helper, renderer.directionalLight.shadowHelper)
-            renderer.addHelpers(renderer.directionalLight.shadowHelper)
-        } else {
-            renderer.directionalLight.position.copy(directionalLightComponent.position)
-            renderer.directionalLight.target.position.copy(directionalLightComponent.target)
-        }
-    })
+                    const box = new Box3().setFromObject(resource)
+                    sprite.position.y = box.max.y + 0.15
+                    sprite.center.set(0.5, 0) // Set origin to center bottom
 
-    componentManager.getTuplesByClass(
-        AmbientLightComponent,
-    ).forEach(([ambientLightComponent]) => {
-        if (!ambientLightComponent.resource) {
-            const { color, intensity } = ambientLightComponent
-            ambientLightComponent.resource = new AmbientLight(color, intensity)
-            renderer.scene.add(ambientLightComponent.resource)
-        }
-    })
+                    if (entity.has(HitboxComponent)) {
+                        const hitbox = entity.get(HitboxComponent)
+                        const collisionGeo = new CircleGeometry(hitbox.radius, 20)
+                        collisionGeo.rotateX(-Math.PI / 2)
+                        const collisionMat = new MeshBasicMaterial({
+                            color: 0xff0000,
+                            transparent: true,
+                            opacity: 0.3,
+                            depthTest: false,
+                        })
+                        const collisionHelper = new Mesh(collisionGeo, collisionMat)
+                        group.add(collisionHelper)
+                        this.renderer.registerHelper(collisionHelper)
+                    }
 
-    componentManager.getTuplesByClass(
-        CameraComponent,
-    ).forEach(([cameraComponent]) => {
-        renderer.camera.position.copy(cameraComponent.position)
-        renderer.camera.lookAt(cameraComponent.lookAt)
-    })
+                    modelComponent.resource = resource
+                    modelComponent.group = group
+
+                    this.renderer.scene.add(group)
+                    modelComponent.isLoading = false
+                })
+            }
+        })
+
+        this.directionalLightFilter.entities.forEach((entity) => {
+            const directionalLightComponent = entity.get(DirectionalLightComponent)
+            if (!this.renderer.directionalLight) {
+                this.renderer.directionalLight = new DirectionalLight(0xFFFFFF, 0.4)
+                this.renderer.scene.add(this.renderer.directionalLight)
+                this.renderer.scene.add(this.renderer.directionalLight.target)
+
+                this.renderer.addHelpers(
+                    this.renderer.directionalLight.helper,
+                    this.renderer.directionalLight.shadowHelper,
+                )
+            } else {
+                this.renderer.directionalLight.position.copy(directionalLightComponent.position)
+                this.renderer.directionalLight.target.position.copy(directionalLightComponent.target)
+            }
+        })
+
+        this.ambientLightFilter.entities.forEach((entity) => {
+            const ambientLightComponent = entity.get(AmbientLightComponent)
+            if (!ambientLightComponent.resource) {
+                const { color, intensity } = ambientLightComponent
+                ambientLightComponent.resource = new AmbientLight(color, intensity)
+                this.renderer.scene.add(ambientLightComponent.resource)
+            }
+        })
+
+        this.cameraFilter.entities.forEach((entity) => {
+            const cameraComponent = entity.get(CameraComponent)
+            this.renderer.camera.position.copy(cameraComponent.position)
+            this.renderer.camera.lookAt(cameraComponent.lookAt)
+        })
+    }
 }

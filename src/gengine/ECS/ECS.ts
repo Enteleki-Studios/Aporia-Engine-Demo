@@ -42,12 +42,12 @@ export class ECS {
     }
 
     registerFilters(filters: ECSFilter[]) {
-        filters.forEach(this.filters.add)
+        filters.forEach((f) => this.filters.add(f))
     }
 
     updateFiltersForEntity(entity: Entity) {
         this.filters.forEach((filter) => {
-            if (entity.hasAll(filter.components)) {
+            if (entity.hasAll(filter.filterBy)) {
                 filter.entities.add(entity)
             } else {
                 filter.entities.delete(entity)
@@ -59,6 +59,10 @@ export class ECS {
 
     registerSystem(system: System) {
         this.registerFilters(system.filters)
+    }
+
+    registerSystems(...systems: System[]) {
+        systems.forEach((s) => this.registerSystem(s))
     }
 
     // disableSystem() {}

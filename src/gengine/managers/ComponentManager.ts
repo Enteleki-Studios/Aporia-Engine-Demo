@@ -23,7 +23,8 @@ export class ComponentManager {
     }
 
     addComponent(component: Component) {
-        const { entityId } = component
+        // const { entityId } = component
+        const entityId = 'TEMP' // TODO legacy hack to fix compile
         const { name } = component.constructor
 
         if (this.entitiesById.has(entityId)) {

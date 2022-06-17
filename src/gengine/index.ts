@@ -25,11 +25,11 @@ export { ModelComponent } from './components/ModelComponent'
 export { HealthComponent } from './components/HealthComponent'
 
 // Systems
-export { applyVelocitySystem } from './systems/applyVelocitySystem'
-export { inputSystem } from './systems/inputSystem'
-export { movementSystem } from './systems/movementSystem'
-export { thirdPersonCameraSystem } from './systems/thirdPersonCameraSystem'
-export { sunSystem } from './systems/sunSystem'
+export { ApplyVelocitySystem } from './systems/ApplyVelocitySystem'
+export { InputSystem } from './systems/InputSystem'
+export { MovementSystem } from './systems/MovementSystem'
+export { ThirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'
+export { SunSystem } from './systems/SunSystem'
 
 // Managers
 export { ComponentManager } from './managers/ComponentManager'
@@ -41,7 +41,6 @@ export { Inspector } from './Inspector'
 export { reducer as inspectorReducer } from './Inspector/redux'
 
 // Utils
-export { createEntity } from './utils/createEntity'
 export * as arrayUtils from './utils/arrayUtils'
 
 // THREEJS

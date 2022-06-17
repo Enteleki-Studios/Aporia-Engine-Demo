@@ -12,7 +12,7 @@ export class World {
 
     ecs = new ECS()
 
-    getTimeElapsedS() {
+    get timeElapsedS() {
         return this.delta
     }
 

@@ -1,10 +1,8 @@
 import { AnimationMixer } from 'three'
-import { ModelComponent, InputComponent, ComponentManager } from 'gengine'
+import { ModelComponent, InputComponent, System, ECSFilter, World } from 'gengine'
 import { AnimationComponent } from 'components'
 
 import modelDB from 'modelDB'
-
-const _jobs: Array<(delta: number) => void> = []
 
 async function loadAnimations(
     animationComponent: AnimationComponent,
@@ -36,75 +34,84 @@ async function loadAnimations(
     return mixer
 }
 
-export function animationSystem(delta: number, componentManager: ComponentManager) {
-    componentManager.getTuplesByClass(
-        AnimationComponent,
-        InputComponent,
-    ).forEach(([animationComponent, inputComponent]) => {
-        let nextState = 'idle'
-        if (
-            inputComponent.input.up.hold
-        || inputComponent.input.left.hold
-        || inputComponent.input.right.hold
-        || inputComponent.input.down.hold
-        ) {
-            nextState = 'walk'
-            if (inputComponent.input.run.hold) {
-                nextState = 'run'
-            }
-        }
+export class AnimationSystem extends System {
+    private jobs: Array<(delta: number) => void> = []
 
-        // if (inputComponent.attacking) {
-        //     nextState = 'attack'
-        // }
+    private updatingEntities = new ECSFilter([AnimationComponent, InputComponent])
+    private loadingEntities = new ECSFilter([AnimationComponent, ModelComponent])
 
-        if (animationComponent.state !== nextState) {
-            animationComponent.prevState = animationComponent.state
-            animationComponent.state = nextState
-            animationComponent.needsUpdate = true
-        }
-    })
+    filters = [this.updatingEntities, this.loadingEntities]
 
-    componentManager.getTuplesByClass(
-        AnimationComponent,
-        ModelComponent,
-    ).forEach(([animationComponent, modelComponent]) => {
-        if (
-            !animationComponent.loaded
-        && !animationComponent.isLoading
-        // && this._dbLoaded
-        && modelComponent.resource
-        ) {
-            animationComponent.isLoading = true
-            loadAnimations(animationComponent, modelComponent).then((mixer) => {
-                animationComponent.isLoading = false
-                if (mixer) {
-                    animationComponent.loaded = true
-                    _jobs.push((d) => mixer.update(d))
+    tick(world: World) {
+        this.updatingEntities.entities.forEach((entity) => {
+            const animationComponent = entity.get(AnimationComponent)
+            const inputComponent = entity.get(InputComponent)
+
+            let nextState = 'idle'
+            if (
+                inputComponent.input.up.hold
+            || inputComponent.input.left.hold
+            || inputComponent.input.right.hold
+            || inputComponent.input.down.hold
+            ) {
+                nextState = 'walk'
+                if (inputComponent.input.run.hold) {
+                    nextState = 'run'
                 }
-            })
-        } else if (animationComponent.loaded && animationComponent.needsUpdate) {
-            // Update animation
-            const { animations } = animationComponent
-            if (animations) {
-                const { action } = animations[animationComponent.state]
-                action.time = 0.0
-                action.enabled = true
-                action.setEffectiveTimeScale(1.0)
-                action.setEffectiveWeight(1.0)
-                if (animationComponent.prevState) {
-                    const { action: prevAction } = animations[animationComponent.prevState]
-                    if (animationComponent.state !== 'attack') {
-                        const ratio = action.getClip().duration / prevAction.getClip().duration
-                        action.time = prevAction.time * ratio
+            }
+
+            // if (inputComponent.attacking) {
+            //     nextState = 'attack'
+            // }
+
+            if (animationComponent.state !== nextState) {
+                animationComponent.prevState = animationComponent.state
+                animationComponent.state = nextState
+                animationComponent.needsUpdate = true
+            }
+        })
+
+        this.loadingEntities.entities.forEach((entity) => {
+            const animationComponent = entity.get(AnimationComponent)
+            const modelComponent = entity.get(ModelComponent)
+
+            if (
+                !animationComponent.loaded
+            && !animationComponent.isLoading
+            // && this._dbLoaded
+            && modelComponent.resource
+            ) {
+                animationComponent.isLoading = true
+                loadAnimations(animationComponent, modelComponent).then((mixer) => {
+                    animationComponent.isLoading = false
+                    if (mixer) {
+                        animationComponent.loaded = true
+                        this.jobs.push((d) => mixer.update(d))
                     }
-                    action.crossFadeFrom(prevAction, 0.5, true)
+                })
+            } else if (animationComponent.loaded && animationComponent.needsUpdate) {
+                // Update animation
+                const { animations } = animationComponent
+                if (animations) {
+                    const { action } = animations[animationComponent.state]
+                    action.time = 0.0
+                    action.enabled = true
+                    action.setEffectiveTimeScale(1.0)
+                    action.setEffectiveWeight(1.0)
+                    if (animationComponent.prevState) {
+                        const { action: prevAction } = animations[animationComponent.prevState]
+                        if (animationComponent.state !== 'attack') {
+                            const ratio = action.getClip().duration / prevAction.getClip().duration
+                            action.time = prevAction.time * ratio
+                        }
+                        action.crossFadeFrom(prevAction, 0.5, true)
+                    }
+                    action.play()
+                    animationComponent.needsUpdate = false
                 }
-                action.play()
-                animationComponent.needsUpdate = false
             }
-        }
-    })
+        })
 
-    _jobs.forEach((job) => job(delta))
+        this.jobs.forEach((job) => job(world.timeElapsedS))
+    }
 }

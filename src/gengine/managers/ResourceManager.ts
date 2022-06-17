@@ -29,8 +29,8 @@ class RM {
         return this.resources[entityId]
     }
 
-    loadSprite(spriteComponent: SpriteComponent) {
-        const { entityId, url } = spriteComponent
+    loadSprite(entityId: string, spriteComponent: SpriteComponent) {
+        const { url } = spriteComponent
         this.loading[entityId] = true
 
         const spriteTex = new TextureLoader().load(url, () => {
