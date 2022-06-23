@@ -19,6 +19,8 @@ import {
     World,
     MovementSystem,
     ApplyVelocitySystem,
+    DamageSystem,
+    DamagingComponent,
 } from 'gengine'
 
 import { AppDispatch } from 'dungeon/store'
@@ -57,6 +59,7 @@ const init = (canvas: HTMLCanvasElement) => {
         new MovementSystem(),
         new Systems.CollisionSystem(),
         new ApplyVelocitySystem(),
+        new DamageSystem(),
         new ThirdPersonCameraSystem(),
         new SunSystem(),
         new Systems.AnimationSystem(),
@@ -95,6 +98,13 @@ const init = (canvas: HTMLCanvasElement) => {
         new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
         new PositionComponent({ position: [0, 0, -1] }),
         new VelocityComponent({}),
+        new DamagingComponent({
+            radius: 1,
+            theta: 2,
+            spoolUp: 3,
+            coolDown: 4,
+            damage: 5,
+        }),
     )
 
     // Skeleton
@@ -104,6 +114,7 @@ const init = (canvas: HTMLCanvasElement) => {
         new ModelComponent({ modelName: 'skeleton' }),
         new PositionComponent({ position: [1, 0, 2] }),
         new HealthComponent(20),
+        new HitboxComponent(1),
     )
 
     // Items

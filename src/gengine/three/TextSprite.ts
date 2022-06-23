@@ -13,6 +13,7 @@ export class TextSprite extends Sprite {
     private canvas: HTMLCanvasElement
     private text: string
     private settings: Settings
+    private tex: Texture
 
     constructor(text: string | number, settings: Settings = {}) {
         const canvas = document.createElement('canvas')
@@ -25,6 +26,7 @@ export class TextSprite extends Sprite {
         })
 
         super(spriteMat)
+        this.tex = tex
 
         this.canvas = canvas
 
@@ -34,8 +36,8 @@ export class TextSprite extends Sprite {
         this.drawTexture()
     }
 
-    setText(text: string) {
-        this.text = text
+    setText(text: string | number) {
+        this.text = text.toString()
         this.drawTexture()
     }
 
@@ -60,6 +62,8 @@ export class TextSprite extends Sprite {
         const ctx = canvas.getContext('2d')
 
         if (ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+
             const fontSetting = `${resolution}px ${font}`
             const lineWidth = borderWidth || 0
             ctx.font = fontSetting
@@ -83,6 +87,7 @@ export class TextSprite extends Sprite {
                 (canvas.height / resolution) * scale,
                 1,
             )
+            this.tex.needsUpdate = true
         }
     }
 }

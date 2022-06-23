@@ -59,6 +59,10 @@ export class RendererSystem extends System {
                 // Update position
                 modelComponent.group.position.copy(positionComponent.position)
                 modelComponent.group.quaternion.copy(positionComponent.rotation)
+                if (entity.has(HealthComponent)) {
+                    const ts = modelComponent.group.getObjectByName('health') as TextSprite
+                    ts.setText(entity.get(HealthComponent).health)
+                }
             } else if (!modelComponent.isLoading) {
                 modelComponent.isLoading = true
                 createModel(modelComponent).then((resource) => {
@@ -93,6 +97,7 @@ export class RendererSystem extends System {
 
                     if (entity.has(HealthComponent)) {
                         const healthSprite = new TextSprite(entity.get(HealthComponent).health)
+                        healthSprite.name = 'health'
                         group.add(healthSprite)
                         healthSprite.position.y = box.max.y + 0.15
                         healthSprite.center.set(0.5, 0)

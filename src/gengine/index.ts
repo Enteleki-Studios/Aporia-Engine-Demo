@@ -2,30 +2,14 @@
 export { World } from './World'
 
 // ECS
-export { ECS } from './ECS/ECS'
-export { ECSFilter } from './ECS/ECSFilter'
-export { Entity } from './ECS/Entity'
-export { Component } from './ECS/Component'
-export { System } from './ECS/System'
+export * from './ECS'
 
 // Components
-export { AmbientLightComponent } from './components/AmbientLightComponent'
-export { CameraComponent } from './components/CameraComponent'
-export { CameraTargetComponent } from './components/CameraTargetComponent'
-export { HeroComponent } from './components/HeroComponent'
-export { HitboxComponent } from './components/HitboxComponent'
-export { InputComponent } from './components/InputComponent'
-export { PositionComponent } from './components/PositionComponent'
-export { SpriteComponent } from './components/SpriteComponent'
-export { SunTargetComponent } from './components/SunTargetComponent'
-export { VelocityComponent } from './components/VelocityComponent'
-
-export { DirectionalLightComponent } from './components/DirectionalLightComponent'
-export { ModelComponent } from './components/ModelComponent'
-export { HealthComponent } from './components/HealthComponent'
+export * from './components'
 
 // Systems
 export { ApplyVelocitySystem } from './systems/ApplyVelocitySystem'
+export { DamageSystem } from './systems/DamageSystem'
 export { InputSystem } from './systems/InputSystem'
 export { MovementSystem } from './systems/MovementSystem'
 export { ThirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'

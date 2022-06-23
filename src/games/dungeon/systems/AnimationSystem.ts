@@ -1,5 +1,5 @@
-import { AnimationMixer } from 'three'
-import { ModelComponent, InputComponent, System, ECSFilter, World } from 'gengine'
+import { AnimationMixer, LoopOnce } from 'three'
+import { ModelComponent, InputComponent, System, ECSFilter, World, HealthComponent } from 'gengine'
 import { AnimationComponent } from 'components'
 
 import modelDB from 'modelDB'
@@ -37,7 +37,7 @@ async function loadAnimations(
 export class AnimationSystem extends System {
     private jobs: Array<(delta: number) => void> = []
 
-    private updatingEntities = new ECSFilter([AnimationComponent, InputComponent])
+    private updatingEntities = new ECSFilter([AnimationComponent])
     private loadingEntities = new ECSFilter([AnimationComponent, ModelComponent])
 
     filters = [this.updatingEntities, this.loadingEntities]
@@ -45,18 +45,28 @@ export class AnimationSystem extends System {
     tick(world: World) {
         this.updatingEntities.entities.forEach((entity) => {
             const animationComponent = entity.get(AnimationComponent)
-            const inputComponent = entity.get(InputComponent)
 
             let nextState = 'idle'
-            if (
-                inputComponent.input.up.hold
-            || inputComponent.input.left.hold
-            || inputComponent.input.right.hold
-            || inputComponent.input.down.hold
-            ) {
-                nextState = 'walk'
-                if (inputComponent.input.run.hold) {
-                    nextState = 'run'
+
+            if (entity.has(InputComponent)) {
+                const inputComponent = entity.get(InputComponent)
+                if (
+                    inputComponent.input.up.hold
+                || inputComponent.input.left.hold
+                || inputComponent.input.right.hold
+                || inputComponent.input.down.hold
+                ) {
+                    nextState = 'walk'
+                    if (inputComponent.input.run.hold) {
+                        nextState = 'run'
+                    }
+                }
+            }
+
+            if (entity.has(HealthComponent)) {
+                if (!entity.get(HealthComponent).health) {
+                    console.debug('death')
+                    nextState = 'death'
                 }
             }
 
@@ -94,17 +104,24 @@ export class AnimationSystem extends System {
                 const { animations } = animationComponent
                 if (animations) {
                     const { action } = animations[animationComponent.state]
-                    action.time = 0.0
-                    action.enabled = true
-                    action.setEffectiveTimeScale(1.0)
-                    action.setEffectiveWeight(1.0)
-                    if (animationComponent.prevState) {
-                        const { action: prevAction } = animations[animationComponent.prevState]
-                        if (animationComponent.state !== 'attack') {
-                            const ratio = action.getClip().duration / prevAction.getClip().duration
-                            action.time = prevAction.time * ratio
+                    if (animationComponent.state === 'death') {
+                        action.stop()
+                        action.fadeIn(0)
+                        action.loop = LoopOnce
+                        action.clampWhenFinished = true
+                    } else {
+                        action.time = 0.0
+                        action.enabled = true
+                        action.setEffectiveTimeScale(1.0)
+                        action.setEffectiveWeight(1.0)
+                        if (animationComponent.prevState) {
+                            const { action: prevAction } = animations[animationComponent.prevState]
+                            if (animationComponent.state !== 'attack') {
+                                const ratio = action.getClip().duration / prevAction.getClip().duration
+                                action.time = prevAction.time * ratio
+                            }
+                            action.crossFadeFrom(prevAction, 0.5, true)
                         }
-                        action.crossFadeFrom(prevAction, 0.5, true)
                     }
                     action.play()
                     animationComponent.needsUpdate = false
