@@ -12,6 +12,7 @@ import {
     System,
     ECSFilter,
     World,
+    HealthComponent,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -88,6 +89,13 @@ export class RendererSystem extends System {
                         const collisionHelper = new Mesh(collisionGeo, collisionMat)
                         group.add(collisionHelper)
                         this.renderer.registerHelper(collisionHelper)
+                    }
+
+                    if (entity.has(HealthComponent)) {
+                        const healthSprite = new TextSprite(entity.get(HealthComponent).health)
+                        group.add(healthSprite)
+                        healthSprite.position.y = box.max.y + 0.15
+                        healthSprite.center.set(0.5, 0)
                     }
 
                     modelComponent.resource = resource

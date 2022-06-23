@@ -1,5 +1,6 @@
 import {
     AmbientLightComponent,
+    HealthComponent,
     DirectionalLightComponent,
     HeroComponent,
     InputManager,
@@ -88,7 +89,7 @@ const init = (canvas: HTMLCanvasElement) => {
         new CameraTargetComponent(),
         new SunTargetComponent(),
         new HitboxComponent(modelDB.wizard.radius),
-        // new HealthComponent(playerEntity, { health: 20 }),
+        new HealthComponent(20),
         new HeroComponent(),
         new InputComponent(DEFAULT_KEYMAP),
         new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
@@ -102,6 +103,7 @@ const init = (canvas: HTMLCanvasElement) => {
         new Components.AnimationComponent('idle'),
         new ModelComponent({ modelName: 'skeleton' }),
         new PositionComponent({ position: [1, 0, 2] }),
+        new HealthComponent(20),
     )
 
     // Items

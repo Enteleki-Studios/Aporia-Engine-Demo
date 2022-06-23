@@ -14,7 +14,7 @@ export class TextSprite extends Sprite {
     private text: string
     private settings: Settings
 
-    constructor(text: string, settings: Settings = {}) {
+    constructor(text: string | number, settings: Settings = {}) {
         const canvas = document.createElement('canvas')
 
         const tex = new Texture(canvas)
@@ -28,7 +28,7 @@ export class TextSprite extends Sprite {
 
         this.canvas = canvas
 
-        this.text = text
+        this.text = text.toString()
         this.settings = settings
 
         this.drawTexture()
