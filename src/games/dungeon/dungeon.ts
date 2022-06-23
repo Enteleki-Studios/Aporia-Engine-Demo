@@ -31,65 +31,15 @@ import modelDB from 'modelDB'
 
 const world = new World()
 
-let inputManager: InputManager
-
 let dispatch: AppDispatch
-let renderer: Renderer
-
-let delta = 0
-
-let rendererSystem: Systems.RendererSystem
-let inputSystem: InputSystem
-
-const movementSystem = new MovementSystem()
-const collisionSystem = new Systems.CollisionSystem()
-const applyVelocitySystem = new ApplyVelocitySystem()
-const cameraSystem = new ThirdPersonCameraSystem()
-const sunSystem = new SunSystem()
-const animationSystem = new Systems.AnimationSystem()
-
-world.ecs.registerSystems(
-    movementSystem,
-    collisionSystem,
-    applyVelocitySystem,
-    cameraSystem,
-    sunSystem,
-    animationSystem,
-)
-
-const tick = () => {
-    world.tick()
-    delta = world.timeElapsedS
-
-    inputSystem.tick()
-    movementSystem.tick(world)
-
-    collisionSystem.tick(world)
-
-    applyVelocitySystem.tick(world)
-
-    cameraSystem.tick(world)
-    sunSystem.tick()
-
-    animationSystem.tick(world)
-
-    rendererSystem.tick()
-
-    renderer.render(delta)
-
-    requestAnimationFrame(tick)
-}
 
 const init = (canvas: HTMLCanvasElement) => {
-    renderer = new Renderer({ canvas })
+    const renderer = new Renderer({ canvas })
     // renderer.setDebugMode('debug')
     // renderer.setDebugMode('sideBySide')
     canvas.insertAdjacentElement('afterend', renderer.infoDomElement)
 
-    rendererSystem = new Systems.RendererSystem(renderer)
-    world.ecs.registerSystem(rendererSystem)
-
-    inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
+    const inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
     inputManager.addActionListener('debug', () => {
         const { debugMode } = renderer
         if (debugMode === 'game') {
@@ -101,8 +51,16 @@ const init = (canvas: HTMLCanvasElement) => {
         }
     })
 
-    inputSystem = new InputSystem(inputManager)
-    world.ecs.registerSystem(inputSystem)
+    world.ecs.registerSystems([
+        new InputSystem(inputManager),
+        new MovementSystem(),
+        new Systems.CollisionSystem(),
+        new ApplyVelocitySystem(),
+        new ThirdPersonCameraSystem(),
+        new SunSystem(),
+        new Systems.AnimationSystem(),
+        new Systems.RendererSystem(renderer),
+    ])
 
     // Lighting
     world.ecs.addComponents(
@@ -171,10 +129,9 @@ const init = (canvas: HTMLCanvasElement) => {
         )
     }
 
+    world.start()
 
     dispatch({ type: 'TEST' })
-
-    tick()
 }
 
 const addDispatch = (d: AppDispatch) => {

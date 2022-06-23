@@ -11,6 +11,7 @@ import {
     CameraComponent,
     System,
     ECSFilter,
+    World,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -49,7 +50,7 @@ export class RendererSystem extends System {
         this.renderer = renderer
     }
 
-    tick() {
+    tick(world: World) {
         this.modelFilter.entities.forEach((entity) => {
             const modelComponent = entity.get(ModelComponent)
             const positionComponent = entity.get(PositionComponent)
@@ -129,5 +130,7 @@ export class RendererSystem extends System {
             this.renderer.camera.position.copy(cameraComponent.position)
             this.renderer.camera.lookAt(cameraComponent.lookAt)
         })
+
+        this.renderer.render(world.timeElapsedS)
     }
 }

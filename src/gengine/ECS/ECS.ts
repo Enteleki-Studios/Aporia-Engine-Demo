@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid'
+import type { World } from '../World'
 
 import type { Component } from './Component'
 import { ECSFilter } from './ECSFilter'
@@ -8,6 +9,7 @@ import { System } from './System'
 export class ECS {
     entitiesById = new Map<EntityId, Entity>()
     filters = new Set<ECSFilter>()
+    systems: System[] = []
 
     createEntity() {
         const id = uuid().toUpperCase()
@@ -55,19 +57,18 @@ export class ECS {
         })
     }
 
-    // removeComponents() {}
-
     registerSystem(system: System) {
         this.registerFilters(system.filters)
+        this.systems.push(system)
     }
 
-    registerSystems(...systems: System[]) {
+    registerSystems(systems: System[]) {
         systems.forEach((s) => this.registerSystem(s))
     }
 
-    // disableSystem() {}
-
-    // unregisterSystem() {} // Do we need this?
-
-    // tick() {}
+    tick(world: World) {
+        this.systems.forEach((s) => {
+            s.tick(world)
+        })
+    }
 }

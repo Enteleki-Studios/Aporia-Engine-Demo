@@ -11,13 +11,28 @@ export class World {
     private delta = 0
 
     ecs = new ECS()
+    isRunning = false
 
     get timeElapsedS() {
         return this.delta
     }
 
-    tick() {
+    private tick() {
         this.delta = Math.min(this.clock.getDelta(), this.MAX_DELTA)
-        // TODO Tick ECS after systems run (clear removed entities, etc)
+
+        this.ecs.tick(this)
+
+        if (this.isRunning) {
+            requestAnimationFrame(this.tick.bind(this))
+        }
+    }
+
+    start() {
+        this.isRunning = true
+        this.tick()
+    }
+
+    stop() {
+        this.isRunning = false
     }
 }
