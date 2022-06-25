@@ -1,4 +1,4 @@
-import { Texture, SpriteMaterial, Sprite } from 'three'
+import { CanvasTexture, SpriteMaterial, Sprite } from 'three'
 
 interface Settings {
     resolution?: number
@@ -13,12 +13,12 @@ export class TextSprite extends Sprite {
     private canvas: HTMLCanvasElement
     private text: string
     private settings: Settings
-    private tex: Texture
+    private texture: CanvasTexture
 
     constructor(text: string | number, settings: Settings = {}) {
         const canvas = document.createElement('canvas')
 
-        const tex = new Texture(canvas)
+        const tex = new CanvasTexture(canvas)
         tex.needsUpdate = true
 
         const spriteMat = new SpriteMaterial({
@@ -26,14 +26,14 @@ export class TextSprite extends Sprite {
         })
 
         super(spriteMat)
-        this.tex = tex
+        this.texture = tex
 
         this.canvas = canvas
 
         this.text = text.toString()
         this.settings = settings
 
-        this.drawTexture()
+        this.drawTexture(true)
     }
 
     setText(text: string | number) {
@@ -49,7 +49,7 @@ export class TextSprite extends Sprite {
         this.drawTexture()
     }
 
-    drawTexture() {
+    drawTexture(isFirstTime = false) {
         const { canvas, text, settings } = this
         const {
             resolution = 40,
@@ -63,31 +63,35 @@ export class TextSprite extends Sprite {
 
         if (ctx) {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-
             const fontSetting = `${resolution}px ${font}`
             const lineWidth = borderWidth || 0
             ctx.font = fontSetting
 
             const { width } = ctx.measureText(text)
-            // Account for border on both sides
-            canvas.width = width + (lineWidth * 2)
-            // Account for letters that dip below (gjpqy)
-            canvas.height = resolution * 1.5
+            if (isFirstTime) {
+                // Account for border on both sides
+                canvas.width = width + (lineWidth * 2)
+                // Account for letters that dip below (gjpqy)
+                canvas.height = resolution * 1.5
+            }
 
             ctx.fillStyle = color
             ctx.strokeStyle = borderColor
             ctx.lineWidth = lineWidth
             ctx.font = fontSetting
 
-            ctx.strokeText(text, lineWidth, resolution)
-            ctx.fillText(text, lineWidth, resolution)
+            // Center text
+            const left = (canvas.width - (width + (lineWidth * 2))) / 2 + lineWidth
+            ctx.strokeText(text, left, resolution)
+            ctx.fillText(text, left, resolution)
 
             this.scale.set(
                 (canvas.width / resolution) * scale,
                 (canvas.height / resolution) * scale,
                 1,
             )
-            this.tex.needsUpdate = true
+
+            this.texture.needsUpdate = true
         }
     }
 }

@@ -6,16 +6,6 @@ const MF = '/resources/models' // Models folder
 //         animations: {},
 //     },
 //     {
-//         modelPath: `${MF}/slime/Slime.fbx`,
-//         scale: 0.005,
-//         animations: {
-//             idle: 'Armature|Slime_Idle',
-//             walk: 'Armature|Slime_Walk',
-//             death: 'Armature|Slime_Death',
-//             attack: 'Armature|Slime_Attack',
-//         },
-//     },
-//     {
 //         modelPath: `${MF}/bat/Bat.fbx`,
 //         scale: 0.003,
 //         animations: {
@@ -86,6 +76,17 @@ const modelDB: Record<string, Model> = {
             attack: 'SkeletonArmature|Skeleton_Attack',
             death: 'SkeletonArmature|Skeleton_Death',
             spawn: 'SkeletonArmature|Skeleton_Spawn',
+        },
+        radius: 0.5,
+    },
+    slime: {
+        modelPath: `${MF}/enemies/slime/Slime.fbx`,
+        scale: 0.005,
+        animations: {
+            idle: 'Armature|Slime_Idle',
+            walk: 'Armature|Slime_Walk',
+            death: 'Armature|Slime_Death',
+            attack: 'Armature|Slime_Attack',
         },
         radius: 0.5,
     },

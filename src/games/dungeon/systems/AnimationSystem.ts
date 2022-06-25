@@ -65,7 +65,6 @@ export class AnimationSystem extends System {
 
             if (entity.has(HealthComponent)) {
                 if (!entity.get(HealthComponent).health) {
-                    console.debug('death')
                     nextState = 'death'
                 }
             }
@@ -104,24 +103,21 @@ export class AnimationSystem extends System {
                 const { animations } = animationComponent
                 if (animations) {
                     const { action } = animations[animationComponent.state]
-                    if (animationComponent.state === 'death') {
-                        action.stop()
-                        action.fadeIn(0)
-                        action.loop = LoopOnce
-                        action.clampWhenFinished = true
-                    } else {
-                        action.time = 0.0
-                        action.enabled = true
-                        action.setEffectiveTimeScale(1.0)
-                        action.setEffectiveWeight(1.0)
-                        if (animationComponent.prevState) {
-                            const { action: prevAction } = animations[animationComponent.prevState]
-                            if (animationComponent.state !== 'attack') {
-                                const ratio = action.getClip().duration / prevAction.getClip().duration
-                                action.time = prevAction.time * ratio
-                            }
-                            action.crossFadeFrom(prevAction, 0.5, true)
+                    action.time = 0.0
+                    action.enabled = true
+                    action.setEffectiveTimeScale(1.0)
+                    action.setEffectiveWeight(1.0)
+                    if (animationComponent.prevState) {
+                        const { action: prevAction } = animations[animationComponent.prevState]
+                        if (animationComponent.state !== 'attack') {
+                            const ratio = action.getClip().duration / prevAction.getClip().duration
+                            action.time = prevAction.time * ratio
                         }
+                        if (animationComponent.state === 'death') {
+                            action.loop = LoopOnce
+                            action.clampWhenFinished = true
+                        }
+                        action.crossFadeFrom(prevAction, 0.5, true)
                     }
                     action.play()
                     animationComponent.needsUpdate = false

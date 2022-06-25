@@ -101,8 +101,8 @@ const init = (canvas: HTMLCanvasElement) => {
         new DamagingComponent({
             radius: 1,
             theta: 2,
-            spoolUp: 3,
-            coolDown: 4,
+            spoolUp: 0.25,
+            coolDown: 0.5,
             damage: 5,
         }),
     )
@@ -114,7 +114,17 @@ const init = (canvas: HTMLCanvasElement) => {
         new ModelComponent({ modelName: 'skeleton' }),
         new PositionComponent({ position: [1, 0, 2] }),
         new HealthComponent(20),
-        new HitboxComponent(1),
+        new HitboxComponent(0.25),
+    )
+
+    // Slime
+    world.ecs.addComponents(
+        world.ecs.createEntity(),
+        new Components.AnimationComponent('idle'),
+        new ModelComponent({ modelName: 'slime' }),
+        new PositionComponent({ position: [4, 0, 2] }),
+        new HealthComponent(20),
+        new HitboxComponent(0.25),
     )
 
     // Items

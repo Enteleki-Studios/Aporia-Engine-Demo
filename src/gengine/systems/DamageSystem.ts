@@ -1,3 +1,4 @@
+import { World } from '../World'
 import { System, ECSFilter } from '../ECS'
 import {
     DamagingComponent,
@@ -12,24 +13,41 @@ export class DamageSystem extends System {
 
     filters = [this.damagingFilter, this.damagableFilter]
 
-    tick() {
+    tick(world: World) {
         this.damagingFilter.entities.forEach((damagingEntity) => {
             const damagingPosition = damagingEntity.get(PositionComponent)
-            this.damagableFilter.entities.forEach((targetEntity) => {
-                if (damagingEntity.id === targetEntity.id) {
-                    return
-                }
+            const damageComponent = damagingEntity.get(DamagingComponent)
 
-                const targetPosition = targetEntity.get(PositionComponent)
-                if (damagingPosition.position.distanceTo(targetPosition.position) < 2) {
-                    const targetHealth = targetEntity.get(HealthComponent)
-                    if (targetHealth.health) {
-                        targetHealth.health -= 1
-                        console.debug(targetHealth.health)
+            damageComponent.delta += world.timeElapsedS
+
+            if (damageComponent.stage === 'spooling' && damageComponent.delta > damageComponent.spoolUp) {
+                damageComponent.stage = 'cooling'
+
+                this.damagableFilter.entities.forEach((targetEntity) => {
+                    if (damagingEntity.id === targetEntity.id) {
+                        return
                     }
-                    // console.debug(targetEntity.get(HealthComponent).healts)
-                }
-            })
+
+                    const targetPosition = targetEntity.get(PositionComponent)
+                    const targetHitbox = targetEntity.get(HitboxComponent)
+
+                    const maxDistance = damageComponent.radius + targetHitbox.radius
+                    if (damagingPosition.position.distanceTo(targetPosition.position) < maxDistance) {
+                        const targetHealth = targetEntity.get(HealthComponent)
+                        if (targetHealth.health) {
+                            targetHealth.health -= Math.min(damageComponent.damage, targetHealth.health)
+                        }
+                    }
+                })
+            } else if (damageComponent.stage === 'cooling' && damageComponent.delta > damageComponent.coolDown) {
+                damageComponent.stage = 'spooling'
+                damageComponent.delta = 0
+
+                // TODO Refactor so that attacks are active/inactive depending on conditions
+                // Melee is while attacking
+                // Grenades are all the time
+                // Passive effects while in range
+            }
         })
     }
 }
