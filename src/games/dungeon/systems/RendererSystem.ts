@@ -122,9 +122,9 @@ export class RendererSystem extends System {
         })
 
         this.directionalLightFilter.entities.forEach((entity) => {
-            const directionalLightComponent = entity.get(DirectionalLightComponent)
+            const { intensity, position, target } = entity.get(DirectionalLightComponent)
             if (!this.renderer.directionalLight) {
-                this.renderer.directionalLight = new DirectionalLight(0xFFFFFF, 0.4)
+                this.renderer.directionalLight = new DirectionalLight(0xFFFFFF, intensity)
                 this.renderer.scene.add(this.renderer.directionalLight)
                 this.renderer.scene.add(this.renderer.directionalLight.target)
 
@@ -133,8 +133,8 @@ export class RendererSystem extends System {
                     this.renderer.directionalLight.shadowHelper,
                 )
             } else {
-                this.renderer.directionalLight.position.copy(directionalLightComponent.position)
-                this.renderer.directionalLight.target.position.copy(directionalLightComponent.target)
+                this.renderer.directionalLight.position.copy(position)
+                this.renderer.directionalLight.target.position.copy(target)
             }
         })
 

@@ -71,9 +71,9 @@ const init = (canvas: HTMLCanvasElement) => {
         world.ecs.createEntity(),
         new AmbientLightComponent({
             color: 0xaaaaff,
-            intensity: 0.2,
+            intensity: 0.03,
         }),
-        new DirectionalLightComponent([10, 15, 10]),
+        new DirectionalLightComponent([10, 15, 10], 0),
     )
 
     // Camera

@@ -1,8 +1,18 @@
 import {
     DirectionalLight,
     StandardRenderer,
-    DefaultGrid,
+    // DefaultGrid,
 } from 'gengine'
+import {
+    MeshStandardMaterial,
+    PlaneGeometry,
+    Mesh,
+    TextureLoader,
+    RepeatWrapping,
+    PointLight,
+    PointLightHelper,
+    Fog,
+} from 'three'
 
 export class Renderer extends StandardRenderer {
     directionalLight?: DirectionalLight // TODO: is this the best place for this?
@@ -16,9 +26,29 @@ export class Renderer extends StandardRenderer {
 
         // this.setDebugMode('sideBySide')
 
-        this.scene.add(new DefaultGrid(32, { text: 'Dungeon' }))
+        // this.scene.add(new DefaultGrid(32, { text: 'Dungeon' }))
 
-        // this.scene.fog = new Fog(0x161616, 1, 30)
+        const dirtTex = new TextureLoader().load('/resources/textures/floor.jpg')
+        dirtTex.wrapS = RepeatWrapping
+        dirtTex.wrapT = RepeatWrapping
+        dirtTex.repeat.set(32, 32)
+        const dirtMat = new MeshStandardMaterial({
+            map: dirtTex,
+        })
+        const dirtGeo = new PlaneGeometry(32, 32)
+        const dirtMesh = new Mesh(dirtGeo, dirtMat)
+        dirtMesh.rotation.x = -Math.PI / 2
+        dirtMesh.receiveShadow = true
+        this.scene.add(dirtMesh)
+
+        const pointLight = new PointLight(0xFFFFFF, 0.2, 10)
+        pointLight.castShadow = true
+        pointLight.position.y = 2
+        this.scene.add(pointLight)
+        const pointLightHelper = new PointLightHelper(pointLight, 0.5)
+        this.scene.add(pointLightHelper)
+
+        this.scene.fog = new Fog(0x161616, 1, 30)
     }
 }
 
