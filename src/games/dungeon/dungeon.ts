@@ -138,6 +138,15 @@ const init = (canvas: HTMLCanvasElement) => {
         )
     })
 
+    for (let i = 0; i < 32; i += 2) {
+        world.ecs.addComponents(
+            world.ecs.createEntity(),
+            new ModelComponent({ modelName: 'stoneWallTop' }),
+            new PositionComponent({ position: [-16, 0, i - 15] }),
+            new HitboxComponent(modelDB.stoneWall.radius),
+        )
+    }
+
     // Grass
     const makePos: () => [number, number, number] = () => ([
         Math.random() * 30 - 15,

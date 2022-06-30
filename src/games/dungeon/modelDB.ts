@@ -123,6 +123,11 @@ const modelDB: Record<string, Model> = {
         scale: 0.01,
         translate: [0, 0, 1],
     },
+    stoneWallTop: {
+        modelPath: `${MF}/items/ModularStoneWall_top.fbx`,
+        scale: 0.01,
+        translate: [0, 0, 1],
+    },
 
     grass: {
         modelPath: `${MF}/decorative/Grass.fbx`,
