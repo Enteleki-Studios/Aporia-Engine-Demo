@@ -19,3 +19,6 @@ export const Z_AXIS = new Vector3(0, 0, 1)
 
 // Engine defaults
 export const WORLD_MAX_DELTA = 0.05
+
+// Rendering
+export type DebugMode = 'game' | 'debug' | 'sideBySide'

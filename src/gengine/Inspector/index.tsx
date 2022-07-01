@@ -1,51 +1,62 @@
-import React, { ReactNode } from 'react'
-import { useSelector } from 'react-redux'
+import React, { FormEvent } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { selectors } from './redux'
+import { actions, selectors } from './redux'
 
 import './index.scss'
+import { DebugMode } from '../constants'
 
-interface Props {
-    children: ReactNode,
-}
+// const componentsByEntityId = useSelector(selectors.getComponentsByEntityId)
+export const Inspector = () => {
+    const dispatch = useDispatch()
+    const debugMode = useSelector(selectors.getDebugMode)
 
-export const Inspector = ({ children }: Props) => {
-    const componentsByEntityId = useSelector(selectors.getComponentsByEntityId)
+    const onModeChange = (e: FormEvent<HTMLInputElement>) => {
+        dispatch(actions.setDebugMode(e.currentTarget.value as DebugMode))
+    }
 
     return (
         <div className="Inspector">
-            <div className="header">ECS Inspector</div>
-            <div className="sidepanel">
-                <div>Entities</div>
-                <ul className="entities">
-                    {Object.keys(componentsByEntityId).map((entityId) => (
-                        <li key={entityId} className="entity">
-                            <div>{entityId}</div>
-                            <ul className="components">
-                                {componentsByEntityId[entityId].map((component) => (
-                                    <li key={component.type} className="component">
-                                        <ul className="componentProperties">
-                                            {Object.keys(component).map((componentProp) => (
-                                                <li
-                                                    key={componentProp}
-                                                    className={`componentProp ${componentProp}`}
-                                                >
-                                                    <span>{`${componentProp}:`}</span>
-                                                    <span>{component[componentProp]}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </li>
-                                ))}
-                            </ul>
-                        </li>
-                    ))}
-                </ul>
+            <div className="window">
+                <div className="header">Inspector</div>
+                <div className="body">
+                    <div>Mode:</div>
+                    <div>
+                        <form>
+                            <label>
+                                <input
+                                    type="radio"
+                                    value="game"
+                                    name="mode"
+                                    onChange={onModeChange}
+                                    checked={debugMode === 'game'}
+                                />
+                                Game
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    value="debug"
+                                    name="mode"
+                                    onChange={onModeChange}
+                                    checked={debugMode === 'debug'}
+                                />
+                                Debug
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    value="sideBySide"
+                                    name="mode"
+                                    onChange={onModeChange}
+                                    checked={debugMode === 'sideBySide'}
+                                />
+                                Side by side
+                            </label>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div className="preview">
-                {children}
-            </div>
-            <div className="log">Log</div>
         </div>
     )
 }

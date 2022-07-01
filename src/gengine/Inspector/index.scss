@@ -31,29 +31,24 @@ $colors: (
 }
 
 .Inspector {
-    display: grid;
-    grid-template-areas: "header preview" "sidepanel preview" "log preview";
-    grid-template-rows: auto 1fr 20rem;
-    grid-template-columns: 25rem 1fr;
-    width: 100%;
-    height: 100%;
-    background-color: color(panel, background);
-    color: color(panel, foreground);
-    font-family: monospace;
-    border-right: 1px solid color(panel, border);
+    .window {
+        position: absolute;
+        top: 15.5rem;
+        left: 1.5rem;
+        z-index: 999;
+        background-color: color(panel, background);
+        color: color(panel, foreground);
+        font-family: monospace;
+        border: 1px solid color(panel, border);
+    }
 
     .header {
-        grid-area: header;
         border-bottom: 1px solid color(panel, border);
-        border-right: 1px solid color(panel, border);
         padding: 0.5rem;
         background-color: #141414;
     }
-    .sidepanel {
-        grid-area: sidepanel;
-        border-right: 1px solid color(panel, border);
+    .body {
         padding: 0.5rem;
-        overflow-y: auto;
 
         ul {
             list-style: none;
@@ -94,18 +89,5 @@ $colors: (
                 }
             }
         }
-    }
-    .log {
-        padding: 0.5rem;
-        grid-area: log;
-        border-right: 1px solid color(panel, border);
-        border-top: 1px solid color(panel, border);
-    }
-    .preview {
-        grid-area: preview;
-        background-color: color(default, background);
-
-        width: 100%;
-        height: 100%;
     }
 }

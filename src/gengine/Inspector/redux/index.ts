@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import type { ComponentManager } from 'gengine'
+import type { ComponentManager, DebugMode } from 'gengine'
 
 export type Components = ReturnType<ComponentManager['getComponentsInspected']>
 
 interface InspectorState {
     entities: string[],
     components: Components,
+    debugMode: DebugMode,
 }
 
 export interface State {
@@ -16,6 +17,7 @@ export interface State {
 const initialState = {
     entities: [],
     components: [],
+    debugMode: 'game',
 } as InspectorState
 
 const inspector = createSlice({
@@ -27,6 +29,9 @@ const inspector = createSlice({
         },
         updateComponents(state, action: PayloadAction<Components>) {
             state.components = action.payload
+        },
+        setDebugMode(state, action: PayloadAction<DebugMode>) {
+            state.debugMode = action.payload
         },
     },
 })

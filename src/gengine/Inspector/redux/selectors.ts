@@ -4,6 +4,8 @@ import type { State, Components } from '.'
 export const getEntities = (state: State) => state.inspector.entities
 export const getComponents = (state: State) => state.inspector.components
 
+export const getDebugMode = (state: State) => state.inspector.debugMode
+
 export const getComponentsByEntityId = createSelector(
     getComponents,
     (components: Components) => {

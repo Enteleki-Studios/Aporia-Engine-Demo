@@ -12,8 +12,7 @@ import {
     ReinhardToneMapping,
 } from 'three'
 import { AxesHelper } from './AxesHelper'
-
-type DebugMode = 'game' | 'debug' | 'sideBySide'
+import { DebugMode } from '../constants'
 
 interface StandardRendererParams {
     canvas: HTMLCanvasElement
