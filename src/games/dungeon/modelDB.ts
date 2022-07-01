@@ -118,6 +118,11 @@ const modelDB: Record<string, Model> = {
         scale: 0.005,
         radius: 0.25,
     },
+    torchWall: {
+        modelPath: `${MF}/items/Torch_wall.fbx`,
+        scale: 0.005,
+        radius: 0.25,
+    },
     stoneWall: {
         modelPath: `${MF}/items/ModularStoneWall.fbx`,
         scale: 0.01,

@@ -1,4 +1,4 @@
-import { AmbientLight, Mesh, Group, Box3, CircleGeometry, MeshBasicMaterial } from 'three'
+import { AmbientLight, Mesh, Group, Box3, CircleGeometry, MeshBasicMaterial, PointLight, PointLightHelper } from 'three'
 
 import {
     DirectionalLight,
@@ -13,6 +13,7 @@ import {
     ECSFilter,
     World,
     HealthComponent,
+    PointLightComponent,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -42,8 +43,15 @@ export class RendererSystem extends System {
     directionalLightFilter = new ECSFilter([DirectionalLightComponent])
     ambientLightFilter = new ECSFilter([AmbientLightComponent])
     cameraFilter = new ECSFilter([CameraComponent])
+    pointLightFilter = new ECSFilter([PositionComponent, PointLightComponent])
 
-    filters = [this.modelFilter, this.directionalLightFilter, this.ambientLightFilter, this.cameraFilter]
+    filters = [
+        this.modelFilter,
+        this.directionalLightFilter,
+        this.ambientLightFilter,
+        this.cameraFilter,
+        this.pointLightFilter,
+    ]
 
     constructor(renderer: Renderer) {
         super()
@@ -101,6 +109,19 @@ export class RendererSystem extends System {
                         this.renderer.registerHelper(collisionHelper)
                     }
 
+                    if (entity.has(PointLightComponent)) {
+                        const {
+                            color, intensity, decay, distance, offset, castShadow,
+                        } = entity.get(PointLightComponent)
+                        const pointLight = new PointLight(color, intensity, distance, decay)
+                        pointLight.castShadow = castShadow
+                        pointLight.position.fromArray(offset)
+                        group.add(pointLight)
+                        const pointLightHelper = new PointLightHelper(pointLight, 0.25)
+                        this.renderer.scene.add(pointLightHelper)
+                        this.renderer.registerHelper(pointLightHelper)
+                    }
+
                     if (entity.has(HealthComponent)) {
                         const healthSprite = new TextSprite(entity.get(HealthComponent).health, {
                             font: 'Arial',
@@ -152,6 +173,21 @@ export class RendererSystem extends System {
             this.renderer.camera.position.copy(cameraComponent.position)
             this.renderer.camera.lookAt(cameraComponent.lookAt)
         })
+
+        // this.pointLightFilter.entities.forEach((entity) => {
+        //     if (!entity.has(ModelComponent)) {
+        //         const {
+        //             color, intensity, decay, distance, offset, castShadow,
+        //         } = entity.get(PointLightComponent)
+        //         const pointLight = new PointLight(color, intensity, distance, decay)
+        //         pointLight.castShadow = castShadow
+        //         pointLight.position.fromArray(offset)
+        //         this.renderer.scene.add(pointLight)
+        //         const pointLightHelper = new PointLightHelper(pointLight, 0.25)
+        //         this.renderer.scene.add(pointLightHelper)
+        //         this.renderer.registerHelper(pointLightHelper)
+        //     }
+        // })
 
         this.renderer.render(world.timeElapsedS)
     }

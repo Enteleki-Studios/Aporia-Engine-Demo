@@ -1,7 +1,7 @@
 import {
     AmbientLightComponent,
     HealthComponent,
-    DirectionalLightComponent,
+    // DirectionalLightComponent,
     HeroComponent,
     InputManager,
     ModelComponent,
@@ -15,12 +15,13 @@ import {
     CameraTargetComponent,
     VelocityComponent,
     SunTargetComponent,
-    SunSystem,
+    // SunSystem,
     World,
     MovementSystem,
     ApplyVelocitySystem,
     DamageSystem,
     DamagingComponent,
+    PointLightComponent,
 } from 'gengine'
 
 import { AppDispatch } from 'dungeon/store'
@@ -61,7 +62,7 @@ const init = (canvas: HTMLCanvasElement) => {
         new ApplyVelocitySystem(),
         new DamageSystem(),
         new ThirdPersonCameraSystem(),
-        new SunSystem(),
+        // new SunSystem(),
         new Systems.AnimationSystem(),
         new Systems.RendererSystem(renderer),
     ])
@@ -71,9 +72,18 @@ const init = (canvas: HTMLCanvasElement) => {
         world.ecs.createEntity(),
         new AmbientLightComponent({
             color: 0xaaaaff,
-            intensity: 0.03,
+            intensity: 0.05,
         }),
-        new DirectionalLightComponent([10, 15, 10], 0),
+        // new DirectionalLightComponent([10, 15, 10], 1),
+    )
+
+    world.ecs.addComponents(
+        world.ecs.createEntity(),
+        new PositionComponent({ position: [0, 2, 0] }),
+        new PointLightComponent({
+            color: 0xffee88,
+            intensity: 3,
+        }),
     )
 
     // Camera
@@ -105,6 +115,12 @@ const init = (canvas: HTMLCanvasElement) => {
             coolDown: 0.5,
             damage: 5,
         }),
+        new PointLightComponent({
+            color: 0xffee88,
+            intensity: 3,
+            offset: [1, 2, 2],
+            castShadow: true,
+        }),
     )
 
     // Skeleton
@@ -128,7 +144,7 @@ const init = (canvas: HTMLCanvasElement) => {
     )
 
     // Items
-    const items = ['chest_gold', 'barrel', 'column', 'entrance', 'rock_1', 'torch', 'stoneWall', 'cart', 'crate']
+    const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart', 'crate']
     items.forEach((item, i) => {
         world.ecs.addComponents(
             world.ecs.createEntity(),
@@ -137,6 +153,33 @@ const init = (canvas: HTMLCanvasElement) => {
             new HitboxComponent(modelDB[item].radius),
         )
     })
+
+    // Wall torches
+    const torches = [9.75, 3.25, -3.25]
+    torches.forEach((posZ) => {
+        world.ecs.addComponents(
+            world.ecs.createEntity(),
+            new ModelComponent({ modelName: 'torchWall' }),
+            new PositionComponent({ position: [-16, 1.5, posZ] }),
+            new PointLightComponent({
+                color: 0xff6700,
+                intensity: 3,
+                offset: [0.75, 0.5, 0],
+            }),
+        )
+    })
+
+    // Gold chest
+    world.ecs.addComponents(
+        world.ecs.createEntity(),
+        new ModelComponent({ modelName: 'chest_gold' }),
+        new PositionComponent({ position: [-6, 0, -6] }),
+        new PointLightComponent({
+            color: 0xffD700,
+            intensity: 1,
+            offset: [0.5, 0.7, 0],
+        }),
+    )
 
     for (let i = 0; i < 32; i += 2) {
         world.ecs.addComponents(

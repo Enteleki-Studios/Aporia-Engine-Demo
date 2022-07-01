@@ -9,6 +9,7 @@ import {
     Object3D,
     CameraHelper,
     Vector4,
+    ReinhardToneMapping,
 } from 'three'
 import { AxesHelper } from './AxesHelper'
 
@@ -47,7 +48,7 @@ export class StandardRenderer {
         fov = 60,
         aspect = 1,
         near = 0.5,
-        far = 500,
+        far = 50,
     }: StandardRendererParams) {
         this.jobs = []
 
@@ -55,10 +56,14 @@ export class StandardRenderer {
             canvas,
             antialias: true,
         })
-        this.renderer.outputEncoding = sRGBEncoding
+        this.renderer.physicallyCorrectLights = true
+        this.renderer.toneMapping = ReinhardToneMapping
+        this.renderer.toneMappingExposure = 2
         this.renderer.shadowMap.enabled = true
         this.renderer.shadowMap.type = PCFSoftShadowMap
-        this.renderer.setPixelRatio(window.devicePixelRatio)
+        this.renderer.outputEncoding = sRGBEncoding
+        // this.renderer.setPixelRatio(window.devicePixelRatio)
+        this.renderer.setPixelRatio(1)
         this.renderer.debug.checkShaderErrors = true
         this.renderer.autoClear = false
         this.renderer.setScissorTest(true)
@@ -69,7 +74,7 @@ export class StandardRenderer {
         this.camera = new PerspectiveCamera(fov, aspect, near, far)
         this.camera.position.set(10, 10, 10)
 
-        this.debugCamera = new PerspectiveCamera(fov, aspect, near, far)
+        this.debugCamera = new PerspectiveCamera(fov, aspect, near, 500)
         this.debugCamera.position.set(20, 20, 20)
 
         this.debugOrbitControls = new OrbitControls(this.debugCamera, this.renderer.domElement)

@@ -41,14 +41,15 @@ export class Renderer extends StandardRenderer {
         dirtMesh.receiveShadow = true
         this.scene.add(dirtMesh)
 
-        const pointLight = new PointLight(0xFFFFFF, 0.2, 10)
+        const pointLight = new PointLight(0xffee88, 3, 0, 2)
         pointLight.castShadow = true
         pointLight.position.y = 2
+        // pointLight.visible = false
         this.scene.add(pointLight)
         const pointLightHelper = new PointLightHelper(pointLight, 0.5)
         this.scene.add(pointLightHelper)
 
-        this.scene.fog = new Fog(0x161616, 1, 30)
+        this.scene.fog = new Fog(0x161616, 15, 40)
     }
 }
 
