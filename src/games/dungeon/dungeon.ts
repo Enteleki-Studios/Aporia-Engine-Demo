@@ -54,15 +54,16 @@ export const init = (canvas: HTMLCanvasElement) => {
     // renderer.setDebugMode('sideBySide')
     canvas.insertAdjacentElement('afterend', renderer.infoDomElement)
 
-    const inputManager = new InputManager({ domElement: canvas, keymap: DEFAULT_KEYMAP })
+    const inputManager = new InputManager({
+        domElement: canvas,
+        keymap: DEFAULT_KEYMAP,
+    })
     inputManager.addActionListener('debug', () => {
         const { debugMode } = renderer
         if (debugMode === 'game') {
             renderer.setDebugMode('debug')
-            inputManager.disablePointerLock()
         } else {
             renderer.setDebugMode('game')
-            inputManager.allowPointerLock()
         }
     })
 

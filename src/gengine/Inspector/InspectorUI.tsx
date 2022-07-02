@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { setDebugMode, getDebugMode } from './slice'
 
-import './index.scss'
-import { DebugMode } from '../constants'
+import './style.scss'
+import { DebugMode, DebugModes } from '../constants'
 
 export const InspectorUI = () => {
     const dispatch = useDispatch()
     const debugMode = useSelector(getDebugMode)
 
-    const onModeChange = (e: FormEvent<HTMLInputElement>) => {
+    const onModeChange = (e: FormEvent<HTMLSelectElement>) => {
         dispatch(setDebugMode(e.currentTarget.value as DebugMode))
     }
 
@@ -19,41 +19,14 @@ export const InspectorUI = () => {
             <div className="window">
                 <div className="header">Inspector</div>
                 <div className="body">
-                    <div>Mode:</div>
-                    <div>
-                        <form>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="game"
-                                    name="mode"
-                                    onChange={onModeChange}
-                                    checked={debugMode === 'game'}
-                                />
-                                Game
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="debug"
-                                    name="mode"
-                                    onChange={onModeChange}
-                                    checked={debugMode === 'debug'}
-                                />
-                                Debug
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="sideBySide"
-                                    name="mode"
-                                    onChange={onModeChange}
-                                    checked={debugMode === 'sideBySide'}
-                                />
-                                Side by side
-                            </label>
-                        </form>
-                    </div>
+                    <label>
+                        View mode:
+                        <select value={debugMode} onChange={onModeChange}>
+                            {DebugModes.map((mode) => (
+                                <option value={mode.value}>{mode.label}</option>
+                            ))}
+                        </select>
+                    </label>
                 </div>
             </div>
         </div>

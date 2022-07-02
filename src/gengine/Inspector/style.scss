@@ -50,6 +50,21 @@ $colors: (
     .body {
         padding: 0.5rem;
 
+        select {
+            margin-left: 0.5rem;
+            color: inherit;
+            padding: 0.25rem;
+            border-style: solid;
+            border-width: 0 0 1px;
+            font-family: inherit;
+
+            background-color: transparent;
+
+            option {
+                color: initial;
+            }
+        }
+
         ul {
             list-style: none;
 

@@ -11,7 +11,7 @@ import {
     RepeatWrapping,
     PointLight,
     PointLightHelper,
-    Fog,
+    // Fog,
 } from 'three'
 
 export class Renderer extends StandardRenderer {
@@ -50,7 +50,7 @@ export class Renderer extends StandardRenderer {
         const pointLightHelper = new PointLightHelper(pointLight, 0.5)
         this.scene.add(pointLightHelper)
 
-        this.scene.fog = new Fog(0x161616, 15, 40)
+        // this.scene.fog = new Fog(0x161616, 15, 40)
     }
 }
 

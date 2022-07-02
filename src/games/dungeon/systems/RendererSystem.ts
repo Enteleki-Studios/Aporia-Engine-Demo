@@ -87,8 +87,8 @@ export class RendererSystem extends System {
                     const sprite = new TextSprite(labelText)
                     sprite.renderOrder = 1
                     sprite.material.depthTest = false
-                    group.add(sprite)
-                    this.renderer.registerHelper(sprite)
+                    // group.add(sprite)
+                    // this.renderer.registerHelper(sprite)
 
                     const box = new Box3().setFromObject(resource)
                     sprite.position.y = box.max.y + 0.15

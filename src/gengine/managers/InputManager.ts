@@ -4,16 +4,26 @@ type Callback = () => void
 type KeyCode = string
 type Action = string
 
+interface InputManagerSettings {
+    domElement: HTMLElement
+    keymap: Keymap
+    pointerLock?: boolean
+}
+
 export class InputManager {
     private actions: Record<Action, boolean> = {}
     private actionListeners: Record<Action, Callback[]> = {}
     private expandedKeymap: Record<KeyCode, Action[]> = {}
     private mouseInput: { panX: number, panY: number }
     private domElement: HTMLElement
-    private pointerLockEnabled = true
+    private pointerLockEnabled = false
 
-    constructor({ domElement, keymap }: { domElement: HTMLElement, keymap: Keymap }) {
+    constructor({ domElement, keymap, pointerLock = false }: InputManagerSettings) {
         this.domElement = domElement
+
+        if (pointerLock) {
+            this.allowPointerLock()
+        }
 
         Object.keys(keymap).forEach((action) => {
             this.actions[action] = false
