@@ -44,6 +44,7 @@ export class Renderer extends StandardRenderer {
         const pointLight = new PointLight(0xffee88, 3, 0, 2)
         pointLight.castShadow = true
         pointLight.position.y = 2
+        pointLight.shadow.radius = 5
         // pointLight.visible = false
         this.scene.add(pointLight)
         const pointLightHelper = new PointLightHelper(pointLight, 0.5)

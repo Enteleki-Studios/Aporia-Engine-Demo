@@ -2,9 +2,9 @@ import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 
-import { Inspector } from 'gengine'
+import { inspector } from 'gengine'
 
-import store from 'dungeon/store'
+import { store } from 'dungeon/store'
 import UI from 'dungeon/UI'
 
 import './root.scss'
@@ -19,7 +19,7 @@ const root = createRoot(document.getElementById('Root') as Element)
 
 root.render(
     <Provider store={store}>
-        <Inspector />
+        <inspector.InspectorUI />
         <UI />
     </Provider>,
 )

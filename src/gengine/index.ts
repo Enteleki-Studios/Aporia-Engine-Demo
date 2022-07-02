@@ -21,8 +21,7 @@ export { InputManager } from './managers/InputManager'
 export { ResourceManager } from './managers/ResourceManager'
 
 // Inspector
-export { Inspector } from './Inspector'
-export { reducer as inspectorReducer } from './Inspector/redux'
+export * as inspector from './Inspector'
 
 // Utils
 export * as arrayUtils from './utils/arrayUtils'

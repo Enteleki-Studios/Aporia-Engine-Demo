@@ -1,18 +1,17 @@
 import React, { FormEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { actions, selectors } from './redux'
+import { setDebugMode, getDebugMode } from './slice'
 
 import './index.scss'
 import { DebugMode } from '../constants'
 
-// const componentsByEntityId = useSelector(selectors.getComponentsByEntityId)
-export const Inspector = () => {
+export const InspectorUI = () => {
     const dispatch = useDispatch()
-    const debugMode = useSelector(selectors.getDebugMode)
+    const debugMode = useSelector(getDebugMode)
 
     const onModeChange = (e: FormEvent<HTMLInputElement>) => {
-        dispatch(actions.setDebugMode(e.currentTarget.value as DebugMode))
+        dispatch(setDebugMode(e.currentTarget.value as DebugMode))
     }
 
     return (

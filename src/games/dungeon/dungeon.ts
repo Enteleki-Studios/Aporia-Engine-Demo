@@ -1,3 +1,5 @@
+// import { store } from 'store'
+
 import {
     AmbientLightComponent,
     HealthComponent,
@@ -22,9 +24,10 @@ import {
     DamageSystem,
     DamagingComponent,
     PointLightComponent,
+    inspector,
 } from 'gengine'
 
-import { AppDispatch } from 'dungeon/store'
+// import { AppDispatch } from 'dungeon/store'
 
 import * as Systems from 'dungeon/systems'
 import * as Components from 'dungeon/components'
@@ -32,13 +35,21 @@ import { Renderer } from 'dungeon/Renderer'
 // import tilesGenerator from 'utils/tilesGenerator'
 
 import modelDB from 'modelDB'
+import { Action, Middleware } from '@reduxjs/toolkit'
 
 const world = new World()
 
-let dispatch: AppDispatch
+let renderer: Renderer
 
-const init = (canvas: HTMLCanvasElement) => {
-    const renderer = new Renderer({ canvas })
+export const middleware: Middleware = () => (next) => (action: Action) => {
+    if (inspector.slice.actions.setDebugMode.match(action)) {
+        renderer.setDebugMode(action.payload)
+    }
+    next(action)
+}
+
+export const init = (canvas: HTMLCanvasElement) => {
+    renderer = new Renderer({ canvas })
     // renderer.setDebugMode('debug')
     // renderer.setDebugMode('sideBySide')
     canvas.insertAdjacentElement('afterend', renderer.infoDomElement)
@@ -206,16 +217,7 @@ const init = (canvas: HTMLCanvasElement) => {
 
     world.start()
 
-    dispatch({ type: 'TEST' })
-}
-
-const addDispatch = (d: AppDispatch) => {
-    dispatch = d
-}
-
-export default {
-    init,
-    addDispatch,
+    // store.dispatch({ type: 'TEST' })
 }
 
 // const slimeEntity = createEntity()

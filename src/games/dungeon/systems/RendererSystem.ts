@@ -116,6 +116,7 @@ export class RendererSystem extends System {
                         const pointLight = new PointLight(color, intensity, distance, decay)
                         pointLight.castShadow = castShadow
                         pointLight.position.fromArray(offset)
+                        pointLight.shadow.radius = 5
                         group.add(pointLight)
                         const pointLightHelper = new PointLightHelper(pointLight, 0.25)
                         this.renderer.scene.add(pointLightHelper)
