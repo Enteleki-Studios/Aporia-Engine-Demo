@@ -11,6 +11,7 @@ import { World } from '../World'
 const deceleration = new Vector3(-5, -0.0001, -5)
 
 const RUN_BOOST = 2
+const BASE_SPEED = 15
 
 export class MovementSystem extends System {
     cameraFilter = new ECSFilter([CameraComponent])
@@ -36,7 +37,6 @@ export class MovementSystem extends System {
 
             // Accelerate away from the camera
             const frameAcceleration = cameraDirection.clone().setY(0).negate().normalize()
-            const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
 
             let targetAngle = 0
             if (inputComponent.input.up.hold) {
@@ -66,7 +66,8 @@ export class MovementSystem extends System {
             frameAcceleration.applyAxisAngle(Y_AXIS, targetAngle)
 
             // Set acceleration magnitude
-            frameAcceleration.multiplyScalar(15 * delta * boost)
+            const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
+            frameAcceleration.multiplyScalar(BASE_SPEED * boost * delta)
 
             velocity.add(frameDeceleration).add(frameAcceleration)
         })

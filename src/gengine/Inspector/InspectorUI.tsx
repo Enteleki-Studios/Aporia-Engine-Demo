@@ -23,7 +23,9 @@ export const InspectorUI = () => {
                         View mode:
                         <select value={debugMode} onChange={onModeChange}>
                             {DebugModes.map((mode) => (
-                                <option value={mode.value}>{mode.label}</option>
+                                <option key={mode.label} value={mode.value}>
+                                    {mode.label}
+                                </option>
                             ))}
                         </select>
                     </label>

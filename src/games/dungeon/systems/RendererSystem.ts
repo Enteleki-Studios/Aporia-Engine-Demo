@@ -1,4 +1,14 @@
-import { AmbientLight, Mesh, Group, Box3, CircleGeometry, MeshBasicMaterial, PointLight, PointLightHelper } from 'three'
+import {
+    AmbientLight,
+    Mesh,
+    Group,
+    Box3,
+    CircleGeometry,
+    MeshBasicMaterial,
+    PointLight,
+    PointLightHelper,
+    Vector2,
+} from 'three'
 
 import {
     DirectionalLight,
@@ -14,6 +24,10 @@ import {
     World,
     HealthComponent,
     PointLightComponent,
+    InputComponent,
+    Y_AXIS,
+    X_AXIS,
+    Z_AXIS,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -66,7 +80,21 @@ export class RendererSystem extends System {
             if (modelComponent.group) {
                 // Update position
                 modelComponent.group.position.copy(positionComponent.position)
-                modelComponent.group.quaternion.copy(positionComponent.rotation)
+                // modelComponent.group.quaternion.copy(positionComponent.rotation)
+
+                // TODO TEMP, move to system
+                if (entity.has(InputComponent)) {
+                    const { x, y } = entity.get(InputComponent).mouse.position.centerRel
+                    let angle = new Vector2(x, y).angle() - Math.PI / 2
+
+                    this.cameraFilter.entities.forEach((camEntity) => {
+                        // TODO fix this angle
+                        const { position: camPosition } = camEntity.get(CameraComponent)
+                        const camAngle = camPosition.clone().setY(0).angleTo(X_AXIS)
+                        angle += camAngle // + Math.PI
+                    })
+                    modelComponent.group.setRotationFromAxisAngle(Y_AXIS, angle)
+                }
 
                 if (entity.has(HealthComponent)) {
                     const ts = modelComponent.group.getObjectByName('health') as TextSprite
@@ -125,7 +153,7 @@ export class RendererSystem extends System {
 
                     if (entity.has(HealthComponent)) {
                         const healthSprite = new TextSprite(entity.get(HealthComponent).health, {
-                            font: 'Arial',
+                            font: 'arial',
                             color: 'purple',
                         })
                         healthSprite.name = 'health'

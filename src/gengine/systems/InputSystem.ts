@@ -17,7 +17,7 @@ export class InputSystem extends System {
 
     tick() {
         const liveInput = this.inputManager.readInput()
-        const { panX, panY } = this.inputManager.readMouse()
+        const { panX, panY, centerRelX, centerRelY } = this.inputManager.readMouse()
         this.inputManager.resetMouse()
 
         this.inputFilter.entities.forEach((entity) => {
@@ -42,6 +42,9 @@ export class InputSystem extends System {
 
             inputComponent.mouse.pan.x = panX
             inputComponent.mouse.pan.y = panY
+
+            inputComponent.mouse.position.centerRel.x = centerRelX
+            inputComponent.mouse.position.centerRel.y = centerRelY
         })
     }
 }

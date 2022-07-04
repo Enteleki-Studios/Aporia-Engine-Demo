@@ -8,6 +8,12 @@ export class InputComponent extends Component {
             x: number
             y: number
         }
+        position: {
+            centerRel: {
+                x: number
+                y: number
+            }
+        }
     }
 
     constructor(keymap: Keymap) {
@@ -17,6 +23,12 @@ export class InputComponent extends Component {
             pan: {
                 x: 0,
                 y: 0,
+            },
+            position: {
+                centerRel: {
+                    x: 0,
+                    y: 0,
+                },
             },
         }
 

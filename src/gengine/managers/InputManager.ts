@@ -10,13 +10,21 @@ interface InputManagerSettings {
     pointerLock?: boolean
 }
 
+interface MouseInput {
+    panX: number // Pointer locked, distance moved
+    panY: number
+    centerRelX: number // Pointer unlocked, dist from center (-1 to +1)
+    centerRelY: number
+}
+
 export class InputManager {
     private actions: Record<Action, boolean> = {}
     private actionListeners: Record<Action, Callback[]> = {}
     private expandedKeymap: Record<KeyCode, Action[]> = {}
-    private mouseInput: { panX: number, panY: number }
+    private mouseInput: MouseInput
     private domElement: HTMLElement
     private pointerLockEnabled = false
+    private hasPointerLock = false
 
     constructor({ domElement, keymap, pointerLock = false }: InputManagerSettings) {
         this.domElement = domElement
@@ -40,6 +48,8 @@ export class InputManager {
         this.mouseInput = {
             panX: 0,
             panY: 0,
+            centerRelX: 0,
+            centerRelY: 0,
         }
 
         this.initInputHandlers()
@@ -62,19 +72,20 @@ export class InputManager {
         document.addEventListener('keydown', this.onKeyDown.bind(this))
         document.addEventListener('keyup', this.onKeyUp.bind(this))
 
+        this.domElement.addEventListener('mousemove', this.onMouseMove.bind(this), false)
+
         this.domElement.addEventListener('click', () => {
             if (this.pointerLockEnabled) {
                 this.domElement.requestPointerLock()
             }
         })
 
-        const onMouseMove = (e: MouseEvent) => this.onMouseMove(e)
-
         const onPointerLockChange = () => {
             if (document.pointerLockElement === this.domElement) {
-                document.addEventListener('mousemove', onMouseMove, false)
+                this.hasPointerLock = true
             } else {
-                document.removeEventListener('mousemove', onMouseMove, false)
+                this.hasPointerLock = false
+                this.resetMouse()
             }
         }
 
@@ -82,8 +93,15 @@ export class InputManager {
     }
 
     private onMouseMove(e: MouseEvent) {
-        this.mouseInput.panX += e.movementX
-        this.mouseInput.panY += e.movementY
+        if (this.hasPointerLock) {
+            this.mouseInput.panX += e.movementX
+            this.mouseInput.panY += e.movementY
+        } else {
+            const offsetX = this.domElement.offsetLeft
+            const offsetY = this.domElement.offsetTop
+            this.mouseInput.centerRelX = ((e.clientX - offsetX) / this.domElement.clientWidth) * 2 - 1
+            this.mouseInput.centerRelY = ((e.clientY - offsetY) / this.domElement.clientHeight) * -2 + 1
+        }
     }
 
     private onKeyDown(e: KeyboardEvent) {
@@ -122,6 +140,8 @@ export class InputManager {
     resetMouse() {
         this.mouseInput.panX = 0
         this.mouseInput.panY = 0
+        // this.mouseInput.centerRelX = 0
+        // this.mouseInput.centerRelY = 0
     }
 
     allowPointerLock() {
