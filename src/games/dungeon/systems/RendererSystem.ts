@@ -8,6 +8,7 @@ import {
     PointLight,
     PointLightHelper,
     Vector2,
+    Vector3,
 } from 'three'
 
 import {
@@ -26,8 +27,6 @@ import {
     PointLightComponent,
     InputComponent,
     Y_AXIS,
-    X_AXIS,
-    Z_AXIS,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -80,18 +79,21 @@ export class RendererSystem extends System {
             if (modelComponent.group) {
                 // Update position
                 modelComponent.group.position.copy(positionComponent.position)
-                // modelComponent.group.quaternion.copy(positionComponent.rotation)
+                modelComponent.group.quaternion.copy(positionComponent.rotation)
 
                 // TODO TEMP, move to system
                 if (entity.has(InputComponent)) {
                     const { x, y } = entity.get(InputComponent).mouse.position.centerRel
-                    let angle = new Vector2(x, y).angle() - Math.PI / 2
+                    let angle = new Vector2(x, y).negate().angle()
 
                     this.cameraFilter.entities.forEach((camEntity) => {
                         // TODO fix this angle
                         const { position: camPosition } = camEntity.get(CameraComponent)
-                        const camAngle = camPosition.clone().setY(0).angleTo(X_AXIS)
-                        angle += camAngle // + Math.PI
+
+                        const camDirection = new Vector3().subVectors(camPosition, positionComponent.position)
+                        const camPos = new Vector2(camDirection.x, camDirection.z).angle()
+
+                        angle -= camPos
                     })
                     modelComponent.group.setRotationFromAxisAngle(Y_AXIS, angle)
                 }
@@ -121,6 +123,8 @@ export class RendererSystem extends System {
                     const box = new Box3().setFromObject(resource)
                     sprite.position.y = box.max.y + 0.15
                     sprite.center.set(0.5, 0) // Set origin to center bottom
+
+                    // group.add(new ArrowHelper(new Vector3(0, 0, 1), new Vector3(), 2, 0x00ff00))
 
                     if (entity.has(HitboxComponent)) {
                         const hitbox = entity.get(HitboxComponent)
