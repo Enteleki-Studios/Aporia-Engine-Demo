@@ -7,8 +7,6 @@ import {
     MeshBasicMaterial,
     PointLight,
     PointLightHelper,
-    Vector2,
-    Vector3,
 } from 'three'
 
 import {
@@ -25,8 +23,6 @@ import {
     World,
     HealthComponent,
     PointLightComponent,
-    InputComponent,
-    Y_AXIS,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -80,23 +76,6 @@ export class RendererSystem extends System {
                 // Update position
                 modelComponent.group.position.copy(positionComponent.position)
                 modelComponent.group.quaternion.copy(positionComponent.rotation)
-
-                // TODO TEMP, move to system
-                if (entity.has(InputComponent)) {
-                    const { x, y } = entity.get(InputComponent).mouse.position.centerRel
-                    let angle = new Vector2(x, y).negate().angle()
-
-                    this.cameraFilter.entities.forEach((camEntity) => {
-                        // TODO fix this angle
-                        const { position: camPosition } = camEntity.get(CameraComponent)
-
-                        const camDirection = new Vector3().subVectors(camPosition, positionComponent.position)
-                        const camPos = new Vector2(camDirection.x, camDirection.z).angle()
-
-                        angle -= camPos
-                    })
-                    modelComponent.group.setRotationFromAxisAngle(Y_AXIS, angle)
-                }
 
                 if (entity.has(HealthComponent)) {
                     const ts = modelComponent.group.getObjectByName('health') as TextSprite

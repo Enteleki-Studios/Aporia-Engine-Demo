@@ -1,4 +1,4 @@
-import { Vector3 } from 'three'
+import { Vector3, Vector2 } from 'three'
 import { System } from '../ECS/System'
 import { ECSFilter } from '../ECS/ECSFilter'
 import { PositionComponent } from '../components/PositionComponent'
@@ -70,6 +70,16 @@ export class MovementSystem extends System {
             frameAcceleration.multiplyScalar(BASE_SPEED * boost * delta)
 
             velocity.add(frameDeceleration).add(frameAcceleration)
+
+            // Character rotation
+            const { x, y } = entity.get(InputComponent).mouse.position.centerRel
+            let angle = new Vector2(x, y).negate().angle()
+
+            const camDirection = new Vector3().subVectors(camPosition, positionComponent.position)
+            const camPos = new Vector2(camDirection.x, camDirection.z).angle()
+
+            angle -= camPos
+            positionComponent.rotation.setFromAxisAngle(Y_AXIS, angle)
         })
     }
 }

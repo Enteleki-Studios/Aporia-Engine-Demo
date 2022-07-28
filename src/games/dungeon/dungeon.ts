@@ -130,7 +130,7 @@ export const init = (canvas: HTMLCanvasElement) => {
         new PointLightComponent({
             color: 0xffee88,
             intensity: 3,
-            offset: [1, 2, 2],
+            offset: [0, 2, 2],
             castShadow: true,
         }),
     )
