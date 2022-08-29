@@ -27,3 +27,6 @@ export const DebugModes: Array<{ value: DebugMode, label: string }> = [
     { value: 'debug', label: 'Debug' },
     { value: 'sideBySide', label: 'Game + Debug' },
 ]
+
+// World events
+export type WorldEvent = 'endframe'

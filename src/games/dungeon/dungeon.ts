@@ -37,21 +37,21 @@ import { Renderer } from 'dungeon/Renderer'
 import modelDB from 'modelDB'
 import { Action, Middleware } from '@reduxjs/toolkit'
 
-const world = new World()
-
 let renderer: Renderer
+
+export const world = new World()
 
 export const middleware: Middleware = () => (next) => (action: Action) => {
     if (inspector.slice.actions.setDebugMode.match(action)) {
         renderer.setDebugMode(action.payload)
     }
-    next(action)
+
+    return next(action)
 }
 
 export const init = (canvas: HTMLCanvasElement) => {
     renderer = new Renderer({ canvas })
-    // renderer.setDebugMode('debug')
-    // renderer.setDebugMode('sideBySide')
+
     canvas.insertAdjacentElement('afterend', renderer.infoDomElement)
 
     const inputManager = new InputManager({

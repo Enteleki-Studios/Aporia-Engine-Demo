@@ -23,6 +23,9 @@ export { ResourceManager } from './managers/ResourceManager'
 // Inspector
 export * as inspector from './Inspector'
 
+// React
+export { WorldContext } from './react/WorldContext'
+
 // Utils
 export * as arrayUtils from './utils/arrayUtils'
 

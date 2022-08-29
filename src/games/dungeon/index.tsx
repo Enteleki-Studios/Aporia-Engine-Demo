@@ -1,9 +1,10 @@
-import * as React from 'react'
+import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 
-import { inspector } from 'gengine'
+import { inspector, WorldContext } from 'gengine'
 
+import { world } from 'dungeon/dungeon'
 import { store } from 'dungeon/store'
 import UI from 'dungeon/UI'
 
@@ -19,7 +20,9 @@ const root = createRoot(document.getElementById('Root') as Element)
 
 root.render(
     <Provider store={store}>
-        <inspector.InspectorUI />
-        <UI />
+        <WorldContext.Provider value={world}>
+            <inspector.InspectorUI />
+            <UI />
+        </WorldContext.Provider>
     </Provider>,
 )

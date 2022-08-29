@@ -5,6 +5,7 @@ import { setDebugMode, getDebugMode } from './slice'
 
 import './style.scss'
 import { DebugMode, DebugModes } from '../constants'
+import { WorldStats } from './WorldStats'
 
 export const InspectorUI = () => {
     const dispatch = useDispatch()
@@ -19,6 +20,7 @@ export const InspectorUI = () => {
             <div className="window">
                 <div className="header">Inspector</div>
                 <div className="body">
+                    <WorldStats />
                     <label>
                         View mode:
                         <select value={debugMode} onChange={onModeChange}>
