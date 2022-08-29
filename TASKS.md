@@ -16,7 +16,6 @@
     - camera targets need to be averaged
 
 - Rendering
-    - Renderer system should use a resource manager instead of using the renderer directly
 
 - Resources
     - improve ModelComponent typing
