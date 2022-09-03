@@ -1,8 +1,19 @@
-import { Quaternion, Vector3 } from 'three'
+import { Vector3 } from 'three'
 import { Component } from '../ECS/Component'
 
+interface CameraSettings {
+    position?: [number, number, number]
+    lookAt?: [number, number, number]
+}
+
 export class CameraComponent extends Component {
-    position = new Vector3()
-    direction = new Quaternion()
-    lookAt = new Vector3()
+    position: Vector3
+    lookAt: Vector3
+
+    constructor({ position, lookAt }: CameraSettings = {}) {
+        super()
+
+        this.position = new Vector3().fromArray(position || [0, 0, 0])
+        this.lookAt = new Vector3().fromArray(lookAt || [0, 0, 0])
+    }
 }

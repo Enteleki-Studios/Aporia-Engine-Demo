@@ -13,9 +13,11 @@
         "allowSyntheticDefaultImports": true,
         "paths": {
             "gengine": ["gengine"],
+            "example": ["games/example/*"],
             "dungeon/*": ["games/dungeon/*"],
             "zombieHorde/*": ["games/zombieHorde/*"],
             "*": [
+                "games/example/*",
                 "games/dungeon/*",
                 "games/zombieHorde/*"
             ]

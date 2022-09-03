@@ -6,6 +6,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const path = require('path')
 
 const games = [
+    'example',
     'dungeon',
     // 'zombieHorde',
 ]

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 
-import { WorldContext } from '../React/WorldContext'
+import { WorldContext } from '../react/WorldContext'
 
 export const WorldStats = () => {
     const world = useContext(WorldContext)
