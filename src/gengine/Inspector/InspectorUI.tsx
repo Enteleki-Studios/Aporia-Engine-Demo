@@ -21,16 +21,19 @@ export const InspectorUI = () => {
                 <div className="header">Inspector</div>
                 <div className="body">
                     <WorldStats />
-                    <label>
-                        View mode:
-                        <select value={debugMode} onChange={onModeChange}>
-                            {DebugModes.map((mode) => (
-                                <option key={mode.label} value={mode.value}>
-                                    {mode.label}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
+                    <section>
+                        <h3>Settings</h3>
+                        <label>
+                            View mode:
+                            <select value={debugMode} onChange={onModeChange}>
+                                {DebugModes.map((mode) => (
+                                    <option key={mode.label} value={mode.value}>
+                                        {mode.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                    </section>
                 </div>
             </div>
         </div>

@@ -38,8 +38,6 @@ export class StandardRenderer {
     debugOrbitControls: OrbitControls
     debugViewport = new Vector4()
 
-    private _infoDomElement?: HTMLDivElement
-
     jobs: Array<(delta: number) => void>
 
     constructor({
@@ -93,7 +91,6 @@ export class StandardRenderer {
             this.renderer.setViewport(this.viewport)
             this.renderer.setScissor(this.viewport)
             this.renderer.render(this.scene, this.camera)
-            this.updateInfoDomElement(delta)
         }
 
         this.jobs.forEach((job) => job(delta))
@@ -154,28 +151,19 @@ export class StandardRenderer {
         }
     }
 
-    get infoDomElement(): HTMLDivElement {
-        if (!this._infoDomElement) {
-            this._infoDomElement = document.createElement('div')
-            this._infoDomElement.className = 'GENGINE_INFO'
-            this._infoDomElement.innerText = 'info: no update'
-        }
-        return this._infoDomElement
-    }
+    // updateInfoDomElement(delta: number) {
+    //     if (this._infoDomElement) {
+    //         const { geometries, textures } = this.renderer.info.memory
+    //         const { calls, triangles } = this.renderer.info.render
 
-    updateInfoDomElement(delta: number) {
-        if (this._infoDomElement) {
-            const { geometries, textures } = this.renderer.info.memory
-            const { calls, triangles } = this.renderer.info.render
+    //         this._infoDomElement.innerText = `${Math.floor(1 / delta)} fps
+    //             ${delta * 1000} ms
 
-            this._infoDomElement.innerText = `${Math.floor(1 / delta)} fps
-                ${delta * 1000} ms
-
-                geometries: ${geometries}
-                textures: ${textures}
-                calls: ${calls}
-                triangles: ${triangles}
-            `
-        }
-    }
+    //             geometries: ${geometries}
+    //             textures: ${textures}
+    //             calls: ${calls}
+    //             triangles: ${triangles}
+    //         `
+    //     }
+    // }
 }

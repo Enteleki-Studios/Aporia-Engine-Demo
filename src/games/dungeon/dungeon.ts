@@ -52,8 +52,6 @@ export const middleware: Middleware = () => (next) => (action: Action) => {
 export const init = (canvas: HTMLCanvasElement) => {
     renderer = new Renderer({ canvas })
 
-    canvas.insertAdjacentElement('afterend', renderer.infoDomElement)
-
     const inputManager = new InputManager({
         domElement: canvas,
         keymap: DEFAULT_KEYMAP,
