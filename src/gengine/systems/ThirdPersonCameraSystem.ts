@@ -1,7 +1,6 @@
 import { Vector3 } from 'three'
 import { PositionComponent } from '../components/PositionComponent'
 import { CameraComponent } from '../components/CameraComponent'
-import { InputComponent } from '../components/InputComponent'
 import { CameraTargetComponent } from '../components/CameraTargetComponent'
 import { System } from '../ECS/System'
 import { World } from '../World'
@@ -11,7 +10,7 @@ const camPosition = new Vector3()
 
 export class ThirdPersonCameraSystem extends System {
     cameraTargetFilter = new ECSFilter([CameraTargetComponent, PositionComponent])
-    cameraFilter = new ECSFilter([CameraComponent, InputComponent])
+    cameraFilter = new ECSFilter([CameraComponent])
 
     filters = [this.cameraTargetFilter, this.cameraFilter]
 

@@ -1,6 +1,21 @@
 import { Action, Middleware } from '@reduxjs/toolkit'
 
-import { World, CameraComponent, AmbientLightComponent, inspector } from 'gengine'
+import {
+    AmbientLightComponent,
+    CameraComponent,
+    FirstPersonCameraSystem,
+    World,
+    inspector,
+    InputComponent,
+    DEFAULT_KEYMAP,
+    InputManager,
+    InputSystem,
+    MovementSystem,
+    CameraTargetComponent,
+    PositionComponent,
+    VelocityComponent,
+    ApplyVelocitySystem,
+} from 'gengine'
 
 import { Renderer } from './Renderer'
 import { RendererSystem } from './RendererSystem'
@@ -20,7 +35,16 @@ export const middleware: Middleware = () => (next) => (action: Action) => {
 export const init = (canvas: HTMLCanvasElement) => {
     renderer = new Renderer({ canvas })
 
+    const inputManager = new InputManager({
+        domElement: canvas,
+        keymap: DEFAULT_KEYMAP,
+    })
+
     world.ecs.registerSystems([
+        new InputSystem(inputManager),
+        new MovementSystem(),
+        new ApplyVelocitySystem(),
+        new FirstPersonCameraSystem(),
         new RendererSystem(renderer),
     ])
 
@@ -37,6 +61,15 @@ export const init = (canvas: HTMLCanvasElement) => {
     world.ecs.addComponents(
         world.ecs.createEntity(),
         new CameraComponent({ position: [10, 10, 10] }),
+    )
+
+    // Player
+    world.ecs.addComponents(
+        world.ecs.createEntity(),
+        new CameraTargetComponent(),
+        new InputComponent(DEFAULT_KEYMAP),
+        new PositionComponent(),
+        new VelocityComponent(),
     )
 
     world.start()

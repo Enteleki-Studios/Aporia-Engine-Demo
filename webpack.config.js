@@ -8,6 +8,7 @@ const path = require('path')
 const games = [
     'example',
     'dungeon',
+    'darkfps',
     // 'zombieHorde',
 ]
 

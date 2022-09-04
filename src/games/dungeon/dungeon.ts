@@ -100,7 +100,6 @@ export const init = (canvas: HTMLCanvasElement) => {
     world.ecs.addComponents(
         world.ecs.createEntity(),
         new CameraComponent(),
-        new InputComponent(DEFAULT_KEYMAP),
     )
 
     // Player
@@ -117,7 +116,7 @@ export const init = (canvas: HTMLCanvasElement) => {
         new InputComponent(DEFAULT_KEYMAP),
         new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
         new PositionComponent({ position: [0, 0, -1] }),
-        new VelocityComponent({}),
+        new VelocityComponent(),
         new DamagingComponent({
             radius: 1,
             theta: 2,

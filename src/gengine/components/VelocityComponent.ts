@@ -8,7 +8,7 @@ interface VelocitySettings {
 export class VelocityComponent extends Component {
     velocity = new Vector3()
 
-    constructor({ velocity }: VelocitySettings) {
+    constructor({ velocity }: VelocitySettings = {}) {
         super()
 
         if (velocity) {
