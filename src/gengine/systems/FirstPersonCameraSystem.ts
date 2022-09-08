@@ -16,11 +16,11 @@ export class FirstPersonCameraSystem extends System {
 
         this.cameraFilter.entities.forEach((cameraEntity) => {
             const { position, lookAt } = cameraEntity.get(CameraComponent)
-            const { position: targetPosition } = cameraTargets[0].get(PositionComponent)
+            const { position: targetPosition, rotation } = cameraTargets[0].get(PositionComponent)
 
-            position.fromArray([targetPosition.x, 2, targetPosition.y])
+            position.fromArray([targetPosition.x, 2, targetPosition.z])
 
-            // lookAt.fromArray([position.x, position.y, position.z])
+            lookAt.fromArray([0, 0, 1]).applyQuaternion(rotation).add(position)
         })
     }
 }

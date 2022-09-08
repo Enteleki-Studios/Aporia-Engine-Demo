@@ -11,8 +11,9 @@ export * from './components'
 export { ApplyVelocitySystem } from './systems/ApplyVelocitySystem'
 export { DamageSystem } from './systems/DamageSystem'
 export { FirstPersonCameraSystem } from './systems/FirstPersonCameraSystem'
+export { FirstPersonMovementSystem } from './systems/FirstPersonMovementSystem'
 export { InputSystem } from './systems/InputSystem'
-export { MovementSystem } from './systems/MovementSystem'
+export { TwinStickMovementSystem } from './systems/TwinStickMovementSystem'
 export { ThirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'
 export { SunSystem } from './systems/SunSystem'
 
@@ -29,6 +30,7 @@ export { WorldContext } from './react/WorldContext'
 
 // Utils
 export * as arrayUtils from './utils/arrayUtils'
+export * as vectorUtils from './utils/vectorUtils'
 
 // THREEJS
 export { AxesHelper } from './three/AxesHelper'

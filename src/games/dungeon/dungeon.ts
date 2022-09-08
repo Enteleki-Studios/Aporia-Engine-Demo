@@ -19,7 +19,7 @@ import {
     SunTargetComponent,
     // SunSystem,
     World,
-    MovementSystem,
+    TwinStickMovementSystem,
     ApplyVelocitySystem,
     DamageSystem,
     DamagingComponent,
@@ -67,7 +67,7 @@ export const init = (canvas: HTMLCanvasElement) => {
 
     world.ecs.registerSystems([
         new InputSystem(inputManager),
-        new MovementSystem(),
+        new TwinStickMovementSystem(),
         new Systems.CollisionSystem(),
         new ApplyVelocitySystem(),
         new DamageSystem(),

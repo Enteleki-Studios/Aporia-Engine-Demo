@@ -10,7 +10,7 @@ import {
     DEFAULT_KEYMAP,
     InputManager,
     InputSystem,
-    MovementSystem,
+    FirstPersonMovementSystem,
     CameraTargetComponent,
     PositionComponent,
     VelocityComponent,
@@ -38,11 +38,12 @@ export const init = (canvas: HTMLCanvasElement) => {
     const inputManager = new InputManager({
         domElement: canvas,
         keymap: DEFAULT_KEYMAP,
+        pointerLock: true,
     })
 
     world.ecs.registerSystems([
         new InputSystem(inputManager),
-        new MovementSystem(),
+        new FirstPersonMovementSystem(),
         new ApplyVelocitySystem(),
         new FirstPersonCameraSystem(),
         new RendererSystem(renderer),

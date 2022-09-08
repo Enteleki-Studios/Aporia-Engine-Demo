@@ -11,10 +11,10 @@ export class ApplyVelocitySystem extends System {
 
     tick(world: World) {
         this.movingFilter.entities.forEach((entity) => {
-            const positionComponent = entity.get(PositionComponent)
-            const velocityComponent = entity.get(VelocityComponent)
+            const { position } = entity.get(PositionComponent)
+            const { velocity } = entity.get(VelocityComponent)
 
-            positionComponent.position.addScaledVector(velocityComponent.velocity, world.timeElapsedS)
+            position.addScaledVector(velocity, world.timeElapsedS)
         })
     }
 }

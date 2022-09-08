@@ -1,26 +1,24 @@
-import { Vector3, Vector2 } from 'three'
+import { Vector3, Quaternion } from 'three'
 import { System } from '../ECS/System'
 import { ECSFilter } from '../ECS/ECSFilter'
+import { roundToZero } from '../utils/vectorUtils'
 import { PositionComponent } from '../components/PositionComponent'
 import { VelocityComponent } from '../components/VelocityComponent'
 import { InputComponent } from '../components/InputComponent'
-import { CameraComponent } from '../components/CameraComponent'
 import { Y_AXIS } from '../constants'
 import { World } from '../World'
 
-const deceleration = new Vector3(-5, -0.0001, -5)
+const DECELERATION = -5
 
 const RUN_BOOST = 2
 const BASE_SPEED = 15
 
-export class MovementSystem extends System {
-    cameraFilter = new ECSFilter([CameraComponent])
+export class FirstPersonMovementSystem extends System {
     movementFilter = new ECSFilter([InputComponent, PositionComponent, VelocityComponent])
 
-    filters = [this.cameraFilter, this.movementFilter]
+    filters = [this.movementFilter]
 
     tick(world: World) {
-        const [cameraEntity] = this.cameraFilter.entities
         const delta = world.timeElapsedS
 
         this.movementFilter.entities.forEach((entity) => {
@@ -28,15 +26,13 @@ export class MovementSystem extends System {
             const positionComponent = entity.get(PositionComponent)
             const velocityComponent = entity.get(VelocityComponent)
 
-            const { position: camPosition } = cameraEntity.get(CameraComponent)
-            const cameraDirection = new Vector3().subVectors(camPosition, positionComponent.position)
+            const characterDirection = new Vector3(0, 0, 1).applyQuaternion(positionComponent.rotation)
             const { velocity } = velocityComponent
 
             // Calculate deceleration
-            const frameDeceleration = velocity.clone().multiply(deceleration).multiplyScalar(delta)
+            const frameDeceleration = velocity.clone().multiplyScalar(DECELERATION).multiplyScalar(delta)
 
-            // Accelerate away from the camera
-            const frameAcceleration = cameraDirection.clone().setY(0).negate().normalize()
+            const frameAcceleration = characterDirection.clone().setY(0).normalize()
 
             let targetAngle = 0
             if (inputComponent.input.up.hold) {
@@ -70,16 +66,15 @@ export class MovementSystem extends System {
             frameAcceleration.multiplyScalar(BASE_SPEED * boost * delta)
 
             velocity.add(frameDeceleration).add(frameAcceleration)
+            roundToZero(velocity)
 
             // Character rotation
-            const { x, y } = entity.get(InputComponent).mouse.position.centerRel
-            let angle = new Vector2(x, y).negate().angle()
+            const panQ = new Quaternion().setFromAxisAngle(
+                Y_AXIS,
+                -2 * Math.PI * inputComponent.mouse.pan.x * delta * 0.01,
+            )
 
-            const camDirection = new Vector3().subVectors(camPosition, positionComponent.position)
-            const camPos = new Vector2(camDirection.x, camDirection.z).angle()
-
-            angle -= camPos
-            positionComponent.rotation.setFromAxisAngle(Y_AXIS, angle)
+            positionComponent.rotation.multiply(panQ)
         })
     }
 }
