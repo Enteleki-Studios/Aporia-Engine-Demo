@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react'
 
 import { init } from './darkfps'
 
+import './darkUI.scss'
+
 const DarkUI = () => {
     const canvasRef = useRef(null)
 
@@ -13,6 +15,7 @@ const DarkUI = () => {
     return (
         <div className="DarkUI">
             <canvas ref={canvasRef} />
+            <div className="reticle" />
         </div>
     )
 }

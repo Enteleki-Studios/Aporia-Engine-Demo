@@ -5,7 +5,7 @@ import { roundToZero } from '../utils/vectorUtils'
 import { PositionComponent } from '../components/PositionComponent'
 import { VelocityComponent } from '../components/VelocityComponent'
 import { InputComponent } from '../components/InputComponent'
-import { Y_AXIS } from '../constants'
+import { Y_AXIS, X_AXIS } from '../constants'
 import { World } from '../World'
 
 const DECELERATION = -5
@@ -69,12 +69,17 @@ export class FirstPersonMovementSystem extends System {
             roundToZero(velocity)
 
             // Character rotation
-            const panQ = new Quaternion().setFromAxisAngle(
+            const panQHorizontal = new Quaternion().setFromAxisAngle(
                 Y_AXIS,
                 -2 * Math.PI * inputComponent.mouse.pan.x * delta * 0.01,
             )
 
-            positionComponent.rotation.multiply(panQ)
+            const panQVertical = new Quaternion().setFromAxisAngle(
+                X_AXIS,
+                2 * Math.PI * inputComponent.mouse.pan.y * delta * 0.01,
+            )
+
+            positionComponent.rotation.multiply(panQHorizontal).multiply(panQVertical)
         })
     }
 }
