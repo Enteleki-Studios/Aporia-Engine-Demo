@@ -1,9 +1,9 @@
 import { AmbientLight } from 'three'
-import { System, World, ECSFilter, AmbientLightComponent, CameraComponent } from 'gengine'
+import { World, ECSFilter, AmbientLightComponent, CameraComponent, RendererSystemBase } from 'gengine'
 
 import { Renderer } from './Renderer'
 
-export class RendererSystem extends System {
+export class RendererSystem extends RendererSystemBase {
     renderer: Renderer
 
     ambientLightFilter = new ECSFilter([AmbientLightComponent])
@@ -15,7 +15,7 @@ export class RendererSystem extends System {
     ]
 
     constructor(renderer: Renderer) {
-        super()
+        super(renderer)
 
         this.renderer = renderer
     }
@@ -24,11 +24,9 @@ export class RendererSystem extends System {
         this.renderer.render(world.timeElapsedS)
 
         this.ambientLightFilter.entities.forEach((entity) => {
-            const ambientLightComponent = entity.get(AmbientLightComponent)
-            if (!ambientLightComponent.resource) {
-                const { color, intensity } = ambientLightComponent
-                ambientLightComponent.resource = new AmbientLight(color, intensity)
-                this.renderer.scene.add(ambientLightComponent.resource)
+            if (!this.hasObject(entity.id, 'ambient')) {
+                const { color, intensity } = entity.get(AmbientLightComponent)
+                this.addObject(entity.id, 'ambient', new AmbientLight(color, intensity))
             }
         })
 

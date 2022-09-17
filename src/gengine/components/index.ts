@@ -1,4 +1,5 @@
 export { AmbientLightComponent } from './AmbientLightComponent'
+export { BasicGeometryComponent } from './BasicGeometryComponent'
 export { CameraComponent } from './CameraComponent'
 export { CameraTargetComponent } from './CameraTargetComponent'
 export { DamagingComponent } from './DamagingComponent'

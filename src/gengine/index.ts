@@ -15,6 +15,7 @@ export { FirstPersonMovementSystem } from './systems/FirstPersonMovementSystem'
 export { InputSystem } from './systems/InputSystem'
 export { TwinStickMovementSystem } from './systems/TwinStickMovementSystem'
 export { ThirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'
+export { RendererSystemBase } from './systems/RendererSystemBase'
 export { SunSystem } from './systems/SunSystem'
 
 // Managers

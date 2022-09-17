@@ -18,11 +18,11 @@ import {
     PositionComponent,
     HitboxComponent,
     CameraComponent,
-    System,
     ECSFilter,
     World,
     HealthComponent,
     PointLightComponent,
+    RendererSystemBase,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -45,7 +45,7 @@ async function createModel(modelComponent: ModelComponent<typeof modelDB>) {
     return model
 }
 
-export class RendererSystem extends System {
+export class RendererSystem extends RendererSystemBase {
     renderer: Renderer
 
     modelFilter = new ECSFilter([ModelComponent, PositionComponent])
@@ -63,7 +63,7 @@ export class RendererSystem extends System {
     ]
 
     constructor(renderer: Renderer) {
-        super()
+        super(renderer)
 
         this.renderer = renderer
     }
@@ -172,11 +172,9 @@ export class RendererSystem extends System {
         })
 
         this.ambientLightFilter.entities.forEach((entity) => {
-            const ambientLightComponent = entity.get(AmbientLightComponent)
-            if (!ambientLightComponent.resource) {
-                const { color, intensity } = ambientLightComponent
-                ambientLightComponent.resource = new AmbientLight(color, intensity)
-                this.renderer.scene.add(ambientLightComponent.resource)
+            if (!this.hasObject(entity.id, 'ambient')) {
+                const { color, intensity } = entity.get(AmbientLightComponent)
+                this.addObject(entity.id, 'ambient', new AmbientLight(color, intensity))
             }
         })
 
