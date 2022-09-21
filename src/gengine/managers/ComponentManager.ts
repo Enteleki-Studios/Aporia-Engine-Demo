@@ -11,6 +11,9 @@ type InstanceTuple<T extends [...ComponentConstructor[]]> = {
     [K in keyof T]: T[K] extends ComponentConstructor ? InstanceType<T[K]> : T[K]
 }
 
+/**
+ * @deprecated use world.ecs instead
+ */
 export class ComponentManager {
     components: Component[]
     entitiesById: Map<string, Entity>

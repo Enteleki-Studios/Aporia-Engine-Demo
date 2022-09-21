@@ -11,9 +11,22 @@ interface InputManagerSettings {
 }
 
 interface MouseInput {
-    panX: number // Pointer locked, distance moved
+    /** Vertical distance moved since last read. Pointer must be locked. */
+    panX: number
+
+    /** Horizontal distance moved since last read. Pointer must be locked. */
     panY: number
-    centerRelX: number // Pointer unlocked, dist from center (-1 to +1)
+
+    /**
+    * Vertical axis mouse position as signed percentage from center to edge (-1 to +1).
+    * Pointer must be unlocked.
+    */
+    centerRelX: number
+
+    /**
+    * Horizontal axis mouse position as signed percentage from center to edge (-1 to +1).
+    * Pointer must be unlocked.
+    */
     centerRelY: number
 }
 

@@ -2,6 +2,7 @@
 
 $white: #fefefe;
 $darkBlue: #282a36;
+$lighterBlue: #3d3f4a;
 $darkGrey: #444;
 
 $colors: (
@@ -10,6 +11,7 @@ $colors: (
     ),
     panel: (
         background: $darkBlue,
+        backgroundFaded: $lighterBlue,
         foreground: $white,
         border: $darkGrey,
     ),
@@ -47,6 +49,14 @@ $colors: (
         padding: 0.5rem;
         background-color: #141414;
         font-size: 0.75rem;
+        display: flex;
+
+        .title {
+            flex: 1;
+        }
+        .toolbar {
+            display: flex;
+        }
     }
     .body {
         padding: 0.5rem;
@@ -58,9 +68,30 @@ $colors: (
             margin-bottom: 0.5rem;
 
             h3 {
-                font-size: 0.75rem;
+                font-size: 1rem;
                 padding: 0;
                 margin: 0 0 0.25rem;
+            }
+            h4 {
+                font-size: 0.75rem;
+                padding: 0;
+                margin: 0.5rem 0 0 0;
+            }
+            .table {
+                display: grid;
+                grid-template-columns: repeat(1, min-content 1fr);
+
+                span {
+                    padding: 0.12rem 0.25rem;
+                    white-space: nowrap;
+                }
+                span:nth-child(2n + 1) {
+                    padding-right: 0.5rem;
+                }
+                span:nth-child(4n + 3),
+                span:nth-child(4n + 4) {
+                    background-color: color(panel, backgroundFaded);
+                }
             }
         }
         select {

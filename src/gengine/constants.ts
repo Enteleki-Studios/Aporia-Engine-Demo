@@ -29,4 +29,4 @@ export const DebugModes: Array<{ value: DebugMode, label: string }> = [
 ]
 
 // World events
-export type WorldEvent = 'endframe'
+export type WorldEvent = 'start' | 'stop' | 'endframe'

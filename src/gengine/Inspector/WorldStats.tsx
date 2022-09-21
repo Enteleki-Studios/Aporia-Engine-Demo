@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react'
+
+import { secondsToClockString } from './utils'
 
 import { StatsType } from '../World'
 import { WorldContext } from '../react/WorldContext'
-
-import './WorldStats.scss'
 
 export const WorldStats = () => {
     const world = useContext(WorldContext)
@@ -17,18 +17,47 @@ export const WorldStats = () => {
         world.addEventListener('endframe', updateStats)
     }, [world, updateStats])
 
+    if (!stats) {
+        return null
+    }
+
     return (
         <section className="WorldStats">
             <h3>Stats</h3>
-            {stats && (
-                <div className="stats">
-                    <span>fps:</span>
-                    <span>{stats.fps}</span>
+            <h4>Engine</h4>
+            <div className="table">
+                <span>fps:</span>
+                <span>{stats.fps}</span>
 
-                    <span>frame(ms):</span>
-                    <span>{stats.frameLength}</span>
-                </div>
-            )}
+                <span>frame time(ms):</span>
+                <span>{stats.frameTime}</span>
+
+                <span>frames:</span>
+                <span>{stats.frames}</span>
+
+                <span>runtime:</span>
+                <span>{secondsToClockString(stats.totalRuntime, 3)}</span>
+            </div>
+            <h4>ECS</h4>
+            <div className="table">
+                <span>entities:</span>
+                <span>{stats.ecs.entities}</span>
+
+                <span>components:</span>
+                <span>{stats.ecs.components}</span>
+
+                <span>systems:</span>
+                <span>{stats.ecs.systems}</span>
+            </div>
+            <h4>System runtimes</h4>
+            <div className="table">
+                {stats.ecs.systemsStats.map((sysStat) => (
+                    <Fragment key={sysStat.name}>
+                        <span>{`${sysStat.name}: `}</span>
+                        <span>{sysStat.runtime}</span>
+                    </Fragment>
+                ))}
+            </div>
         </section>
     )
 }
