@@ -1,6 +1,6 @@
 {
     "entryPoints": ["src/gengine/index.ts"],
-    "out": "docs",
+    "out": "dist/docs/",
     "excludeExternals": true,
     "plugin": ["typedoc-plugin-missing-exports"]
 }
