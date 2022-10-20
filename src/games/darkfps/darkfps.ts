@@ -51,8 +51,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     ])
 
     // Lighting
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new AmbientLightComponent({
             color: 0xffffff,
             intensity: 0.5,
@@ -60,14 +59,12 @@ export const init = (canvas: HTMLCanvasElement) => {
     )
 
     // Camera
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new CameraComponent({ position: [10, 10, 10] }),
     )
 
     // Player
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new CameraTargetComponent(),
         new InputComponent(DEFAULT_KEYMAP),
         new PositionComponent(),
@@ -75,8 +72,8 @@ export const init = (canvas: HTMLCanvasElement) => {
     )
 
     // Geo
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    const testBox = world.ecs.createEntity()
+    testBox.addComponents(
         new BasicGeometryComponent('box'),
         new PositionComponent({ position: [0, 0, 5] }),
     )

@@ -25,8 +25,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     ])
 
     // Lighting
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new AmbientLightComponent({
             color: 0xffffff,
             intensity: 0.5,
@@ -34,8 +33,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     )
 
     // Camera
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new CameraComponent({ position: [10, 10, 10] }),
     )
 

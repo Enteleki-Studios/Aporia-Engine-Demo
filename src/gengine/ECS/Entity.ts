@@ -1,13 +1,20 @@
 import { Component, ComponentConstructor, AnyComponentConstructor } from './Component'
+import type { ECS } from './ECS'
 
 export type EntityId = string
 
 export class Entity {
     id: EntityId
+    private ecs: ECS
     private components = new Map<AnyComponentConstructor, Component>()
 
-    constructor(id: EntityId) {
+    constructor(id: EntityId, ecs: ECS) {
         this.id = id
+        this.ecs = ecs
+    }
+
+    addComponents(...components: Component[]) {
+        this.ecs.addComponents(this.id, ...components)
     }
 
     addComponent_Unsafe(component: Component) {

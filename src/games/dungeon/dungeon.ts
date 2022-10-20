@@ -78,8 +78,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     ])
 
     // Lighting
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new AmbientLightComponent({
             color: 0xaaaaff,
             intensity: 0.05,
@@ -87,8 +86,7 @@ export const init = (canvas: HTMLCanvasElement) => {
         // new DirectionalLightComponent([10, 15, 10], 1),
     )
 
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new PositionComponent({ position: [0, 2, 0] }),
         new PointLightComponent({
             color: 0xffee88,
@@ -97,14 +95,12 @@ export const init = (canvas: HTMLCanvasElement) => {
     )
 
     // Camera
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new CameraComponent(),
     )
 
     // Player
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new Components.AnimationComponent('idle'),
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
         new Components.CollidableComponent(),
@@ -133,8 +129,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     )
 
     // Skeleton
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new Components.AnimationComponent('idle'),
         new ModelComponent({ modelName: 'skeleton' }),
         new PositionComponent({ position: [1, 0, 2] }),
@@ -143,8 +138,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     )
 
     // Slime
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new Components.AnimationComponent('idle'),
         new ModelComponent({ modelName: 'slime' }),
         new PositionComponent({ position: [4, 0, 2] }),
@@ -155,8 +149,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     // Items
     const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart', 'crate']
     items.forEach((item, i) => {
-        world.ecs.addComponents(
-            world.ecs.createEntity(),
+        world.ecs.createEntity().addComponents(
             new ModelComponent({ modelName: item }),
             new PositionComponent({ position: [i * 3 - 12, 0, 8] }),
             new HitboxComponent(modelDB[item].radius),
@@ -166,8 +159,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     // Wall torches
     const torches = [9.75, 3.25, -3.25]
     torches.forEach((posZ) => {
-        world.ecs.addComponents(
-            world.ecs.createEntity(),
+        world.ecs.createEntity().addComponents(
             new ModelComponent({ modelName: 'torchWall' }),
             new PositionComponent({ position: [-16, 1.5, posZ] }),
             new PointLightComponent({
@@ -179,8 +171,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     })
 
     // Gold chest
-    world.ecs.addComponents(
-        world.ecs.createEntity(),
+    world.ecs.createEntity().addComponents(
         new ModelComponent({ modelName: 'chest_gold' }),
         new PositionComponent({ position: [-6, 0, -6] }),
         new PointLightComponent({
@@ -191,8 +182,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     )
 
     for (let i = 0; i < 32; i += 2) {
-        world.ecs.addComponents(
-            world.ecs.createEntity(),
+        world.ecs.createEntity().addComponents(
             new ModelComponent({ modelName: 'stoneWallTop' }),
             new PositionComponent({ position: [-16, 0, i - 15] }),
             new HitboxComponent(modelDB.stoneWall.radius),
@@ -206,8 +196,7 @@ export const init = (canvas: HTMLCanvasElement) => {
         Math.random() * 30 - 15,
     ])
     for (let i = 0; i < 200; i += 1) {
-        world.ecs.addComponents(
-            world.ecs.createEntity(),
+        world.ecs.createEntity().addComponents(
             new ModelComponent({ modelName: 'grass' }),
             new PositionComponent({ position: makePos() }),
         )

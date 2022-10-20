@@ -52,13 +52,13 @@ export class ECS {
 
     createEntity() {
         const id = uuid().toUpperCase()
-        const entity = new Entity(id)
+        const entity = new Entity(id, this)
 
         this.entitiesById.set(id, entity)
 
         this.stats.entities += 1
 
-        return id
+        return entity
     }
 
     getEntity(entityId: EntityId) {
