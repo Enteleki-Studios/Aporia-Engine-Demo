@@ -15,6 +15,7 @@ import {
     PositionComponent,
     VelocityComponent,
     ApplyVelocitySystem,
+    BasicGeometryComponent,
 } from 'gengine'
 
 import { Renderer } from './Renderer'
@@ -71,6 +72,13 @@ export const init = (canvas: HTMLCanvasElement) => {
         new InputComponent(DEFAULT_KEYMAP),
         new PositionComponent(),
         new VelocityComponent(),
+    )
+
+    // Geo
+    world.ecs.addComponents(
+        world.ecs.createEntity(),
+        new BasicGeometryComponent('box'),
+        new PositionComponent({ position: [0, 0, 5] }),
     )
 
     world.start()

@@ -1,5 +1,13 @@
-import { AmbientLight } from 'three'
-import { World, ECSFilter, AmbientLightComponent, CameraComponent, RendererSystemBase } from 'gengine'
+import { AmbientLight, BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
+import {
+    World,
+    ECSFilter,
+    AmbientLightComponent,
+    CameraComponent,
+    BasicGeometryComponent,
+    RendererSystemBase,
+    PositionComponent,
+} from 'gengine'
 
 import { Renderer } from './Renderer'
 
@@ -7,11 +15,13 @@ export class RendererSystem extends RendererSystemBase {
     renderer: Renderer
 
     ambientLightFilter = new ECSFilter([AmbientLightComponent])
+    boxFilter = new ECSFilter([BasicGeometryComponent])
     cameraFilter = new ECSFilter([CameraComponent])
 
     filters = [
         this.ambientLightFilter,
         this.cameraFilter,
+        this.boxFilter,
     ]
 
     constructor(renderer: Renderer) {
@@ -34,6 +44,16 @@ export class RendererSystem extends RendererSystemBase {
             const cameraComponent = entity.get(CameraComponent)
             this.renderer.camera.position.copy(cameraComponent.position)
             this.renderer.camera.lookAt(cameraComponent.lookAt)
+        })
+
+        this.boxFilter.entities.forEach((entity) => {
+            if (!this.hasObject(entity.id, 'box')) {
+                this.addObject(entity.id, 'box', new Mesh(new BoxGeometry(1, 1, 1), new MeshBasicMaterial()))
+
+                if (entity.has(PositionComponent)) {
+                    this.getObject(entity.id, 'box')?.position.copy(entity.get(PositionComponent).position)
+                }
+            }
         })
     }
 }
