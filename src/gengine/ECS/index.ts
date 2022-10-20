@@ -1,5 +1,6 @@
 export { ECS } from './ECS'
 export { ECSFilter } from './ECSFilter'
 export { Entity, EntityId } from './Entity'
+export { EntityWrapper } from './EntityWrapper'
 export { Component } from './Component'
 export { System } from './System'
