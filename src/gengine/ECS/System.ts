@@ -1,5 +1,5 @@
 import type { World } from '../World'
-import { ECSFilter } from './ECSFilter'
+import type { ECSFilter } from './ECSFilter'
 
 export abstract class System {
     abstract filters: ECSFilter[]

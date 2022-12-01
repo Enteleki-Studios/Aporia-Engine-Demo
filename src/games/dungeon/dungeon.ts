@@ -2,6 +2,7 @@
 
 import {
     AmbientLightComponent,
+    BasicGeometryComponent,
     HealthComponent,
     // DirectionalLightComponent,
     HeroComponent,
@@ -201,6 +202,13 @@ export const init = (canvas: HTMLCanvasElement) => {
             new PositionComponent({ position: makePos() }),
         )
     }
+
+    // Test geomestry
+    const testBox = world.ecs.createEntity()
+    testBox.addComponents(
+        new BasicGeometryComponent('box'),
+        new PositionComponent({ position: [0, 0, 5] }),
+    )
 
     world.start()
 

@@ -63,13 +63,13 @@ export class World {
     }
 
     private tick() {
-        performance.mark('framestart')
+        performance.mark('Framestart')
         this.delta = Math.min(this.clock.getDelta(), this.MAX_DELTA)
         this.stats.fps = Math.floor(1 / this.delta)
 
         this.ecs.tick(this)
 
-        this.stats.frameTime = performance.measure('frame length', 'framestart').duration
+        this.stats.frameTime = performance.measure('Frame length', 'Framestart').duration
         this.stats.frames += 1
         this.stats.totalRuntime = this.clock.elapsedTime
         this.updateListeners('endframe')

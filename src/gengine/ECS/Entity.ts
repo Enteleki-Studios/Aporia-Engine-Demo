@@ -13,14 +13,20 @@ export class Entity {
         this.ecs = ecs
     }
 
+    /**
+     * This passes the components along to the ECS
+     * which does the actual component processing
+     */
     addComponents(...components: Component[]) {
         this.ecs.addComponents(this.id, ...components)
     }
 
+    /** @internal */
     addComponent_Unsafe(component: Component) {
         this.components.set(component.constructor, component)
     }
 
+    /** @internal */
     removeComponent_Unsafe(compClass: AnyComponentConstructor) {
         this.components.delete(compClass)
     }

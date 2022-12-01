@@ -1,5 +1,6 @@
 import {
     AmbientLight,
+    BoxGeometry,
     Mesh,
     Group,
     Box3,
@@ -10,6 +11,7 @@ import {
 } from 'three'
 
 import {
+    BasicGeometryComponent,
     DirectionalLight,
     DirectionalLightComponent,
     ModelComponent,
@@ -53,6 +55,7 @@ export class RendererSystem extends RendererSystemBase {
     ambientLightFilter = new ECSFilter([AmbientLightComponent])
     cameraFilter = new ECSFilter([CameraComponent])
     pointLightFilter = new ECSFilter([PositionComponent, PointLightComponent])
+    boxFilter = new ECSFilter([BasicGeometryComponent])
 
     filters = [
         this.modelFilter,
@@ -60,6 +63,7 @@ export class RendererSystem extends RendererSystemBase {
         this.ambientLightFilter,
         this.cameraFilter,
         this.pointLightFilter,
+        this.boxFilter,
     ]
 
     constructor(renderer: Renderer) {
@@ -182,6 +186,16 @@ export class RendererSystem extends RendererSystemBase {
             const cameraComponent = entity.get(CameraComponent)
             this.renderer.camera.position.copy(cameraComponent.position)
             this.renderer.camera.lookAt(cameraComponent.lookAt)
+        })
+
+        this.boxFilter.entities.forEach((entity) => {
+            if (!this.hasObject(entity.id, 'box')) {
+                this.addObject(entity.id, 'box', new Mesh(new BoxGeometry(1, 1, 1), new MeshBasicMaterial()))
+
+                if (entity.has(PositionComponent)) {
+                    this.getObject(entity.id, 'box')?.position.copy(entity.get(PositionComponent).position)
+                }
+            }
         })
 
         // this.pointLightFilter.entities.forEach((entity) => {

@@ -67,7 +67,7 @@ export class ECS {
 
     // removeEntity(entityId: EntityId) {
     //     // TODO queue and remove after tick
-    //     // remove from caches
+    //     // remove from filters
     // }
 
     addComponents(entityId: EntityId, ...components: Component[]) {
@@ -102,9 +102,10 @@ export class ECS {
     /** @internal */
     tick(world: World) {
         this.systems.forEach((s, i) => {
-            const t0 = performance.now()
+            const name = `System: ${s.constructor.name}`
+            performance.mark(name)
             s.tick(world)
-            this.stats.systemsStats[i].runtime = performance.now() - t0
+            this.stats.systemsStats[i].runtime = performance.measure(`${name} finish`, name).duration
         })
     }
 }

@@ -14,18 +14,11 @@
         "paths": {
             "gengine": ["gengine"],
             "example": ["games/example/*"],
-            "darkfps": ["games/darkfps/*"],
             "dungeon/*": ["games/dungeon/*"],
-            "zombieHorde/*": ["games/zombieHorde/*"],
             "*": [
                 "games/example/*",
-                "games/darkfps/*",
-                "games/dungeon/*",
-                "games/zombieHorde/*"
+                "games/dungeon/*"
             ]
         }
-    },
-    "exclude": [
-        "src/games/zombieHorde"
-    ]
+    }
 }
