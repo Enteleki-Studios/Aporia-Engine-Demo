@@ -84,8 +84,12 @@ export const init = (canvas: HTMLCanvasElement) => {
             color: 0xaaaaff,
             intensity: 0.05,
         }),
-        // new DirectionalLightComponent([10, 15, 10], 1),
     )
+
+    // Sun
+    // world.ecs.createEntity().addComponents(
+    //     new DirectionalLightComponent([5, 15, 5], 0.5),
+    // )
 
     world.ecs.createEntity().addComponents(
         new PositionComponent({ position: [0, 2, 0] }),

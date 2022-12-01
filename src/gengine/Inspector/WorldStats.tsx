@@ -48,6 +48,9 @@ export const WorldStats = () => {
 
                 <span>systems:</span>
                 <span>{stats.ecs.systems}</span>
+
+                <span>filters:</span>
+                <span>{stats.ecs.filters}</span>
             </div>
             <h4>System runtimes</h4>
             <div className="table">
