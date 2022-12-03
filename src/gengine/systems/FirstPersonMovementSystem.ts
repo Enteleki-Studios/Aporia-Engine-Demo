@@ -1,4 +1,3 @@
-import { Quaternion } from 'three'
 import { System } from '../ECS/System'
 import { ECSFilter } from '../ECS/ECSFilter'
 import { roundToZero } from '../utils/vectorUtils'
@@ -7,7 +6,7 @@ import {
     InputComponent,
     VelocityComponent,
 } from '../components'
-import { Y_AXIS, X_AXIS } from '../constants'
+import { Y_AXIS } from '../constants'
 import { World } from '../World'
 
 const DECELERATION = -5
@@ -67,18 +66,8 @@ export class FirstPersonMovementSystem extends System {
             velocity.add(frameDeceleration).add(frameAcceleration)
             roundToZero(velocity)
 
-            // Character rotation
-            const panQHorizontal = new Quaternion().setFromAxisAngle(
-                Y_AXIS,
-                -2 * Math.PI * inputComponent.mouse.pan.x * delta * 0.01,
-            )
-
-            const panQVertical = new Quaternion().setFromAxisAngle(
-                X_AXIS,
-                2 * Math.PI * inputComponent.mouse.pan.y * delta * 0.01,
-            )
-
-            direction.fromArray([0, 0, 0]).applyQuaternion(panQHorizontal).applyQuaternion(panQVertical)
+            direction.applyAxisAngle(Y_AXIS, -inputComponent.mouse.pan.x * delta * 0.1)
+            direction.y -= inputComponent.mouse.pan.y * delta * 0.1
         })
     }
 }

@@ -28,16 +28,19 @@ ul {
 .UI {
     position: relative;
 
+    .reticle {
+        position: absolute;
+        top: calc(50% - 2px);
+        left: calc(50% - 2px);
+        width: 4px;
+        height: 4px;
+        background-color: #fefefe;
+        border-radius: 50%;
+        border: 1px solid #333;
+    }
     canvas {
         display: block;
         width: 100%;
         cursor: crosshair;
-    }
-    .GENGINE_INFO {
-        position: absolute;
-        top: 1rem;
-        left: 1rem;
-        color: #aaa;
-        font-family: monospace;
     }
 }

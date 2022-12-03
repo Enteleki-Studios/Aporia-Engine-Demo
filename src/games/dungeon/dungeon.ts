@@ -28,6 +28,7 @@ import {
     inspector,
     FirstPersonCameraSystem,
     DirectionComponent,
+    FirstPersonMovementSystem,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -58,6 +59,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     const inputManager = new InputManager({
         domElement: canvas,
         keymap: DEFAULT_KEYMAP,
+        pointerLock: true,
     })
     inputManager.addActionListener('debug', () => {
         const { debugMode } = renderer
@@ -70,12 +72,13 @@ export const init = (canvas: HTMLCanvasElement) => {
 
     world.ecs.registerSystems([
         new InputSystem(inputManager),
-        new TwinStickMovementSystem(),
+        // new TwinStickMovementSystem(),
+        new FirstPersonMovementSystem(),
         new Systems.CollisionSystem(),
         new ApplyVelocitySystem(),
         new DamageSystem(),
-        new ThirdPersonCameraSystem(),
-        // new FirstPersonCameraSystem(),
+        // new ThirdPersonCameraSystem(),
+        new FirstPersonCameraSystem(),
         // new SunSystem(),
         new Systems.AnimationSystem(),
         new Systems.RendererSystem(renderer),

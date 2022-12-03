@@ -28,6 +28,7 @@ import {
     PointLightComponent,
     RendererSystemBase,
     Entity,
+    HeroComponent,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -181,6 +182,11 @@ export class RendererSystem extends RendererSystemBase {
             if (group) {
                 // Update position
                 group.position.copy(position)
+
+                if (entity.has(HeroComponent)) {
+                    // TODO just for testing FPV
+                    group.visible = false
+                }
 
                 if (entity.has(DirectionComponent)) {
                     const { direction } = entity.get(DirectionComponent)

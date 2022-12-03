@@ -20,6 +20,7 @@ const UI = () => {
     return (
         <div className="UI">
             {/* <Header /> */}
+            <div className="reticle" />
             <canvas ref={canvasRef} />
         </div>
     )
