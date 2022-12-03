@@ -26,6 +26,8 @@ import {
     DamagingComponent,
     PointLightComponent,
     inspector,
+    FirstPersonCameraSystem,
+    DirectionComponent,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -73,6 +75,7 @@ export const init = (canvas: HTMLCanvasElement) => {
         new ApplyVelocitySystem(),
         new DamageSystem(),
         new ThirdPersonCameraSystem(),
+        // new FirstPersonCameraSystem(),
         // new SunSystem(),
         new Systems.AnimationSystem(),
         new Systems.RendererSystem(renderer),
@@ -110,6 +113,7 @@ export const init = (canvas: HTMLCanvasElement) => {
         // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
         new Components.CollidableComponent(),
         new CameraTargetComponent(),
+        new DirectionComponent(),
         new SunTargetComponent(),
         new HitboxComponent(modelDB.wizard.radius),
         new HealthComponent(20),

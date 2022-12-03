@@ -1,4 +1,4 @@
-import { Quaternion, Vector3 } from 'three'
+import { Vector3 } from 'three'
 import { Component } from '../ECS/Component'
 
 interface PositionSettings {
@@ -7,7 +7,7 @@ interface PositionSettings {
 
 export class PositionComponent extends Component {
     position: Vector3
-    rotation = new Quaternion() // Model rotation
+    // rotation = new Quaternion() // Model rotation
 
     constructor({ position }: PositionSettings = { position: [0, 0, 0] }) {
         super()

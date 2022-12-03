@@ -15,6 +15,7 @@ import {
     BasicGeometryComponent,
     DirectionalLight,
     DirectionalLightComponent,
+    DirectionComponent,
     ModelComponent,
     TextSprite,
     AmbientLightComponent,
@@ -175,11 +176,16 @@ export class RendererSystem extends RendererSystemBase {
 
     tick(world: World) {
         this.modelFilter.entities.forEach((entity) => {
-            const positionComponent = entity.get(PositionComponent)
-            if (this.getGroup(entity)) {
+            const { position } = entity.get(PositionComponent)
+            const group = this.getGroup(entity)
+            if (group) {
                 // Update position
-                this.getGroup(entity)?.position.copy(positionComponent.position)
-                this.getGroup(entity)?.quaternion.copy(positionComponent.rotation)
+                group.position.copy(position)
+
+                if (entity.has(DirectionComponent)) {
+                    const { direction } = entity.get(DirectionComponent)
+                    group.lookAt(position.clone().add(direction))
+                }
 
                 // Update health text
                 if (entity.has(HealthComponent)) {

@@ -1,12 +1,15 @@
 import { System } from '../ECS/System'
 import { ECSFilter } from '../ECS/ECSFilter'
 
-import { CameraComponent } from '../components/CameraComponent'
-import { CameraTargetComponent } from '../components/CameraTargetComponent'
-import { PositionComponent } from '../components/PositionComponent'
+import {
+    CameraComponent,
+    CameraTargetComponent,
+    DirectionComponent,
+    PositionComponent,
+} from '../components'
 
 export class FirstPersonCameraSystem extends System {
-    cameraTargetFilter = new ECSFilter([CameraTargetComponent, PositionComponent])
+    cameraTargetFilter = new ECSFilter([CameraTargetComponent, PositionComponent, DirectionComponent])
     cameraFilter = new ECSFilter([CameraComponent])
 
     filters = [this.cameraFilter, this.cameraTargetFilter]
@@ -16,11 +19,12 @@ export class FirstPersonCameraSystem extends System {
 
         this.cameraFilter.entities.forEach((cameraEntity) => {
             const { position, lookAt } = cameraEntity.get(CameraComponent)
-            const { position: targetPosition, rotation } = cameraTargets[0].get(PositionComponent)
+            const { position: targetPosition } = cameraTargets[0].get(PositionComponent)
+            const { direction } = cameraTargets[0].get(DirectionComponent)
 
             position.fromArray([targetPosition.x, 2, targetPosition.z])
 
-            lookAt.fromArray([0, 0, 1]).applyQuaternion(rotation).add(position)
+            lookAt.copy(position).add(direction)
         })
     }
 }

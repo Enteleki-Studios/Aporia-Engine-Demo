@@ -1,10 +1,13 @@
 import { Vector3, Vector2 } from 'three'
 import { System } from '../ECS/System'
 import { ECSFilter } from '../ECS/ECSFilter'
-import { PositionComponent } from '../components/PositionComponent'
-import { VelocityComponent } from '../components/VelocityComponent'
-import { InputComponent } from '../components/InputComponent'
-import { CameraComponent } from '../components/CameraComponent'
+import {
+    CameraComponent,
+    DirectionComponent,
+    InputComponent,
+    PositionComponent,
+    VelocityComponent,
+} from '../components'
 import { Y_AXIS } from '../constants'
 import { World } from '../World'
 
@@ -15,7 +18,7 @@ const BASE_SPEED = 15
 
 export class TwinStickMovementSystem extends System {
     cameraFilter = new ECSFilter([CameraComponent])
-    movementFilter = new ECSFilter([InputComponent, PositionComponent, VelocityComponent])
+    movementFilter = new ECSFilter([DirectionComponent, InputComponent, PositionComponent, VelocityComponent])
 
     filters = [this.cameraFilter, this.movementFilter]
 
@@ -79,7 +82,7 @@ export class TwinStickMovementSystem extends System {
             const camPos = new Vector2(camDirection.x, camDirection.z).angle()
 
             angle -= camPos
-            positionComponent.rotation.setFromAxisAngle(Y_AXIS, angle)
+            entity.get(DirectionComponent).direction.fromArray([0, 0, 1]).applyAxisAngle(Y_AXIS, angle)
         })
     }
 }

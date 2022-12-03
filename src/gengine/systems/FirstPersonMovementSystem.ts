@@ -1,10 +1,12 @@
-import { Vector3, Quaternion } from 'three'
+import { Quaternion } from 'three'
 import { System } from '../ECS/System'
 import { ECSFilter } from '../ECS/ECSFilter'
 import { roundToZero } from '../utils/vectorUtils'
-import { PositionComponent } from '../components/PositionComponent'
-import { VelocityComponent } from '../components/VelocityComponent'
-import { InputComponent } from '../components/InputComponent'
+import {
+    DirectionComponent,
+    InputComponent,
+    VelocityComponent,
+} from '../components'
 import { Y_AXIS, X_AXIS } from '../constants'
 import { World } from '../World'
 
@@ -14,7 +16,7 @@ const RUN_BOOST = 2
 const BASE_SPEED = 15
 
 export class FirstPersonMovementSystem extends System {
-    movementFilter = new ECSFilter([InputComponent, PositionComponent, VelocityComponent])
+    movementFilter = new ECSFilter([DirectionComponent, InputComponent, VelocityComponent])
 
     filters = [this.movementFilter]
 
@@ -23,16 +25,13 @@ export class FirstPersonMovementSystem extends System {
 
         this.movementFilter.entities.forEach((entity) => {
             const inputComponent = entity.get(InputComponent)
-            const positionComponent = entity.get(PositionComponent)
-            const velocityComponent = entity.get(VelocityComponent)
-
-            const characterDirection = new Vector3(0, 0, 1).applyQuaternion(positionComponent.rotation)
-            const { velocity } = velocityComponent
+            const { velocity } = entity.get(VelocityComponent)
+            const { direction } = entity.get(DirectionComponent)
 
             // Calculate deceleration
             const frameDeceleration = velocity.clone().multiplyScalar(DECELERATION).multiplyScalar(delta)
 
-            const frameAcceleration = characterDirection.clone().setY(0).normalize()
+            const frameAcceleration = direction.clone().setY(0).normalize()
 
             let targetAngle = 0
             if (inputComponent.input.up.hold) {
@@ -79,7 +78,7 @@ export class FirstPersonMovementSystem extends System {
                 2 * Math.PI * inputComponent.mouse.pan.y * delta * 0.01,
             )
 
-            positionComponent.rotation.multiply(panQHorizontal).multiply(panQVertical)
+            direction.fromArray([0, 0, 0]).applyQuaternion(panQHorizontal).applyQuaternion(panQVertical)
         })
     }
 }
