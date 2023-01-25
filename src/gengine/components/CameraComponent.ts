@@ -1,5 +1,5 @@
 import { Vector3 } from 'three'
-import { Component } from '../ECS/Component'
+import { Component } from '../ecs'
 
 interface CameraSettings {
     position?: [number, number, number]

@@ -1,5 +1,5 @@
 import { Vector3 } from 'three'
-import { Component } from '../ECS'
+import { Component } from '../ecs'
 
 export class DirectionComponent extends Component {
     direction: Vector3

@@ -1,5 +1,4 @@
-import { System } from '../ECS/System'
-import { ECSFilter } from '../ECS/ECSFilter'
+import { ECSFilter, System } from '../ecs'
 import { InputManager } from '../managers/InputManager'
 import { InputComponent } from '../components/InputComponent'
 

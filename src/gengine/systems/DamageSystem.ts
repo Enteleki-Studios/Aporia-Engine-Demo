@@ -1,5 +1,5 @@
 import { World } from '../World'
-import { System, ECSFilter } from '../ECS'
+import { System, ECSFilter } from '../ecs'
 import {
     DamagingComponent,
     HealthComponent,

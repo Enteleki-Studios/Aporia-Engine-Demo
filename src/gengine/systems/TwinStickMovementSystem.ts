@@ -1,6 +1,5 @@
 import { Vector3, Vector2 } from 'three'
-import { System } from '../ECS/System'
-import { ECSFilter } from '../ECS/ECSFilter'
+import { ECSFilter, System } from '../ecs'
 import {
     CameraComponent,
     DirectionComponent,

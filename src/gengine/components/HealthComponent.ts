@@ -1,4 +1,4 @@
-import { Component } from '../ECS/Component'
+import { Component } from '../ecs'
 
 export class HealthComponent extends Component {
     health: number

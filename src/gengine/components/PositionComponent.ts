@@ -1,5 +1,5 @@
 import { Vector3 } from 'three'
-import { Component } from '../ECS/Component'
+import { Component } from '../ecs'
 
 interface PositionSettings {
     position: [number, number, number],

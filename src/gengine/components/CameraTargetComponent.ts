@@ -1,3 +1,3 @@
-import { Component } from '../ECS/Component'
+import { Component } from '../ecs'
 
 export class CameraTargetComponent extends Component {}

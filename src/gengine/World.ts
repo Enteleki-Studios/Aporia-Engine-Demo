@@ -2,7 +2,7 @@ import { Clock } from 'three'
 
 import { WORLD_MAX_DELTA, WorldEvent } from './constants'
 
-import { ECS, ECSStatsType } from './ECS/ECS'
+import { ECS, ECSStatsType } from './ecs'
 
 export interface StatsType {
     /** Game engine frames per second.

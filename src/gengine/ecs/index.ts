@@ -1,4 +1,4 @@
-export { ECS } from './ECS'
+export { ECS, ECSStatsType } from './ECS'
 export { ECSFilter } from './ECSFilter'
 export { Entity, EntityId } from './Entity'
 export { Component } from './Component'

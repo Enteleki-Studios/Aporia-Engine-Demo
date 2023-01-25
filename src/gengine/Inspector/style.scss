@@ -84,6 +84,7 @@ $colors: (
                 span {
                     padding: 0.12rem 0.25rem;
                     white-space: nowrap;
+                    min-width: 2rem;
                 }
                 span:nth-child(2n + 1) {
                     padding-right: 0.5rem;

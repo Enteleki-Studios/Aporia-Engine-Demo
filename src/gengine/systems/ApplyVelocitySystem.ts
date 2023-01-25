@@ -1,8 +1,6 @@
-import { ECSFilter } from '../ECS/ECSFilter'
-import { System } from '../ECS/System'
+import { ECSFilter, System } from '../ecs'
 import { World } from '../World'
-import { PositionComponent } from '../components/PositionComponent'
-import { VelocityComponent } from '../components/VelocityComponent'
+import { PositionComponent, VelocityComponent } from '../components'
 
 export class ApplyVelocitySystem extends System {
     movingFilter = new ECSFilter([PositionComponent, VelocityComponent])

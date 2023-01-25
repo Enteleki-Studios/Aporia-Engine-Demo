@@ -1,10 +1,7 @@
 import { Vector3 } from 'three'
-import { PositionComponent } from '../components/PositionComponent'
-import { CameraComponent } from '../components/CameraComponent'
-import { CameraTargetComponent } from '../components/CameraTargetComponent'
-import { System } from '../ECS/System'
+import { PositionComponent, CameraComponent, CameraTargetComponent } from '../components'
+import { ECSFilter, System } from '../ecs'
 import { World } from '../World'
-import { ECSFilter } from '../ECS/ECSFilter'
 
 const camPosition = new Vector3()
 

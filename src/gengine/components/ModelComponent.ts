@@ -1,5 +1,5 @@
 import type { Object3D } from 'three'
-import { Component } from '../ECS/Component'
+import { Component } from '../ecs'
 
 export class ModelComponent<ModelDB> extends Component {
     readonly modelName: keyof ModelDB

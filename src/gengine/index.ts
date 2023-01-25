@@ -2,7 +2,7 @@
 export { World, StatsType } from './World'
 
 // ECS
-export * from './ECS'
+export * from './ecs'
 
 // Components
 export * from './components'
