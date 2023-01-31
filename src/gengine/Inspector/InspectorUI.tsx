@@ -24,7 +24,7 @@ export const InspectorUI = () => {
     useEffect(() => {
         world.addEventListener('start', updateStatus)
         world.addEventListener('stop', updateStatus)
-        // TODO remove listener
+
         updateStatus()
 
         return () => {
