@@ -28,6 +28,7 @@ export * as inspector from './Inspector'
 
 // React
 export { WorldContext } from './react/WorldContext'
+export { useForceUpdate } from './react/hooks/useForceUpdate'
 
 // Utils
 export * as arrayUtils from './utils/arrayUtils'

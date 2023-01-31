@@ -1,21 +1,20 @@
-import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react'
+import React, { Fragment, useContext, useEffect } from 'react'
 
 import { secondsToClockString } from './utils'
 
-import { StatsType } from '../World'
 import { WorldContext } from '../react/WorldContext'
+import { useForceUpdate } from '../react/hooks/useForceUpdate'
 
 export const WorldStats = () => {
     const world = useContext(WorldContext)
-    const [stats, setStats] = useState<StatsType>()
-
-    const updateStats = useCallback(() => {
-        setStats({ ...world.stats })
-    }, [world])
+    const forceUpdate = useForceUpdate()
 
     useEffect(() => {
-        world.addEventListener('endframe', updateStats)
-    }, [world, updateStats])
+        world.addEventListener('endframe', forceUpdate)
+        // TODO remove listener
+    }, [world, forceUpdate])
+
+    const { stats } = world
 
     if (!stats) {
         return null
