@@ -104,6 +104,11 @@ export class World {
         this.observers[eventName].push(callback)
     }
 
+    removeEventListener(eventName: WorldEvent, callback: () => void) {
+        const observers = this.observers[eventName]
+        this.observers[eventName] = observers.filter((c) => c !== callback)
+    }
+
     private updateListeners(eventName: WorldEvent) {
         this.observers[eventName].forEach((c) => c())
     }

@@ -11,7 +11,10 @@ export const WorldStats = () => {
 
     useEffect(() => {
         world.addEventListener('endframe', forceUpdate)
-        // TODO remove listener
+
+        return () => {
+            world.removeEventListener('endframe', forceUpdate)
+        }
     }, [world, forceUpdate])
 
     const { stats } = world

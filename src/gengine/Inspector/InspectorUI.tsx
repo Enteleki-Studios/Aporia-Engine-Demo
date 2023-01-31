@@ -26,6 +26,11 @@ export const InspectorUI = () => {
         world.addEventListener('stop', updateStatus)
         // TODO remove listener
         updateStatus()
+
+        return () => {
+            world.removeEventListener('start', updateStatus)
+            world.removeEventListener('stop', updateStatus)
+        }
     }, [updateStatus, world])
 
     const onModeChange = (e: FormEvent<HTMLSelectElement>) => {
