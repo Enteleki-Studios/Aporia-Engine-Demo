@@ -1,8 +1,8 @@
-import { Group, Object3D } from 'three'
+import { Group, type Object3D } from 'three'
 
 import { StandardRenderer } from '../three/StandardRenderer'
-import { ECSFilter, Entity, System } from '../ecs'
-import { World } from '../World'
+import { type ECSFilter, type Entity, System } from '../ecs'
+import type { World } from '../World'
 
 export class RendererSystemBase extends System {
     renderer: StandardRenderer
