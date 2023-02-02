@@ -1,9 +1,14 @@
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const path = require('path')
+const package = require('./package.json')
+const commitHash = require('child_process')
+    .execSync('git rev-parse --short HEAD')
+    .toString().trim()
 
 const games = [
     'example',
@@ -21,7 +26,7 @@ games.forEach((name) => {
         new HtmlWebpackPlugin({
             title: name,
             filename: `${name}/index.html`,
-            template: `src/gengine/html/standardHTMLTemplate.html`,
+            template: 'src/gengine/html/standardHTMLTemplate.html',
             chunks: [name],
             minify: false,
         }),
@@ -62,6 +67,9 @@ module.exports = {
                 { from: 'favicon.ico', to: 'favicon.ico' },
             ],
         }),
+        new webpack.DefinePlugin({
+            ENGINE_VERSION: JSON.stringify(`${package.version} ${commitHash}`),
+        }),
     ],
     module: {
         rules: [
@@ -76,7 +84,7 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
-                exclude: /node_modules/
+                exclude: /node_modules/,
             },
         ],
     },
@@ -90,4 +98,4 @@ module.exports = {
             },
         },
     },
-};
+}

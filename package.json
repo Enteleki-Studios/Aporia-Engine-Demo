@@ -1,6 +1,6 @@
 {
     "name": "gamedev",
-    "version": "0.1.0",
+    "version": "0.1.0 - alpha",
     "description": "game dev monorepo",
     "repository": "github.com",
     "main": "index.js",

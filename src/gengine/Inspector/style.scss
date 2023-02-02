@@ -1,6 +1,7 @@
 @use "sass:color";
 
 $white: #fefefe;
+$black: #121212;
 $darkBlue: #282a36;
 $lighterBlue: #3d3f4a;
 $darkGrey: #444;
@@ -8,6 +9,7 @@ $darkGrey: #444;
 $colors: (
     default: (
         background: $white,
+        foreground: $black,
     ),
     panel: (
         background: $darkBlue,
@@ -17,6 +19,12 @@ $colors: (
     ),
     card: (
         border: color.scale($darkBlue, $lightness: 30%),
+    ),
+    log: (
+        background: $black,
+        foreground: $white,
+        timestamp: $darkGrey,
+        lineNumber: $darkBlue,
     ),
 );
 
@@ -92,6 +100,20 @@ $colors: (
                 span:nth-child(4n + 3),
                 span:nth-child(4n + 4) {
                     background-color: color(panel, backgroundFaded);
+                }
+            }
+            .log {
+                background-color: color(log, background);
+                padding: 0.25rem 2rem 0.25rem 0.25rem;
+                font-family: monospace;
+
+                .ln {
+                    color: color(log, lineNumber);
+                    margin-right: 0.25rem;
+                }
+                .ts {
+                    color: color(log, timestamp);
+                    margin-right: 0.5rem;
                 }
             }
         }

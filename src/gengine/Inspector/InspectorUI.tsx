@@ -1,7 +1,7 @@
 import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { setDebugMode, getDebugMode } from './slice'
+import { setDebugMode, getDebugMode, getLog } from './slice'
 
 import { Icon } from './Icon'
 import { DebugMode, DebugModes } from '../constants'
@@ -13,6 +13,7 @@ import './style.scss'
 export const InspectorUI = () => {
     const dispatch = useDispatch()
     const debugMode = useSelector(getDebugMode)
+    const log = useSelector(getLog)
     const world = useContext(WorldContext)
 
     const [status, setStatus] = useState('')
@@ -66,6 +67,18 @@ export const InspectorUI = () => {
                                 ))}
                             </select>
                         </label>
+                    </section>
+                    <section>
+                        <h3>Log</h3>
+                        <div className="log">
+                            {log.map((line) => (
+                                <div key={line.lineNumber}>
+                                    <span className="ln">{line.lineNumber}</span>
+                                    <span className="ts">{new Date(line.ts).toLocaleTimeString()}</span>
+                                    <span className="m">{line.message}</span>
+                                </div>
+                            ))}
+                        </div>
                     </section>
                 </div>
             </div>

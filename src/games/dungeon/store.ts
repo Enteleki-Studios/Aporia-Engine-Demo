@@ -3,12 +3,12 @@ import { configureStore } from '@reduxjs/toolkit'
 
 import { rootReducer } from 'models/reducers'
 
-import { middleware as dungeonMiddleware } from './dungeon'
+// import { middleware as dungeonMiddleware } from './dungeon'
 
 export const store = configureStore({
     reducer: rootReducer,
     middleware: [
-        dungeonMiddleware,
+        // dungeonMiddleware,
         // logger,
     ],
 })

@@ -2,16 +2,25 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import type { DebugMode } from 'gengine'
 
-interface InspectorState {
-    debugMode: DebugMode,
+export type LogLine = {
+    ts: number,
+    message: string,
 }
 
-export interface State {
-    inspector: InspectorState,
+type LogLineNumbered = LogLine & { lineNumber: number }
+
+interface InspectorState {
+    debugMode: DebugMode
+    log: LogLineNumbered[]
+}
+
+interface State {
+    inspector: InspectorState
 }
 
 const initialState = {
     debugMode: 'game',
+    log: [],
 } as InspectorState
 
 export const slice = createSlice({
@@ -21,9 +30,16 @@ export const slice = createSlice({
         setDebugMode(state, action: PayloadAction<DebugMode>) {
             state.debugMode = action.payload
         },
+        appendLog(state, action: PayloadAction<LogLine>) {
+            state.log.push({
+                ...action.payload,
+                lineNumber: ((state.log[state.log.length - 1]?.lineNumber) || 0) + 1,
+            })
+        },
     },
 })
 
-export const { setDebugMode } = slice.actions
+export const { setDebugMode, appendLog } = slice.actions
 
 export const getDebugMode = (state: State) => state.inspector.debugMode
+export const getLog = (state: State) => state.inspector.log

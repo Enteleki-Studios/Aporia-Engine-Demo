@@ -1,4 +1,4 @@
-// import { store } from 'store'
+import { store } from 'dungeon/store'
 
 import {
     AmbientLightComponent,
@@ -43,7 +43,12 @@ import { Action, Middleware } from '@reduxjs/toolkit'
 
 let renderer: Renderer
 
-export const world = new World()
+const loggingFunction = inspector.logger(store)
+
+export const world = new World({
+    loggingEnabled: true,
+    loggingFunction,
+})
 
 export const middleware: Middleware = () => (next) => (action: Action) => {
     if (inspector.slice.actions.setDebugMode.match(action)) {

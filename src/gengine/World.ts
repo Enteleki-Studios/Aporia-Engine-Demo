@@ -3,8 +3,14 @@ import { Clock } from 'three'
 import { WORLD_MAX_DELTA, WorldEvent } from './constants'
 
 import { ECS, ECSStatsType } from './ecs'
+import { LogLine } from './Inspector/slice'
 
-export interface StatsType {
+type WorldConfig = {
+    loggingEnabled?: boolean
+    loggingFunction?: (logLine: LogLine) => void
+}
+
+export type StatsType = {
     /** Game engine frames per second.
      * Browsers will cap this at 60fps.
      */
@@ -43,7 +49,20 @@ export class World {
 
     isRunning = false
 
-    constructor() {
+    loggingEnabled = false
+
+    loggingFunction?: WorldConfig['loggingFunction']
+
+    constructor(config?: WorldConfig) {
+        if (config) {
+            const { loggingEnabled, loggingFunction } = config
+
+            this.loggingEnabled = !!loggingEnabled
+            if (loggingFunction) {
+                this.loggingFunction = loggingFunction
+            }
+        }
+
         this.ecs = new ECS()
 
         this.stats = {
@@ -55,6 +74,9 @@ export class World {
         }
 
         this.addEventListener.bind(this)
+
+        this.log('Gengine started')
+        this.log(`Version ${ENGINE_VERSION}`)
     }
 
     /** Time elapsed since last frame in seconds */
@@ -111,5 +133,16 @@ export class World {
 
     private updateListeners(eventName: WorldEvent) {
         this.observers[eventName].forEach((c) => c())
+    }
+
+    log(message: string) {
+        if (this.loggingEnabled) {
+            // eslint-disable-next-line no-console
+            console.log(message)
+
+            if (this.loggingFunction) {
+                this.loggingFunction({ ts: Date.now(), message })
+            }
+        }
     }
 }
