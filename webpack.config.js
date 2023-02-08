@@ -11,7 +11,7 @@ const commitHash = require('child_process')
     .toString().trim()
 
 const games = [
-    'example',
+    // 'example',
     'dungeon',
 ]
 
