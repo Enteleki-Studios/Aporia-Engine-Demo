@@ -175,6 +175,7 @@ export class RendererSystem extends RendererSystemBase {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tick(world: World) {
         this.modelFilter.entities.forEach((entity) => {
             const { position } = entity.get(PositionComponent)
@@ -220,7 +221,7 @@ export class RendererSystem extends RendererSystemBase {
             this.renderer.camera.lookAt(cameraComponent.lookAt)
         })
 
-        this.renderer.render(world.timeElapsedS)
+        this.renderer.render()
     }
 }
 

@@ -12,7 +12,7 @@ const UI = () => {
             renderer.setCanvasContainer(canvasContainerRef.current)
             init()
         }
-    })
+    }, [])
 
     return (
         <div className="UI">

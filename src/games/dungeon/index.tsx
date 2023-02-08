@@ -10,13 +10,15 @@ import UI from 'dungeon/UI'
 
 import './root.scss'
 
-const root = createRoot(document.getElementById('Root') as Element)
+const rootElement = document.getElementById('Root')
 
-root.render(
-    <Provider store={store}>
-        <WorldContext.Provider value={world}>
-            <inspector.InspectorUI />
-            <UI />
-        </WorldContext.Provider>
-    </Provider>,
-)
+if (rootElement) {
+    createRoot(rootElement).render(
+        <Provider store={store}>
+            <WorldContext.Provider value={world}>
+                <inspector.InspectorUI />
+                <UI />
+            </WorldContext.Provider>
+        </Provider>,
+    )
+}

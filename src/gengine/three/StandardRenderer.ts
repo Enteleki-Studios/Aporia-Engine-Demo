@@ -39,8 +39,6 @@ export class StandardRenderer {
     debugOrbitControls: OrbitControls
     debugViewport = new Vector4()
 
-    jobs: Array<(delta: number) => void>
-
     constructor({
         canvas,
         fov = 60,
@@ -48,8 +46,6 @@ export class StandardRenderer {
         near = 0.5,
         far = 50,
     }: StandardRendererParams) {
-        this.jobs = []
-
         this.renderer = new WebGLRenderer({
             canvas,
             antialias: true,
@@ -88,14 +84,12 @@ export class StandardRenderer {
         this.updateViewports()
     }
 
-    render(delta: number) {
+    render() {
         if (this.debugMode !== 'debug') {
             this.renderer.setViewport(this.viewport)
             this.renderer.setScissor(this.viewport)
             this.renderer.render(this.scene, this.camera)
         }
-
-        this.jobs.forEach((job) => job(delta))
 
         if (this.debugMode !== 'game') {
             this.debugHelpers.forEach((h) => {
