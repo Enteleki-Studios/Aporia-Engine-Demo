@@ -19,7 +19,7 @@ export class Renderer extends StandardRenderer {
 
     hasWorld = false
 
-    constructor(params: { canvas: HTMLCanvasElement }) {
+    constructor(params: { canvas?: HTMLCanvasElement }) {
         super(params)
 
         this.setSize(1920, 1080)

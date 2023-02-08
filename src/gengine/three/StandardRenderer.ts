@@ -15,7 +15,7 @@ import { AxesHelper } from './AxesHelper'
 import { DebugMode } from '../constants'
 
 interface StandardRendererParams {
-    canvas: HTMLCanvasElement
+    canvas?: HTMLCanvasElement
     fov?: number
     aspect?: number
     near?: number
@@ -31,6 +31,7 @@ export class StandardRenderer {
     height = 0
     aspect = 1
     viewport = new Vector4()
+    canvas: HTMLCanvasElement
 
     debugHelpers: Object3D[] = []
     debug = false
@@ -65,6 +66,7 @@ export class StandardRenderer {
         this.renderer.autoClear = false
         this.renderer.setScissorTest(true)
 
+        this.canvas = this.renderer.domElement
         this.scene = new Scene()
         this.scene.background = new Color(0x161616)
 
@@ -149,6 +151,10 @@ export class StandardRenderer {
             this.viewport.set(0, 0, this.width, this.height)
             this.debugViewport.set(0, 0, this.width, this.height)
         }
+    }
+
+    setCanvasContainer(element: HTMLElement) {
+        element.appendChild(this.canvas)
     }
 
     // updateInfoDomElement(delta: number) {

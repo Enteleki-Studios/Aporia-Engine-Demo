@@ -41,7 +41,7 @@ import { Renderer } from 'dungeon/Renderer'
 import modelDB from 'modelDB'
 import { Action, Middleware } from '@reduxjs/toolkit'
 
-let renderer: Renderer
+export const renderer = new Renderer({})
 
 const loggingFunction = inspector.logger(store)
 
@@ -58,11 +58,9 @@ export const middleware: Middleware = () => (next) => (action: Action) => {
     return next(action)
 }
 
-export const init = (canvas: HTMLCanvasElement) => {
-    renderer = new Renderer({ canvas })
-
+export const init = () => {
     const inputManager = new InputManager({
-        domElement: canvas,
+        domElement: renderer.canvas,
         keymap: DEFAULT_KEYMAP,
         pointerLock: true,
     })

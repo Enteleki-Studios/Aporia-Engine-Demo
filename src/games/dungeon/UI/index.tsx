@@ -1,27 +1,23 @@
 import React, { useEffect } from 'react'
 
-// import { useAppDispatch } from 'hooks'
-
 // import Header from 'UI/components/ingame/Header'
 
-import { init } from 'dungeon/dungeon'
+import { init, renderer } from 'dungeon/dungeon'
 
 const UI = () => {
-    const canvasRef = React.useRef(null)
-    // const dispatch = useAppDispatch()
-    useEffect(() => {
-        // dungeon.addDispatch(dispatch)
+    const canvasContainerRef = React.useRef(null)
 
-        if (canvasRef.current) {
-            init(canvasRef.current)
+    useEffect(() => {
+        if (canvasContainerRef.current) {
+            renderer.setCanvasContainer(canvasContainerRef.current)
+            init()
         }
     })
 
     return (
         <div className="UI">
-            {/* <Header /> */}
             <div className="reticle" />
-            <canvas ref={canvasRef} />
+            <div ref={canvasContainerRef} />
         </div>
     )
 }
