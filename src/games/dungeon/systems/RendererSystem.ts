@@ -198,7 +198,9 @@ export class RendererSystem extends RendererSystemBase {
                     const ts = this.getObject(entity, 'health') as TextSprite
                     const { health } = entity.get(HealthComponent)
                     if (health) {
-                        ts.setText(health)
+                        if (ts.text !== health.toString()) {
+                            ts.setText(health)
+                        }
                     } else {
                         ts.visible = false
                     }

@@ -75,7 +75,7 @@ export const InspectorUI = () => {
                                 <div key={line.lineNumber}>
                                     <span className="ln">{line.lineNumber}</span>
                                     <span className="ts">{new Date(line.ts).toLocaleTimeString()}</span>
-                                    <span className="m">{line.message}</span>
+                                    <span>{line.message}</span>
                                 </div>
                             ))}
                         </div>

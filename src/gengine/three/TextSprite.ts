@@ -11,9 +11,11 @@ interface Settings {
 
 export class TextSprite extends Sprite {
     private canvas: HTMLCanvasElement
-    private text: string
     private settings: Settings
     private texture: CanvasTexture
+
+    // TODO make this private
+    text: string
 
     constructor(text: string | number, settings: Settings = {}) {
         const canvas = document.createElement('canvas')
