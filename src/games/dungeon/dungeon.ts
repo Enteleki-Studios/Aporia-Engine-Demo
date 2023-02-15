@@ -116,7 +116,6 @@ export const init = () => {
     // Player
     world.ecs.createEntity().addComponents(
         new Components.AnimationComponent('idle'),
-        // new Components.AttackComponent(playerEntity, { damage: 5, range: 2 }),
         new Components.CollidableComponent(),
         new CameraTargetComponent(),
         new DirectionComponent(),
