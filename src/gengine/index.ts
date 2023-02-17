@@ -10,6 +10,7 @@ export * from './components'
 // Systems
 export { ApplyVelocitySystem } from './systems/ApplyVelocitySystem'
 export { DamageSystem } from './systems/DamageSystem'
+export { EmitterSystem } from './systems/EmitterSystem'
 export { FirstPersonCameraSystem } from './systems/FirstPersonCameraSystem'
 export { FirstPersonMovementSystem } from './systems/FirstPersonMovementSystem'
 export { InputSystem } from './systems/InputSystem'

@@ -29,6 +29,8 @@ import {
     FirstPersonCameraSystem,
     DirectionComponent,
     FirstPersonMovementSystem,
+    EmitterComponent,
+    EmitterSystem,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -50,6 +52,36 @@ export const world = new World({
     loggingFunction,
 })
 
+const inputManager = new InputManager({
+    domElement: renderer.canvas,
+    keymap: DEFAULT_KEYMAP,
+    pointerLock: true,
+})
+
+inputManager.addActionListener('debug', () => {
+    const { debugMode } = renderer
+    if (debugMode === 'game') {
+        renderer.setDebugMode('debug')
+    } else {
+        renderer.setDebugMode('game')
+    }
+})
+
+world.ecs.registerSystems([
+    new InputSystem(inputManager),
+    new EmitterSystem(),
+    // new TwinStickMovementSystem(),
+    new FirstPersonMovementSystem(),
+    new Systems.CollisionSystem(),
+    new ApplyVelocitySystem(),
+    new DamageSystem(),
+    // new ThirdPersonCameraSystem(),
+    new FirstPersonCameraSystem(),
+    // new SunSystem(),
+    new Systems.AnimationSystem(),
+    new Systems.RendererSystem(renderer),
+])
+
 export const middleware: Middleware = () => (next) => (action: Action) => {
     if (inspector.slice.actions.setDebugMode.match(action)) {
         renderer.setDebugMode(action.payload)
@@ -58,175 +90,147 @@ export const middleware: Middleware = () => (next) => (action: Action) => {
     return next(action)
 }
 
-export const init = () => {
-    const inputManager = new InputManager({
-        domElement: renderer.canvas,
-        keymap: DEFAULT_KEYMAP,
-        pointerLock: true,
-    })
-    inputManager.addActionListener('debug', () => {
-        const { debugMode } = renderer
-        if (debugMode === 'game') {
-            renderer.setDebugMode('debug')
-        } else {
-            renderer.setDebugMode('game')
-        }
-    })
+// Lighting
+world.ecs.createEntity().addComponents(
+    new AmbientLightComponent({
+        color: 0xaaaaff,
+        intensity: 0.05,
+    }),
+)
 
-    world.ecs.registerSystems([
-        new InputSystem(inputManager),
-        // new TwinStickMovementSystem(),
-        new FirstPersonMovementSystem(),
-        new Systems.CollisionSystem(),
-        new ApplyVelocitySystem(),
-        new DamageSystem(),
-        // new ThirdPersonCameraSystem(),
-        new FirstPersonCameraSystem(),
-        // new SunSystem(),
-        new Systems.AnimationSystem(),
-        new Systems.RendererSystem(renderer),
-    ])
+// Sun
+// world.ecs.createEntity().addComponents(
+//     new DirectionalLightComponent([5, 15, 5], 0.5),
+// )
 
-    // Lighting
+// Test stuff
+world.ecs.createEntity().addComponents(
+    new BasicGeometryComponent({ geometryType: 'box' }),
+    new PositionComponent({ position: [0, 1, 5] }),
+    new EmitterComponent(),
+)
+
+world.ecs.createEntity().addComponents(
+    new PositionComponent({ position: [0, 2, 0] }),
+    new PointLightComponent({
+        color: 0xffee88,
+        intensity: 3,
+    }),
+)
+
+// Camera
+world.ecs.createEntity().addComponents(
+    new CameraComponent(),
+)
+
+// Player
+world.ecs.createEntity().addComponents(
+    new Components.AnimationComponent('idle'),
+    new Components.CollidableComponent(),
+    new CameraTargetComponent(),
+    new DirectionComponent(),
+    new SunTargetComponent(),
+    new HitboxComponent(modelDB.wizard.radius),
+    new HealthComponent(20),
+    new HeroComponent(),
+    new InputComponent(DEFAULT_KEYMAP),
+    new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
+    new PositionComponent({ position: [0, 0, -1] }),
+    new VelocityComponent(),
+    new DamagingComponent({
+        radius: 1,
+        theta: 2,
+        spoolUp: 0.25,
+        coolDown: 0.5,
+        damage: 5,
+    }),
+    new PointLightComponent({
+        color: 0xffee88,
+        intensity: 3,
+        offset: [0, 2, 2],
+        castShadow: true,
+    }),
+)
+
+// Skeleton
+world.ecs.createEntity().addComponents(
+    new Components.AnimationComponent('idle'),
+    new ModelComponent({ modelName: 'skeleton' }),
+    new PositionComponent({ position: [1, 0, 2] }),
+    new HealthComponent(20),
+    new HitboxComponent(0.25),
+)
+
+// Slime
+world.ecs.createEntity().addComponents(
+    new Components.AnimationComponent('idle'),
+    new ModelComponent({ modelName: 'slime' }),
+    new PositionComponent({ position: [4, 0, 2] }),
+    new HealthComponent(20),
+    new HitboxComponent(0.25),
+)
+
+// Items
+const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart', 'crate']
+items.forEach((item, i) => {
     world.ecs.createEntity().addComponents(
-        new AmbientLightComponent({
-            color: 0xaaaaff,
-            intensity: 0.05,
-        }),
+        new ModelComponent({ modelName: item }),
+        new PositionComponent({ position: [i * 3 - 12, 0, 8] }),
+        new HitboxComponent(modelDB[item].radius),
     )
+})
 
-    // Sun
-    // world.ecs.createEntity().addComponents(
-    //     new DirectionalLightComponent([5, 15, 5], 0.5),
-    // )
-
+// Wall torches
+const torches = [9.75, 3.25, -3.25]
+torches.forEach((posZ) => {
     world.ecs.createEntity().addComponents(
-        new PositionComponent({ position: [0, 2, 0] }),
+        new ModelComponent({ modelName: 'torchWall' }),
+        new PositionComponent({ position: [-16, 1.5, posZ] }),
         new PointLightComponent({
-            color: 0xffee88,
+            color: 0xff6700,
             intensity: 3,
+            offset: [0.75, 0.5, 0],
         }),
     )
+})
 
-    // Camera
+// Gold chest
+world.ecs.createEntity().addComponents(
+    new ModelComponent({ modelName: 'chest_gold' }),
+    new PositionComponent({ position: [-6, 0, -6] }),
+    new PointLightComponent({
+        color: 0xffD700,
+        intensity: 1,
+        offset: [0.5, 0.7, 0],
+    }),
+)
+
+for (let i = 0; i < 32; i += 2) {
     world.ecs.createEntity().addComponents(
-        new CameraComponent(),
+        new ModelComponent({ modelName: 'stoneWallTop' }),
+        new PositionComponent({ position: [-16, 0, i - 15] }),
+        new HitboxComponent(modelDB.stoneWall.radius),
     )
-
-    // Player
-    world.ecs.createEntity().addComponents(
-        new Components.AnimationComponent('idle'),
-        new Components.CollidableComponent(),
-        new CameraTargetComponent(),
-        new DirectionComponent(),
-        new SunTargetComponent(),
-        new HitboxComponent(modelDB.wizard.radius),
-        new HealthComponent(20),
-        new HeroComponent(),
-        new InputComponent(DEFAULT_KEYMAP),
-        new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
-        new PositionComponent({ position: [0, 0, -1] }),
-        new VelocityComponent(),
-        new DamagingComponent({
-            radius: 1,
-            theta: 2,
-            spoolUp: 0.25,
-            coolDown: 0.5,
-            damage: 5,
-        }),
-        new PointLightComponent({
-            color: 0xffee88,
-            intensity: 3,
-            offset: [0, 2, 2],
-            castShadow: true,
-        }),
-    )
-
-    // Skeleton
-    world.ecs.createEntity().addComponents(
-        new Components.AnimationComponent('idle'),
-        new ModelComponent({ modelName: 'skeleton' }),
-        new PositionComponent({ position: [1, 0, 2] }),
-        new HealthComponent(20),
-        new HitboxComponent(0.25),
-    )
-
-    // Slime
-    world.ecs.createEntity().addComponents(
-        new Components.AnimationComponent('idle'),
-        new ModelComponent({ modelName: 'slime' }),
-        new PositionComponent({ position: [4, 0, 2] }),
-        new HealthComponent(20),
-        new HitboxComponent(0.25),
-    )
-
-    // Items
-    const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart', 'crate']
-    items.forEach((item, i) => {
-        world.ecs.createEntity().addComponents(
-            new ModelComponent({ modelName: item }),
-            new PositionComponent({ position: [i * 3 - 12, 0, 8] }),
-            new HitboxComponent(modelDB[item].radius),
-        )
-    })
-
-    // Wall torches
-    const torches = [9.75, 3.25, -3.25]
-    torches.forEach((posZ) => {
-        world.ecs.createEntity().addComponents(
-            new ModelComponent({ modelName: 'torchWall' }),
-            new PositionComponent({ position: [-16, 1.5, posZ] }),
-            new PointLightComponent({
-                color: 0xff6700,
-                intensity: 3,
-                offset: [0.75, 0.5, 0],
-            }),
-        )
-    })
-
-    // Gold chest
-    world.ecs.createEntity().addComponents(
-        new ModelComponent({ modelName: 'chest_gold' }),
-        new PositionComponent({ position: [-6, 0, -6] }),
-        new PointLightComponent({
-            color: 0xffD700,
-            intensity: 1,
-            offset: [0.5, 0.7, 0],
-        }),
-    )
-
-    for (let i = 0; i < 32; i += 2) {
-        world.ecs.createEntity().addComponents(
-            new ModelComponent({ modelName: 'stoneWallTop' }),
-            new PositionComponent({ position: [-16, 0, i - 15] }),
-            new HitboxComponent(modelDB.stoneWall.radius),
-        )
-    }
-
-    // Grass
-    const makePos: () => [number, number, number] = () => ([
-        Math.random() * 30 - 15,
-        0,
-        Math.random() * 30 - 15,
-    ])
-    for (let i = 0; i < 200; i += 1) {
-        world.ecs.createEntity().addComponents(
-            new ModelComponent({ modelName: 'grass' }),
-            new PositionComponent({ position: makePos() }),
-        )
-    }
-
-    // Test geomestry
-    const testBox = world.ecs.createEntity()
-    testBox.addComponents(
-        new BasicGeometryComponent('box'),
-        new PositionComponent({ position: [0, 0, 5] }),
-    )
-
-    world.start()
-
-    // store.dispatch({ type: 'TEST' })
 }
+
+// Grass
+const makePos = (): [number, number, number] => ([
+    Math.random() * 30 - 15,
+    0,
+    Math.random() * 30 - 15,
+])
+for (let i = 0; i < 200; i += 1) {
+    world.ecs.createEntity().addComponents(
+        new ModelComponent({ modelName: 'grass' }),
+        new PositionComponent({ position: makePos() }),
+    )
+}
+
+export const init = () => {
+    world.start()
+}
+
+// store.dispatch({ type: 'TEST' })
 
 // const slimeEntity = createEntity()
 // DungeonECS.addComponents([

@@ -29,6 +29,7 @@ import {
     RendererSystemBase,
     Entity,
     HeroComponent,
+    VelocityComponent,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -94,6 +95,7 @@ export class RendererSystem extends RendererSystemBase {
     cameraFilter = new ECSFilter([CameraComponent])
     pointLightFilter = new ECSFilter([PositionComponent, PointLightComponent])
     boxFilter = new ECSFilter([BasicGeometryComponent, PositionComponent])
+    movingFilter = new ECSFilter([PositionComponent, VelocityComponent])
 
     filters = [
         this.modelFilter,
@@ -102,6 +104,7 @@ export class RendererSystem extends RendererSystemBase {
         this.cameraFilter,
         this.pointLightFilter,
         this.boxFilter,
+        this.movingFilter,
     ]
 
     constructor(renderer: Renderer) {
@@ -165,8 +168,19 @@ export class RendererSystem extends RendererSystemBase {
                 break
             }
             case this.boxFilter: {
-                const mesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial())
-                this.addObject(entity, 'box', mesh)
+                const { geometryType, radius } = entity.get(BasicGeometryComponent)
+                let mesh
+                switch (geometryType) {
+                    case 'box': {
+                        const size = radius * 2
+                        mesh = new Mesh(new BoxGeometry(size, size, size), new MeshStandardMaterial())
+                        break
+                    }
+                    default:
+                        mesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial())
+                        break
+                }
+                this.addObject(entity, geometryType, mesh)
                 this.getGroup(entity)?.position.copy(entity.get(PositionComponent).position)
                 break
             }
@@ -219,6 +233,13 @@ export class RendererSystem extends RendererSystemBase {
             const cameraComponent = entity.get(CameraComponent)
             this.renderer.camera.position.copy(cameraComponent.position)
             this.renderer.camera.lookAt(cameraComponent.lookAt)
+        })
+
+        this.movingFilter.entities.forEach((entity) => {
+            const group = this.getGroup(entity)
+            if (group) {
+                group.position.copy(entity.get(PositionComponent).position)
+            }
         })
 
         this.renderer.render()
