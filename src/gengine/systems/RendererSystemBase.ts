@@ -27,12 +27,14 @@ export class RendererSystemBase extends System {
         object.name = objectName
 
         if (group) {
+            this.removeObject(entity, objectName)
             group.add(object)
         } else {
             const newGroup = new Group()
-            newGroup.add(object)
             this.renderer.scene.add(newGroup)
             this.objectGroupsByEntity.set(entity, newGroup)
+
+            newGroup.add(object)
         }
     }
 
@@ -42,6 +44,18 @@ export class RendererSystemBase extends System {
 
     hasObject(entity: Entity, objectName: string) {
         return !!this.getObject(entity, objectName)
+    }
+
+    removeObject(entity: Entity, objectName: string) {
+        const group = this.getGroup(entity)
+
+        if (group) {
+            const object = this.getObject(entity, objectName)
+
+            if (object) {
+                group.remove(object)
+            }
+        }
     }
 
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars

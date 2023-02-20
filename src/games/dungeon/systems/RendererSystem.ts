@@ -122,26 +122,8 @@ export class RendererSystem extends RendererSystemBase {
                     this.addObject(entity, 'model', resource)
                     const box = new Box3().setFromObject(resource)
 
-                    if (entity.has(HitboxComponent)) {
-                        const hitbox = entity.get(HitboxComponent)
-                        const collisionHelper = makeCollisionHelper(hitbox)
-
-                        this.addObject(entity, 'collisionHelper', collisionHelper)
-                        this.renderer.registerHelper(collisionHelper)
-                    }
-
-                    if (entity.has(PointLightComponent)) {
-                        const pointLight = makePointLight(entity.get(PointLightComponent))
-                        this.addObject(entity, 'pointlight', pointLight)
-
-                        const pointLightHelper = new PointLightHelper(pointLight, 0.25)
-                        this.renderer.scene.add(pointLightHelper)
-                        this.renderer.registerHelper(pointLightHelper)
-                    }
-
-                    if (entity.has(HealthComponent)) {
-                        const healthSprite = makeHealthSprite(entity.get(HealthComponent))
-                        this.addObject(entity, 'health', healthSprite)
+                    const healthSprite = this.getObject(entity, 'health')
+                    if (healthSprite) {
                         healthSprite.position.y = box.max.y + 0.15
                     }
 
@@ -186,6 +168,28 @@ export class RendererSystem extends RendererSystemBase {
             }
             default:
                 break
+        }
+
+        if (entity.has(HealthComponent)) {
+            const healthSprite = makeHealthSprite(entity.get(HealthComponent))
+            this.addObject(entity, 'health', healthSprite)
+        }
+
+        if (entity.has(HitboxComponent)) {
+            const hitbox = entity.get(HitboxComponent)
+            const collisionHelper = makeCollisionHelper(hitbox)
+
+            this.addObject(entity, 'collisionHelper', collisionHelper)
+            this.renderer.registerHelper(collisionHelper)
+        }
+
+        if (entity.has(PointLightComponent)) {
+            const pointLight = makePointLight(entity.get(PointLightComponent))
+            this.addObject(entity, 'pointlight', pointLight)
+
+            const pointLightHelper = new PointLightHelper(pointLight, 0.25)
+            this.renderer.scene.add(pointLightHelper)
+            this.renderer.registerHelper(pointLightHelper)
         }
     }
 
