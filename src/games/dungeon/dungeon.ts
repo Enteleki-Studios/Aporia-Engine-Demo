@@ -134,7 +134,7 @@ world.ecs.createEntity().addComponents(
     new HealthComponent(20),
     new HeroComponent(),
     new InputComponent(DEFAULT_KEYMAP),
-    new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
+    // new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
     new PositionComponent({ position: [0, 0, -1] }),
     new VelocityComponent(),
     new DamagingComponent({
@@ -152,23 +152,23 @@ world.ecs.createEntity().addComponents(
     }),
 )
 
-// Skeleton
-world.ecs.createEntity().addComponents(
-    new Components.AnimationComponent('idle'),
-    new ModelComponent({ modelName: 'skeleton' }),
-    new PositionComponent({ position: [1, 0, 2] }),
-    new HealthComponent(20),
-    new HitboxComponent(0.25),
-)
+// // Skeleton
+// world.ecs.createEntity().addComponents(
+//     new Components.AnimationComponent('idle'),
+//     new ModelComponent({ modelName: 'skeleton' }),
+//     new PositionComponent({ position: [1, 0, 2] }),
+//     new HealthComponent(20),
+//     new HitboxComponent(0.25),
+// )
 
-// Slime
-world.ecs.createEntity().addComponents(
-    new Components.AnimationComponent('idle'),
-    new ModelComponent({ modelName: 'slime' }),
-    new PositionComponent({ position: [4, 0, 2] }),
-    new HealthComponent(20),
-    new HitboxComponent(0.25),
-)
+// // Slime
+// world.ecs.createEntity().addComponents(
+//     new Components.AnimationComponent('idle'),
+//     new ModelComponent({ modelName: 'slime' }),
+//     new PositionComponent({ position: [4, 0, 2] }),
+//     new HealthComponent(20),
+//     new HitboxComponent(0.25),
+// )
 
 // Items
 const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart', 'crate']
@@ -181,18 +181,18 @@ items.forEach((item, i) => {
 })
 
 // Wall torches
-const torches = [9.75, 3.25, -3.25]
-torches.forEach((posZ) => {
-    world.ecs.createEntity().addComponents(
-        new ModelComponent({ modelName: 'torchWall' }),
-        new PositionComponent({ position: [-16, 1.5, posZ] }),
-        new PointLightComponent({
-            color: 0xff6700,
-            intensity: 3,
-            offset: [0.75, 0.5, 0],
-        }),
-    )
-})
+// const torches = [9.75, 3.25, -3.25]
+// torches.forEach((posZ) => {
+//     world.ecs.createEntity().addComponents(
+//         new ModelComponent({ modelName: 'torchWall' }),
+//         new PositionComponent({ position: [-16, 1.5, posZ] }),
+//         new PointLightComponent({
+//             color: 0xff6700,
+//             intensity: 3,
+//             offset: [0.75, 0.5, 0],
+//         }),
+//     )
+// })
 
 // Gold chest
 world.ecs.createEntity().addComponents(
@@ -205,26 +205,26 @@ world.ecs.createEntity().addComponents(
     }),
 )
 
-for (let i = 0; i < 32; i += 2) {
-    world.ecs.createEntity().addComponents(
-        new ModelComponent({ modelName: 'stoneWallTop' }),
-        new PositionComponent({ position: [-16, 0, i - 15] }),
-        new HitboxComponent(modelDB.stoneWall.radius),
-    )
-}
+// for (let i = 0; i < 32; i += 2) {
+//     world.ecs.createEntity().addComponents(
+//         new ModelComponent({ modelName: 'stoneWallTop' }),
+//         new PositionComponent({ position: [-16, 0, i - 15] }),
+//         new HitboxComponent(modelDB.stoneWall.radius),
+//     )
+// }
 
 // Grass
-const makePos = (): [number, number, number] => ([
-    Math.random() * 30 - 15,
-    0,
-    Math.random() * 30 - 15,
-])
-for (let i = 0; i < 200; i += 1) {
-    world.ecs.createEntity().addComponents(
-        new ModelComponent({ modelName: 'grass' }),
-        new PositionComponent({ position: makePos() }),
-    )
-}
+// const makePos = (): [number, number, number] => ([
+//     Math.random() * 30 - 15,
+//     0,
+//     Math.random() * 30 - 15,
+// ])
+// for (let i = 0; i < 200; i += 1) {
+//     world.ecs.createEntity().addComponents(
+//         new ModelComponent({ modelName: 'grass' }),
+//         new PositionComponent({ position: makePos() }),
+//     )
+// }
 
 export const init = () => {
     world.start()

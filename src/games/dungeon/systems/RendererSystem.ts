@@ -9,7 +9,11 @@ import {
     MeshStandardMaterial,
     PointLight,
     PointLightHelper,
+    Color,
 } from 'three'
+
+import { Octree } from 'three/examples/jsm/math/Octree'
+import { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
 
 import {
     BasicGeometryComponent,
@@ -107,10 +111,17 @@ export class RendererSystem extends RendererSystemBase {
         this.movingFilter,
     ]
 
+    octree = new Octree()
+    octreeHelper: OctreeHelper
+
     constructor(renderer: Renderer) {
         super(renderer)
 
         this.renderer = renderer
+
+        this.octreeHelper = new OctreeHelper(this.octree, new Color(0x0089cc))
+        this.octreeHelper.visible = true
+        this.renderer.scene.add(this.octreeHelper)
     }
 
     receiveEntity(entity: Entity, filter: ECSFilter): void {
@@ -129,6 +140,9 @@ export class RendererSystem extends RendererSystemBase {
 
                     modelComponent.resource = resource
                     modelComponent.isLoading = false
+
+                    this.octree.fromGraphNode(resource)
+                    this.octreeHelper.update()
                 })
                 break
             }
