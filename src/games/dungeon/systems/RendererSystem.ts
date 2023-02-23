@@ -33,6 +33,7 @@ import {
     RendererSystemBase,
     Entity,
     VelocityComponent,
+    ColliderComponent,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -101,6 +102,8 @@ const makeBasicGeometry = (geoComponent:BasicGeometryComponent) => {
     }
 }
 
+export const octree = new Octree()
+
 export class RendererSystem extends RendererSystemBase {
     renderer: Renderer
 
@@ -112,6 +115,7 @@ export class RendererSystem extends RendererSystemBase {
     boxFilter = new ECSFilter([BasicGeometryComponent, PositionComponent])
     movingFilter = new ECSFilter([PositionComponent, VelocityComponent])
     rotatingEntities = new ECSFilter([DirectionComponent, PositionComponent])
+    collidingFilter = new ECSFilter([ColliderComponent, PositionComponent])
 
     filters = [
         this.modelFilter,
@@ -122,9 +126,12 @@ export class RendererSystem extends RendererSystemBase {
         this.boxFilter,
         this.movingFilter,
         this.rotatingEntities,
+        this.collidingFilter,
     ]
 
-    octree = new Octree()
+    // TODO For testing only
+    // octree = new Octree()
+    octree = octree
     octreeHelper: OctreeHelper
 
     constructor(renderer: Renderer) {
@@ -164,9 +171,6 @@ export class RendererSystem extends RendererSystemBase {
 
                     modelComponent.resource = resource
                     modelComponent.isLoading = false
-
-                    this.octree.fromGraphNode(resource)
-                    this.octreeHelper.update()
                 })
                 break
             }
@@ -197,6 +201,22 @@ export class RendererSystem extends RendererSystemBase {
 
                 this.addObject(entity, 'basicGeometry', mesh)
                 this.getGroup(entity)?.position.copy(entity.get(PositionComponent).position)
+                break
+            }
+            case this.collidingFilter: {
+                const { collider: { width, height, depth } } = entity.get(ColliderComponent)
+                const { position } = entity.get(PositionComponent)
+
+                const collisionHelper = new Mesh(
+                    new BoxGeometry(width, height, depth).translate(0, height / 2, 0),
+                    new MeshBasicMaterial(),
+                )
+                collisionHelper.position.copy(position)
+
+                this.renderer.scene.add(collisionHelper)
+
+                this.octree.fromGraphNode(collisionHelper)
+                this.octreeHelper.update()
                 break
             }
             default:

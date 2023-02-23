@@ -31,6 +31,7 @@ import {
     FirstPersonMovementSystem,
     EmitterComponent,
     EmitterSystem,
+    ColliderComponent,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -203,6 +204,7 @@ world.ecs.createEntity().addComponents(
         intensity: 1,
         offset: [0.5, 0.7, 0],
     }),
+    new ColliderComponent({ type: 'box', width: 1, height: 1, depth: 1 }),
 )
 
 // for (let i = 0; i < 32; i += 2) {
