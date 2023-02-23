@@ -2,6 +2,7 @@ import {
     DirectionalLight,
     StandardRenderer,
     // DefaultGrid,
+    SkySphere,
 } from 'gengine'
 import {
     MeshStandardMaterial,
@@ -12,6 +13,7 @@ import {
     PointLight,
     PointLightHelper,
     // Fog,
+    Color,
 } from 'three'
 
 export class Renderer extends StandardRenderer {
@@ -51,6 +53,8 @@ export class Renderer extends StandardRenderer {
         this.scene.add(pointLightHelper)
 
         // this.scene.fog = new Fog(0x161616, 15, 40)
+        this.scene.background = new Color(0x161616)
+        this.scene.add(new SkySphere())
     }
 }
 

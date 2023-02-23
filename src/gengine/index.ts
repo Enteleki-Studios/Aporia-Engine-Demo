@@ -45,7 +45,7 @@ export { DirectionalLight } from './three/DirectionalLight'
 export { HUDLayer } from './three/HUDLayer'
 export { StandardRenderer } from './three/StandardRenderer'
 export { TextSprite } from './three/TextSprite'
-// export { SkyBox } from './three/SkyBox'
+export { SkySphere } from './three/SkySphere'
 
 // Constants
 export * from './constants'

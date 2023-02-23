@@ -1,6 +1,5 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import {
-    Color,
     PCFSoftShadowMap,
     PerspectiveCamera,
     Scene,
@@ -44,7 +43,7 @@ export class StandardRenderer {
         fov = 60,
         aspect = 1,
         near = 0.5,
-        far = 50,
+        far = 100,
     }: StandardRendererParams) {
         this.renderer = new WebGLRenderer({
             canvas,
@@ -64,7 +63,6 @@ export class StandardRenderer {
 
         this.canvas = this.renderer.domElement
         this.scene = new Scene()
-        this.scene.background = new Color(0x161616)
 
         this.camera = new PerspectiveCamera(fov, aspect, near, far)
         this.camera.position.set(10, 10, 10)
