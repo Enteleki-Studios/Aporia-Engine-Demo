@@ -58,6 +58,20 @@ export class RendererSystemBase extends System {
         }
     }
 
+    applyToGroup = (f: (group: Group) => void) => (entity: Entity) => {
+        const group = this.getGroup(entity)
+        if (group) {
+            f(group)
+        }
+    }
+
+    applyToObject = (f: (object: Object3D, entity: Entity) => void) => (objectName: string) => (entity: Entity) => {
+        const object = this.getObject(entity, objectName)
+        if (object) {
+            f(object, entity)
+        }
+    }
+
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
     tick(world: World) {
         // TODO pick up deleted entities

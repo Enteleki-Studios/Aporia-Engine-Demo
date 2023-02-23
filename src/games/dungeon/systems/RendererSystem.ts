@@ -10,6 +10,7 @@ import {
     PointLight,
     PointLightHelper,
     Color,
+    SphereGeometry,
 } from 'three'
 
 import { Octree } from 'three/examples/jsm/math/Octree'
@@ -31,7 +32,6 @@ import {
     PointLightComponent,
     RendererSystemBase,
     Entity,
-    HeroComponent,
     VelocityComponent,
 } from 'gengine'
 
@@ -55,7 +55,7 @@ async function loadModel(modelComponent: ModelComponent<typeof modelDB>) {
     return model
 }
 
-function makeCollisionHelper(hitboxComponent: HitboxComponent) {
+const makeCollisionHelper = (hitboxComponent: HitboxComponent) => {
     const collisionGeo = new CircleGeometry(hitboxComponent.radius, 20)
     collisionGeo.rotateX(-Math.PI / 2)
     const collisionMat = new MeshBasicMaterial({
@@ -68,7 +68,7 @@ function makeCollisionHelper(hitboxComponent: HitboxComponent) {
     return collisionHelper
 }
 
-function makePointLight(pointLightComponent: PointLightComponent) {
+const makePointLight = (pointLightComponent: PointLightComponent) => {
     const {
         color, intensity, decay, distance, offset, castShadow,
     } = pointLightComponent
@@ -79,7 +79,7 @@ function makePointLight(pointLightComponent: PointLightComponent) {
     return pointLight
 }
 
-function makeHealthSprite(healthComponent: HealthComponent) {
+const makeHealthSprite = (healthComponent: HealthComponent) => {
     const healthSprite = new TextSprite(healthComponent.health, {
         font: 'arial',
         color: 'purple',
@@ -87,6 +87,18 @@ function makeHealthSprite(healthComponent: HealthComponent) {
     healthSprite.name = 'health'
     healthSprite.center.set(0.5, 0)
     return healthSprite
+}
+
+const makeBasicGeometry = (geoComponent:BasicGeometryComponent) => {
+    const { geometryType, radius, size } = geoComponent
+    switch (geometryType) {
+        case 'box':
+            return new BoxGeometry(size, size, size)
+        case 'sphere':
+            return new SphereGeometry(radius)
+        default:
+            return new BoxGeometry(1, 1, 1)
+    }
 }
 
 export class RendererSystem extends RendererSystemBase {
@@ -99,6 +111,7 @@ export class RendererSystem extends RendererSystemBase {
     pointLightFilter = new ECSFilter([PositionComponent, PointLightComponent])
     boxFilter = new ECSFilter([BasicGeometryComponent, PositionComponent])
     movingFilter = new ECSFilter([PositionComponent, VelocityComponent])
+    rotatingEntities = new ECSFilter([DirectionComponent, PositionComponent])
 
     filters = [
         this.modelFilter,
@@ -108,6 +121,7 @@ export class RendererSystem extends RendererSystemBase {
         this.pointLightFilter,
         this.boxFilter,
         this.movingFilter,
+        this.rotatingEntities,
     ]
 
     octree = new Octree()
@@ -122,6 +136,17 @@ export class RendererSystem extends RendererSystemBase {
         this.octreeHelper.visible = true
         this.renderer.scene.add(this.octreeHelper)
     }
+
+    updateHealthIndicator = this.applyToObject((ts, entity) => {
+        const { health } = entity.get(HealthComponent)
+        if (health) {
+            if ((ts as TextSprite).text !== health.toString()) {
+                (ts as TextSprite).setText(health)
+            }
+        } else {
+            ts.visible = false
+        }
+    })('health')
 
     receiveEntity(entity: Entity, filter: ECSFilter): void {
         switch (filter) {
@@ -163,19 +188,14 @@ export class RendererSystem extends RendererSystemBase {
                 break
             }
             case this.boxFilter: {
-                const { geometryType, radius } = entity.get(BasicGeometryComponent)
-                let mesh
-                switch (geometryType) {
-                    case 'box': {
-                        const size = radius * 2
-                        mesh = new Mesh(new BoxGeometry(size, size, size), new MeshStandardMaterial())
-                        break
-                    }
-                    default:
-                        mesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial())
-                        break
-                }
-                this.addObject(entity, geometryType, mesh)
+                const basicGeometryComponent = entity.get(BasicGeometryComponent)
+
+                const mesh = new Mesh(
+                    makeBasicGeometry(basicGeometryComponent),
+                    new MeshStandardMaterial({ color: basicGeometryComponent.color }),
+                )
+
+                this.addObject(entity, 'basicGeometry', mesh)
                 this.getGroup(entity)?.position.copy(entity.get(PositionComponent).position)
                 break
             }
@@ -212,31 +232,8 @@ export class RendererSystem extends RendererSystemBase {
 
     tick() {
         this.modelFilter.entities.forEach((entity) => {
-            const { position } = entity.get(PositionComponent)
-            const group = this.getGroup(entity)
-            if (group) {
-                if (entity.has(HeroComponent)) {
-                    // TODO just for testing FPV
-                    group.visible = false
-                }
-
-                if (entity.has(DirectionComponent)) {
-                    const { direction } = entity.get(DirectionComponent)
-                    group.lookAt(position.clone().add(direction))
-                }
-
-                // Update health text
-                if (entity.has(HealthComponent)) {
-                    const ts = this.getObject(entity, 'health') as TextSprite
-                    const { health } = entity.get(HealthComponent)
-                    if (health) {
-                        if (ts.text !== health.toString()) {
-                            ts.setText(health)
-                        }
-                    } else {
-                        ts.visible = false
-                    }
-                }
+            if (entity.has(HealthComponent)) {
+                this.updateHealthIndicator(entity)
             }
         })
 
@@ -253,10 +250,15 @@ export class RendererSystem extends RendererSystemBase {
         })
 
         this.movingFilter.entities.forEach((entity) => {
-            const group = this.getGroup(entity)
-            if (group) {
-                group.position.copy(entity.get(PositionComponent).position)
-            }
+            const { position } = entity.get(PositionComponent)
+            this.getGroup(entity)?.position.copy(position)
+        })
+
+        // TODO only do this for dirty entities/components
+        this.rotatingEntities.entities.forEach((entity) => {
+            const { position } = entity.get(PositionComponent)
+            const { direction } = entity.get(DirectionComponent)
+            this.getGroup(entity)?.lookAt(position.clone().add(direction))
         })
 
         this.renderer.render()

@@ -21,7 +21,11 @@ export class EmitterSystem extends System {
                 const { position } = entity.get(PositionComponent)
 
                 world.ecs.createEntity().addComponents(
-                    new BasicGeometryComponent({ geometryType: 'box', radius: 0.25 }),
+                    new BasicGeometryComponent({
+                        geometryType: 'sphere',
+                        radius: 0.25,
+                        color: 0xff0099,
+                    }),
                     new PositionComponent({ position: position.toArray() }),
                     new VelocityComponent({ velocity: [-2, 0, 0] }),
                 )

@@ -1,20 +1,42 @@
 import { Component } from '../ecs'
 
-type GeometryType = 'box'
+type BoxSettings = {
+    geometryType: 'box'
+    size?: number
+}
 
-type BasicGeometryComponentSettings = {
-    geometryType: GeometryType
+type SphereSettings = {
+    geometryType: 'sphere'
     radius?: number
 }
 
+type BasicGeometryComponentSettings = (BoxSettings | SphereSettings) & {
+    color?: number
+}
+
+type GeometryType = BasicGeometryComponentSettings['geometryType']
+
 export class BasicGeometryComponent extends Component {
     geometryType: GeometryType
-    radius: number
+    radius?: number
+    size?: number
+    color: number
 
-    constructor({ geometryType, radius }: BasicGeometryComponentSettings) {
+    constructor(settings: BasicGeometryComponentSettings) {
         super()
 
-        this.geometryType = geometryType
-        this.radius = radius || 0.5
+        this.geometryType = settings.geometryType
+        this.color = settings.color || 0xffffff
+
+        switch (settings.geometryType) {
+            case 'box':
+                this.size = settings.size || 1
+                break
+            case 'sphere':
+                this.radius = settings.radius || 1
+                break
+            default:
+                break
+        }
     }
 }
