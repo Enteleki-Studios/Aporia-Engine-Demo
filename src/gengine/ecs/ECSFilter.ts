@@ -8,4 +8,8 @@ export class ECSFilter {
     constructor(components: AnyComponentConstructor[]) {
         this.filterBy = components
     }
+
+    match(entity: Entity) {
+        return entity.hasAll(this.filterBy)
+    }
 }

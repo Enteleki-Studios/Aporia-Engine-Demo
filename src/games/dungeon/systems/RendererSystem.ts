@@ -27,7 +27,6 @@ import {
     HitboxComponent,
     CameraComponent,
     ECSFilter,
-    World,
     HealthComponent,
     PointLightComponent,
     RendererSystemBase,
@@ -205,17 +204,17 @@ export class RendererSystem extends RendererSystemBase {
             this.renderer.scene.add(pointLightHelper)
             this.renderer.registerHelper(pointLightHelper)
         }
+
+        if (entity.has(PositionComponent)) {
+            this.getGroup(entity)?.position.copy(entity.get(PositionComponent).position)
+        }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    tick(world: World) {
+    tick() {
         this.modelFilter.entities.forEach((entity) => {
             const { position } = entity.get(PositionComponent)
             const group = this.getGroup(entity)
             if (group) {
-                // Update position
-                group.position.copy(position)
-
                 if (entity.has(HeroComponent)) {
                     // TODO just for testing FPV
                     group.visible = false

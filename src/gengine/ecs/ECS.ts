@@ -58,7 +58,7 @@ export class ECS {
 
     private updateFiltersForEntity(entity: Entity) {
         this.filters.forEach((filter) => {
-            if (entity.hasAll(filter.filterBy)) {
+            if (filter.match(entity)) {
                 if (!filter.entities.has(entity)) {
                     filter.entities.add(entity)
                     this.systemsByFilter.get(filter)?.forEach((system) => {
