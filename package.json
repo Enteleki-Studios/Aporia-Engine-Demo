@@ -7,9 +7,10 @@
     "scripts": {
         "start": "webpack serve --mode=development --progress",
         "build": "webpack --mode=production",
-        "build-docs": "typedoc",
-        "build-docs:watch": "typedoc --watch",
+        "build:docs": "typedoc",
+        "build:docs:watch": "typedoc --watch",
         "test": "jest",
+        "typecheck": "tsc --noEmit",
         "lint": "eslint src",
         "lint:fix": "eslint src --fix"
     },

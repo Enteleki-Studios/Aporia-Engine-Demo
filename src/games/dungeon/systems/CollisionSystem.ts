@@ -1,6 +1,5 @@
 import { Capsule } from 'three/examples/jsm/math/Capsule'
 import {
-    ColliderComponent,
     ECSFilter,
     HeroComponent,
     PositionComponent,
@@ -13,22 +12,19 @@ import { octree } from './RendererSystem'
 export class CollisionSystem extends System {
     // TODO just selecting the hero for now
     heroFilter = new ECSFilter([HeroComponent, PositionComponent])
-    collidingFilter = new ECSFilter([ColliderComponent, PositionComponent])
 
-    filters = [this.collidingFilter, this.heroFilter]
+    filters = [this.heroFilter]
 
     tick() {
-        this.collidingFilter.entities.forEach(() => {
-            this.heroFilter.entities.forEach((heroEntity) => {
-                const { position } = heroEntity.get(PositionComponent)
+        this.heroFilter.entities.forEach((heroEntity) => {
+            const { position } = heroEntity.get(PositionComponent)
 
-                // Capsule(start, end, radius)
-                const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
-                const collisionResult = octree.capsuleIntersect(playerCollider)
-                if (collisionResult) {
-                    // console.debug(collisionResult.normal)
-                }
-            })
+            // Capsule(start, end, radius)
+            const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
+            const collisionResult = octree.capsuleIntersect(playerCollider)
+            if (collisionResult) {
+                console.debug(collisionResult.normal)
+            }
         })
     }
 }

@@ -1,5 +1,12 @@
 import { Component } from '../ecs'
 
+type CylinderCollider = {
+    type: 'cylinder'
+    radius: number
+    height: number
+    resolution: number
+}
+
 type BoxCollider = {
     type: 'box'
     width: number
@@ -7,7 +14,7 @@ type BoxCollider = {
     depth: number
 }
 
-type Collider = BoxCollider
+export type Collider = BoxCollider | CylinderCollider
 
 export class ColliderComponent extends Component {
     collider

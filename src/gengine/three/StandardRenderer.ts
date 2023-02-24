@@ -42,7 +42,7 @@ export class StandardRenderer {
         canvas,
         fov = 60,
         aspect = 1,
-        near = 0.5,
+        near = 0.1,
         far = 100,
     }: StandardRendererParams) {
         this.renderer = new WebGLRenderer({

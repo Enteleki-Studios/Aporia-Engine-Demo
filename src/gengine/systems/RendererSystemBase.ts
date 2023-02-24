@@ -17,8 +17,17 @@ export class RendererSystemBase extends System {
         this.renderer = renderer
     }
 
-    getGroup(entity: Entity) {
-        return this.objectGroupsByEntity.get(entity)
+    private makeGroup(entity: Entity) {
+        // TODO check for existing group?
+        const newGroup = new Group()
+        this.renderer.scene.add(newGroup)
+        this.objectGroupsByEntity.set(entity, newGroup)
+
+        return newGroup
+    }
+
+    getGroup(entity: Entity): Group {
+        return this.objectGroupsByEntity.get(entity) || this.makeGroup(entity)
     }
 
     addObject(entity: Entity, objectName: string, object: Object3D) {
@@ -30,11 +39,7 @@ export class RendererSystemBase extends System {
             this.removeObject(entity, objectName)
             group.add(object)
         } else {
-            const newGroup = new Group()
-            this.renderer.scene.add(newGroup)
-            this.objectGroupsByEntity.set(entity, newGroup)
-
-            newGroup.add(object)
+            this.makeGroup(entity).add(object)
         }
     }
 

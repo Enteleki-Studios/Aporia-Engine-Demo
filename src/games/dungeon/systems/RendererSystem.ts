@@ -4,13 +4,14 @@ import {
     Mesh,
     Group,
     Box3,
-    CircleGeometry,
     MeshBasicMaterial,
     MeshStandardMaterial,
     PointLight,
     PointLightHelper,
     Color,
     SphereGeometry,
+    CylinderGeometry,
+    DoubleSide,
 } from 'three'
 
 import { Octree } from 'three/examples/jsm/math/Octree'
@@ -25,7 +26,6 @@ import {
     TextSprite,
     AmbientLightComponent,
     PositionComponent,
-    HitboxComponent,
     CameraComponent,
     ECSFilter,
     HealthComponent,
@@ -34,6 +34,7 @@ import {
     Entity,
     VelocityComponent,
     ColliderComponent,
+    Collider,
 } from 'gengine'
 
 import type { Renderer } from 'dungeon/Renderer'
@@ -54,19 +55,6 @@ async function loadModel(modelComponent: ModelComponent<typeof modelDB>) {
     }
 
     return model
-}
-
-const makeCollisionHelper = (hitboxComponent: HitboxComponent) => {
-    const collisionGeo = new CircleGeometry(hitboxComponent.radius, 20)
-    collisionGeo.rotateX(-Math.PI / 2)
-    const collisionMat = new MeshBasicMaterial({
-        color: 0xff0000,
-        transparent: true,
-        opacity: 0.3,
-        depthTest: false,
-    })
-    const collisionHelper = new Mesh(collisionGeo, collisionMat)
-    return collisionHelper
 }
 
 const makePointLight = (pointLightComponent: PointLightComponent) => {
@@ -97,6 +85,21 @@ const makeBasicGeometry = (geoComponent:BasicGeometryComponent) => {
             return new BoxGeometry(size, size, size)
         case 'sphere':
             return new SphereGeometry(radius)
+        default:
+            return new BoxGeometry(1, 1, 1)
+    }
+}
+
+const makeColliderHelper = (collider: Collider) => {
+    switch (collider.type) {
+        case 'box': {
+            const { width, height, depth } = collider
+            return new BoxGeometry(width, height, depth)
+        }
+        case 'cylinder': {
+            const { radius, height, resolution } = collider
+            return new CylinderGeometry(radius, radius, height, Math.max(resolution, 10))
+        }
         default:
             return new BoxGeometry(1, 1, 1)
     }
@@ -140,7 +143,7 @@ export class RendererSystem extends RendererSystemBase {
         this.renderer = renderer
 
         this.octreeHelper = new OctreeHelper(this.octree, new Color(0x0089cc))
-        this.octreeHelper.visible = true
+        this.octreeHelper.visible = false
         this.renderer.scene.add(this.octreeHelper)
     }
 
@@ -200,16 +203,16 @@ export class RendererSystem extends RendererSystemBase {
                 )
 
                 this.addObject(entity, 'basicGeometry', mesh)
-                this.getGroup(entity)?.position.copy(entity.get(PositionComponent).position)
+                this.getGroup(entity).position.copy(entity.get(PositionComponent).position)
                 break
             }
             case this.collidingFilter: {
-                const { collider: { width, height, depth } } = entity.get(ColliderComponent)
+                const { collider } = entity.get(ColliderComponent)
                 const { position } = entity.get(PositionComponent)
 
                 const collisionHelper = new Mesh(
-                    new BoxGeometry(width, height, depth).translate(0, height / 2, 0),
-                    new MeshBasicMaterial(),
+                    makeColliderHelper(collider).translate(0, collider.height / 2, 0),
+                    new MeshBasicMaterial({ transparent: true, opacity: 0.3, color: 0xcc0089, side: DoubleSide }),
                 )
                 collisionHelper.position.copy(position)
 
@@ -228,14 +231,6 @@ export class RendererSystem extends RendererSystemBase {
             this.addObject(entity, 'health', healthSprite)
         }
 
-        if (entity.has(HitboxComponent)) {
-            const hitbox = entity.get(HitboxComponent)
-            const collisionHelper = makeCollisionHelper(hitbox)
-
-            this.addObject(entity, 'collisionHelper', collisionHelper)
-            this.renderer.registerHelper(collisionHelper)
-        }
-
         if (entity.has(PointLightComponent)) {
             const pointLight = makePointLight(entity.get(PointLightComponent))
             this.addObject(entity, 'pointlight', pointLight)
@@ -246,7 +241,7 @@ export class RendererSystem extends RendererSystemBase {
         }
 
         if (entity.has(PositionComponent)) {
-            this.getGroup(entity)?.position.copy(entity.get(PositionComponent).position)
+            this.getGroup(entity).position.copy(entity.get(PositionComponent).position)
         }
     }
 
@@ -271,14 +266,14 @@ export class RendererSystem extends RendererSystemBase {
 
         this.movingFilter.entities.forEach((entity) => {
             const { position } = entity.get(PositionComponent)
-            this.getGroup(entity)?.position.copy(position)
+            this.getGroup(entity).position.copy(position)
         })
 
         // TODO only do this for dirty entities/components
         this.rotatingEntities.entities.forEach((entity) => {
             const { position } = entity.get(PositionComponent)
             const { direction } = entity.get(DirectionComponent)
-            this.getGroup(entity)?.lookAt(position.clone().add(direction))
+            this.getGroup(entity).lookAt(position.clone().add(direction))
         })
 
         this.renderer.render()
