@@ -5,11 +5,13 @@ $black: #121212;
 $darkBlue: #282a36;
 $lighterBlue: #3d3f4a;
 $darkGrey: #444;
+$grey: #666;
 
 $colors: (
     default: (
         background: $white,
         foreground: $black,
+        disabled: $grey,
     ),
     panel: (
         background: $darkBlue,
@@ -133,6 +135,16 @@ $colors: (
         }
         ul {
             list-style: none;
+        }
+    }
+    .version {
+        color: color(default, disabled);
+        padding-bottom: 0.25rem;
+        text-align: center;
+        font-size: 0.6rem;
+
+        &:before {
+            content: 'version: ';
         }
     }
 }

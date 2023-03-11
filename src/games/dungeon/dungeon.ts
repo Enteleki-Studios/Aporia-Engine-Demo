@@ -1,5 +1,3 @@
-import { store } from 'dungeon/store'
-
 import {
     AmbientLightComponent,
     BasicGeometryComponent,
@@ -46,12 +44,7 @@ import { Action, Middleware } from '@reduxjs/toolkit'
 
 export const renderer = new Renderer({})
 
-const loggingFunction = inspector.logger(store)
-
-export const world = new World({
-    loggingEnabled: true,
-    loggingFunction,
-})
+export const world = new World()
 
 const inputManager = new InputManager({
     domElement: renderer.canvas,

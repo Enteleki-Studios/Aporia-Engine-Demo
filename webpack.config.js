@@ -68,7 +68,7 @@ module.exports = {
             ],
         }),
         new webpack.DefinePlugin({
-            ENGINE_VERSION: JSON.stringify(`${package.version} ${commitHash}`),
+            ENGINE_VERSION: JSON.stringify(`${package.version} alpha ${commitHash}`),
         }),
     ],
     module: {
