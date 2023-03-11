@@ -18,10 +18,10 @@ interface State {
     inspector: InspectorState
 }
 
-const initialState = {
+const initialState: InspectorState = {
     debugMode: 'game',
     log: [],
-} as InspectorState
+}
 
 export const slice = createSlice({
     name: 'inspector',
