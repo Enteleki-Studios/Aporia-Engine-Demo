@@ -37,9 +37,9 @@ import {
     Collider,
 } from 'gengine'
 
-import type { Renderer } from 'dungeon/Renderer'
+import type { Renderer } from 'Renderer'
 
-import loadFBX from 'dungeon/utils/loadFBX'
+import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
 
 async function loadModel(modelComponent: ModelComponent<typeof modelDB>) {

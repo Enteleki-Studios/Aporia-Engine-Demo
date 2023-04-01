@@ -59,7 +59,7 @@ export class World {
         this.addEventListener.bind(this)
 
         console.log('Gengine started')
-        console.log(`Version ${ENGINE_VERSION}`)
+        // console.log(`Version ${ENGINE_VERSION}`)
     }
 
     /** Time elapsed since last frame in seconds */

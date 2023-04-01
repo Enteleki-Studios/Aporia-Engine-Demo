@@ -10,31 +10,8 @@ const commitHash = require('child_process')
     .execSync('git rev-parse --short HEAD')
     .toString().trim()
 
-const games = [
-    // 'example',
-    'dungeon',
-]
-
-const entries = {}
-const modules = []
-const htmlPlugins = []
-
-games.forEach((name) => {
-    entries[name] = `./games/${name}/src/index.tsx`
-    modules.push(path.resolve(__dirname, `games/${name}/src/`))
-    htmlPlugins.push(
-        new HtmlWebpackPlugin({
-            title: name,
-            filename: `${name}/index.html`,
-            template: 'gengine/src/html/standardHTMLTemplate.html',
-            chunks: [name],
-            minify: false,
-        }),
-    )
-})
-
 module.exports = {
-    entry: entries,
+    entry: './src/index.tsx',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name]/[name].bundle.js',
@@ -44,10 +21,9 @@ module.exports = {
     devtool: 'inline-source-map',
     resolve: {
         modules: [
-            path.resolve(__dirname, 'node_modules'),
             path.resolve(__dirname, 'src'),
-            path.resolve(__dirname, 'src/games'),
-            ...modules,
+            path.resolve(__dirname, 'node_modules'),
+            'node_modules',
         ],
         extensions: ['.ts', '.tsx', '.js', '.json'],
     },
@@ -60,11 +36,17 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: '[name]/[name].css',
         }),
-        ...htmlPlugins,
+        new HtmlWebpackPlugin({
+            title: 'Dungeon',
+            filename: 'dungeon/index.html',
+            template: '../../gengine/src/html/standardHTMLTemplate.html',
+            chunks: 'all',
+            minify: false,
+        }),
         new CopyPlugin({
             patterns: [
-                { from: 'resources', to: 'resources' },
-                { from: 'favicon.ico', to: 'favicon.ico' },
+                { from: '../../resources', to: 'resources' },
+                { from: '../../favicon.ico', to: 'favicon.ico' },
             ],
         }),
         new webpack.DefinePlugin({

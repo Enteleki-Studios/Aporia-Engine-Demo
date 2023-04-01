@@ -68,9 +68,9 @@ export const InspectorUI = () => {
                         </label>
                     </section>
                 </div>
-                <div className="version">
+                {/*<div className="version">
                     {ENGINE_VERSION}
-                </div>
+                </div>*/}
             </div>
         </div>
     )

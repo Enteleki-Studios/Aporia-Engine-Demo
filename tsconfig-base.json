@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "esModuleInterop": true,
+        "incremental": true,
+        "jsx": "react",
+        "lib": ["dom", "esnext"],
+        "module": "es6",
+        "moduleResolution": "node",
+        "outDir": "./dist",
+        "rootDir": ".",
+        "sourceMap": true,
+        "strict": true,
+        "target": "es6"
+        // "paths": {
+        //     "gengine": ["gengine"]
+        //     "dungeon/*": ["games/dungeon/*"],
+        //     "*": [
+        //         "games/dungeon/*"
+        //     ]
+        // }
+    }
+}

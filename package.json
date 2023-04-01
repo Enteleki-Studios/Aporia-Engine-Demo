@@ -60,6 +60,10 @@
         "redux-logger": "^3.0.6",
         "rot-js": "^2.2.0",
         "three": "^0.151.2",
-        "uuid": "^9.0.0"
-    }
+        "uuid": "^9.0.0",
+        "gengine": "*"
+    },
+    "workspaces": [
+        "gengine"
+    ]
 }

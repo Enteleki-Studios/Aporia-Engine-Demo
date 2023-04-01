@@ -1,3 +1,4 @@
+import { Action, Middleware } from '@reduxjs/toolkit'
 import {
     AmbientLightComponent,
     BasicGeometryComponent,
@@ -34,13 +35,12 @@ import {
 
 // import { AppDispatch } from 'dungeon/store'
 
-import * as Systems from 'dungeon/systems'
-import * as Components from 'dungeon/components'
-import { Renderer } from 'dungeon/Renderer'
+import * as Systems from 'systems'
+import * as Components from 'components'
+import { Renderer } from 'Renderer'
 // import tilesGenerator from 'utils/tilesGenerator'
 
 import modelDB from 'modelDB'
-import { Action, Middleware } from '@reduxjs/toolkit'
 
 export const renderer = new Renderer({})
 

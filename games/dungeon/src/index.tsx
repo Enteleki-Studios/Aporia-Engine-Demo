@@ -4,9 +4,9 @@ import { Provider } from 'react-redux'
 
 import { inspector, WorldContext } from 'gengine'
 
-import { world } from 'dungeon/dungeon'
-import { store } from 'dungeon/store'
-import UI from 'dungeon/UI'
+import { world } from './dungeon'
+import { store } from './store'
+import UI from './UI'
 
 import './root.scss'
 

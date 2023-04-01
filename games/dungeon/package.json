@@ -1,0 +1,11 @@
+{
+    "name": "dungeon",
+    "version": "0.1.0",
+    "main": "index.tsx",
+    "scripts": {
+        "start": "webpack serve --mode=development --progress"
+    },
+    "dependencies": {
+        "gengine": "*"
+    }
+}
