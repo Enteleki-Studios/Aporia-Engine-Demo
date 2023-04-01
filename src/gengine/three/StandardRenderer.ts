@@ -49,7 +49,7 @@ export class StandardRenderer {
             canvas,
             antialias: true,
         })
-        this.renderer.physicallyCorrectLights = true
+        this.renderer.useLegacyLights = false
         this.renderer.toneMapping = ReinhardToneMapping
         this.renderer.toneMappingExposure = 2
         this.renderer.shadowMap.enabled = true

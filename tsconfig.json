@@ -10,7 +10,7 @@
         "target": "es6",
         "jsx": "react",
         "lib": ["dom"],
-        "moduleResolution": "bundler",
+        "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "paths": {
             "gengine": ["gengine"],
