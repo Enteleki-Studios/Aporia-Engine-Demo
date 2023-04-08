@@ -15,7 +15,7 @@ const deceleration = new Vector3(-5, -0.0001, -5)
 const RUN_BOOST = 2
 const BASE_SPEED = 15
 
-export class TwinStickMovementSystem extends System {
+export class TwinStickMovementSystem implements System {
     cameraFilter = new ECSFilter([CameraComponent])
     movementFilter = new ECSFilter([DirectionComponent, InputComponent, PositionComponent, VelocityComponent])
 

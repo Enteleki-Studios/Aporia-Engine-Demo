@@ -4,7 +4,7 @@ import { AnimationComponent } from 'components'
 
 import modelDB from 'modelDB'
 
-async function loadAnimations(
+function loadAnimations(
     animationComponent: AnimationComponent,
     modelComponent: ModelComponent<typeof modelDB>,
 ) {
@@ -34,8 +34,8 @@ async function loadAnimations(
     return mixer
 }
 
-export class AnimationSystem extends System {
-    private jobs: Array<(delta: number) => void> = []
+export class AnimationSystem implements System {
+    private jobs: ((delta: number) => void)[] = []
 
     private updatingEntities = new ECSFilter([AnimationComponent])
     private loadingEntities = new ECSFilter([AnimationComponent, ModelComponent])
@@ -91,13 +91,12 @@ export class AnimationSystem extends System {
             && modelComponent.resource
             ) {
                 animationComponent.isLoading = true
-                loadAnimations(animationComponent, modelComponent).then((mixer) => {
-                    animationComponent.isLoading = false
-                    if (mixer) {
-                        animationComponent.loaded = true
-                        this.jobs.push((d) => mixer.update(d))
-                    }
-                })
+                const mixer = loadAnimations(animationComponent, modelComponent)
+                animationComponent.isLoading = false
+                if (mixer) {
+                    animationComponent.loaded = true
+                    this.jobs.push((d) => mixer.update(d))
+                }
             } else if (animationComponent.loaded && animationComponent.needsUpdate) {
                 // Update animation
                 const { animations } = animationComponent

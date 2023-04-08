@@ -19,10 +19,6 @@ export const WorldStats = () => {
 
     const { stats } = world
 
-    if (!stats) {
-        return null
-    }
-
     return (
         <section className="WorldStats">
             <h3>Stats</h3>

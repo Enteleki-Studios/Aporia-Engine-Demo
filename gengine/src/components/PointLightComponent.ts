@@ -1,6 +1,6 @@
 import { Component } from '../ecs'
 
-interface PointLightSettings {
+type PointLightSettings = {
     color: number
     intensity: number
     distance?: number

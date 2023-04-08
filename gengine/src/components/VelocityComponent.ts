@@ -1,7 +1,7 @@
 import { Vector3 } from 'three'
 import { Component } from '../ecs'
 
-interface VelocitySettings {
+type VelocitySettings = {
     velocity?: [number, number, number],
 }
 

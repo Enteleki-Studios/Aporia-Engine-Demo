@@ -22,7 +22,7 @@ export const WORLD_MAX_DELTA = 0.05
 
 // Rendering
 export type DebugMode = 'game' | 'debug' | 'sideBySide'
-export const DebugModes: Array<{ value: DebugMode, label: string }> = [
+export const DebugModes: { value: DebugMode, label: string }[] = [
     { value: 'game', label: 'Game' },
     { value: 'debug', label: 'Debug' },
     { value: 'sideBySide', label: 'Game + Debug' },

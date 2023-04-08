@@ -8,19 +8,14 @@
         "incremental": true,
         "jsx": "react",
         "lib": ["dom", "esnext"],
-        "module": "es6",
+        "module": "esnext",
         "moduleResolution": "node",
-        "outDir": "./dist",
         "rootDir": ".",
         "sourceMap": true,
         "strict": true,
-        "target": "es6"
-        // "paths": {
-        //     "gengine": ["gengine"]
-        //     "dungeon/*": ["games/dungeon/*"],
-        //     "*": [
-        //         "games/dungeon/*"
-        //     ]
-        // }
+        "target": "esnext",
+        "resolveJsonModule": true,
+        "noImplicitAny": true,
+        "allowJs": true
     }
 }

@@ -1,9 +1,11 @@
 {
     "name": "dungeon",
     "version": "0.1.0",
-    "main": "index.tsx",
+    "main": "src/index.tsx",
     "scripts": {
-        "start": "webpack serve --mode=development --progress"
+        "start": "webpack serve --mode=development --progress",
+        "typecheck": "tsc --noEmit",
+        "lint": "eslint src"
     },
     "dependencies": {
         "gengine": "*"

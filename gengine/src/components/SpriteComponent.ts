@@ -1,6 +1,6 @@
 import { Component } from '../ecs'
 
-interface SpriteSettings {
+type SpriteSettings = {
     url: string
 }
 

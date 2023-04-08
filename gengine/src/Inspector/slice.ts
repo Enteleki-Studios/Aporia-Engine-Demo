@@ -2,11 +2,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import type { DebugMode } from '..'
 
-interface InspectorState {
+type InspectorState = {
     debugMode: DebugMode
 }
 
-interface State {
+type State = {
     inspector: InspectorState
 }
 

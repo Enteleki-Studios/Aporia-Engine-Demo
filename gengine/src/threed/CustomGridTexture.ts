@@ -3,7 +3,7 @@ import {
     Texture,
 } from 'three'
 
-export interface CustomGridSettings {
+export type CustomGridSettings = {
     size?: number
     backgroundColor?: number
     borderColor?: number

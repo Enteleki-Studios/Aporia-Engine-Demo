@@ -1,10 +1,10 @@
 import { Group, type Object3D } from 'three'
 
-import { StandardRenderer } from '../three/StandardRenderer'
+import { StandardRenderer } from '../threed/StandardRenderer'
 import { type ECSFilter, type Entity, System } from '../ecs'
 import type { World } from '../World'
 
-export class RendererSystemBase extends System {
+export class RendererSystemBase implements System {
     renderer: StandardRenderer
 
     private objectGroupsByEntity = new Map<Entity, Group>()
@@ -12,8 +12,6 @@ export class RendererSystemBase extends System {
     filters: ECSFilter[] = []
 
     constructor(renderer: StandardRenderer) {
-        super()
-
         this.renderer = renderer
     }
 
@@ -27,7 +25,7 @@ export class RendererSystemBase extends System {
     }
 
     getGroup(entity: Entity): Group {
-        return this.objectGroupsByEntity.get(entity) || this.makeGroup(entity)
+        return this.objectGroupsByEntity.get(entity) ?? this.makeGroup(entity)
     }
 
     addObject(entity: Entity, objectName: string, object: Object3D) {
@@ -35,12 +33,8 @@ export class RendererSystemBase extends System {
 
         object.name = objectName
 
-        if (group) {
-            this.removeObject(entity, objectName)
-            group.add(object)
-        } else {
-            this.makeGroup(entity).add(object)
-        }
+        this.removeObject(entity, objectName)
+        group.add(object)
     }
 
     getObject(entity: Entity, objectName: string) {
@@ -54,21 +48,14 @@ export class RendererSystemBase extends System {
     removeObject(entity: Entity, objectName: string) {
         const group = this.getGroup(entity)
 
-        if (group) {
-            const object = this.getObject(entity, objectName)
+        const object = this.getObject(entity, objectName)
 
-            if (object) {
-                group.remove(object)
-            }
+        if (object) {
+            group.remove(object)
         }
     }
 
-    applyToGroup = (f: (group: Group) => void) => (entity: Entity) => {
-        const group = this.getGroup(entity)
-        if (group) {
-            f(group)
-        }
-    }
+    applyToGroup = (f: (group: Group) => void) => (entity: Entity) => f(this.getGroup(entity))
 
     applyToObject = (f: (object: Object3D, entity: Entity) => void) => (objectName: string) => (entity: Entity) => {
         const object = this.getObject(entity, objectName)

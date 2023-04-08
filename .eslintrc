@@ -1,16 +1,16 @@
 {
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project": "./tsconfig.json"
+        "project": "**/tsconfig.json"
     },
     "plugins": [
         "@typescript-eslint"
     ],
     "extends": [
-        "airbnb",
-        "airbnb-typescript",
-        "airbnb/hooks",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@typescript-eslint/strict",
+        "plugin:react/recommended"
     ],
     "env": {
         "browser": true
@@ -41,13 +41,9 @@
             "namedComponents": "arrow-function",
             "unnamedComponents": "arrow-function"
         }],
-        "jsx-a11y/label-has-associated-control": ["error", {
-            "required": {
-                "some": ["nesting", "id"]
-            }
-        }],
 
         "@typescript-eslint/naming-convention": "off",
+        "@typescript-eslint/consistent-type-definitions": ["error", "type"],
         "react/destructuring-assignment": "off"
     },
     "overrides": [

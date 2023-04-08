@@ -35,7 +35,7 @@
         "eslint-import-resolver-webpack": "^0.13.2",
         "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-jsx-a11y": "^6.6.1",
-        "eslint-plugin-react": "^7.31.11",
+        "eslint-plugin-react": "^7.32.2",
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-webpack-plugin": "^4.0.0",
         "html-webpack-plugin": "^5.5.0",
@@ -54,16 +54,17 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.9.1",
+        "gengine": "*",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-redux": "^8.0.5",
         "redux-logger": "^3.0.6",
         "rot-js": "^2.2.0",
         "three": "^0.151.2",
-        "uuid": "^9.0.0",
-        "gengine": "*"
+        "uuid": "^9.0.0"
     },
     "workspaces": [
-        "gengine"
+        "./games/*",
+        "./gengine"
     ]
 }

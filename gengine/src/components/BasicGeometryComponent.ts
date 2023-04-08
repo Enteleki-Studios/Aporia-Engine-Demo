@@ -26,14 +26,14 @@ export class BasicGeometryComponent extends Component {
         super()
 
         this.geometryType = settings.geometryType
-        this.color = settings.color || 0xffffff
+        this.color = settings.color ?? 0xffffff
 
         switch (settings.geometryType) {
             case 'box':
-                this.size = settings.size || 1
+                this.size = settings.size ?? 1
                 break
             case 'sphere':
-                this.radius = settings.radius || 1
+                this.radius = settings.radius ?? 1
                 break
             default:
                 break

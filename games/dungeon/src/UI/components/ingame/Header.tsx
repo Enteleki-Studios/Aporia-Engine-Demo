@@ -2,7 +2,7 @@ import React from 'react'
 
 import './Header.scss'
 
-export default () => (
+const Header = () => (
     <div className="Header">
         <ul>
             <li>Health: ---</li>
@@ -10,3 +10,5 @@ export default () => (
         </ul>
     </div>
 )
+
+export default Header

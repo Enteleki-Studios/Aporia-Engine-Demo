@@ -1,11 +1,10 @@
-const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const path = require('path')
-const package = require('./package.json')
+
 const commitHash = require('child_process')
     .execSync('git rev-parse --short HEAD')
     .toString().trim()
@@ -22,7 +21,6 @@ module.exports = {
     resolve: {
         modules: [
             path.resolve(__dirname, 'src'),
-            path.resolve(__dirname, 'node_modules'),
             'node_modules',
         ],
         extensions: ['.ts', '.tsx', '.js', '.json'],
@@ -48,9 +46,6 @@ module.exports = {
                 { from: '../../resources', to: 'resources' },
                 { from: '../../favicon.ico', to: 'favicon.ico' },
             ],
-        }),
-        new webpack.DefinePlugin({
-            ENGINE_VERSION: JSON.stringify(`${package.version} alpha ${commitHash}`),
         }),
     ],
     module: {

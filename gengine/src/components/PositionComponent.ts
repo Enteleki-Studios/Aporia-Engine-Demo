@@ -1,7 +1,7 @@
 import { Vector3 } from 'three'
 import { Component } from '../ecs'
 
-interface PositionSettings {
+type PositionSettings = {
     position: [number, number, number],
 }
 
@@ -12,6 +12,6 @@ export class PositionComponent extends Component {
     constructor({ position }: PositionSettings = { position: [0, 0, 0] }) {
         super()
 
-        this.position = new Vector3().fromArray(position || [0, 0, 0])
+        this.position = new Vector3().fromArray(position)
     }
 }

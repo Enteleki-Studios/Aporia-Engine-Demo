@@ -7,7 +7,7 @@ import {
     PositionComponent,
 } from '../components'
 
-export class FirstPersonCameraSystem extends System {
+export class FirstPersonCameraSystem implements System {
     cameraTargetFilter = new ECSFilter([CameraTargetComponent, PositionComponent, DirectionComponent])
     cameraFilter = new ECSFilter([CameraComponent])
 

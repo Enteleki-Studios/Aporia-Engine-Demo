@@ -1,6 +1,6 @@
 import { CanvasTexture, SpriteMaterial, Sprite } from 'three'
 
-interface Settings {
+type Settings = {
     resolution?: number
     font?: string
     color?: string

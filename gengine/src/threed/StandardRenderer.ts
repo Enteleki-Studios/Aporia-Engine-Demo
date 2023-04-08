@@ -13,7 +13,7 @@ import {
 import { AxesHelper } from './AxesHelper'
 import { DebugMode } from '../constants'
 
-interface StandardRendererParams {
+type StandardRendererParams = {
     canvas?: HTMLCanvasElement
     fov?: number
     aspect?: number

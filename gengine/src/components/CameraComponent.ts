@@ -1,7 +1,7 @@
 import { Vector3 } from 'three'
 import { Component } from '../ecs'
 
-interface CameraSettings {
+type CameraSettings = {
     position?: [number, number, number]
     lookAt?: [number, number, number]
 }
@@ -13,7 +13,7 @@ export class CameraComponent extends Component {
     constructor({ position, lookAt }: CameraSettings = {}) {
         super()
 
-        this.position = new Vector3().fromArray(position || [0, 0, 0])
-        this.lookAt = new Vector3().fromArray(lookAt || [0, 0, 0])
+        this.position = new Vector3().fromArray(position ?? [0, 0, 0])
+        this.lookAt = new Vector3().fromArray(lookAt ?? [0, 0, 0])
     }
 }

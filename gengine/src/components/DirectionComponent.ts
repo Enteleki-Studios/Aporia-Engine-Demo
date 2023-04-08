@@ -7,6 +7,6 @@ export class DirectionComponent extends Component {
     constructor(direction?: [number, number, number]) {
         super()
 
-        this.direction = new Vector3().fromArray(direction || [0, 0, 1])
+        this.direction = new Vector3().fromArray(direction ?? [0, 0, 1])
     }
 }

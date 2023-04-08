@@ -1,6 +1,6 @@
 import { Component } from '../ecs'
 
-interface Settings {
+type Settings = {
     color: number,
     intensity: number,
 }

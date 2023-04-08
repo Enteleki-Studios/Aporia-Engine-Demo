@@ -7,7 +7,7 @@ import {
     PositionComponent,
 } from '../components'
 
-export class DamageSystem extends System {
+export class DamageSystem implements System {
     damagingFilter = new ECSFilter([PositionComponent, DamagingComponent])
     damagableFilter = new ECSFilter([PositionComponent, HealthComponent, HitboxComponent])
 

@@ -7,7 +7,7 @@ import {
     VelocityComponent,
 } from '../components'
 
-export class EmitterSystem extends System {
+export class EmitterSystem implements System {
     emitterFilter = new ECSFilter([EmitterComponent, PositionComponent])
     timeSinceLastTrigger = 0
 

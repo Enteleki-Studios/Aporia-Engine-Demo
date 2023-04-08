@@ -2,7 +2,7 @@ import React from 'react'
 
 import './Icon.scss'
 
-interface IconProps {
+type IconProps = {
     code: string
     onClick?: () => void
     title?: string

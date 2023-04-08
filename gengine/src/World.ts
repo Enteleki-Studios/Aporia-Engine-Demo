@@ -1,8 +1,8 @@
 import { Clock } from 'three'
 
-import { WORLD_MAX_DELTA, WorldEvent } from './constants'
-
 import { ECS, ECSStatsType } from './ecs'
+
+import { WORLD_MAX_DELTA, WorldEvent } from './constants'
 
 export type StatsType = {
     /** Game engine frames per second.
@@ -32,7 +32,7 @@ export class World {
 
     private clock = new Clock()
     private delta = 0 // Seconds
-    private observers: Record<WorldEvent, Array<() => void | never>> = {
+    private observers: Record<WorldEvent, (() => void)[]> = {
         start: [],
         stop: [],
         endframe: [],

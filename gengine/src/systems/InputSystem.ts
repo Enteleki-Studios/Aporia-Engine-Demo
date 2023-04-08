@@ -2,7 +2,7 @@ import { ECSFilter, System } from '../ecs'
 import { InputManager } from '../managers/InputManager'
 import { InputComponent } from '../components/InputComponent'
 
-export class InputSystem extends System {
+export class InputSystem implements System {
     inputFilter = new ECSFilter([InputComponent])
 
     filters = [this.inputFilter]
@@ -10,7 +10,6 @@ export class InputSystem extends System {
     inputManager: InputManager
 
     constructor(inputManager: InputManager) {
-        super()
         this.inputManager = inputManager
     }
 

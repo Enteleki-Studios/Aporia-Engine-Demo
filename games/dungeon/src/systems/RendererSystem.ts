@@ -174,7 +174,7 @@ export class RendererSystem extends RendererSystemBase {
 
                     modelComponent.resource = resource
                     modelComponent.isLoading = false
-                })
+                }).catch(() => { /**/ })
                 break
             }
             case this.directionalLightFilter: {

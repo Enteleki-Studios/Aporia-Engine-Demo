@@ -13,7 +13,7 @@ const DECELERATION = -5
 const RUN_BOOST = 2
 const BASE_SPEED = 15
 
-export class FirstPersonMovementSystem extends System {
+export class FirstPersonMovementSystem implements System {
     movementFilter = new ECSFilter([DirectionComponent, InputComponent, VelocityComponent])
 
     filters = [this.movementFilter]

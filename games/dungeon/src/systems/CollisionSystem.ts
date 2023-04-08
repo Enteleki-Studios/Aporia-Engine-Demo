@@ -9,7 +9,7 @@ import {
 
 import { octree } from './RendererSystem'
 
-export class CollisionSystem extends System {
+export class CollisionSystem implements System {
     // TODO just selecting the hero for now
     heroFilter = new ECSFilter([HeroComponent, PositionComponent])
 

@@ -5,7 +5,7 @@ import { World } from '../World'
 
 const camPosition = new Vector3()
 
-export class ThirdPersonCameraSystem extends System {
+export class ThirdPersonCameraSystem implements System {
     cameraTargetFilter = new ECSFilter([CameraTargetComponent, PositionComponent])
     cameraFilter = new ECSFilter([CameraComponent])
 

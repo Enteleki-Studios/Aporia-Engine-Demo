@@ -6,14 +6,14 @@ import { ECSFilter } from './ECSFilter'
 import { Entity, EntityId } from './Entity'
 import { System } from './System'
 
-interface SystemStatsType {
+type SystemStatsType = {
     /** System name pulled from its constructor */
     name: string
     /** How long it took to run the system last frame (ms) */
     runtime: number
 }
 
-export interface ECSStatsType {
+export type ECSStatsType = {
     /** Number of entities */
     entities: number
     /** Number of components */
@@ -62,7 +62,7 @@ export class ECS {
                 if (!filter.entities.has(entity)) {
                     filter.entities.add(entity)
                     this.systemsByFilter.get(filter)?.forEach((system) => {
-                        system.receiveEntity(entity, filter)
+                        system.receiveEntity?.(entity, filter)
                     })
                 }
             } else {

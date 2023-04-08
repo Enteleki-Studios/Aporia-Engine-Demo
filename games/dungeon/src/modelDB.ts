@@ -36,7 +36,7 @@ const MF = '/resources/models' // Models folder
 //     },
 // ] as const
 //
-interface Model {
+type Model = {
     modelPath: string,
     texturePath?: string,
     scale: number,

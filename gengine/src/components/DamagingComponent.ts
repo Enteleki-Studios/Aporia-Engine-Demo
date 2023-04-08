@@ -1,6 +1,6 @@
 import { Component } from '../ecs'
 
-interface DamagingSettings {
+type DamagingSettings = {
     radius: number
     theta: number
     spoolUp: number

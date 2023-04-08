@@ -4,13 +4,13 @@ type Callback = () => void
 type KeyCode = string
 type Action = string
 
-interface InputManagerSettings {
+type InputManagerSettings = {
     domElement: HTMLElement
     keymap: Keymap
     pointerLock?: boolean
 }
 
-interface MouseInput {
+type MouseInput = {
     /** Vertical distance moved since last read. Pointer must be locked. */
     panX: number
 
