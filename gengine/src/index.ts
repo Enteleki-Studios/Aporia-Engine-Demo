@@ -49,3 +49,6 @@ export { SkySphere } from './threed/SkySphere'
 
 // Constants
 export * from './constants'
+
+// Custom types
+export type * from './types/threejs.d.ts'
