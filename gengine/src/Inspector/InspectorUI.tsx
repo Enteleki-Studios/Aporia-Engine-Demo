@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setDebugMode, getDebugMode } from './slice'
 
 import { Icon } from './Icon'
-import { DebugMode, DebugModes } from '../constants'
+import { DebugMode, DebugModes, ENGINE_VERSION } from '../constants'
 import { WorldStats } from './WorldStats'
 import { WorldContext } from '../react/WorldContext'
 
@@ -69,7 +69,7 @@ export const InspectorUI = () => {
                     </section>
                 </div>
                 <div className="version">
-                    {/* ENGINE_VERSION */}
+                    {ENGINE_VERSION}
                 </div>
             </div>
         </div>

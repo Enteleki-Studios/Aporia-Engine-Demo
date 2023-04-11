@@ -1,4 +1,5 @@
 import { Vector3 } from 'three'
+import npmPackage from '../package.json'
 
 export type Keymap = Record<string, string | string[]>
 
@@ -30,3 +31,6 @@ export const DebugModes: { value: DebugMode, label: string }[] = [
 
 // World events
 export type WorldEvent = 'start' | 'stop' | 'endframe'
+
+// Extras
+export const ENGINE_VERSION = `${npmPackage.version} - alpha`

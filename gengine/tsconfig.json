@@ -2,7 +2,7 @@
     "extends": "../tsconfig.base.json",
     "compilerOptions": {
         "baseUrl": "src",
-        "outDir": "dist",
-        "typeRoots": ["src/types"]
-    }
+        "outDir": "dist"
+    },
+    "include": ["src", "package.json", "src/types"]
 }

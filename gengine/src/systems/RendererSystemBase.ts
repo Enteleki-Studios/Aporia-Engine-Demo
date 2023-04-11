@@ -1,6 +1,6 @@
 import { Group, type Object3D } from 'three'
 
-import { StandardRenderer } from '../threed/StandardRenderer'
+import { StandardRenderer } from '../threejs/StandardRenderer'
 import { type ECSFilter, type Entity, System } from '../ecs'
 import type { World } from '../World'
 

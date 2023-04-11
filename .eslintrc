@@ -62,6 +62,12 @@
                 "@typescript-eslint/no-unused-vars": "off",
                 "@typescript-eslint/consistent-type-definitions": "off"
             }
+        },
+        {
+            "files": "**/*.test.ts",
+            "plugins": ["jest"],
+            "extends": ["plugin:jest/all"],
+            "env": { "jest/globals": true, "node": true }
         }
     ]
 }
