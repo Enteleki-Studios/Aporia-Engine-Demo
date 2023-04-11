@@ -37,7 +37,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'Dungeon',
             filename: 'dungeon/index.html',
-            template: '../../gengine/src/html/standardHTMLTemplate.html',
             chunks: 'all',
             minify: false,
         }),

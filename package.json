@@ -22,6 +22,6 @@
     },
     "workspaces": [
         "./games/*",
-        "./gengine"
+        "./packages/*"
     ]
 }

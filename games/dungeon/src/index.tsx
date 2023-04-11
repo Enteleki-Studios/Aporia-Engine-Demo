@@ -10,15 +10,11 @@ import UI from './UI'
 
 import './root.scss'
 
-const rootElement = document.getElementById('Root')
-
-if (rootElement) {
-    createRoot(rootElement).render(
-        <Provider store={store}>
-            <WorldContext.Provider value={world}>
-                <inspector.InspectorUI />
-                <UI />
-            </WorldContext.Provider>
-        </Provider>,
-    )
-}
+createRoot(document.body).render(
+    <Provider store={store}>
+        <WorldContext.Provider value={world}>
+            <inspector.InspectorUI />
+            <UI />
+        </WorldContext.Provider>
+    </Provider>,
+)
