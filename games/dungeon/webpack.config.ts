@@ -1,15 +1,24 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyPlugin = require('copy-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const ESLintPlugin = require('eslint-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const path = require('path')
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import CopyPlugin from 'copy-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import ESLintPlugin from 'eslint-webpack-plugin'
+import { CleanWebpackPlugin } from 'clean-webpack-plugin'
+import * as path from 'path'
+import type { Configuration } from 'webpack'
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 
-const commitHash = require('child_process')
-    .execSync('git rev-parse --short HEAD')
-    .toString().trim()
+const devServer: DevServerConfiguration = {
+    port: 2080,
+    hot: false,
+    client: {
+        overlay: {
+            errors: true,
+            warnings: false,
+        },
+    },
+}
 
-module.exports = {
+const config: Configuration = {
     entry: './src/index.tsx',
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -64,14 +73,7 @@ module.exports = {
             },
         ],
     },
-    devServer: {
-        port: 2080,
-        hot: false,
-        client: {
-            overlay: {
-                errors: true,
-                warnings: false,
-            },
-        },
-    },
+    devServer,
 }
+
+export default config
