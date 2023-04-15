@@ -98,11 +98,13 @@ world.ecs.createEntity().addComponents(
 // )
 
 // Test stuff
-world.ecs.createEntity().addComponents(
-    new BasicGeometryComponent({ geometryType: 'box' }),
-    new PositionComponent({ position: [0, 1, 5] }),
-    new EmitterComponent(),
-)
+world.ecs
+    .createEntity()
+    .addComponents(
+        new BasicGeometryComponent({ geometryType: 'box' }),
+        new PositionComponent({ position: [0, 1, 5] }),
+        new EmitterComponent(),
+    )
 
 world.ecs.createEntity().addComponents(
     new PositionComponent({ position: [0, 2, 0] }),
@@ -113,9 +115,7 @@ world.ecs.createEntity().addComponents(
 )
 
 // Camera
-world.ecs.createEntity().addComponents(
-    new CameraComponent(),
-)
+world.ecs.createEntity().addComponents(new CameraComponent())
 
 // Player
 world.ecs.createEntity().addComponents(
@@ -194,7 +194,7 @@ world.ecs.createEntity().addComponents(
     new ModelComponent({ modelName: 'chest_gold' }),
     new PositionComponent({ position: [-6, 0, -6] }),
     new PointLightComponent({
-        color: 0xffD700,
+        color: 0xffd700,
         intensity: 1,
         offset: [0.5, 0.7, 0],
     }),

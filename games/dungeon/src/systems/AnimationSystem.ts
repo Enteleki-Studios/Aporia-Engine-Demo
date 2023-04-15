@@ -4,14 +4,12 @@ import { AnimationComponent } from 'components'
 
 import modelDB from 'modelDB'
 
-function loadAnimations(
-    animationComponent: AnimationComponent,
-    modelComponent: ModelComponent<typeof modelDB>,
-) {
+function loadAnimations(animationComponent: AnimationComponent, modelComponent: ModelComponent<typeof modelDB>) {
     const { resource: model } = modelComponent
     const { animations: animationIndex } = modelDB[modelComponent.modelName]
 
-    if (!model) { // TODO can we remove this check?
+    if (!model) {
+        // TODO can we remove this check?
         return null
     }
 
@@ -51,10 +49,10 @@ export class AnimationSystem implements System {
             if (entity.has(InputComponent)) {
                 const inputComponent = entity.get(InputComponent)
                 if (
-                    inputComponent.input.up.hold
-                || inputComponent.input.left.hold
-                || inputComponent.input.right.hold
-                || inputComponent.input.down.hold
+                    inputComponent.input.up.hold ||
+                    inputComponent.input.left.hold ||
+                    inputComponent.input.right.hold ||
+                    inputComponent.input.down.hold
                 ) {
                     nextState = 'walk'
                     if (inputComponent.input.run.hold) {
@@ -85,10 +83,10 @@ export class AnimationSystem implements System {
             const modelComponent = entity.get(ModelComponent)
 
             if (
-                !animationComponent.loaded
-            && !animationComponent.isLoading
-            // && this._dbLoaded
-            && modelComponent.resource
+                !animationComponent.loaded &&
+                !animationComponent.isLoading &&
+                // && this._dbLoaded
+                modelComponent.resource
             ) {
                 animationComponent.isLoading = true
                 const mixer = loadAnimations(animationComponent, modelComponent)

@@ -2,7 +2,7 @@ import { Vector3 } from 'three'
 import { Component } from '../ecs'
 
 type PositionSettings = {
-    position: [number, number, number],
+    position: [number, number, number]
 }
 
 export class PositionComponent extends Component {

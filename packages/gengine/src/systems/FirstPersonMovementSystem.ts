@@ -1,10 +1,6 @@
 import { ECSFilter, System } from '../ecs'
 import { roundToZero } from '../utils/vectorUtils'
-import {
-    DirectionComponent,
-    InputComponent,
-    VelocityComponent,
-} from '../components'
+import { DirectionComponent, InputComponent, VelocityComponent } from '../components'
 import { Y_AXIS } from '../constants'
 import { World } from '../World'
 

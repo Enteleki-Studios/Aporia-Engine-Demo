@@ -1,11 +1,6 @@
 import { World } from '../World'
 import { System, ECSFilter } from '../ecs'
-import {
-    DamagingComponent,
-    HealthComponent,
-    HitboxComponent,
-    PositionComponent,
-} from '../components'
+import { DamagingComponent, HealthComponent, HitboxComponent, PositionComponent } from '../components'
 
 export class DamageSystem implements System {
     damagingFilter = new ECSFilter([PositionComponent, DamagingComponent])

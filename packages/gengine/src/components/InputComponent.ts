@@ -2,7 +2,7 @@ import type { Keymap } from '../constants'
 import { Component } from '../ecs'
 
 export class InputComponent extends Component {
-    input: Record<string, { press: boolean, hold: boolean }> = {}
+    input: Record<string, { press: boolean; hold: boolean }> = {}
     mouse: {
         pan: {
             x: number

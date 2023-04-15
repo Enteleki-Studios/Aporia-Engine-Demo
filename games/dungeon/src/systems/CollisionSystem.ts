@@ -1,10 +1,5 @@
 import { Capsule } from 'three/examples/jsm/math/Capsule'
-import {
-    ECSFilter,
-    HeroComponent,
-    PositionComponent,
-    System,
-} from 'gengine'
+import { ECSFilter, HeroComponent, PositionComponent, System, log } from 'gengine'
 // import { CollidableComponent } from 'dungeon/components'
 
 import { octree } from './RendererSystem'
@@ -23,7 +18,7 @@ export class CollisionSystem implements System {
             const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
             const collisionResult = octree.capsuleIntersect(playerCollider)
             if (collisionResult) {
-                console.debug(collisionResult.normal)
+                log.d(collisionResult.normal)
             }
         })
     }

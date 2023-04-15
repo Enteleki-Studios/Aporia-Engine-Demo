@@ -18,15 +18,15 @@ type MouseInput = {
     panY: number
 
     /**
-    * Vertical axis mouse position as signed percentage from center to edge (-1 to +1).
-    * Pointer must be unlocked.
-    */
+     * Vertical axis mouse position as signed percentage from center to edge (-1 to +1).
+     * Pointer must be unlocked.
+     */
     centerRelX: number
 
     /**
-    * Horizontal axis mouse position as signed percentage from center to edge (-1 to +1).
-    * Pointer must be unlocked.
-    */
+     * Horizontal axis mouse position as signed percentage from center to edge (-1 to +1).
+     * Pointer must be unlocked.
+     */
     centerRelY: number
 }
 
@@ -135,7 +135,9 @@ export class InputManager {
                 if (isPress) {
                     const callbacks = this.actionListeners[action]
                     if (callbacks && callbacks.length) {
-                        callbacks.forEach((c) => { c() })
+                        callbacks.forEach((c) => {
+                            c()
+                        })
                     }
                 }
             })
