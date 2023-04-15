@@ -5,7 +5,9 @@
     "scripts": {
         "start": "webpack serve --mode=development --progress",
         "typecheck": "tsc --noEmit",
-        "lint": "eslint src"
+        "lint": "eslint src",
+        "prettier": "prettier --config ../../.prettier.json --check .",
+        "prettier:fix": "prettier --config ../../.prettier.json --write ."
     },
     "devDependencies": {
         "@types/node": "^18.15.11",

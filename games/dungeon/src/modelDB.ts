@@ -37,12 +37,12 @@ const MF = '/resources/models' // Models folder
 // ] as const
 //
 type Model = {
-    modelPath: string,
-    texturePath?: string,
-    scale: number,
-    animations?: Record<string, string>,
-    translate?: [number, number, number],
-    radius?: number,
+    modelPath: string
+    texturePath?: string
+    scale: number
+    animations?: Record<string, string>
+    translate?: [number, number, number]
+    radius?: number
 }
 
 const modelDB: Record<string, Model> = {

@@ -7,10 +7,11 @@ import { rootReducer } from 'models/reducers'
 
 export const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([
-        // dungeonMiddleware,
-        logger,
-    ]),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat([
+            // dungeonMiddleware,
+            logger,
+        ]),
 })
 
 export type RootState = ReturnType<typeof rootReducer>

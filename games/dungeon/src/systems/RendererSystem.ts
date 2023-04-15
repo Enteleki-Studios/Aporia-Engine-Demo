@@ -57,9 +57,7 @@ async function loadModel(modelComponent: ModelComponent<typeof modelDB>) {
 }
 
 const makePointLight = (pointLightComponent: PointLightComponent) => {
-    const {
-        color, intensity, decay, distance, offset, castShadow,
-    } = pointLightComponent
+    const { color, intensity, decay, distance, offset, castShadow } = pointLightComponent
     const pointLight = new PointLight(color, intensity, distance, decay)
     pointLight.castShadow = castShadow
     pointLight.position.fromArray(offset)
@@ -77,7 +75,7 @@ const makeHealthSprite = (healthComponent: HealthComponent) => {
     return healthSprite
 }
 
-const makeBasicGeometry = (geoComponent:BasicGeometryComponent) => {
+const makeBasicGeometry = (geoComponent: BasicGeometryComponent) => {
     const { geometryType, radius, size } = geoComponent
     switch (geometryType) {
         case 'box':
@@ -150,7 +148,7 @@ export class RendererSystem extends RendererSystemBase {
         const { health } = entity.get(HealthComponent)
         if (health) {
             if ((ts as TextSprite).text !== health.toString()) {
-                (ts as TextSprite).setText(health)
+                ;(ts as TextSprite).setText(health)
             }
         } else {
             ts.visible = false
@@ -162,30 +160,31 @@ export class RendererSystem extends RendererSystemBase {
             case this.modelFilter: {
                 const modelComponent = entity.get(ModelComponent)
                 modelComponent.isLoading = true
-                loadModel(modelComponent).then((resource) => {
-                    this.addObject(entity, 'model', resource)
-                    const box = new Box3().setFromObject(resource)
+                loadModel(modelComponent)
+                    .then((resource) => {
+                        this.addObject(entity, 'model', resource)
+                        const box = new Box3().setFromObject(resource)
 
-                    const healthSprite = this.getObject(entity, 'health')
-                    if (healthSprite) {
-                        healthSprite.position.y = box.max.y + 0.15
-                    }
+                        const healthSprite = this.getObject(entity, 'health')
+                        if (healthSprite) {
+                            healthSprite.position.y = box.max.y + 0.15
+                        }
 
-                    modelComponent.resource = resource
-                    modelComponent.isLoading = false
-                }).catch(() => { /**/ })
+                        modelComponent.resource = resource
+                        modelComponent.isLoading = false
+                    })
+                    .catch(() => {
+                        /**/
+                    })
                 break
             }
             case this.directionalLightFilter: {
                 const { intensity } = entity.get(DirectionalLightComponent)
-                const directionalLight = new DirectionalLight(0xFFFFFF, intensity)
+                const directionalLight = new DirectionalLight(0xffffff, intensity)
                 this.addObject(entity, 'directionalLight', directionalLight)
                 this.addObject(entity, 'directionalLightTarget', directionalLight.target)
 
-                this.renderer.addHelpers(
-                    directionalLight.helper,
-                    directionalLight.shadowHelper,
-                )
+                this.renderer.addHelpers(directionalLight.helper, directionalLight.shadowHelper)
                 break
             }
             case this.ambientLightFilter: {

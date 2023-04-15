@@ -28,10 +28,7 @@ const config: Configuration = {
     stats: 'errors-warnings',
     devtool: 'inline-source-map',
     resolve: {
-        modules: [
-            path.resolve(__dirname, 'src'),
-            'node_modules',
-        ],
+        modules: [path.resolve(__dirname, 'src'), 'node_modules'],
         extensions: ['.ts', '.tsx', '.js', '.json'],
     },
     plugins: [
@@ -60,11 +57,7 @@ const config: Configuration = {
         rules: [
             {
                 test: /\.s[ac]ss$/i,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    'sass-loader',
-                ],
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
             },
             {
                 test: /\.tsx?$/,

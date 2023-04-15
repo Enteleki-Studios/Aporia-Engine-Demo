@@ -1,11 +1,5 @@
 import { Capsule } from 'three/examples/jsm/math/Capsule'
-import {
-    ECSFilter,
-    HeroComponent,
-    PositionComponent,
-    System,
-    log,
-} from 'gengine'
+import { ECSFilter, HeroComponent, PositionComponent, System, log } from 'gengine'
 // import { CollidableComponent } from 'dungeon/components'
 
 import { octree } from './RendererSystem'

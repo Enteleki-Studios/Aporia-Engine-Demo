@@ -20,7 +20,8 @@ export default function loadFBX(modelPath: string, texturePath?: string): Promis
                     c.castShadow = true
                     c.receiveShadow = true
 
-                    if (texturePath) { // TODO: Fix the typings here, this is a hack
+                    if (texturePath) {
+                        // TODO: Fix the typings here, this is a hack
                         const b = c as Mesh
                         if (b.isMesh && b.material) {
                             if (!Array.isArray(b.material)) {
