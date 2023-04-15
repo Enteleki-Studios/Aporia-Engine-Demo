@@ -3,8 +3,8 @@ import { Mesh, BoxGeometry, MeshStandardMaterial } from 'three'
 export class DefaultCube extends Mesh {
     constructor()
     constructor(size: number, color?: number)
-    constructor(x: number, y:number, z: number, color?: number)
-    constructor(a?: number, b?: number, c?: number, d?:number) {
+    constructor(x: number, y: number, z: number, color?: number)
+    constructor(a?: number, b?: number, c?: number, d?: number) {
         let sizeX = 1
         let sizeY = 1
         let sizeZ = 1

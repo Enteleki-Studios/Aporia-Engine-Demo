@@ -2,7 +2,7 @@ import { Vector3 } from 'three'
 import { Component } from '../ecs'
 
 type VelocitySettings = {
-    velocity?: [number, number, number],
+    velocity?: [number, number, number]
 }
 
 export class VelocityComponent extends Component {

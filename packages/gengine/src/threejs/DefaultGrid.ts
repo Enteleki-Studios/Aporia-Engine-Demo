@@ -1,11 +1,4 @@
-import {
-    LinearFilter,
-    Mesh,
-    MeshStandardMaterial,
-    PlaneGeometry,
-    RepeatWrapping,
-    Texture,
-} from 'three'
+import { LinearFilter, Mesh, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, Texture } from 'three'
 
 import { CustomGridTexture, CustomGridSettings } from './CustomGridTexture'
 
@@ -15,10 +8,7 @@ type DefaultGridSettings = CustomGridSettings & {
 }
 
 export class DefaultGrid extends Mesh {
-    constructor(
-        size: number,
-        settings?: DefaultGridSettings,
-    ) {
+    constructor(size: number, settings?: DefaultGridSettings) {
         const floorTexture = settings?.texture ?? new CustomGridTexture(settings)
         floorTexture.wrapS = RepeatWrapping
         floorTexture.wrapT = RepeatWrapping

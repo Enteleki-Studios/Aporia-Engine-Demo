@@ -46,7 +46,9 @@ export class ComponentManager {
     }
 
     addComponents(components: Component[]) {
-        components.forEach((c) => { this.addComponent(c) })
+        components.forEach((c) => {
+            this.addComponent(c)
+        })
     }
 
     getTuplesByClass<C extends [...ComponentConstructor[]]>(...componentClasses: C) {
@@ -55,7 +57,7 @@ export class ComponentManager {
         if (this.queryCache.has(query)) {
             return this.queryCache.get(query) as InstanceTuple<C>[]
         }
-        const tuples:Component[][] = []
+        const tuples: Component[][] = []
         this.entitiesById.forEach((entity: Entity) => {
             if (queryTypes.every((qt) => entity.has(qt))) {
                 tuples.push(queryTypes.map((qt) => entity.get(qt) as Component))

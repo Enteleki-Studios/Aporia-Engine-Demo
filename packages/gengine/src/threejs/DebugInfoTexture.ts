@@ -33,10 +33,12 @@ export class DebugInfoTexture extends Texture {
         this.lineOffset = this.lineHeight
     }
 
-    update(data: {
-        delta?: number
-        renderer?: WebGLRenderer
-    } = {}) {
+    update(
+        data: {
+            delta?: number
+            renderer?: WebGLRenderer
+        } = {},
+    ) {
         this.lineOffset = this.lineHeight
 
         if (this.context) {

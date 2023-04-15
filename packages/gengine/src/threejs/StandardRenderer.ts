@@ -38,13 +38,7 @@ export class StandardRenderer {
     debugOrbitControls: OrbitControls
     debugViewport = new Vector4()
 
-    constructor({
-        canvas,
-        fov = 60,
-        aspect = 1,
-        near = 0.1,
-        far = 100,
-    }: StandardRendererParams) {
+    constructor({ canvas, fov = 60, aspect = 1, near = 0.1, far = 100 }: StandardRendererParams) {
         this.renderer = new WebGLRenderer({
             canvas,
             antialias: true,
@@ -74,10 +68,7 @@ export class StandardRenderer {
 
         this.setSize(1280, 720)
 
-        this.addHelpers(
-            new AxesHelper(),
-            new CameraHelper(this.camera),
-        )
+        this.addHelpers(new AxesHelper(), new CameraHelper(this.camera))
 
         this.updateViewports()
     }

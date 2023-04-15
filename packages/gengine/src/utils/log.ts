@@ -17,5 +17,5 @@ export const log: Logger = {
     i: (m) => logLevel > 2 && console.info(m),
     l: (m) => logLevel > 3 && console.log(m),
     d: (m) => logLevel > 4 && console.log(m),
-    setLogLevel: (level) => logLevel = level
+    setLogLevel: (level) => (logLevel = level),
 }

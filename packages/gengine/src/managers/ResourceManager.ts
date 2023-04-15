@@ -1,9 +1,4 @@
-import {
-    TextureLoader,
-    SpriteMaterial,
-    Sprite,
-    Object3D,
-} from 'three'
+import { TextureLoader, SpriteMaterial, Sprite, Object3D } from 'three'
 
 import type { SpriteComponent } from '../components/SpriteComponent'
 

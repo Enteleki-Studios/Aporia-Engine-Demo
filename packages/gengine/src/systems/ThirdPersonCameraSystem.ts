@@ -25,9 +25,9 @@ export class ThirdPersonCameraSystem implements System {
             camPosition.z += 7
             camPosition.y += 7
 
-            cameraComponent.position.lerp(camPosition, 1 - (0.005 ** delta))
+            cameraComponent.position.lerp(camPosition, 1 - 0.005 ** delta)
             // cameraComponent.lookAt.lerp(targetPosition, 1 - (0.00001 ** delta))
-            cameraComponent.lookAt.lerp(targetPosition, 1 - (0.005 ** delta))
+            cameraComponent.lookAt.lerp(targetPosition, 1 - 0.005 ** delta)
             // cameraComponent.position.copy(camPosition)
             // cameraComponent.lookAt.copy(targetPosition)
         })

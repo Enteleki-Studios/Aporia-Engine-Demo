@@ -72,7 +72,7 @@ export class TextSprite extends Sprite {
             const { width } = ctx.measureText(text)
             if (isFirstTime) {
                 // Account for border on both sides
-                canvas.width = width + (lineWidth * 2)
+                canvas.width = width + lineWidth * 2
                 // Account for letters that dip below (gjpqy)
                 canvas.height = resolution * 1.5
             }
@@ -83,15 +83,11 @@ export class TextSprite extends Sprite {
             ctx.font = fontSetting
 
             // Center text
-            const left = (canvas.width - (width + (lineWidth * 2))) / 2 + lineWidth
+            const left = (canvas.width - (width + lineWidth * 2)) / 2 + lineWidth
             ctx.strokeText(text, left, resolution)
             ctx.fillText(text, left, resolution)
 
-            this.scale.set(
-                (canvas.width / resolution) * scale,
-                (canvas.height / resolution) * scale,
-                1,
-            )
+            this.scale.set((canvas.width / resolution) * scale, (canvas.height / resolution) * scale, 1)
 
             this.texture.needsUpdate = true
         }

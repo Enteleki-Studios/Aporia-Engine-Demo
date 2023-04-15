@@ -1,7 +1,4 @@
-import {
-    Color,
-    Texture,
-} from 'three'
+import { Color, Texture } from 'three'
 
 export type CustomGridSettings = {
     size?: number
@@ -57,12 +54,7 @@ export class CustomGridTexture extends Texture {
             gridCtx.fillStyle = `#${new Color(borderColor).getHexString()}`
             gridCtx.lineWidth = borderWidth
             gridCtx.strokeStyle = `#${new Color(borderColor).getHexString()}`
-            gridCtx.strokeRect(
-                borderWidth / 2,
-                borderWidth / 2,
-                size - borderWidth,
-                size - borderWidth,
-            )
+            gridCtx.strokeRect(borderWidth / 2, borderWidth / 2, size - borderWidth, size - borderWidth)
 
             // Text
             gridCtx.font = font

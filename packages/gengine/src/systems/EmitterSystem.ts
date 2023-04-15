@@ -1,11 +1,6 @@
 import { ECSFilter, System } from '../ecs'
 import { World } from '../World'
-import {
-    BasicGeometryComponent,
-    EmitterComponent,
-    PositionComponent,
-    VelocityComponent,
-} from '../components'
+import { BasicGeometryComponent, EmitterComponent, PositionComponent, VelocityComponent } from '../components'
 
 export class EmitterSystem implements System {
     emitterFilter = new ECSFilter([EmitterComponent, PositionComponent])

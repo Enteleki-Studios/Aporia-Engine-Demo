@@ -1,11 +1,6 @@
 import { ECSFilter, System } from '../ecs'
 
-import {
-    CameraComponent,
-    CameraTargetComponent,
-    DirectionComponent,
-    PositionComponent,
-} from '../components'
+import { CameraComponent, CameraTargetComponent, DirectionComponent, PositionComponent } from '../components'
 
 export class FirstPersonCameraSystem implements System {
     cameraTargetFilter = new ECSFilter([CameraTargetComponent, PositionComponent, DirectionComponent])

@@ -43,9 +43,7 @@ export const InspectorUI = () => {
         <div className="Inspector">
             <div className="window">
                 <div className="header">
-                    <div className="title">
-                        {title}
-                    </div>
+                    <div className="title">{title}</div>
                     <div className="toolbar">
                         <Icon code="play" onClick={() => world.start()} title="Start world" />
                         <Icon code="step" onClick={() => world.step()} title="Play one frame" />
@@ -68,9 +66,7 @@ export const InspectorUI = () => {
                         </label>
                     </section>
                 </div>
-                <div className="version">
-                    {ENGINE_VERSION}
-                </div>
+                <div className="version">{ENGINE_VERSION}</div>
             </div>
         </div>
     )

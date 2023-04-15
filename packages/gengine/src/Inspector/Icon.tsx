@@ -11,13 +11,10 @@ type IconProps = {
 export const Icon = ({ code, onClick, title }: IconProps) => {
     if (onClick) {
         return (
-            <button
-                className="Icon"
-                onClick={onClick}
-                type="button"
-                title={title}
-            >
-                <svg><image xlinkHref={`/resources/icons/${code}.svg`} /></svg>
+            <button className="Icon" onClick={onClick} type="button" title={title}>
+                <svg>
+                    <image xlinkHref={`/resources/icons/${code}.svg`} />
+                </svg>
             </button>
         )
     }

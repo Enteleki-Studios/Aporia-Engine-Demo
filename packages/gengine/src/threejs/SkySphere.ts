@@ -1,10 +1,4 @@
-import {
-    Mesh,
-    Color,
-    SphereGeometry,
-    ShaderMaterial,
-    BackSide,
-} from 'three'
+import { Mesh, Color, SphereGeometry, ShaderMaterial, BackSide } from 'three'
 
 const vertexShader = `
    varying vec3 vWorldPosition;

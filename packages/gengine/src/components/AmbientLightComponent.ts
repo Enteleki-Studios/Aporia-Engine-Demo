@@ -1,8 +1,8 @@
 import { Component } from '../ecs'
 
 type Settings = {
-    color: number,
-    intensity: number,
+    color: number
+    intensity: number
 }
 
 export class AmbientLightComponent extends Component {
