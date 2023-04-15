@@ -4,6 +4,7 @@ import {
     HeroComponent,
     PositionComponent,
     System,
+    log,
 } from 'gengine'
 // import { CollidableComponent } from 'dungeon/components'
 
@@ -23,7 +24,7 @@ export class CollisionSystem implements System {
             const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
             const collisionResult = octree.capsuleIntersect(playerCollider)
             if (collisionResult) {
-                console.debug(collisionResult.normal)
+                log.d(collisionResult.normal)
             }
         })
     }
