@@ -3,6 +3,7 @@ import { Clock } from 'three'
 import { ECS, ECSStatsType } from './ecs'
 
 import { WORLD_MAX_DELTA, WorldEvent } from './constants'
+import { log } from './utils/log'
 
 export type StatsType = {
     /** Game engine frames per second.
@@ -58,8 +59,7 @@ export class World {
 
         this.addEventListener.bind(this)
 
-        console.log('Gengine started')
-        // console.log(`Version ${ENGINE_VERSION}`)
+        log.i('Gengine started')
     }
 
     /** Time elapsed since last frame in seconds */

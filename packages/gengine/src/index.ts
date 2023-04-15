@@ -34,6 +34,7 @@ export { useForceUpdate } from './react/hooks/useForceUpdate'
 // Utils
 export * as arrayUtils from './utils/arrayUtils'
 export * as vectorUtils from './utils/vectorUtils'
+export { log } from './utils/log'
 
 // THREEJS
 export { AxesHelper } from './threejs/AxesHelper'
