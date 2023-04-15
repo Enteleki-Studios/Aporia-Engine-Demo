@@ -13,6 +13,7 @@ describe('secondsToClockString', () => {
             [60 * 60 + 60 * 32 + 7, '01:32:07'],
         ])('%d seconds', (seconds, expected) => {
             it(`returns ${expected}`, () => {
+                expect.assertions(1)
                 expect(secondsToClockString(seconds)).toBe(expected)
             })
         })
@@ -41,6 +42,7 @@ describe('secondsToClockString', () => {
             [60 * 60 + 60 * 32 + 7, 0, '01:32:07'],
         ])('%d seconds, %i decimal places', (seconds, decimalPlaces, expected) => {
             it(`returns ${expected}`, () => {
+                expect.assertions(1)
                 expect(secondsToClockString(seconds, decimalPlaces)).toBe(expected)
             })
         })
