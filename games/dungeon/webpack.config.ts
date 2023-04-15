@@ -22,7 +22,7 @@ const config: Configuration = {
     entry: './src/index.tsx',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name]/[name].bundle.js',
+        filename: '[name].bundle.js',
     },
     target: 'web',
     stats: 'errors-warnings',
@@ -38,11 +38,11 @@ const config: Configuration = {
             threads: true,
         }),
         new MiniCssExtractPlugin({
-            filename: '[name]/[name].css',
+            filename: '[name].css',
         }),
         new HtmlWebpackPlugin({
             title: 'Dungeon',
-            filename: 'dungeon/index.html',
+            filename: 'index.html',
             chunks: 'all',
             minify: false,
         }),

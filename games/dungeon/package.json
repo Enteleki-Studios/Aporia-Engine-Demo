@@ -4,6 +4,7 @@
     "main": "src/index.tsx",
     "scripts": {
         "start": "webpack serve --mode=development --progress",
+        "build": "webpack --mode=production --progress",
         "typecheck": "tsc --noEmit",
         "lint": "eslint src",
         "prettier": "prettier --config ../../.prettier.json --check .",
