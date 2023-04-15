@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import { init, renderer } from 'dungeon'
 
 const UI = () => {
-    const canvasContainerRef = React.useRef(null)
+    const canvasContainerRef = React.useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (canvasContainerRef.current) {

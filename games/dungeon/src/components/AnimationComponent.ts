@@ -6,12 +6,10 @@ export class AnimationComponent extends Component {
     loaded = false
     isLoading = false
     prevState: (string | null) = null
-    animations: {
-        [key: string]: {
-            clip: AnimationClip,
-            action: AnimationAction,
-        },
-    } = {}
+    animations: Record<string, {
+        clip: AnimationClip,
+        action: AnimationAction,
+    }> = {}
 
     state: string
 

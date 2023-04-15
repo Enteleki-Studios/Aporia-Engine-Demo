@@ -170,7 +170,7 @@ items.forEach((item, i) => {
     world.ecs.createEntity().addComponents(
         new ModelComponent({ modelName: item }),
         new PositionComponent({ position: [i * 3 - 12, 0, 8] }),
-        new ColliderComponent({ type: 'cylinder', radius: modelDB[item].radius || 1, height: 2, resolution: 10 }),
+        new ColliderComponent({ type: 'cylinder', radius: modelDB[item].radius ?? 1, height: 2, resolution: 10 }),
         // new ColliderComponent({ type: 'box', width: 1, height: 1, depth: 1 }),
     )
 })

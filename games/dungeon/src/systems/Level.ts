@@ -28,7 +28,8 @@
 //     // }
 
 //     tick() {
-//         // const levelComponents = (this.ECS.ComponentManager.getTuplesByQuery([LEVEL]) as unknown) as LevelComponent[]
+//         // const levelComponents =
+//         (this.ECS.ComponentManager.getTuplesByQuery([LEVEL]) as unknown) as LevelComponent[]
 
 //         // this.ECS.ComponentManager.getTuplesByQuery([MODEL, POSITION]).forEach(
 //         //     ([, positionComponent]) => {

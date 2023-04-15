@@ -11,7 +11,6 @@ import {
     Color,
     SphereGeometry,
     CylinderGeometry,
-    DoubleSide,
 } from 'three'
 
 import { Octree } from 'three/examples/jsm/math/Octree'
