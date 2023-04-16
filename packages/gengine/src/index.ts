@@ -28,7 +28,6 @@ export { ResourceManager } from './managers/ResourceManager'
 export * as inspector from './Inspector'
 
 // React
-export { WorldContext } from './react/WorldContext'
 export { useForceUpdate } from './react/hooks/useForceUpdate'
 
 // Utils

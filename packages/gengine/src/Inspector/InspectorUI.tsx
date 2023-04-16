@@ -1,19 +1,22 @@
-import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
+import React, { FormEvent, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { setDebugMode, getDebugMode } from './slice'
 
+import type { World } from '../World'
 import { Icon } from './Icon'
 import { DebugMode, DebugModes, ENGINE_VERSION } from '../constants'
 import { WorldStats } from './WorldStats'
-import { WorldContext } from '../react/WorldContext'
 
 import './style.scss'
+type InspectorUIProps = {
+    getWorld: () => World
+}
 
-export const InspectorUI = () => {
+export const InspectorUI = ({ getWorld }: InspectorUIProps) => {
     const dispatch = useDispatch()
     const debugMode = useSelector(getDebugMode)
-    const world = useContext(WorldContext)
+    const world = getWorld()
 
     const [status, setStatus] = useState('')
 
@@ -51,7 +54,7 @@ export const InspectorUI = () => {
                     </div>
                 </div>
                 <div className="body">
-                    <WorldStats />
+                    <WorldStats world={world} />
                     <section>
                         <h3>Settings</h3>
                         <label>

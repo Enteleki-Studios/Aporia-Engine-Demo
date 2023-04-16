@@ -2,7 +2,7 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 
-import { inspector, WorldContext } from 'gengine'
+import { inspector } from 'gengine'
 
 import { world } from './dungeon'
 import { store } from './store'
@@ -16,9 +16,7 @@ document.body.appendChild(root)
 
 createRoot(root).render(
     <Provider store={store}>
-        <WorldContext.Provider value={world}>
-            <inspector.InspectorUI />
+            <inspector.InspectorUI getWorld={() => world} />
             <UI />
-        </WorldContext.Provider>
     </Provider>,
 )

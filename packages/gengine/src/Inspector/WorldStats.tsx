@@ -1,12 +1,15 @@
-import React, { Fragment, useContext, useEffect } from 'react'
+import React, { Fragment, useEffect } from 'react'
 
 import { secondsToClockString } from './utils'
 
-import { WorldContext } from '../react/WorldContext'
 import { useForceUpdate } from '../react/hooks/useForceUpdate'
+import { World } from '../World'
 
-export const WorldStats = () => {
-    const world = useContext(WorldContext)
+type WorldStatsProps = {
+    world: World
+}
+
+export const WorldStats = ({ world }: WorldStatsProps) => {
     const forceUpdate = useForceUpdate()
 
     useEffect(() => {
