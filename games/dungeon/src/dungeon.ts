@@ -165,15 +165,21 @@ world.ecs.createEntity().addComponents(
 // )
 
 // Items
-const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart', 'crate']
+const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart']
 items.forEach((item, i) => {
     world.ecs.createEntity().addComponents(
         new ModelComponent({ modelName: item }),
         new PositionComponent({ position: [i * 3 - 12, 0, 8] }),
         new ColliderComponent({ type: 'cylinder', radius: modelDB[item].radius ?? 1, height: 2, resolution: 10 }),
-        // new ColliderComponent({ type: 'box', width: 1, height: 1, depth: 1 }),
     )
 })
+
+// Crate
+world.ecs.createEntity().addComponents(
+    new ModelComponent({ modelName: 'crate' }),
+    new PositionComponent({ position: [5, 0, 5] }),
+    new ColliderComponent({ type: 'box', width: 0.75, height: 0.75, depth: 0.75 }),
+)
 
 // Wall torches
 // const torches = [9.75, 3.25, -3.25]
@@ -201,13 +207,14 @@ world.ecs.createEntity().addComponents(
     new ColliderComponent({ type: 'box', width: 1, height: 1, depth: 1 }),
 )
 
-// for (let i = 0; i < 32; i += 2) {
-//     world.ecs.createEntity().addComponents(
-//         new ModelComponent({ modelName: 'stoneWallTop' }),
-//         new PositionComponent({ position: [-16, 0, i - 15] }),
-//         new HitboxComponent(modelDB.stoneWall.radius),
-//     )
-// }
+// Walls
+for (let i = 0; i < 32; i += 2) {
+    world.ecs.createEntity().addComponents(
+        new ModelComponent({ modelName: 'stoneWallTop' }),
+        new PositionComponent({ position: [-16, 0, i - 15] }),
+        new ColliderComponent({ type: 'box', width: 0.25, height: 2, depth: 2 }),
+    )
+}
 
 // Grass
 // const makePos = (): [number, number, number] => ([

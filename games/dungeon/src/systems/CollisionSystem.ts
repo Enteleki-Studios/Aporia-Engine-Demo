@@ -1,24 +1,33 @@
-import { Capsule } from 'three/examples/jsm/math/Capsule'
-import { ECSFilter, HeroComponent, PositionComponent, System, log } from 'gengine'
+import { Capsule, ECSFilter, HeroComponent, PositionComponent, System, Y_AXIS, VelocityComponent } from 'gengine'
 // import { CollidableComponent } from 'dungeon/components'
 
 import { octree } from './RendererSystem'
+import { Vector3 } from 'three'
 
 export class CollisionSystem implements System {
     // TODO just selecting the hero for now
-    heroFilter = new ECSFilter([HeroComponent, PositionComponent])
+    heroFilter = new ECSFilter([HeroComponent, PositionComponent, VelocityComponent])
 
     filters = [this.heroFilter]
 
     tick() {
         this.heroFilter.entities.forEach((heroEntity) => {
             const { position } = heroEntity.get(PositionComponent)
+            const { velocity } = heroEntity.get(VelocityComponent)
 
             // Capsule(start, end, radius)
             const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
             const collisionResult = octree.capsuleIntersect(playerCollider)
             if (collisionResult) {
-                log.d(collisionResult.normal)
+                const { normal } = collisionResult
+
+                const collisionVector = new Vector3(normal.x, normal.y, normal.z)
+                if (collisionVector.dot(velocity) < 0) {
+                    // Rotate 90 degrees to get tangent vector
+                    collisionVector.applyAxisAngle(Y_AXIS, -Math.PI / 2)
+
+                    velocity.projectOnVector(collisionVector)
+                }
             }
         })
     }

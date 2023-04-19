@@ -47,6 +47,11 @@ export { StandardRenderer } from './threejs/StandardRenderer'
 export { TextSprite } from './threejs/TextSprite'
 export { SkySphere } from './threejs/SkySphere'
 
+// Three re-exports
+export { Capsule } from 'three/examples/jsm/math/Capsule'
+export { Octree } from 'three/examples/jsm/math/Octree'
+export { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
+
 // Constants
 export * from './constants'
 

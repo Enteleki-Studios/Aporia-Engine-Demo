@@ -13,9 +13,6 @@ import {
     CylinderGeometry,
 } from 'three'
 
-import { Octree } from 'three/examples/jsm/math/Octree'
-import { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
-
 import {
     BasicGeometryComponent,
     DirectionalLight,
@@ -34,6 +31,8 @@ import {
     VelocityComponent,
     ColliderComponent,
     Collider,
+    Octree,
+    OctreeHelper,
 } from 'gengine'
 
 import type { Renderer } from 'Renderer'
