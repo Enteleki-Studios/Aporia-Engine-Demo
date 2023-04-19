@@ -213,7 +213,7 @@ export class RendererSystem extends RendererSystemBase {
                 )
                 collisionHelper.position.copy(position)
 
-                this.renderer.scene.add(collisionHelper)
+                // this.renderer.scene.add(collisionHelper)
 
                 this.octree.fromGraphNode(collisionHelper)
                 this.octreeHelper.update()
