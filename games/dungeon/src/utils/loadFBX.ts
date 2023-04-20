@@ -1,4 +1,5 @@
-import { Texture, Mesh, sRGBEncoding, TextureLoader, MeshBasicMaterial, DoubleSide, Group } from 'three'
+import { isThreeMesh } from 'gengine'
+import { Texture, sRGBEncoding, TextureLoader, MeshBasicMaterial, DoubleSide, Group } from 'three'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 const loader = new FBXLoader()
@@ -16,19 +17,14 @@ export default function loadFBX(modelPath: string, texturePath?: string): Promis
             }
 
             model.traverse((c) => {
-                if ('isMesh' in c && (c as Mesh).isMesh) {
+                if (isThreeMesh(c)) {
                     c.castShadow = true
                     c.receiveShadow = true
 
                     if (texturePath) {
-                        // TODO: Fix the typings here, this is a hack
-                        const b = c as Mesh
-                        if (b.isMesh && b.material) {
-                            if (!Array.isArray(b.material)) {
-                                const bMat = b.material as MeshBasicMaterial
-                                bMat.map = texture
-                                bMat.side = DoubleSide
-                            }
+                        if (c.material instanceof MeshBasicMaterial) {
+                            c.material.map = texture
+                            c.material.side = DoubleSide
                         }
                     }
                 }

@@ -46,6 +46,7 @@ export { HUDLayer } from './threejs/HUDLayer'
 export { StandardRenderer } from './threejs/StandardRenderer'
 export { TextSprite } from './threejs/TextSprite'
 export { SkySphere } from './threejs/SkySphere'
+export * from './threejs/threejsUtils'
 
 // Three re-exports
 export { Capsule } from 'three/examples/jsm/math/Capsule'

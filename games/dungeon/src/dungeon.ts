@@ -146,14 +146,14 @@ world.ecs.createEntity().addComponents(
     }),
 )
 
-// // Skeleton
-// world.ecs.createEntity().addComponents(
-//     new Components.AnimationComponent('idle'),
-//     new ModelComponent({ modelName: 'skeleton' }),
-//     new PositionComponent({ position: [1, 0, 2] }),
-//     new HealthComponent(20),
-//     new HitboxComponent(0.25),
-// )
+// Skeleton
+world.ecs.createEntity().addComponents(
+    new Components.AnimationComponent('idle'),
+    new ModelComponent({ modelName: 'skeleton' }),
+    new PositionComponent({ position: [1, 0, 2] }),
+    new HealthComponent(20),
+    // new HitboxComponent(0.25),
+)
 
 // // Slime
 // world.ecs.createEntity().addComponents(

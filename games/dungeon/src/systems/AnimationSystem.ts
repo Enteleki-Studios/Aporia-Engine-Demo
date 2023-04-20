@@ -17,7 +17,7 @@ function loadAnimations(animationComponent: AnimationComponent, modelComponent: 
 
     // console.debug(model.animations)
 
-    if (model.animations && animationIndex) {
+    if (model.animations.length && animationIndex) {
         Object.entries(animationIndex).forEach(([key, name]) => {
             const animation = model.animations.find((a) => a.name === name)
             if (animation) {
@@ -97,24 +97,28 @@ export class AnimationSystem implements System {
                 }
             } else if (animationComponent.loaded && animationComponent.needsUpdate) {
                 // Update animation
-                const { animations } = animationComponent
-                if (animations) {
-                    const { action } = animations[animationComponent.state]
+                const { animations, state } = animationComponent
+                const animation = animations[state]
+                if (animation) {
+                    const { action } = animation
                     action.time = 0.0
                     action.enabled = true
                     action.setEffectiveTimeScale(1.0)
                     action.setEffectiveWeight(1.0)
                     if (animationComponent.prevState) {
-                        const { action: prevAction } = animations[animationComponent.prevState]
-                        if (animationComponent.state !== 'attack') {
-                            const ratio = action.getClip().duration / prevAction.getClip().duration
-                            action.time = prevAction.time * ratio
+                        const prevAnimation = animations[animationComponent.prevState]
+                        if (prevAnimation) {
+                            const { action: prevAction } = prevAnimation
+                            if (animationComponent.state !== 'attack') {
+                                const ratio = action.getClip().duration / prevAction.getClip().duration
+                                action.time = prevAction.time * ratio
+                            }
+                            if (animationComponent.state === 'death') {
+                                action.loop = LoopOnce
+                                action.clampWhenFinished = true
+                            }
+                            action.crossFadeFrom(prevAction, 0.5, true)
                         }
-                        if (animationComponent.state === 'death') {
-                            action.loop = LoopOnce
-                            action.clampWhenFinished = true
-                        }
-                        action.crossFadeFrom(prevAction, 0.5, true)
                     }
                     action.play()
                     animationComponent.needsUpdate = false

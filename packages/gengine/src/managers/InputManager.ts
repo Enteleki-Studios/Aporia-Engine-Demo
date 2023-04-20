@@ -32,8 +32,8 @@ type MouseInput = {
 
 export class InputManager {
     private actions: Record<Action, boolean> = {}
-    private actionListeners: Record<Action, Callback[]> = {}
-    private expandedKeymap: Record<KeyCode, Action[]> = {}
+    private actionListeners: Record<Action, Callback[] | undefined> = {}
+    private expandedKeymap: Record<KeyCode, Action[] | undefined> = {}
     private mouseInput: MouseInput
     private domElement: HTMLElement
     private pointerLockEnabled = false
@@ -69,8 +69,8 @@ export class InputManager {
     }
 
     private registerAction(keyCode: KeyCode, action: Action) {
-        if (this.expandedKeymap[keyCode]) {
-            const currentActions = this.expandedKeymap[keyCode]
+        const currentActions = this.expandedKeymap[keyCode]
+        if (currentActions) {
             if (Array.isArray(currentActions)) {
                 currentActions.push(action)
             } else {
@@ -134,7 +134,7 @@ export class InputManager {
 
                 if (isPress) {
                     const callbacks = this.actionListeners[action]
-                    if (callbacks && callbacks.length) {
+                    if (callbacks?.length) {
                         callbacks.forEach((c) => {
                             c()
                         })
@@ -179,7 +179,7 @@ export class InputManager {
 
     removeActionListener(action: Action, callback?: Callback) {
         const currentCallbacks = this.actionListeners[action]
-        if (currentCallbacks && currentCallbacks.length) {
+        if (currentCallbacks?.length) {
             if (callback) {
                 for (let i = currentCallbacks.length - 1; i >= 0; i -= 1) {
                     if (currentCallbacks[i] === callback) {
