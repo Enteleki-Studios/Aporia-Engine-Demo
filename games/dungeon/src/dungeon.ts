@@ -106,14 +106,6 @@ world.ecs
         new EmitterComponent(),
     )
 
-world.ecs.createEntity().addComponents(
-    new PositionComponent({ position: [0, 2, 0] }),
-    new PointLightComponent({
-        color: 0xffee88,
-        intensity: 3,
-    }),
-)
-
 // Camera
 world.ecs.createEntity().addComponents(new CameraComponent())
 
@@ -141,7 +133,7 @@ world.ecs.createEntity().addComponents(
     new PointLightComponent({
         color: 0xffee88,
         intensity: 3,
-        offset: [0, 2, 2],
+        offset: [0, 2, 0],
         castShadow: true,
     }),
 )

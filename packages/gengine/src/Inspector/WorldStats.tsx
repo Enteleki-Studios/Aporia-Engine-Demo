@@ -28,10 +28,10 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
             <h4>Engine</h4>
             <div className="table">
                 <span>fps:</span>
-                <span>{stats.fps}</span>
+                <span>{stats.fpsAgg}</span>
 
                 <span>frame time(ms):</span>
-                <span>{stats.frameTime}</span>
+                <span>{stats.frameTimeAgg}</span>
 
                 <span>frames:</span>
                 <span>{stats.frames}</span>

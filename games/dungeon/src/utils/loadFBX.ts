@@ -1,5 +1,5 @@
 import { isThreeMesh } from 'gengine'
-import { Texture, sRGBEncoding, TextureLoader, MeshBasicMaterial, DoubleSide, Group } from 'three'
+import { Texture, sRGBEncoding, TextureLoader, MeshBasicMaterial, Group } from 'three'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 const loader = new FBXLoader()

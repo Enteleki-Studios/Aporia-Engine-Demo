@@ -33,6 +33,7 @@ import {
     Collider,
     Octree,
     OctreeHelper,
+    HeroComponent,
 } from 'gengine'
 
 import type { Renderer } from 'Renderer'
@@ -268,9 +269,12 @@ export class RendererSystem extends RendererSystemBase {
 
         // TODO only do this for dirty entities/components
         this.rotatingEntities.entities.forEach((entity) => {
-            const { position } = entity.get(PositionComponent)
-            const { direction } = entity.get(DirectionComponent)
-            this.getGroup(entity).lookAt(position.clone().add(direction))
+            // TODO this if statement is a hack...
+            if (!entity.has(HeroComponent)) {
+                const { position } = entity.get(PositionComponent)
+                const { direction } = entity.get(DirectionComponent)
+                this.getGroup(entity).lookAt(position.clone().add(direction))
+            }
         })
 
         this.renderer.render()
