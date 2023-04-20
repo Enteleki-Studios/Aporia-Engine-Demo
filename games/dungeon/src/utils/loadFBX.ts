@@ -5,7 +5,11 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 const loader = new FBXLoader()
 const textureLoader = new TextureLoader()
 
-export default function loadFBX(modelPath: string, texturePath?: string): Promise<Group> {
+type LoadFBXConfig = {
+    castShadow?: boolean
+}
+
+export default function loadFBX(modelPath: string, texturePath?: string, config?: LoadFBXConfig): Promise<Group> {
     return new Promise((resolve) => {
         loader.load(modelPath, (model: Group) => {
             let texture: Texture | null = null
@@ -18,13 +22,13 @@ export default function loadFBX(modelPath: string, texturePath?: string): Promis
 
             model.traverse((c) => {
                 if (isThreeMesh(c)) {
-                    c.castShadow = true
+                    c.castShadow = config?.castShadow ?? false
                     c.receiveShadow = true
 
                     if (texturePath) {
                         if (c.material instanceof MeshBasicMaterial) {
                             c.material.map = texture
-                            c.material.side = DoubleSide
+                            // c.material.side = DoubleSide
                         }
                     }
                 }

@@ -149,7 +149,7 @@ world.ecs.createEntity().addComponents(
 // Skeleton
 world.ecs.createEntity().addComponents(
     new Components.AnimationComponent('idle'),
-    new ModelComponent({ modelName: 'skeleton' }),
+    new ModelComponent({ modelName: 'skeleton', castShadow: true }),
     new PositionComponent({ position: [1, 0, 2] }),
     new HealthComponent(20),
     // new HitboxComponent(0.25),
@@ -168,7 +168,7 @@ world.ecs.createEntity().addComponents(
 const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart']
 items.forEach((item, i) => {
     world.ecs.createEntity().addComponents(
-        new ModelComponent({ modelName: item }),
+        new ModelComponent({ modelName: item, castShadow: true }),
         new PositionComponent({ position: [i * 3 - 12, 0, 8] }),
         new ColliderComponent({ type: 'cylinder', radius: modelDB[item].radius ?? 1, height: 2, resolution: 10 }),
     )

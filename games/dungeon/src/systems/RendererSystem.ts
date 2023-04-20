@@ -41,11 +41,11 @@ import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
 
 async function loadModel(modelComponent: ModelComponent<typeof modelDB>) {
-    const { modelName } = modelComponent
+    const { modelName, castShadow } = modelComponent
 
     const { modelPath, texturePath, scale, translate } = modelDB[modelName]
 
-    const model: Group = await loadFBX(modelPath, texturePath)
+    const model: Group = await loadFBX(modelPath, texturePath, { castShadow })
     model.scale.setScalar(scale)
     if (translate) {
         const obj = model.children[0] as Mesh
