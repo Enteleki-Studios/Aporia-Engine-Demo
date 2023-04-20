@@ -1,4 +1,9 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
+// import { RenderPixelatedPass } from 'three/examples/jsm/postprocessing/RenderPixelatedPass'
+import { SSAOPass } from 'three/examples/jsm/postprocessing/SSAOPass'
 import {
     PCFSoftShadowMap,
     PerspectiveCamera,
@@ -25,6 +30,7 @@ export class StandardRenderer {
     camera
     debugCamera
     renderer
+    composer
     scene
     width = 0
     height = 0
@@ -55,6 +61,8 @@ export class StandardRenderer {
         this.renderer.autoClear = false
         this.renderer.setScissorTest(true)
 
+        this.composer = new EffectComposer(this.renderer)
+
         this.canvas = this.renderer.domElement
         this.scene = new Scene()
 
@@ -71,13 +79,22 @@ export class StandardRenderer {
         this.addHelpers(new AxesHelper(), new CameraHelper(this.camera))
 
         this.updateViewports()
+
+        const ssaoPass = new SSAOPass(this.scene, this.camera, this.width, this.height)
+        // @ts-expect-error testing
+        ssaoPass.output = SSAOPass.OUTPUT.SSAO
+        // this.composer.addPass(new RenderPass(this.scene, this.camera))
+        // this.composer.addPass(new RenderPixelatedPass(4, this.scene, this.camera))
+        this.composer.addPass(ssaoPass)
+        // this.composer.addPass(new UnrealBloomPass(new Vector2(this.width, this.height), 1.5, 0.4, 0.85))
     }
 
     render() {
         if (this.debugMode !== 'debug') {
             this.renderer.setViewport(this.viewport)
             this.renderer.setScissor(this.viewport)
-            this.renderer.render(this.scene, this.camera)
+            // this.renderer.render(this.scene, this.camera)
+            this.composer.render()
         }
 
         if (this.debugMode !== 'game') {
@@ -122,6 +139,7 @@ export class StandardRenderer {
         this.debugCamera.updateProjectionMatrix()
 
         this.renderer.setSize(width, height, false)
+        this.composer.setSize(width, height)
 
         this.updateViewports()
     }
