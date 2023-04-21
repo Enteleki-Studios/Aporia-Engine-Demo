@@ -4,7 +4,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import ESLintPlugin from 'eslint-webpack-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import * as path from 'path'
-import type { Configuration } from 'webpack'
+import { Configuration, ProvidePlugin } from 'webpack'
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 
 const devServer: DevServerConfiguration = {
@@ -30,6 +30,9 @@ const config: Configuration = {
     resolve: {
         modules: [path.resolve(__dirname, 'src'), 'node_modules'],
         extensions: ['.ts', '.tsx', '.js', '.json'],
+        alias: {
+            postprocessing: path.resolve(__dirname, "../../node_modules/postprocessing/build/postprocessing.esm.js"),
+        },
     },
     plugins: [
         new CleanWebpackPlugin(),
@@ -51,6 +54,9 @@ const config: Configuration = {
                 { from: 'resources', to: 'resources' },
                 { from: 'favicon.ico', to: 'favicon.ico' },
             ],
+        }),
+        new ProvidePlugin({
+            three: 'node_modules/three',
         }),
     ],
     module: {

@@ -210,7 +210,7 @@ export class RendererSystem extends RendererSystemBase {
 
                 const collisionHelper = new Mesh(
                     makeColliderHelper(collider).translate(0, collider.height / 2, 0),
-                    new MeshBasicMaterial({ transparent: true, opacity: 0.3, color: 0xcc0089 }),
+                    new MeshStandardMaterial({ transparent: true, opacity: 0.3, color: 0xcc0089, emissive: 0xffffff, emissiveIntensity: 1 }),
                 )
                 collisionHelper.position.copy(position)
 

@@ -1,9 +1,7 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
-// import { RenderPixelatedPass } from 'three/examples/jsm/postprocessing/RenderPixelatedPass'
-import { SSAOPass } from 'three/examples/jsm/postprocessing/SSAOPass'
+
+import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect } from 'postprocessing'
+
 import {
     PCFSoftShadowMap,
     PerspectiveCamera,
@@ -14,6 +12,7 @@ import {
     CameraHelper,
     Vector4,
     ReinhardToneMapping,
+    HalfFloatType,
 } from 'three'
 import { AxesHelper } from './AxesHelper'
 import { DebugMode } from '../constants'
@@ -47,7 +46,8 @@ export class StandardRenderer {
     constructor({ canvas, fov = 60, aspect = 1, near = 0.1, far = 100 }: StandardRendererParams) {
         this.renderer = new WebGLRenderer({
             canvas,
-            antialias: true,
+            powerPreference: 'high-performance',
+            antialias: false,
         })
         this.renderer.useLegacyLights = false
         this.renderer.toneMapping = ReinhardToneMapping
@@ -61,7 +61,7 @@ export class StandardRenderer {
         this.renderer.autoClear = false
         this.renderer.setScissorTest(true)
 
-        this.composer = new EffectComposer(this.renderer)
+        this.composer = new EffectComposer(this.renderer, { frameBufferType: HalfFloatType })
 
         this.canvas = this.renderer.domElement
         this.scene = new Scene()
@@ -80,13 +80,10 @@ export class StandardRenderer {
 
         this.updateViewports()
 
-        const ssaoPass = new SSAOPass(this.scene, this.camera, this.width, this.height)
-        // @ts-expect-error testing
-        ssaoPass.output = SSAOPass.OUTPUT.SSAO
-        // this.composer.addPass(new RenderPass(this.scene, this.camera))
-        // this.composer.addPass(new RenderPixelatedPass(4, this.scene, this.camera))
-        this.composer.addPass(ssaoPass)
-        // this.composer.addPass(new UnrealBloomPass(new Vector2(this.width, this.height), 1.5, 0.4, 0.85))
+        this.composer.addPass(new RenderPass(this.scene, this.camera))
+        // this.composer.addPass(new EffectPass(this.camera, new PixelationEffect(4)))
+        this.composer.addPass(new EffectPass(this.camera, new BloomEffect()))
+        this.composer.addPass(new EffectPass(this.camera, new SMAAEffect()))
     }
 
     render() {
