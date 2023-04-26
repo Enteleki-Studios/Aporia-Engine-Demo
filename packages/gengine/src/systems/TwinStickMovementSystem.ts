@@ -30,7 +30,8 @@ export class TwinStickMovementSystem implements System {
             const positionComponent = entity.get(PositionComponent)
             const velocityComponent = entity.get(VelocityComponent)
 
-            const { position: camPosition } = cameraEntity.get(CameraComponent)
+            const { position: camPositionTemp } = cameraEntity.get(CameraComponent)
+            const camPosition = new Vector3(...camPositionTemp)
             const cameraDirection = new Vector3().subVectors(camPosition, positionComponent.position)
             const { velocity } = velocityComponent
 

@@ -1,9 +1,10 @@
-import { Vector3 } from 'three'
+import { Vec3, Vec3Like } from 'gl-matrix'
+
 import { PositionComponent, CameraComponent, CameraTargetComponent } from '../components'
 import { ECSFilter, System } from '../ecs'
 import { World } from '../World'
 
-const camPosition = new Vector3()
+const camPosition: Vec3Like = [0, 0, 0]
 
 export class ThirdPersonCameraSystem implements System {
     cameraTargetFilter = new ECSFilter([CameraTargetComponent, PositionComponent])
@@ -16,18 +17,15 @@ export class ThirdPersonCameraSystem implements System {
         const cameraTargets = [...this.cameraTargetFilter.entities]
 
         this.cameraFilter.entities.forEach((cameraEntity) => {
-            const cameraComponent = cameraEntity.get(CameraComponent)
+            const { position, lookAt } = cameraEntity.get(CameraComponent)
             const { position: targetPosition } = cameraTargets[0].get(PositionComponent)
 
-            camPosition.copy(targetPosition)
+            Vec3.copy(camPosition, targetPosition.toArray())
+            Vec3.add(camPosition, camPosition, [5, 7, 7])
 
-            camPosition.x += 5
-            camPosition.z += 7
-            camPosition.y += 7
-
-            cameraComponent.position.lerp(camPosition, 1 - 0.005 ** delta)
+            Vec3.lerp(position, position, camPosition, 1 - 0.005 ** delta)
             // cameraComponent.lookAt.lerp(targetPosition, 1 - (0.00001 ** delta))
-            cameraComponent.lookAt.lerp(targetPosition, 1 - 0.005 ** delta)
+            Vec3.lerp(lookAt, lookAt, targetPosition.toArray(), 1 - 0.005 ** delta)
             // cameraComponent.position.copy(camPosition)
             // cameraComponent.lookAt.copy(targetPosition)
         })

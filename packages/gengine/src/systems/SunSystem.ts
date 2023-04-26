@@ -1,3 +1,4 @@
+import { Vec3 } from 'gl-matrix'
 import { ECSFilter, System } from '../ecs'
 import { DirectionalLightComponent, PositionComponent, SunTargetComponent } from '../components'
 

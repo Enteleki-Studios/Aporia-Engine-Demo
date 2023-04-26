@@ -1,5 +1,6 @@
-import { ECSFilter, System } from '../ecs'
+import { Vec3 } from 'gl-matrix'
 
+import { ECSFilter, System } from '../ecs'
 import { CameraComponent, CameraTargetComponent, DirectionComponent, PositionComponent } from '../components'
 
 export class FirstPersonCameraSystem implements System {
@@ -16,9 +17,10 @@ export class FirstPersonCameraSystem implements System {
             const { position: targetPosition } = cameraTargets[0].get(PositionComponent)
             const { direction } = cameraTargets[0].get(DirectionComponent)
 
-            position.fromArray([targetPosition.x, 2, targetPosition.z])
+            Vec3.set(position, targetPosition.x, 2, targetPosition.z)
 
-            lookAt.copy(position).add(direction)
+            Vec3.copy(lookAt, position)
+            Vec3.add(lookAt, lookAt, direction.toArray())
         })
     }
 }

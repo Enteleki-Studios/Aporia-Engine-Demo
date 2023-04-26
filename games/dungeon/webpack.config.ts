@@ -2,7 +2,6 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CopyPlugin from 'copy-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import ESLintPlugin from 'eslint-webpack-plugin'
-import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import * as path from 'path'
 import { Configuration, ProvidePlugin } from 'webpack'
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
@@ -23,6 +22,7 @@ const config: Configuration = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].bundle.js',
+        clean: true,
     },
     target: 'web',
     stats: 'errors-warnings',
@@ -35,7 +35,6 @@ const config: Configuration = {
         },
     },
     plugins: [
-        new CleanWebpackPlugin(),
         new ESLintPlugin({
             extensions: ['js', 'ts', 'tsx'],
             threads: true,
