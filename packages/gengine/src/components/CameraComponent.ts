@@ -1,19 +1,20 @@
-import { Vector3 } from 'three'
+import type { Vec3Like } from 'gl-matrix'
+
 import { Component } from '../ecs'
 
 type CameraSettings = {
-    position?: [number, number, number]
-    lookAt?: [number, number, number]
+    position?: Vec3Like
+    lookAt?: Vec3Like
 }
 
 export class CameraComponent extends Component {
-    position: Vector3
-    lookAt: Vector3
+    position: Vec3Like
+    lookAt: Vec3Like
 
     constructor({ position, lookAt }: CameraSettings = {}) {
         super()
 
-        this.position = new Vector3().fromArray(position ?? [0, 0, 0])
-        this.lookAt = new Vector3().fromArray(lookAt ?? [0, 0, 0])
+        this.position = position ?? [0, 0, 0]
+        this.lookAt = lookAt ?? [0, 0, 0]
     }
 }

@@ -4,7 +4,6 @@ import {
     Mesh,
     Group,
     Box3,
-    MeshBasicMaterial,
     MeshStandardMaterial,
     PointLight,
     PointLightHelper,
@@ -257,9 +256,9 @@ export class RendererSystem extends RendererSystemBase {
         })
 
         this.cameraFilter.entities.forEach((entity) => {
-            const cameraComponent = entity.get(CameraComponent)
-            this.renderer.camera.position.copy(cameraComponent.position)
-            this.renderer.camera.lookAt(cameraComponent.lookAt)
+            const { position, lookAt } = entity.get(CameraComponent)
+            this.renderer.camera.position.fromArray(position)
+            this.renderer.camera.lookAt(lookAt[0], lookAt[1], lookAt[2])
         })
 
         this.movingFilter.entities.forEach((entity) => {
