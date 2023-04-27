@@ -1,4 +1,4 @@
-import { Vec3Like } from 'gl-matrix'
+import type { Vec3Like } from 'gl-matrix'
 
 import { Component } from '../ecs'
 
