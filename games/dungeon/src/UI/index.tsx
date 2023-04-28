@@ -2,14 +2,14 @@ import React, { useEffect } from 'react'
 
 // import Header from 'UI/components/ingame/Header'
 
-import { init, renderer } from 'dungeon'
+import { init, updateCanvasContainer } from 'dungeon'
 
 const UI = () => {
     const canvasContainerRef = React.useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (canvasContainerRef.current) {
-            renderer.setCanvasContainer(canvasContainerRef.current)
+            updateCanvasContainer(canvasContainerRef.current)
             init()
         }
     }, [])

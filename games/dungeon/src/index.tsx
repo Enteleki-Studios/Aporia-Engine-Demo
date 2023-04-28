@@ -10,13 +10,13 @@ import UI from './UI'
 
 import './root.scss'
 
-const root = document.createElement('div')
-root.id = 'Root'
-document.body.appendChild(root)
+const root = document.getElementById('root')
 
-createRoot(root).render(
-    <Provider store={store}>
+if (root) {
+    createRoot(root).render(
+        <Provider store={store}>
             <inspector.InspectorUI getWorld={() => world} />
             <UI />
-    </Provider>,
-)
+        </Provider>,
+    )
+}

@@ -1,6 +1,6 @@
 import { Clock } from 'three'
 
-import { ECS, ECSStatsType } from './ecs'
+import { ECS, type ECSStatsType } from './ecs'
 
 import { AGG_SIZE_DEFAULT, WORLD_MAX_DELTA_DEFAULT, WorldEvent } from './constants'
 import { log } from './utils/log'
