@@ -42,9 +42,12 @@ import { Renderer } from 'Renderer'
 
 import modelDB from 'modelDB'
 
-export const renderer = new Renderer({})
-
 export const world = new World()
+
+const renderer = new Renderer({})
+export const updateCanvasContainer = (container: HTMLDivElement) => {
+    renderer.setCanvasContainer(container)
+}
 
 const inputManager = new InputManager({
     domElement: renderer.canvas,

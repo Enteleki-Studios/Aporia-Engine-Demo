@@ -1,5 +1,5 @@
 // World
-export { World, StatsType } from './World'
+export { World, type StatsType } from './World'
 
 // ECS
 export * from './ecs'
