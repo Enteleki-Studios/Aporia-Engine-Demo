@@ -1,4 +1,4 @@
-import type { Vec3Like } from 'gl-matrix'
+import { Vec3, type Vec3Like } from 'gl-matrix/dist/esm'
 
 import { Component } from '../ecs'
 
@@ -8,13 +8,13 @@ type CameraSettings = {
 }
 
 export class CameraComponent extends Component {
-    position: Vec3Like
-    lookAt: Vec3Like
+    position: Vec3
+    lookAt: Vec3
 
     constructor({ position, lookAt }: CameraSettings = {}) {
         super()
 
-        this.position = position ?? [0, 0, 0]
-        this.lookAt = lookAt ?? [0, 0, 0]
+        this.position = new Vec3(position ?? [0, 0, 0])
+        this.lookAt = new Vec3(lookAt ?? [0, 0, 0])
     }
 }
