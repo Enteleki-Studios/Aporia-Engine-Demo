@@ -1,12 +1,12 @@
-import { Vector3 } from 'three'
+import { Vec3, type Vec3Like } from 'gl-matrix/dist/esm'
 import { Component } from '../ecs'
 
 export class DirectionComponent extends Component {
-    direction: Vector3
+    direction: Vec3
 
-    constructor(direction?: [number, number, number]) {
+    constructor(direction?: Vec3Like) {
         super()
 
-        this.direction = new Vector3().fromArray(direction ?? [0, 0, 1])
+        this.direction = new Vec3(direction ?? [0, 0, 1])
     }
 }

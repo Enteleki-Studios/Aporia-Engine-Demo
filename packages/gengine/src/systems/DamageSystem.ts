@@ -27,7 +27,7 @@ export class DamageSystem implements System {
                     const targetHitbox = targetEntity.get(HitboxComponent)
 
                     const maxDistance = damageComponent.radius + targetHitbox.radius
-                    if (damagingPosition.position.distanceTo(targetPosition.position) < maxDistance) {
+                    if (damagingPosition.position.distance(targetPosition.position) < maxDistance) {
                         const targetHealth = targetEntity.get(HealthComponent)
                         if (targetHealth.health) {
                             targetHealth.health -= Math.min(damageComponent.damage, targetHealth.health)

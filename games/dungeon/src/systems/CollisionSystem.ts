@@ -1,8 +1,10 @@
-import { Capsule, ECSFilter, HeroComponent, PositionComponent, System, Y_AXIS, VelocityComponent } from 'gengine'
+import { Vec3 } from 'gl-matrix/dist/esm'
+import { Capsule, ECSFilter, HeroComponent, PositionComponent, System, VelocityComponent, ORIGIN } from 'gengine'
 // import { CollidableComponent } from 'dungeon/components'
 
 import { octree } from './RendererSystem'
-import { Vector3 } from 'three'
+
+const playerCollider = new Capsule(undefined, undefined, 0.5)
 
 export class CollisionSystem implements System {
     // TODO just selecting the hero for now
@@ -16,15 +18,19 @@ export class CollisionSystem implements System {
             const { velocity } = heroEntity.get(VelocityComponent)
 
             // Capsule(start, end, radius)
-            const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
+            // const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
+            playerCollider.start.fromArray(position)
+            playerCollider.end.fromArray(position).setY(2)
+
+            playerCollider.start
             const collisionResult = octree.capsuleIntersect(playerCollider)
             if (collisionResult) {
                 const { normal } = collisionResult
 
-                const collisionVector = new Vector3(normal.x, normal.y, normal.z)
+                const collisionVector = new Vec3(normal.x, normal.y, normal.z)
                 if (collisionVector.dot(velocity) < 0) {
                     // Rotate 90 degrees to get tangent vector
-                    collisionVector.applyAxisAngle(Y_AXIS, -Math.PI / 2)
+                    Vec3.rotateY(collisionVector, collisionVector, ORIGIN, -Math.PI / 2)
 
                     velocity.projectOnVector(collisionVector)
                 }

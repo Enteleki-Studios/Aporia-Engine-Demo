@@ -1,17 +1,16 @@
-import { Vector3 } from 'three'
+import { Vec3, type Vec3Like } from 'gl-matrix/dist/esm'
 import { Component } from '../ecs'
 
 type PositionSettings = {
-    position: [number, number, number]
+    position?: Vec3Like
 }
 
 export class PositionComponent extends Component {
-    position: Vector3
-    // rotation = new Quaternion() // Model rotation
+    position: Vec3
 
-    constructor({ position }: PositionSettings = { position: [0, 0, 0] }) {
+    constructor({ position }: PositionSettings = {}) {
         super()
 
-        this.position = new Vector3().fromArray(position)
+        this.position = new Vec3(position ?? [0, 0, 0])
     }
 }

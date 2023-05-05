@@ -1,4 +1,3 @@
-import { Vec3 } from 'gl-matrix'
 import { ECSFilter, System } from '../ecs'
 import { DirectionalLightComponent, PositionComponent, SunTargetComponent } from '../components'
 
@@ -20,7 +19,7 @@ export class SunSystem implements System {
                 directionalLightComponent.offset[1],
                 positionComponent.position.z + directionalLightComponent.offset[2],
             )
-            directionalLightComponent.target.copy(positionComponent.position)
+            directionalLightComponent.target.fromArray(positionComponent.position)
         })
     }
 }

@@ -6,6 +6,11 @@ import dts from 'vite-plugin-dts'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
+    resolve: {
+        alias: {
+            // ecs: 'src/ecs/',
+        },
+    },
     build: {
         lib: {
             entry: resolve(__dirname, 'src/index.ts'),
@@ -26,6 +31,9 @@ export default defineConfig({
                 },
             },
         },
+    },
+    esbuild: {
+        minifyIdentifiers: false,
     },
     plugins: [
         react(),

@@ -1,3 +1,4 @@
+import { Vec3 } from 'gl-matrix/dist/esm'
 import {
     AmbientLight,
     BoxGeometry,
@@ -200,7 +201,7 @@ export class RendererSystem extends RendererSystemBase {
                 )
 
                 this.addObject(entity, 'basicGeometry', mesh)
-                this.getGroup(entity).position.copy(entity.get(PositionComponent).position)
+                this.getGroup(entity).position.fromArray(entity.get(PositionComponent).position)
                 break
             }
             case this.collidingFilter: {
@@ -211,7 +212,7 @@ export class RendererSystem extends RendererSystemBase {
                     makeColliderHelper(collider).translate(0, collider.height / 2, 0),
                     new MeshStandardMaterial({ transparent: true, opacity: 0.3, color: 0xcc0089, emissive: 0xffffff, emissiveIntensity: 1 }),
                 )
-                collisionHelper.position.copy(position)
+                collisionHelper.position.fromArray(position)
 
                 // this.renderer.scene.add(collisionHelper)
 
@@ -238,7 +239,7 @@ export class RendererSystem extends RendererSystemBase {
         }
 
         if (entity.has(PositionComponent)) {
-            this.getGroup(entity).position.copy(entity.get(PositionComponent).position)
+            this.getGroup(entity).position.fromArray(entity.get(PositionComponent).position)
         }
     }
 
@@ -263,7 +264,7 @@ export class RendererSystem extends RendererSystemBase {
 
         this.movingFilter.entities.forEach((entity) => {
             const { position } = entity.get(PositionComponent)
-            this.getGroup(entity).position.copy(position)
+            this.getGroup(entity).position.fromArray(position)
         })
 
         // TODO only do this for dirty entities/components
@@ -272,7 +273,10 @@ export class RendererSystem extends RendererSystemBase {
             if (!entity.has(HeroComponent)) {
                 const { position } = entity.get(PositionComponent)
                 const { direction } = entity.get(DirectionComponent)
-                this.getGroup(entity).lookAt(position.clone().add(direction))
+                // this.getGroup(entity).lookAt(position.clone().add(direction))
+                const lookAt = new Vec3()
+                Vec3.add(lookAt, position, direction)
+                this.getGroup(entity).lookAt(lookAt[0], lookAt[1], lookAt[2])
             }
         })
 

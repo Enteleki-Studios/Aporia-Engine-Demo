@@ -20,7 +20,7 @@ export class FirstPersonCameraSystem implements System {
             Vec3.set(position, targetPosition.x, 2, targetPosition.z)
 
             Vec3.copy(lookAt, position)
-            Vec3.add(lookAt, lookAt, direction.toArray())
+            Vec3.add(lookAt, lookAt, direction)
         })
     }
 }

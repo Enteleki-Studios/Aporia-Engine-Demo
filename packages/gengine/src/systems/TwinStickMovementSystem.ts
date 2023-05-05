@@ -1,4 +1,5 @@
-import { Vector3, Vector2 } from 'three'
+import { Vector2 } from 'three'
+import { Vec3 } from 'gl-matrix/dist/esm'
 import { ECSFilter, System } from '../ecs'
 import {
     CameraComponent,
@@ -7,10 +8,10 @@ import {
     PositionComponent,
     VelocityComponent,
 } from '../components'
-import { Y_AXIS } from '../constants'
+import { Y_AXIS, ORIGIN } from '../constants'
 import { World } from '../World'
 
-const deceleration = new Vector3(-5, -0.0001, -5)
+const deceleration = new Vec3(-5, -0.0001, -5)
 
 const RUN_BOOST = 2
 const BASE_SPEED = 15
@@ -30,16 +31,18 @@ export class TwinStickMovementSystem implements System {
             const positionComponent = entity.get(PositionComponent)
             const velocityComponent = entity.get(VelocityComponent)
 
-            const { position: camPositionTemp } = cameraEntity.get(CameraComponent)
-            const camPosition = new Vector3(...camPositionTemp)
-            const cameraDirection = new Vector3().subVectors(camPosition, positionComponent.position)
+            const { position: camPosition } = cameraEntity.get(CameraComponent)
+            const cameraDirection = Vec3.sub(new Vec3(), camPosition, positionComponent.position)
             const { velocity } = velocityComponent
 
             // Calculate deceleration
-            const frameDeceleration = velocity.clone().multiply(deceleration).multiplyScalar(delta)
+            const frameDeceleration = Vec3.multiply(new Vec3(), velocity, deceleration)
+            Vec3.scale(frameDeceleration, frameDeceleration, delta)
 
             // Accelerate away from the camera
-            const frameAcceleration = cameraDirection.clone().setY(0).negate().normalize()
+            const frameAcceleration = new Vec3(cameraDirection)
+            frameAcceleration.y = 0
+            frameAcceleration.negate().normalize()
 
             let targetAngle = 0
             if (inputComponent.input.up.hold) {
@@ -62,15 +65,15 @@ export class TwinStickMovementSystem implements System {
                 targetAngle = Math.PI / -2
             } else {
                 // No input, no acceleration
-                frameAcceleration.multiplyScalar(0)
+                Vec3.zero(frameAcceleration)
             }
 
             // Rotate acceleration in the direction of travel
-            frameAcceleration.applyAxisAngle(Y_AXIS, targetAngle)
+            Vec3.rotateY(frameAcceleration, frameAcceleration, ORIGIN, targetAngle)
 
             // Set acceleration magnitude
             const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
-            frameAcceleration.multiplyScalar(BASE_SPEED * boost * delta)
+            Vec3.scale(frameAcceleration, frameAcceleration, (BASE_SPEED * boost * delta))
 
             velocity.add(frameDeceleration).add(frameAcceleration)
 
@@ -78,11 +81,13 @@ export class TwinStickMovementSystem implements System {
             const { x, y } = entity.get(InputComponent).mouse.position.centerRel
             let angle = new Vector2(x, y).negate().angle()
 
-            const camDirection = new Vector3().subVectors(camPosition, positionComponent.position)
-            const camPos = new Vector2(camDirection.x, camDirection.z).angle()
+            const camPos = new Vector2(cameraDirection[0], cameraDirection[2]).angle()
 
             angle -= camPos
-            entity.get(DirectionComponent).direction.fromArray([0, 0, 1]).applyAxisAngle(Y_AXIS, angle)
+
+            const { direction } = entity.get(DirectionComponent)
+            Vec3.set(direction, 0, 0, 1)
+            Vec3.rotateY(direction, direction, ORIGIN, angle)
         })
     }
 }

@@ -20,12 +20,12 @@ export class ThirdPersonCameraSystem implements System {
             const { position, lookAt } = cameraEntity.get(CameraComponent)
             const { position: targetPosition } = cameraTargets[0].get(PositionComponent)
 
-            Vec3.copy(camPosition, targetPosition.toArray())
+            Vec3.copy(camPosition, targetPosition)
             Vec3.add(camPosition, camPosition, [5, 7, 7])
 
             Vec3.lerp(position, position, camPosition, 1 - 0.005 ** delta)
             // cameraComponent.lookAt.lerp(targetPosition, 1 - (0.00001 ** delta))
-            Vec3.lerp(lookAt, lookAt, targetPosition.toArray(), 1 - 0.005 ** delta)
+            Vec3.lerp(lookAt, lookAt, targetPosition, 1 - 0.005 ** delta)
             // cameraComponent.position.copy(camPosition)
             // cameraComponent.lookAt.copy(targetPosition)
         })

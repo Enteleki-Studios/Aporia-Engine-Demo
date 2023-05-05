@@ -1,3 +1,5 @@
+import { Vec3 } from 'gl-matrix/dist/esm'
+
 import { ECSFilter, System } from '../ecs'
 import { World } from '../World'
 import { PositionComponent, VelocityComponent } from '../components'
@@ -12,7 +14,7 @@ export class ApplyVelocitySystem implements System {
             const { position } = entity.get(PositionComponent)
             const { velocity } = entity.get(VelocityComponent)
 
-            position.addScaledVector(velocity, world.timeElapsedS)
+            Vec3.scaleAndAdd(position, position, velocity, world.timeElapsedS)
         })
     }
 }
