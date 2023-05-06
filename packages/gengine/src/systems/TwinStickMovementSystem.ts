@@ -73,7 +73,7 @@ export class TwinStickMovementSystem implements System {
 
             // Set acceleration magnitude
             const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
-            Vec3.scale(frameAcceleration, frameAcceleration, (BASE_SPEED * boost * delta))
+            Vec3.scale(frameAcceleration, frameAcceleration, BASE_SPEED * boost * delta)
 
             velocity.add(frameDeceleration).add(frameAcceleration)
 

@@ -5,11 +5,15 @@ export class AnimationComponent extends Component {
     needsUpdate = true
     loaded = false
     isLoading = false
-    prevState: (string | null) = null
-    animations: Record<string, undefined | {
-        clip: AnimationClip,
-        action: AnimationAction,
-    }> = {}
+    prevState: string | null = null
+    animations: Record<
+        string,
+        | undefined
+        | {
+              clip: AnimationClip
+              action: AnimationAction
+          }
+    > = {}
 
     state: string
 

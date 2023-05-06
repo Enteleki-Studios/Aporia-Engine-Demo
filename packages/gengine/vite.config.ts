@@ -18,16 +18,12 @@ export default defineConfig({
             fileName: 'gengine',
         },
         rollupOptions: {
-            external: [
-                'react',
-                'react-redux',
-                'three',
-            ],
+            external: ['react', 'react-redux', 'three'],
             output: {
                 globals: {
                     react: 'React',
                     'react-redux': 'Redux',
-                    'three': 'Three',
+                    three: 'Three',
                 },
             },
         },

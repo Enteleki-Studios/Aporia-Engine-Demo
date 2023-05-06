@@ -7,7 +7,7 @@ export class ModelComponent<ModelDB> extends Component {
     castShadow: boolean
     resource: null | Object3D = null
 
-    constructor({ modelName, castShadow }: { modelName: keyof ModelDB, castShadow?: boolean }) {
+    constructor({ modelName, castShadow }: { modelName: keyof ModelDB; castShadow?: boolean }) {
         super()
 
         this.modelName = modelName
