@@ -28,11 +28,12 @@ export class CollisionSystem implements System {
                 const { normal } = collisionResult
 
                 const collisionVector = new Vec3(normal.x, normal.y, normal.z)
-                if (collisionVector.dot(velocity) < 0) {
+                if (Vec3.dot(collisionVector, velocity) < 0) {
                     // Rotate 90 degrees to get tangent vector
                     Vec3.rotateY(collisionVector, collisionVector, ORIGIN, -Math.PI / 2)
 
-                    velocity.projectOnVector(collisionVector)
+                    // Project velocity onto tangent
+                    Vec3.scale(velocity, collisionVector, Vec3.dot(collisionVector, velocity))
                 }
             }
         })

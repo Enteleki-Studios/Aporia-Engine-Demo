@@ -69,7 +69,7 @@ world.ecs.registerSystems([
     new EmitterSystem(),
     // new TwinStickMovementSystem(),
     new FirstPersonMovementSystem(),
-    // new Systems.CollisionSystem(),
+    new Systems.CollisionSystem(),
     new ApplyVelocitySystem(),
     new DamageSystem(),
     // new ThirdPersonCameraSystem(),
