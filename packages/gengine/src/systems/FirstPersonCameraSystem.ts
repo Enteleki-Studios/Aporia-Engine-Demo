@@ -17,7 +17,7 @@ export class FirstPersonCameraSystem implements System {
             const { position: targetPosition } = cameraTargets[0].get(PositionComponent)
             const { direction } = cameraTargets[0].get(DirectionComponent)
 
-            Vec3.set(position, targetPosition.x, 2, targetPosition.z)
+            Vec3.set(position, targetPosition[0], 2, targetPosition[2])
 
             Vec3.copy(lookAt, position)
             Vec3.add(lookAt, lookAt, direction)

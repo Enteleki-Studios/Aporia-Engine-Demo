@@ -1,16 +1,16 @@
-import { Vec3, type Vec3Like } from 'gl-matrix/dist/esm'
+import type { Array3 } from '../constants'
 import { Component } from '../ecs'
 
 type VelocitySettings = {
-    velocity?: Vec3Like
+    velocity?: Array3
 }
 
 export class VelocityComponent extends Component {
-    velocity: Vec3
+    velocity: Array3
 
     constructor({ velocity }: VelocitySettings = {}) {
         super()
 
-        this.velocity = new Vec3(velocity ?? [0, 0, 0])
+        this.velocity = velocity ?? [0, 0, 0]
     }
 }

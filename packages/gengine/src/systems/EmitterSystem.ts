@@ -21,7 +21,7 @@ export class EmitterSystem implements System {
                         radius: 0.25,
                         color: 0xff0099,
                     }),
-                    new PositionComponent({ position }),
+                    new PositionComponent({ position: [...position] }),
                     new VelocityComponent({ velocity: [-2, 0, 0] }),
                 )
             })

@@ -1,16 +1,16 @@
-import { Vec3, type Vec3Like } from 'gl-matrix/dist/esm'
+import type { Array3 } from '../constants'
 import { Component } from '../ecs'
 
 type PositionSettings = {
-    position?: Vec3Like
+    position?: Array3
 }
 
 export class PositionComponent extends Component {
-    position: Vec3
+    position: Array3
 
     constructor({ position }: PositionSettings = {}) {
         super()
 
-        this.position = new Vec3(position ?? [0, 0, 0])
+        this.position = position ?? [0, 0, 0]
     }
 }

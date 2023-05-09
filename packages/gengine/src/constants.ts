@@ -21,6 +21,10 @@ export const Z_AXIS = new Vector3(0, 0, 1)
 
 export const ORIGIN = new Vec3([0, 0, 0])
 
+export type Array2 = [number, number]
+export type Array3 = [number, number, number]
+export type Array4 = [number, number, number, number]
+
 // Engine defaults
 export const WORLD_MAX_DELTA_DEFAULT = 0.05
 export const AGG_SIZE_DEFAULT = 10

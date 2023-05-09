@@ -8,7 +8,7 @@ import {
     PositionComponent,
     VelocityComponent,
 } from '../components'
-import { Y_AXIS, ORIGIN } from '../constants'
+import { ORIGIN } from '../constants'
 import { World } from '../World'
 
 const deceleration = new Vec3(-5, -0.0001, -5)
@@ -75,7 +75,8 @@ export class TwinStickMovementSystem implements System {
             const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
             Vec3.scale(frameAcceleration, frameAcceleration, BASE_SPEED * boost * delta)
 
-            velocity.add(frameDeceleration).add(frameAcceleration)
+            Vec3.add(velocity, velocity, frameDeceleration)
+            Vec3.add(velocity, velocity, frameAcceleration)
 
             // Character rotation
             const { x, y } = entity.get(InputComponent).mouse.position.centerRel

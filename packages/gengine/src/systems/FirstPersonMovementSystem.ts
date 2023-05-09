@@ -65,11 +65,12 @@ export class FirstPersonMovementSystem implements System {
             const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
             frameAcceleration.scale(BASE_SPEED * boost * delta)
 
-            velocity.add(frameDeceleration).add(frameAcceleration)
+            Vec3.add(velocity, velocity, frameDeceleration)
+            Vec3.add(velocity, velocity, frameAcceleration)
             // roundToZero(velocity)
 
             Vec3.rotateY(direction, direction, ORIGIN, -inputComponent.mouse.pan.x * delta * 0.1)
-            direction.y -= inputComponent.mouse.pan.y * delta * 0.1
+            direction[1] -= inputComponent.mouse.pan.y * delta * 0.1
         })
     }
 }

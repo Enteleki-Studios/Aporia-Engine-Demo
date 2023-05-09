@@ -34,6 +34,7 @@ import {
     Octree,
     OctreeHelper,
     HeroComponent,
+    Array3,
 } from 'gengine'
 
 import type { Renderer } from 'Renderer'
@@ -199,7 +200,6 @@ export class RendererSystem extends RendererSystemBase {
                     makeBasicGeometry(basicGeometryComponent),
                     new MeshStandardMaterial({ color: basicGeometryComponent.color }),
                 )
-
                 this.addObject(entity, 'basicGeometry', mesh)
                 this.getGroup(entity).position.fromArray(entity.get(PositionComponent).position)
                 break
@@ -265,7 +265,7 @@ export class RendererSystem extends RendererSystemBase {
         this.cameraFilter.entities.forEach((entity) => {
             const { position, lookAt } = entity.get(CameraComponent)
             this.renderer.camera.position.fromArray(position)
-            this.renderer.camera.lookAt(lookAt[0], lookAt[1], lookAt[2])
+            this.renderer.camera.lookAt(...lookAt)
         })
 
         this.movingFilter.entities.forEach((entity) => {
@@ -280,9 +280,9 @@ export class RendererSystem extends RendererSystemBase {
                 const { position } = entity.get(PositionComponent)
                 const { direction } = entity.get(DirectionComponent)
                 // this.getGroup(entity).lookAt(position.clone().add(direction))
-                const lookAt = new Vec3()
+                const lookAt:Array3 = [0, 0, 0]
                 Vec3.add(lookAt, position, direction)
-                this.getGroup(entity).lookAt(lookAt[0], lookAt[1], lookAt[2])
+                this.getGroup(entity).lookAt(...lookAt)
             }
         })
 

@@ -15,9 +15,9 @@ export class SunSystem implements System {
             const positionComponent = targetEntity.get(PositionComponent)
 
             directionalLightComponent.position.set(
-                positionComponent.position.x + directionalLightComponent.offset[0],
+                positionComponent.position[0] + directionalLightComponent.offset[0],
                 directionalLightComponent.offset[1],
-                positionComponent.position.z + directionalLightComponent.offset[2],
+                positionComponent.position[2] + directionalLightComponent.offset[2],
             )
             directionalLightComponent.target.fromArray(positionComponent.position)
         })

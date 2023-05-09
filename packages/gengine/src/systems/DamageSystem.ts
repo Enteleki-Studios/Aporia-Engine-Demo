@@ -1,3 +1,4 @@
+import { Vec3 } from 'gl-matrix/dist/esm'
 import { World } from '../World'
 import { System, ECSFilter } from '../ecs'
 import { DamagingComponent, HealthComponent, HitboxComponent, PositionComponent } from '../components'
@@ -27,7 +28,7 @@ export class DamageSystem implements System {
                     const targetHitbox = targetEntity.get(HitboxComponent)
 
                     const maxDistance = damageComponent.radius + targetHitbox.radius
-                    if (damagingPosition.position.distance(targetPosition.position) < maxDistance) {
+                    if (Vec3.distance(damagingPosition.position, targetPosition.position) < maxDistance) {
                         const targetHealth = targetEntity.get(HealthComponent)
                         if (targetHealth.health) {
                             targetHealth.health -= Math.min(damageComponent.damage, targetHealth.health)

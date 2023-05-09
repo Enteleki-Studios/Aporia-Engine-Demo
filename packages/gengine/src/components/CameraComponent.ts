@@ -1,20 +1,19 @@
-import { Vec3, type Vec3Like } from 'gl-matrix/dist/esm'
-
+import type { Array3 } from '../constants'
 import { Component } from '../ecs'
 
 type CameraSettings = {
-    position?: Vec3Like
-    lookAt?: Vec3Like
+    position?: Array3
+    lookAt?: Array3
 }
 
 export class CameraComponent extends Component {
-    position: Vec3
-    lookAt: Vec3
+    position: Array3
+    lookAt: Array3
 
     constructor({ position, lookAt }: CameraSettings = {}) {
         super()
 
-        this.position = new Vec3(position ?? [0, 0, 0])
-        this.lookAt = new Vec3(lookAt ?? [0, 0, 0])
+        this.position = position ?? [0, 0, 0]
+        this.lookAt = lookAt ?? [0, 0, 0]
     }
 }
