@@ -1,3 +1,4 @@
+export { AIComponent } from './AIComponent'
 export { AmbientLightComponent } from './AmbientLightComponent'
 export { BasicGeometryComponent } from './BasicGeometryComponent'
 export { CameraComponent } from './CameraComponent'

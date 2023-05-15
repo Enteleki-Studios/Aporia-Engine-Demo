@@ -31,6 +31,7 @@ import {
     EmitterComponent,
     EmitterSystem,
     ColliderComponent,
+    AIComponent,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -69,6 +70,7 @@ world.ecs.registerSystems([
     new EmitterSystem(),
     // new TwinStickMovementSystem(),
     new FirstPersonMovementSystem(),
+    new Systems.AISystem(),
     new Systems.CollisionSystem(),
     new ApplyVelocitySystem(),
     new DamageSystem(),
@@ -147,6 +149,9 @@ world.ecs.createEntity().addComponents(
     new ModelComponent({ modelName: 'skeleton', castShadow: true }),
     new PositionComponent({ position: [1, 0, 2] }),
     new HealthComponent(20),
+    new VelocityComponent(),
+    new AIComponent(),
+    new DirectionComponent(),
     // new HitboxComponent(0.25),
 )
 

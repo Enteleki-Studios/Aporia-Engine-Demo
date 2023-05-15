@@ -1,5 +1,7 @@
 import { AnimationMixer, LoopOnce } from 'three'
-import { ModelComponent, InputComponent, System, ECSFilter, World, HealthComponent } from 'gengine'
+import { Vec3 } from 'gl-matrix/dist/esm'
+
+import { ModelComponent, InputComponent, System, ECSFilter, World, HealthComponent, VelocityComponent } from 'gengine'
 import { AnimationComponent } from 'components'
 
 import modelDB from 'modelDB'
@@ -58,6 +60,13 @@ export class AnimationSystem implements System {
                     if (inputComponent.input.run.hold) {
                         nextState = 'run'
                     }
+                }
+            }
+
+            if (entity.has(VelocityComponent)) {
+                const { velocity } = entity.get(VelocityComponent)
+                if (Vec3.squaredLength(velocity) > 0) {
+                    nextState = 'walk'
                 }
             }
 
