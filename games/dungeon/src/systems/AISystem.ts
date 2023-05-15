@@ -21,12 +21,24 @@ export class AISystem implements System {
             const { velocity } = aiEntity.get(VelocityComponent)
             const { direction } = aiEntity.get(DirectionComponent)
 
+            const isMoving = Vec3.squaredLength(velocity) > 0
+
+            // Distance + direction to player
             Vec3.sub(velocity, targetLocation, position)
+
+            const distToPlayerSQ = Vec3.squaredLength(velocity)
+
+            const inRange = distToPlayerSQ <= 4
+            const shouldMove = !inRange && (isMoving || distToPlayerSQ >= 6)
+
+            // Direction to player
             Vec3.normalize(velocity, velocity)
 
+            // Rotate entity to face player
             Vec3.copy(direction, velocity)
 
-            Vec3.scale(velocity, velocity, 2)
+            // Set enemy speed
+            Vec3.scale(velocity, velocity, shouldMove ? 2 : 0)
         })
     }
 }
