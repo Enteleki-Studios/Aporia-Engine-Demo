@@ -143,10 +143,10 @@ world.ecs.createEntity().addComponents(
     }),
 )
 
-// Skeleton
+// Shibs
 world.ecs.createEntity().addComponents(
     new Components.AnimationComponent('idle'),
-    new ModelComponent({ modelName: 'skeleton', castShadow: true }),
+    new ModelComponent({ modelName: 'shiba', castShadow: true }),
     new PositionComponent({ position: [1, 0, 2] }),
     new HealthComponent(20),
     new VelocityComponent(),
