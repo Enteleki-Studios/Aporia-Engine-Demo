@@ -6,7 +6,6 @@ import {
     PCFSoftShadowMap,
     PerspectiveCamera,
     Scene,
-    sRGBEncoding,
     WebGLRenderer,
     Object3D,
     CameraHelper,
@@ -54,7 +53,6 @@ export class StandardRenderer {
         this.renderer.toneMappingExposure = 2
         this.renderer.shadowMap.enabled = true
         this.renderer.shadowMap.type = PCFSoftShadowMap
-        this.renderer.outputEncoding = sRGBEncoding
         // this.renderer.setPixelRatio(window.devicePixelRatio)
         this.renderer.setPixelRatio(1)
         this.renderer.debug.checkShaderErrors = true
