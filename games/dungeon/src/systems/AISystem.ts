@@ -1,4 +1,13 @@
-import { System, ECSFilter, HeroComponent, AIComponent, PositionComponent, Array3, VelocityComponent, DirectionComponent } from 'gengine'
+import {
+    System,
+    ECSFilter,
+    HeroComponent,
+    AIComponent,
+    PositionComponent,
+    Array3,
+    VelocityComponent,
+    DirectionComponent,
+} from 'gengine'
 import { Vec3 } from 'gl-matrix/dist/esm'
 
 const targetLocation: Array3 = [0, 0, 0]

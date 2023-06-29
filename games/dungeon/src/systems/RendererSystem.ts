@@ -280,7 +280,7 @@ export class RendererSystem extends RendererSystemBase {
                 const { position } = entity.get(PositionComponent)
                 const { direction } = entity.get(DirectionComponent)
                 // this.getGroup(entity).lookAt(position.clone().add(direction))
-                const lookAt:Array3 = [0, 0, 0]
+                const lookAt: Array3 = [0, 0, 0]
                 Vec3.add(lookAt, position, direction)
                 this.getGroup(entity).lookAt(...lookAt)
             }
