@@ -13,8 +13,9 @@ import {
     ReinhardToneMapping,
     HalfFloatType,
 } from 'three'
-import { AxesHelper } from './AxesHelper'
-import { DebugMode } from '../constants'
+
+import { DebugMode } from 'definitions'
+import { AxesHelper } from 'threejs/AxesHelper'
 
 type StandardRendererParams = {
     canvas?: HTMLCanvasElement

@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react'
 
 import { secondsToClockString } from './utils'
 
-import { useForceUpdate } from '../react/hooks/useForceUpdate'
+import { useForceUpdate } from 'reactjs/hooks/useForceUpdate'
 import { World } from '../World'
 
 type WorldStatsProps = {

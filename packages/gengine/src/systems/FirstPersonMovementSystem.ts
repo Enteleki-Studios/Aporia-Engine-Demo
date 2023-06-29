@@ -1,9 +1,10 @@
-import { ECSFilter, System } from '../ecs'
-// import { roundToZero } from '../utils/vectorUtils'
-import { DirectionComponent, InputComponent, VelocityComponent } from '../components'
-import { ORIGIN } from '../constants'
-import { World } from '../World'
 import { Vec3 } from 'gl-matrix/dist/esm'
+
+import { ECSFilter, System } from 'ecs'
+// import { roundToZero } from '../utils/vectorUtils'
+import { DirectionComponent, InputComponent, VelocityComponent } from 'components'
+import { ORIGIN } from 'definitions'
+import { World } from 'World'
 
 const DECELERATION = -5
 

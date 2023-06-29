@@ -28,7 +28,7 @@ export { ResourceManager } from './managers/ResourceManager'
 export * as inspector from './Inspector'
 
 // React
-export { useForceUpdate } from './react/hooks/useForceUpdate'
+export { useForceUpdate } from './reactjs/hooks/useForceUpdate'
 
 // Utils
 export * as arrayUtils from './utils/arrayUtils'
@@ -54,7 +54,7 @@ export { Octree } from 'three/examples/jsm/math/Octree'
 export { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
 
 // Constants
-export * from './constants'
+export * from './definitions'
 
 // Custom types
 export type * from './types/threejs.d.ts'

@@ -1,7 +1,6 @@
-import { Vector3 } from 'three'
-import { Vec3 } from 'gl-matrix/dist/esm'
 import npmPackage from '../package.json'
 
+// Input management
 export type Keymap = Record<string, string | string[]>
 
 export const DEFAULT_KEYMAP: Keymap = {
@@ -15,18 +14,19 @@ export const DEFAULT_KEYMAP: Keymap = {
 }
 
 // Utilities
-export const X_AXIS = new Vector3(1, 0, 0)
-export const Y_AXIS = new Vector3(0, 1, 0)
-export const Z_AXIS = new Vector3(0, 0, 1)
-
-export const ORIGIN = new Vec3([0, 0, 0])
-
 export type Array2 = [number, number]
 export type Array3 = [number, number, number]
 export type Array4 = [number, number, number, number]
 
+export const X_AXIS: Readonly<Array3> = Object.freeze([1, 0, 0])
+export const Y_AXIS: Readonly<Array3> = Object.freeze([0, 1, 0])
+export const Z_AXIS: Readonly<Array3> = Object.freeze([0, 0, 1])
+export const ORIGIN: Readonly<Array3> = Object.freeze([0, 0, 0])
+
 // Engine defaults
+// Max reported frame length
 export const WORLD_MAX_DELTA_DEFAULT = 0.05
+// How many frames to average for fps stats
 export const AGG_SIZE_DEFAULT = 10
 
 // Rendering

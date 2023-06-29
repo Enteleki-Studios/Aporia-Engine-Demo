@@ -1,9 +1,9 @@
 import { Clock } from 'three'
 
-import { ECS, type ECSStatsType } from './ecs'
+import { ECS, type ECSStatsType } from 'ecs'
 
-import { AGG_SIZE_DEFAULT, WORLD_MAX_DELTA_DEFAULT, WorldEvent } from './constants'
-import { log } from './utils/log'
+import { AGG_SIZE_DEFAULT, WORLD_MAX_DELTA_DEFAULT, WorldEvent } from 'definitions'
+import { log } from 'utils/log'
 
 export type StatsType = {
     /** Game engine frames per second.

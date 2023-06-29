@@ -1,15 +1,15 @@
 import { Vector2 } from 'three'
 import { Vec3 } from 'gl-matrix/dist/esm'
-import { ECSFilter, System } from '../ecs'
+import { ECSFilter, System } from 'ecs'
 import {
     CameraComponent,
     DirectionComponent,
     InputComponent,
     PositionComponent,
     VelocityComponent,
-} from '../components'
-import { ORIGIN } from '../constants'
-import { World } from '../World'
+} from 'components'
+import { ORIGIN } from 'definitions'
+import { World } from 'World'
 
 const deceleration = new Vec3(-5, -0.0001, -5)
 

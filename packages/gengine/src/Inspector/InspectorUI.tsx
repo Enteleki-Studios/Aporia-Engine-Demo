@@ -1,11 +1,11 @@
 import React, { FormEvent, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { setDebugMode, getDebugMode } from './slice'
+import type { World } from 'World'
+import { DebugMode, DebugModes, ENGINE_VERSION } from 'definitions'
 
-import type { World } from '../World'
+import { setDebugMode, getDebugMode } from './slice'
 import { Icon } from './Icon'
-import { DebugMode, DebugModes, ENGINE_VERSION } from '../constants'
 import { WorldStats } from './WorldStats'
 
 import './style.scss'

@@ -1,5 +1,5 @@
-import type { Array3 } from '../constants'
-import { Component } from '../ecs'
+import type { Array3 } from 'definitions'
+import { Component } from 'ecs'
 
 export class DirectionComponent extends Component {
     direction: Array3
