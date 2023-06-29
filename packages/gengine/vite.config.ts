@@ -8,16 +8,16 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 export default defineConfig({
     resolve: {
         alias: {
-            components: '/src/components/',
-            ecs: '/src/ecs/',
-            Inspector: '/src/Inspector/',
-            managers: '/src/managers/',
-            reactjs: '/src/reactjs/',
-            systems: '/src/systems/',
-            threejs: '/src/threejs/',
-            utils: '/src/utils/',
-            definitions: '/src/definitions',
-            World: '/src/World',
+            components: resolve(__dirname, 'src/components/'),
+            ecs: resolve(__dirname, 'src/ecs/'),
+            Inspector: resolve(__dirname, 'src/Inspector/'),
+            managers: resolve(__dirname, 'src/managers/'),
+            reactjs: resolve(__dirname, 'src/reactjs/'),
+            systems: resolve(__dirname, 'src/systems/'),
+            threejs: resolve(__dirname, 'src/threejs/'),
+            utils: resolve(__dirname, 'src/utils/'),
+            definitions: resolve(__dirname, 'src/definitions'),
+            World: resolve(__dirname, 'src/World'),
         },
     },
     build: {
@@ -42,7 +42,7 @@ export default defineConfig({
     },
     plugins: [
         react(),
-        dts(),
+        dts({ entryRoot: './src/' }),
         viteStaticCopy({
             targets: [
                 {

@@ -92,7 +92,7 @@ export const middleware: Middleware = () => (next) => (action: Action) => {
 // Lighting
 world.ecs.createEntity().addComponents(
     new AmbientLightComponent({
-        color: 0xaaaaff,
+        color: 0xffffff,
         intensity: 0.05,
     }),
 )
