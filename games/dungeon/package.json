@@ -6,9 +6,7 @@
         "start": "vite",
         "build": "vite build",
         "typecheck": "tsc --noEmit",
-        "lint": "eslint src",
-        "prettier": "prettier --config ../../.prettier.json --check .",
-        "prettier:fix": "prettier --config ../../.prettier.json --write ."
+        "lint": "eslint src"
     },
     "devDependencies": {
         "@types/react": "^18.0.26",

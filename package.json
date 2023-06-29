@@ -6,6 +6,10 @@
     "main": "index.js",
     "author": "",
     "license": "ISC",
+    "scripts": {
+        "prettier": "prettier --config .prettier.json --check .",
+        "prettier:fix": "prettier --write ."
+    },
     "devDependencies": {
         "@types/jest": "^29.2.4",
         "@typescript-eslint/eslint-plugin": "^5.47.1",

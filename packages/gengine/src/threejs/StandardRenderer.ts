@@ -60,7 +60,9 @@ export class StandardRenderer {
         this.renderer.autoClear = false
         this.renderer.setScissorTest(true)
 
-        this.composer = new EffectComposer(this.renderer, { frameBufferType: HalfFloatType })
+        this.composer = new EffectComposer(this.renderer, {
+            frameBufferType: HalfFloatType,
+        })
 
         this.canvas = this.renderer.domElement
         this.scene = new Scene()

@@ -1,16 +1,16 @@
-import { Component, ComponentConstructor, AnyComponentConstructor } from './Component'
-import type { ECS } from './ECS'
+import { v4 as uuid } from 'uuid'
+
+import { Component, ComponentConstructor, AnyComponentConstructor } from 'ecs/Component'
 
 export type EntityId = string
 
 export class Entity {
     id: EntityId
-    private ecs: ECS
+    onAddComponents: ((components: Component[]) => void) | undefined
     private components = new Map<AnyComponentConstructor, Component>()
 
-    constructor(id: EntityId, ecs: ECS) {
-        this.id = id
-        this.ecs = ecs
+    constructor(id?: EntityId) {
+        this.id = id ?? uuid()
     }
 
     /**
@@ -18,12 +18,16 @@ export class Entity {
      * which does the actual component processing
      */
     addComponents(...components: Component[]) {
-        this.ecs.addComponents(this.id, ...components)
+        components.forEach((component) => {
+            this.components.set(component.constructor, component)
+        })
+        this.onAddComponents?.(components)
+
+        return this
     }
 
-    /** @internal */
-    addComponent_Unsafe(component: Component) {
-        this.components.set(component.constructor, component)
+    getComponents() {
+        return Array.from(this.components.values())
     }
 
     /** @internal */
@@ -41,5 +45,9 @@ export class Entity {
 
     hasAll(compClasses: AnyComponentConstructor[]) {
         return compClasses.every((c) => this.has(c))
+    }
+
+    size() {
+        return this.components.size
     }
 }

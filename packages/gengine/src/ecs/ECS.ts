@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid'
 import type { World } from '../World'
 
 import type { Component } from './Component'
@@ -72,15 +71,13 @@ export class ECS {
         })
     }
 
-    createEntity() {
-        const id = uuid().toUpperCase()
-        const entity = new Entity(id, this)
+    private trackComponents(entityId: EntityId, components: Component[]) {
+        const entity = this.entitiesById.get(entityId)
 
-        this.entitiesById.set(id, entity)
-
-        this.stats.entities += 1
-
-        return entity
+        if (entity) {
+            this.updateFiltersForEntity(entity)
+            this.stats.components += components.length
+        }
     }
 
     getEntity(entityId: EntityId) {
@@ -92,18 +89,16 @@ export class ECS {
     //     // remove from filters
     // }
 
-    addComponents(entityId: EntityId, ...components: Component[]) {
-        const entity = this.entitiesById.get(entityId)
+    registerEntity(entity: Entity) {
+        entity.onAddComponents = (components) => this.trackComponents(entity.id, components)
 
-        if (entity) {
-            components.forEach((component) => {
-                entity.addComponent_Unsafe(component)
-                this.stats.components += 1
-            })
-            this.updateFiltersForEntity(entity)
-        } else {
-            throw new Error(`Entity does not exist ${entityId}`)
+        this.entitiesById.set(entity.id, entity)
+
+        if (entity.size()) {
+            this.trackComponents(entity.id, entity.getComponents())
         }
+
+        this.stats.entities += 1
     }
 
     registerSystem(system: System) {

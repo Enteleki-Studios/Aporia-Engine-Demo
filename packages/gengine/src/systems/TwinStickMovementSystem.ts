@@ -1,13 +1,7 @@
 import { Vector2 } from 'three'
 import { Vec3 } from 'gl-matrix/dist/esm'
 import { ECSFilter, System } from 'ecs'
-import {
-    CameraComponent,
-    DirectionComponent,
-    InputComponent,
-    PositionComponent,
-    VelocityComponent,
-} from 'components'
+import { CameraComponent, DirectionComponent, InputComponent, PositionComponent, VelocityComponent } from 'components'
 import { ORIGIN } from 'definitions'
 import { World } from 'World'
 
