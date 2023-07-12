@@ -68,7 +68,17 @@ inputManager.addActionListener('debug', () => {
 
 world.ecs.registerSystems([
     new InputSystem(inputManager),
-    new EmitterSystem(),
+    new EmitterSystem({
+        'ball': () => new Entity().addComponents(
+            new BasicGeometryComponent({
+                geometryType: 'sphere',
+                radius: 0.25,
+                color: 0xff0099,
+            }),
+            new PositionComponent(),
+            new VelocityComponent({ velocity: [-2, 0, 0] }),
+        ),
+    }),
     // new TwinStickMovementSystem(),
     new FirstPersonMovementSystem(),
     new Systems.AISystem(),
@@ -110,7 +120,7 @@ world.ecs.registerEntity(
     new Entity().addComponents(
         new BasicGeometryComponent({ geometryType: 'box' }),
         new PositionComponent({ position: [0, 1, 5] }),
-        new EmitterComponent(),
+        new EmitterComponent('ball'),
     ),
 )
 
