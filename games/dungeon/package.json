@@ -13,7 +13,7 @@
         "@types/react-dom": "^18.0.10",
         "@types/react-redux": "^7.1.24",
         "@types/redux-logger": "^3.0.9",
-        "@types/three": "^0.152.0",
+        "@types/three": "^0.153.0",
         "@vitejs/plugin-react": "^4.0.0",
         "vite": "^4.3.3"
     },
@@ -25,6 +25,6 @@
         "react-dom": "^18.2.0",
         "redux-logger": "^3.0.6",
         "rot-js": "^2.2.0",
-        "three": "^0.153.0"
+        "three": "^0.154.0"
     }
 }
