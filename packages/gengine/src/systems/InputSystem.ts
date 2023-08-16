@@ -1,6 +1,6 @@
 import { ECSFilter, System } from '../ecs'
 import { InputManager } from '../managers/InputManager'
-import { InputComponent } from '../components/InputComponent'
+import { InputComponent } from '../components/'
 
 export class InputSystem implements System {
     inputFilter = new ECSFilter([InputComponent])
