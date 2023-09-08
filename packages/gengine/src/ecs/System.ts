@@ -8,4 +8,4 @@ export type System = {
     tick(world: World): void
 
     receiveEntity?: (entity: Entity, filter: ECSFilter) => void
-}
+} | ((world: World) => void)

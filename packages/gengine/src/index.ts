@@ -7,8 +7,11 @@ export * from './ecs'
 // Components
 export * from './components'
 
+// Filters
+export * from './filters'
+
 // Systems
-export { ApplyVelocitySystem } from './systems/ApplyVelocitySystem'
+export { applyVelocitySystem } from './systems/applyVelocitySystem'
 export { DamageSystem } from './systems/DamageSystem'
 export { EmitterSystem } from './systems/EmitterSystem'
 export { FirstPersonCameraSystem } from './systems/FirstPersonCameraSystem'
