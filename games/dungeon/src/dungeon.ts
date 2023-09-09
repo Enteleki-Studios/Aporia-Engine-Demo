@@ -20,12 +20,12 @@ import {
     // SunSystem,
     World,
     // TwinStickMovementSystem,
-    ApplyVelocitySystem,
+    applyVelocitySystem,
     DamageSystem,
     DamagingComponent,
     PointLightComponent,
     inspector,
-    FirstPersonCameraSystem,
+    firstPersonCameraSystem,
     DirectionComponent,
     FirstPersonMovementSystem,
     EmitterComponent,
@@ -33,6 +33,16 @@ import {
     ColliderComponent,
     AIComponent,
     Entity,
+    movingEntitiesFilter,
+    modelFilter,
+    directionalLightFilter,
+    ambientLightFilter,
+    cameraFilter,
+    pointLightFilter,
+    boxFilter,
+    rotatingEntitiesFilter,
+    collidingFilter,
+    cameraTargetFilter,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -66,30 +76,43 @@ inputManager.addActionListener('debug', () => {
     }
 })
 
+world.ecs.registerFilters([
+    movingEntitiesFilter,
+    modelFilter,
+    directionalLightFilter,
+    ambientLightFilter,
+    cameraFilter,
+    cameraTargetFilter,
+    pointLightFilter,
+    boxFilter,
+    rotatingEntitiesFilter,
+    collidingFilter,
+])
+
 world.ecs.registerSystems([
-    new InputSystem(inputManager),
-    new EmitterSystem({
-        ball: () =>
-            new Entity().addComponents(
-                new BasicGeometryComponent({
-                    geometryType: 'sphere',
-                    radius: 0.25,
-                    color: 0xff0099,
-                }),
-                new PositionComponent(),
-                new VelocityComponent({ velocity: [-2, 0, 0] }),
-            ),
-    }),
+    // new InputSystem(inputManager),
+    // new EmitterSystem({
+    //     ball: () =>
+    //         new Entity().addComponents(
+    //             new BasicGeometryComponent({
+    //                 geometryType: 'sphere',
+    //                 radius: 0.25,
+    //                 color: 0xff0099,
+    //             }),
+    //             new PositionComponent(),
+    //             new VelocityComponent({ velocity: [-2, 0, 0] }),
+    //         ),
+    // }),
     // new TwinStickMovementSystem(),
-    new FirstPersonMovementSystem(),
-    new Systems.AISystem(),
-    new Systems.CollisionSystem(),
-    new ApplyVelocitySystem(),
-    new DamageSystem(),
+    // new FirstPersonMovementSystem(),
+    // new Systems.AISystem(),
+    // new Systems.CollisionSystem(),
+    applyVelocitySystem(),
+    // new DamageSystem(),
     // new ThirdPersonCameraSystem(),
-    new FirstPersonCameraSystem(),
+    firstPersonCameraSystem(),
     // new SunSystem(),
-    new Systems.AnimationSystem(),
+    // new Systems.AnimationSystem(),
     new Systems.RendererSystem(renderer),
 ])
 

@@ -35,6 +35,15 @@ import {
     OctreeHelper,
     HeroComponent,
     Array3,
+    World,
+    modelFilter,
+    directionalLightFilter,
+    ambientLightFilter,
+    boxFilter,
+    collidingFilter,
+    cameraFilter,
+    movingEntitiesFilter,
+    rotatingEntitiesFilter,
 } from 'gengine'
 
 import type { Renderer } from 'Renderer'
@@ -108,28 +117,6 @@ export const octree = new Octree()
 export class RendererSystem extends RendererSystemBase {
     renderer: Renderer
 
-    modelFilter = new ECSFilter([ModelComponent, PositionComponent])
-    directionalLightFilter = new ECSFilter([DirectionalLightComponent])
-    ambientLightFilter = new ECSFilter([AmbientLightComponent])
-    cameraFilter = new ECSFilter([CameraComponent])
-    pointLightFilter = new ECSFilter([PositionComponent, PointLightComponent])
-    boxFilter = new ECSFilter([BasicGeometryComponent, PositionComponent])
-    movingFilter = new ECSFilter([PositionComponent, VelocityComponent])
-    rotatingEntities = new ECSFilter([DirectionComponent, PositionComponent])
-    collidingFilter = new ECSFilter([ColliderComponent, PositionComponent])
-
-    filters = [
-        this.modelFilter,
-        this.directionalLightFilter,
-        this.ambientLightFilter,
-        this.cameraFilter,
-        this.pointLightFilter,
-        this.boxFilter,
-        this.movingFilter,
-        this.rotatingEntities,
-        this.collidingFilter,
-    ]
-
     // TODO For testing only
     // octree = new Octree()
     octree = octree
@@ -158,7 +145,7 @@ export class RendererSystem extends RendererSystemBase {
 
     receiveEntity(entity: Entity, filter: ECSFilter): void {
         switch (filter) {
-            case this.modelFilter: {
+            case modelFilter: {
                 const modelComponent = entity.get(ModelComponent)
                 modelComponent.isLoading = true
                 loadModel(modelComponent)
@@ -179,7 +166,7 @@ export class RendererSystem extends RendererSystemBase {
                     })
                 break
             }
-            case this.directionalLightFilter: {
+            case directionalLightFilter: {
                 const { intensity } = entity.get(DirectionalLightComponent)
                 const directionalLight = new DirectionalLight(0xffffff, intensity)
                 this.addObject(entity, 'directionalLight', directionalLight)
@@ -188,12 +175,12 @@ export class RendererSystem extends RendererSystemBase {
                 this.renderer.addHelpers(directionalLight.helper, directionalLight.shadowHelper)
                 break
             }
-            case this.ambientLightFilter: {
+            case ambientLightFilter: {
                 const { color, intensity } = entity.get(AmbientLightComponent)
                 this.addObject(entity, 'ambient', new AmbientLight(color, intensity))
                 break
             }
-            case this.boxFilter: {
+            case boxFilter: {
                 const basicGeometryComponent = entity.get(BasicGeometryComponent)
 
                 const mesh = new Mesh(
@@ -204,7 +191,7 @@ export class RendererSystem extends RendererSystemBase {
                 this.getGroup(entity).position.fromArray(entity.get(PositionComponent).position)
                 break
             }
-            case this.collidingFilter: {
+            case collidingFilter: {
                 const { collider } = entity.get(ColliderComponent)
                 const { position } = entity.get(PositionComponent)
 
@@ -249,32 +236,32 @@ export class RendererSystem extends RendererSystemBase {
         }
     }
 
-    tick() {
-        this.modelFilter.entities.forEach((entity) => {
+    tick(world: World) {
+        world.ecs.filterBy(modelFilter).forEach((entity) => {
             if (entity.has(HealthComponent)) {
                 this.updateHealthIndicator(entity)
             }
         })
 
-        this.directionalLightFilter.entities.forEach((entity) => {
+        world.ecs.filterBy(directionalLightFilter).forEach((entity) => {
             const { position, target } = entity.get(DirectionalLightComponent)
             this.getObject(entity, 'directionalLight')?.position.copy(position)
             this.getObject(entity, 'directionalLightTarget')?.position.copy(target)
         })
 
-        this.cameraFilter.entities.forEach((entity) => {
+        world.ecs.filterBy(cameraFilter).forEach((entity) => {
             const { position, lookAt } = entity.get(CameraComponent)
             this.renderer.camera.position.fromArray(position)
             this.renderer.camera.lookAt(...lookAt)
         })
 
-        this.movingFilter.entities.forEach((entity) => {
+        world.ecs.filterBy(movingEntitiesFilter).forEach((entity) => {
             const { position } = entity.get(PositionComponent)
             this.getGroup(entity).position.fromArray(position)
         })
 
         // TODO only do this for dirty entities/components
-        this.rotatingEntities.entities.forEach((entity) => {
+        world.ecs.filterBy(rotatingEntitiesFilter).forEach((entity) => {
             // TODO this if statement is a hack...
             if (!entity.has(HeroComponent)) {
                 const { position } = entity.get(PositionComponent)

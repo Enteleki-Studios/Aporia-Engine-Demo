@@ -25,13 +25,12 @@ export type ECSStatsType = {
     systemsStats: SystemStatsType[]
 }
 
-export class ECS {
-    private entitiesById = new Map<EntityId, Entity>()
-    private systems: System[] = []
-    // TODO: Remove this soon
-    // private systemsByFilter = new Map<ECSFilter, System[]>()
+const EMPTY_SET = Object.freeze(new Set<Entity>())
 
-    entitiesByFilter = new Map<ECSFilter, Set<Entity>>()
+export class ECS {
+    private systems: System[] = []
+    private entitiesById = new Map<EntityId, Entity>()
+    private entitiesByFilter = new Map<ECSFilter, Set<Entity>>()
 
     stats: ECSStatsType = {
         entities: 0,
@@ -41,17 +40,18 @@ export class ECS {
         systemsStats: [],
     }
 
-    // TODO add temp method that allows a system to register
-    // a receiveEntity listener
 
     private updateFiltersForEntity(entity: Entity) {
         this.entitiesByFilter.forEach((entities, filter) => {
             if (filter.match(entity)) {
                 if (!entities.has(entity)) {
                     entities.add(entity)
-                    // this.systemsByFilter.get(filter)?.forEach((system) => {
-                    //     system.receiveEntity?.(entity, filter)
-                    // })
+                    // TODO this is temporary
+                    this.systems.forEach((s) => {
+                        if ('receiveEntity' in s) {
+                            s.receiveEntity?.(entity, filter)
+                        }
+                    })
                 }
             } else {
                 // TODO tell systems that entity was removed
@@ -71,6 +71,17 @@ export class ECS {
 
     getEntity(entityId: EntityId) {
         return this.entitiesById.get(entityId)
+    }
+
+    filterBy(filter: ECSFilter): Set<Entity> {
+        const entities = this.entitiesByFilter.get(filter)
+        if (entities) {
+            return entities
+        } else {
+            // eslint-disable-next-line no-console
+            console.warn(`Filter ${filter.constructor.name} is not registered with the ECS`)
+            return EMPTY_SET
+        }
     }
 
     // removeEntity(entityId: EntityId) {
@@ -96,9 +107,14 @@ export class ECS {
 
         this.stats.systems = this.systems.length
         this.stats.systemsStats.push({
-            name: system.constructor.name,
+            name: 'label' in system ? system.label : system.constructor.name,
             runtime: 0,
         })
+
+        // TODO temporary
+        if ('filters' in system) {
+            this.registerFilters(system.filters)
+        }
     }
 
     registerFilter(filter: ECSFilter) {
@@ -120,7 +136,7 @@ export class ECS {
     /** @internal */
     tick(world: World) {
         this.systems.forEach((s, i) => {
-            const name = `System: ${s.constructor.name}`
+            const name = `System: ${'label' in s ? s.label : s.constructor.name}`
             performance.mark(name)
             if ('tick' in s) {
                 s.tick(world)

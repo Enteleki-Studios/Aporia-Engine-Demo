@@ -1,18 +1,14 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
 
-import { ECSFilter, System } from '../ecs'
-import { CameraComponent, CameraTargetComponent, DirectionComponent, PositionComponent } from '../components'
+import { CameraComponent, DirectionComponent, PositionComponent } from '../components'
+import { World } from 'World'
+import { cameraFilter, cameraTargetFilter } from 'filters'
 
-export class FirstPersonCameraSystem implements System {
-    cameraTargetFilter = new ECSFilter([CameraTargetComponent, PositionComponent, DirectionComponent])
-    cameraFilter = new ECSFilter([CameraComponent])
+export const firstPersonCameraSystem = () => {
+    const system = (world: World) => {
+        const cameraTargets = [...world.ecs.filterBy(cameraTargetFilter)]
 
-    filters = [this.cameraFilter, this.cameraTargetFilter]
-
-    tick() {
-        const cameraTargets = [...this.cameraTargetFilter.entities]
-
-        this.cameraFilter.entities.forEach((cameraEntity) => {
+        world.ecs.filterBy(cameraFilter).forEach((cameraEntity) => {
             const { position, lookAt } = cameraEntity.get(CameraComponent)
             const { position: targetPosition } = cameraTargets[0].get(PositionComponent)
             const { direction } = cameraTargets[0].get(DirectionComponent)
@@ -23,4 +19,6 @@ export class FirstPersonCameraSystem implements System {
             Vec3.add(lookAt, lookAt, direction)
         })
     }
+    system.label = 'first-person camera'
+    return system
 }

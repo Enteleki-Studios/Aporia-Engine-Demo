@@ -10,6 +10,7 @@ export default defineConfig({
         alias: {
             components: resolve(__dirname, 'src/components/'),
             ecs: resolve(__dirname, 'src/ecs/'),
+            filters: resolve(__dirname, 'src/filters'),
             Inspector: resolve(__dirname, 'src/Inspector/'),
             managers: resolve(__dirname, 'src/managers/'),
             reactjs: resolve(__dirname, 'src/reactjs/'),
