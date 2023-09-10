@@ -42,3 +42,6 @@ export type WorldEvent = 'start' | 'stop' | 'endframe'
 
 // Extras
 export const ENGINE_VERSION = `${npmPackage.version} - alpha`
+
+// Utility types
+export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>

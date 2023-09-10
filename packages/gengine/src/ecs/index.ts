@@ -1,5 +1,19 @@
+import type { Optional } from '../definitions'
+import type { FunctionSystem } from './System'
+
 export { ECS, type ECSStatsType } from './ECS'
 export { ECSFilter } from './ECSFilter'
 export { Entity, type EntityId } from './Entity'
 export { Component } from './Component'
 export { type System } from './System'
+
+export const createSystem = <T>(label: string, prepareSystem: (options?: T) => Optional<FunctionSystem, 'label'>) => {
+    const systemCreator = (options: T): FunctionSystem => {
+        const system = prepareSystem(options)
+        system.toString = () => label
+        system.label = label
+        return system as FunctionSystem
+    }
+
+    return systemCreator
+}
