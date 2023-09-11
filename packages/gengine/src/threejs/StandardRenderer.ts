@@ -49,7 +49,6 @@ export class StandardRenderer {
             powerPreference: 'high-performance',
             antialias: false,
         })
-        this.renderer.useLegacyLights = false
         this.renderer.toneMapping = ReinhardToneMapping
         this.renderer.toneMappingExposure = 2
         this.renderer.shadowMap.enabled = true

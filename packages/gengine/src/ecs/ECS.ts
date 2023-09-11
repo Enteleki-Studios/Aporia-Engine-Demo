@@ -55,7 +55,7 @@ export class ECS {
                 }
             } else {
                 // TODO tell systems that entity was removed
-                filter.entities.delete(entity)
+                entities.delete(entity)
             }
         })
     }
@@ -79,7 +79,7 @@ export class ECS {
             return entities
         } else {
             // eslint-disable-next-line no-console
-            console.warn(`Filter ${filter.constructor.name} is not registered with the ECS`)
+            console.warn(`Filter ${filter.toString()} is not registered with the ECS`)
             return EMPTY_SET
         }
     }

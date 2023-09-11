@@ -1,4 +1,4 @@
-export { AISystem } from './AISystem'
+export { aiSystem, aiSystemFilter } from './AISystem'
 export { AnimationSystem } from './AnimationSystem'
-export { CollisionSystem } from './CollisionSystem'
+export { collisionSystem, collisionsFilter } from './CollisionSystem'
 export { RendererSystem } from './RendererSystem'

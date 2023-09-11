@@ -119,14 +119,15 @@ export class RendererSystem extends RendererSystemBase {
 
     // TODO For testing only
     // octree = new Octree()
-    octree = octree
+    octree: Octree
     octreeHelper: OctreeHelper
 
-    constructor(renderer: Renderer) {
+    constructor(renderer: Renderer, octree: Octree) {
         super(renderer)
 
         this.renderer = renderer
 
+        this.octree = octree
         this.octreeHelper = new OctreeHelper(this.octree, new Color(0x0089cc))
         this.octreeHelper.visible = false
         this.renderer.scene.add(this.octreeHelper)

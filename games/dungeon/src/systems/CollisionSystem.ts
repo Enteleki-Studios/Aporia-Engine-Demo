@@ -1,44 +1,38 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
-import { Capsule, ECSFilter, HeroComponent, PositionComponent, System, VelocityComponent, ORIGIN } from 'gengine'
+import { createSystem, Capsule, PositionComponent, VelocityComponent, ORIGIN, Octree, World, heroFilter, movingEntitiesFilter } from 'gengine'
 // import { CollidableComponent } from 'dungeon/components'
-
-import { octree } from './RendererSystem'
 
 const playerCollider = new Capsule(undefined, undefined, 0.5)
 
-export class CollisionSystem implements System {
-    // TODO just selecting the hero for now
-    heroFilter = new ECSFilter([HeroComponent, PositionComponent, VelocityComponent])
+// TODO just selecting the hero for now
+export const collisionsFilter = heroFilter.and(movingEntitiesFilter)
 
-    filters = [this.heroFilter]
+export const collisionSystem = createSystem<{ octree: Octree }>('collisions', ({ octree }) => (world:World) => {
+    world.ecs.filterBy(collisionsFilter).forEach((heroEntity) => {
+        const { position } = heroEntity.get(PositionComponent)
+        const { velocity } = heroEntity.get(VelocityComponent)
 
-    tick() {
-        this.heroFilter.entities.forEach((heroEntity) => {
-            const { position } = heroEntity.get(PositionComponent)
-            const { velocity } = heroEntity.get(VelocityComponent)
+        // Capsule(start, end, radius)
+        // const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
+        playerCollider.start.fromArray(position)
+        playerCollider.end.fromArray(position).setY(2)
 
-            // Capsule(start, end, radius)
-            // const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
-            playerCollider.start.fromArray(position)
-            playerCollider.end.fromArray(position).setY(2)
+        playerCollider.start
+        const collisionResult = octree.capsuleIntersect(playerCollider)
+        if (collisionResult) {
+            const { normal } = collisionResult
 
-            playerCollider.start
-            const collisionResult = octree.capsuleIntersect(playerCollider)
-            if (collisionResult) {
-                const { normal } = collisionResult
+            const collisionVector = new Vec3(normal.x, normal.y, normal.z)
+            if (Vec3.dot(collisionVector, velocity) < 0) {
+                // Rotate 90 degrees to get tangent vector
+                Vec3.rotateY(collisionVector, collisionVector, ORIGIN, -Math.PI / 2)
 
-                const collisionVector = new Vec3(normal.x, normal.y, normal.z)
-                if (Vec3.dot(collisionVector, velocity) < 0) {
-                    // Rotate 90 degrees to get tangent vector
-                    Vec3.rotateY(collisionVector, collisionVector, ORIGIN, -Math.PI / 2)
-
-                    // Project velocity onto tangent
-                    Vec3.scale(velocity, collisionVector, Vec3.dot(collisionVector, velocity))
-                }
+                // Project velocity onto tangent
+                Vec3.scale(velocity, collisionVector, Vec3.dot(collisionVector, velocity))
             }
-        })
-    }
-}
+        }
+    })
+})
 
 // export class CollisionSystem extends System {
 //     solidFilter = new ECSFilter([HitboxComponent, PositionComponent])

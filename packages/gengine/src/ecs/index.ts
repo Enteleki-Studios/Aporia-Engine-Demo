@@ -7,7 +7,9 @@ export { Entity, type EntityId } from './Entity'
 export { Component } from './Component'
 export { type System } from './System'
 
-export const createSystem = <T>(label: string, prepareSystem: (options?: T) => Optional<FunctionSystem, 'label'>) => {
+type PrepareSystem<T = void> = (options?: T) => Optional<FunctionSystem, 'label'>
+
+export const createSystem = <T = void>(label: string, prepareSystem: PrepareSystem<T>  ) => {
     const systemCreator = (options: T): FunctionSystem => {
         const system = prepareSystem(options)
         system.toString = () => label

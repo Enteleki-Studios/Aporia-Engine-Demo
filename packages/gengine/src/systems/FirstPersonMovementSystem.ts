@@ -1,10 +1,11 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
 
-import { ECSFilter, System } from 'ecs'
+import { createSystem } from 'ecs'
 // import { roundToZero } from '../utils/vectorUtils'
 import { DirectionComponent, InputComponent, VelocityComponent } from 'components'
 import { ORIGIN } from 'definitions'
 import { World } from 'World'
+import { inputFilter, movingEntitiesFilter, rotatingEntitiesFilter } from 'filters'
 
 const DECELERATION = -5
 
@@ -14,64 +15,60 @@ const BASE_SPEED = 15
 const frameDeceleration = new Vec3()
 const frameAcceleration = new Vec3()
 
-export class FirstPersonMovementSystem implements System {
-    movementFilter = new ECSFilter([DirectionComponent, InputComponent, VelocityComponent])
+export const firstPersonMovementFilter = inputFilter.and(movingEntitiesFilter).and(rotatingEntitiesFilter)
 
-    filters = [this.movementFilter]
+export const firstPersonMovementSystem = createSystem('first-person movement', () => (world: World) => {
+    const delta = world.timeElapsedS
 
-    tick(world: World) {
-        const delta = world.timeElapsedS
+    world.ecs.filterBy(firstPersonMovementFilter).forEach((entity) => {
+        const inputComponent = entity.get(InputComponent)
+        const { velocity } = entity.get(VelocityComponent)
+        const { direction } = entity.get(DirectionComponent)
 
-        this.movementFilter.entities.forEach((entity) => {
-            const inputComponent = entity.get(InputComponent)
-            const { velocity } = entity.get(VelocityComponent)
-            const { direction } = entity.get(DirectionComponent)
+        // Calculate deceleration
+        // const frameDeceleration = velocity.clone().multiplyScalar(DECELERATION).multiplyScalar(delta)
+        frameDeceleration.copy(velocity).scale(DECELERATION).scale(delta)
 
-            // Calculate deceleration
-            // const frameDeceleration = velocity.clone().multiplyScalar(DECELERATION).multiplyScalar(delta)
-            frameDeceleration.copy(velocity).scale(DECELERATION).scale(delta)
+        Vec3.copy(frameAcceleration, direction)
+        frameAcceleration.y = 0
+        frameAcceleration.normalize()
 
-            Vec3.copy(frameAcceleration, direction)
-            frameAcceleration.y = 0
-            frameAcceleration.normalize()
-
-            let targetAngle = 0
-            if (inputComponent.input.up.hold) {
-                if (inputComponent.input.left.hold) {
-                    targetAngle = Math.PI / 4
-                } else if (inputComponent.input.right.hold) {
-                    targetAngle = Math.PI / -4
-                }
-            } else if (inputComponent.input.down.hold) {
-                if (inputComponent.input.left.hold) {
-                    targetAngle = (Math.PI / 4) * 3
-                } else if (inputComponent.input.right.hold) {
-                    targetAngle = (Math.PI / 4) * -3
-                } else {
-                    targetAngle = Math.PI
-                }
-            } else if (inputComponent.input.left.hold) {
-                targetAngle = Math.PI / 2
+        let targetAngle = 0
+        if (inputComponent.input.up.hold) {
+            if (inputComponent.input.left.hold) {
+                targetAngle = Math.PI / 4
             } else if (inputComponent.input.right.hold) {
-                targetAngle = Math.PI / -2
-            } else {
-                // No input, no acceleration
-                frameAcceleration.scale(0)
+                targetAngle = Math.PI / -4
             }
+        } else if (inputComponent.input.down.hold) {
+            if (inputComponent.input.left.hold) {
+                targetAngle = (Math.PI / 4) * 3
+            } else if (inputComponent.input.right.hold) {
+                targetAngle = (Math.PI / 4) * -3
+            } else {
+                targetAngle = Math.PI
+            }
+        } else if (inputComponent.input.left.hold) {
+            targetAngle = Math.PI / 2
+        } else if (inputComponent.input.right.hold) {
+            targetAngle = Math.PI / -2
+        } else {
+            // No input, no acceleration
+            frameAcceleration.scale(0)
+        }
 
-            // Rotate acceleration in the direction of travel
-            Vec3.rotateY(frameAcceleration, frameAcceleration, ORIGIN, targetAngle)
+        // Rotate acceleration in the direction of travel
+        Vec3.rotateY(frameAcceleration, frameAcceleration, ORIGIN, targetAngle)
 
-            // Set acceleration magnitude
-            const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
-            frameAcceleration.scale(BASE_SPEED * boost * delta)
+        // Set acceleration magnitude
+        const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
+        frameAcceleration.scale(BASE_SPEED * boost * delta)
 
-            Vec3.add(velocity, velocity, frameDeceleration)
-            Vec3.add(velocity, velocity, frameAcceleration)
-            // roundToZero(velocity)
+        Vec3.add(velocity, velocity, frameDeceleration)
+        Vec3.add(velocity, velocity, frameAcceleration)
+        // roundToZero(velocity)
 
-            Vec3.rotateY(direction, direction, ORIGIN, -inputComponent.mouse.pan.x * delta * 0.1)
-            direction[1] -= inputComponent.mouse.pan.y * delta * 0.1
-        })
-    }
-}
+        Vec3.rotateY(direction, direction, ORIGIN, -inputComponent.mouse.pan.x * delta * 0.1)
+        direction[1] -= inputComponent.mouse.pan.y * delta * 0.1
+    })
+})

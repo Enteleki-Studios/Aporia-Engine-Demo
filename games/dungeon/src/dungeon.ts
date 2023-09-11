@@ -8,7 +8,7 @@ import {
     InputManager,
     ModelComponent,
     DEFAULT_KEYMAP,
-    InputSystem,
+    inputSystem,
     InputComponent,
     PositionComponent,
     HitboxComponent,
@@ -21,15 +21,15 @@ import {
     World,
     // TwinStickMovementSystem,
     applyVelocitySystem,
-    DamageSystem,
+    // DamageSystem,
     DamagingComponent,
     PointLightComponent,
     inspector,
     firstPersonCameraSystem,
     DirectionComponent,
-    FirstPersonMovementSystem,
+    firstPersonMovementSystem,
     EmitterComponent,
-    EmitterSystem,
+    // EmitterSystem,
     ColliderComponent,
     AIComponent,
     Entity,
@@ -43,6 +43,10 @@ import {
     rotatingEntitiesFilter,
     collidingFilter,
     cameraTargetFilter,
+    inputFilter,
+    firstPersonMovementFilter,
+    heroFilter,
+    Octree,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -55,6 +59,8 @@ import { Renderer } from 'Renderer'
 import modelDB from 'modelDB'
 
 export const world = new World()
+
+const octree = new Octree()
 
 const renderer = new Renderer({})
 export const updateCanvasContainer = (container: HTMLDivElement) => {
@@ -80,6 +86,7 @@ world.ecs.registerFilters([
     movingEntitiesFilter,
     modelFilter,
     directionalLightFilter,
+    inputFilter,
     ambientLightFilter,
     cameraFilter,
     cameraTargetFilter,
@@ -87,10 +94,14 @@ world.ecs.registerFilters([
     boxFilter,
     rotatingEntitiesFilter,
     collidingFilter,
+    firstPersonMovementFilter,
+    heroFilter,
+    Systems.aiSystemFilter,
+    Systems.collisionsFilter,
 ])
 
 world.ecs.registerSystems([
-    // new InputSystem(inputManager),
+    inputSystem({ inputManager }),
     // new EmitterSystem({
     //     ball: () =>
     //         new Entity().addComponents(
@@ -104,16 +115,16 @@ world.ecs.registerSystems([
     //         ),
     // }),
     // new TwinStickMovementSystem(),
-    // new FirstPersonMovementSystem(),
-    // new Systems.AISystem(),
-    // new Systems.CollisionSystem(),
+    firstPersonMovementSystem(),
+    Systems.aiSystem(),
+    Systems.collisionSystem({ octree }),
     applyVelocitySystem(),
     // new DamageSystem(),
     // new ThirdPersonCameraSystem(),
     firstPersonCameraSystem(),
     // new SunSystem(),
     // new Systems.AnimationSystem(),
-    new Systems.RendererSystem(renderer),
+    new Systems.RendererSystem(renderer, octree),
 ])
 
 export const middleware: Middleware = () => (next) => (action: Action) => {
