@@ -51,7 +51,6 @@ export class World {
 
     isRunning = false
 
-    loggingEnabled = false
     frameSync = true
 
     constructor() {

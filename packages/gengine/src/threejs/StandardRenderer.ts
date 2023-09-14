@@ -132,7 +132,7 @@ export class StandardRenderer {
         this.camera.aspect = this.aspect
         this.camera.updateProjectionMatrix()
 
-        this.debugCamera.aspect = width / height
+        this.debugCamera.aspect = this.aspect
         this.debugCamera.updateProjectionMatrix()
 
         this.renderer.setSize(width, height, false)

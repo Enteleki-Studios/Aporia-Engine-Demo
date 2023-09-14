@@ -77,8 +77,10 @@ inputManager.addActionListener('debug', () => {
     const { debugMode } = renderer
     if (debugMode === 'game') {
         renderer.setDebugMode('debug')
+        inputManager.disablePointerLock()
     } else {
         renderer.setDebugMode('game')
+        inputManager.allowPointerLock()
     }
 })
 
@@ -139,8 +141,14 @@ export const middleware: Middleware = () => (next) => (action: Action) => {
 world.ecs.registerEntity(
     new Entity().addComponents(
         new AmbientLightComponent({
-            color: 0xffffff,
+            color: 0xf4e99b,
             intensity: 0.05,
+        }),
+        new PointLightComponent({
+            color: 0xf4e99b,
+            intensity: 3,
+            offset: [0, 2, 0],
+            castShadow: true,
         }),
     ),
 )
@@ -185,7 +193,7 @@ world.ecs.registerEntity(
             damage: 5,
         }),
         new PointLightComponent({
-            color: 0xffee88,
+            color: 0xffeeff,
             intensity: 3,
             offset: [0, 2, 0],
             castShadow: true,

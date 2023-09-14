@@ -28,7 +28,6 @@ import {
     PointLightComponent,
     RendererSystemBase,
     Entity,
-    VelocityComponent,
     ColliderComponent,
     Collider,
     Octree,
@@ -112,8 +111,6 @@ const makeColliderHelper = (collider: Collider) => {
     }
 }
 
-export const octree = new Octree()
-
 export class RendererSystem extends RendererSystemBase {
     renderer: Renderer
 
@@ -129,8 +126,9 @@ export class RendererSystem extends RendererSystemBase {
 
         this.octree = octree
         this.octreeHelper = new OctreeHelper(this.octree, new Color(0x0089cc))
-        this.octreeHelper.visible = false
+        // this.octreeHelper.visible = false
         this.renderer.scene.add(this.octreeHelper)
+        this.renderer.registerHelper(this.octreeHelper)
     }
 
     updateHealthIndicator = this.applyToObject((ts, entity) => {
@@ -202,13 +200,14 @@ export class RendererSystem extends RendererSystemBase {
                         transparent: true,
                         opacity: 0.3,
                         color: 0xcc0089,
-                        emissive: 0xffffff,
+                        emissive: 0xff0089,
                         emissiveIntensity: 1,
                     }),
                 )
                 collisionHelper.position.fromArray(position)
 
-                // this.renderer.scene.add(collisionHelper)
+                this.renderer.scene.add(collisionHelper)
+                this.renderer.registerHelper(collisionHelper)
 
                 this.octree.fromGraphNode(collisionHelper)
                 this.octreeHelper.update()
@@ -219,17 +218,21 @@ export class RendererSystem extends RendererSystemBase {
         }
 
         if (entity.has(HealthComponent)) {
-            const healthSprite = makeHealthSprite(entity.get(HealthComponent))
-            this.addObject(entity, 'health', healthSprite)
+            if (!this.hasObject(entity, 'health')) {
+                const healthSprite = makeHealthSprite(entity.get(HealthComponent))
+                this.addObject(entity, 'health', healthSprite)
+            }
         }
 
         if (entity.has(PointLightComponent)) {
-            const pointLight = makePointLight(entity.get(PointLightComponent))
-            this.addObject(entity, 'pointlight', pointLight)
+            if (!this.hasObject(entity, 'pointLight')) {
+                const pointLight = makePointLight(entity.get(PointLightComponent))
+                this.addObject(entity, 'pointlight', pointLight)
 
-            const pointLightHelper = new PointLightHelper(pointLight, 0.25)
-            this.renderer.scene.add(pointLightHelper)
-            this.renderer.registerHelper(pointLightHelper)
+                const pointLightHelper = new PointLightHelper(pointLight, 0.25)
+                this.renderer.scene.add(pointLightHelper)
+                this.renderer.registerHelper(pointLightHelper)
+            }
         }
 
         if (entity.has(PositionComponent)) {

@@ -10,8 +10,6 @@ import {
     Mesh,
     TextureLoader,
     RepeatWrapping,
-    PointLight,
-    PointLightHelper,
     // Fog,
     Color,
 } from 'three'
@@ -43,14 +41,14 @@ export class Renderer extends StandardRenderer {
         dirtMesh.receiveShadow = true
         this.scene.add(dirtMesh)
 
-        const pointLight = new PointLight(0xffee88, 3, 0, 2)
-        pointLight.castShadow = true
-        pointLight.position.y = 2
-        pointLight.shadow.radius = 5
-        // pointLight.visible = false
-        this.scene.add(pointLight)
-        const pointLightHelper = new PointLightHelper(pointLight, 0.5)
-        this.scene.add(pointLightHelper)
+        // const pointLight = new PointLight(0xffee88, 3, 0, 2)
+        // pointLight.castShadow = true
+        // pointLight.position.y = 2
+        // pointLight.shadow.radius = 5
+        // // pointLight.visible = false
+        // this.scene.add(pointLight)
+        // const pointLightHelper = new PointLightHelper(pointLight, 0.5)
+        // this.scene.add(pointLightHelper)
 
         // this.scene.fog = new Fog(0x161616, 15, 40)
         this.scene.background = new Color(0x161616)
