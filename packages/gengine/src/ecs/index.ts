@@ -12,10 +12,12 @@ type PrepareSystem<T = void> = (options: T) => Optional<FunctionSystem, 'label'>
 
 export const createSystem = <T = void>(label: string, prepareSystem: PrepareSystem<T>) => {
     const systemCreator = (options: T): FunctionSystem => {
-        const system = prepareSystem(options)
+        const system = prepareSystem(options) as FunctionSystem
+
         system.toString = () => label
         system.label = label
-        return system as FunctionSystem
+
+        return system
     }
 
     return systemCreator
