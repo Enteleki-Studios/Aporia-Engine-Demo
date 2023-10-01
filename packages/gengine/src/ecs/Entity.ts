@@ -8,6 +8,7 @@ export class Entity {
     id: EntityId
     onAddComponents: ((components: Component[]) => void) | undefined
     private components = new Map<AnyComponentConstructor, Component>()
+    private tags = new Set<string>()
 
     constructor(id?: EntityId) {
         this.id = id ?? uuid()
@@ -49,5 +50,19 @@ export class Entity {
 
     size() {
         return this.components.size
+    }
+
+    tag(...tags: string[]) {
+        tags.forEach((t) => this.tags.add(t))
+
+        return this
+    }
+
+    hasTag(tag: string) {
+        return this.tags.has(tag)
+    }
+
+    hasTags(tags: string[]) {
+        return tags.every((t) => this.hasTag(t))
     }
 }

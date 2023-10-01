@@ -2,6 +2,10 @@ import type { Array3, Keymap } from 'definitions'
 import { Vector3, type Object3D } from 'three'
 import { Component } from '../ecs'
 
+export const tags = {
+    hero: 'hero',
+} as const
+
 export class AIComponent extends Component {}
 
 export class AmbientLightComponent extends Component {
@@ -67,7 +71,6 @@ export class HealthComponent extends Component {
         this.health = health
     }
 }
-export class HeroComponent extends Component {}
 
 export class HitboxComponent extends Component {
     radius

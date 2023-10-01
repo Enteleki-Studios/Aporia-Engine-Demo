@@ -32,7 +32,6 @@ import {
     Collider,
     Octree,
     OctreeHelper,
-    HeroComponent,
     Array3,
     World,
     modelFilter,
@@ -43,6 +42,7 @@ import {
     cameraFilter,
     movingEntitiesFilter,
     rotatingEntitiesFilter,
+    tags,
 } from 'gengine'
 
 import type { Renderer } from 'Renderer'
@@ -267,7 +267,7 @@ export class RendererSystem extends RendererSystemBase {
         // TODO only do this for dirty entities/components
         world.ecs.filterBy(rotatingEntitiesFilter).forEach((entity) => {
             // TODO this if statement is a hack...
-            if (!entity.has(HeroComponent)) {
+            if (!entity.hasTag(tags.hero)) {
                 const { position } = entity.get(PositionComponent)
                 const { direction } = entity.get(DirectionComponent)
                 // this.getGroup(entity).lookAt(position.clone().add(direction))
