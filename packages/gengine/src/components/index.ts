@@ -8,7 +8,6 @@ export const tags = {
 
 export class AIComponent extends Component {}
 export class CameraTargetComponent extends Component {}
-export class HeroComponent extends Component {}
 export class SunTargetComponent extends Component {}
 
 export class AmbientLightComponent extends Component {
