@@ -40,7 +40,6 @@ export class ECS {
         systemsStats: [],
     }
 
-
     private updateFiltersForEntity(entity: Entity) {
         this.entitiesByFilter.forEach((entities, filter) => {
             if (filter.match(entity)) {

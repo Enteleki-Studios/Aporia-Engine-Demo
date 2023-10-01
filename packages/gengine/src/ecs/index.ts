@@ -9,7 +9,7 @@ export { type System } from './System'
 
 type PrepareSystem<T = void> = (options: T) => Optional<FunctionSystem, 'label'>
 
-export const createSystem = <T = void>(label: string, prepareSystem: PrepareSystem<T>  ) => {
+export const createSystem = <T = void>(label: string, prepareSystem: PrepareSystem<T>) => {
     const systemCreator = (options: T): FunctionSystem => {
         const system = prepareSystem(options)
         system.toString = () => label

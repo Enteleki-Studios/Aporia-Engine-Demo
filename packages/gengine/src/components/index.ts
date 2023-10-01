@@ -12,7 +12,7 @@ export class AmbientLightComponent extends Component {
     color: number
     intensity: number
 
-    constructor({ color, intensity }: { color: number, intensity: number }) {
+    constructor({ color, intensity }: { color: number; intensity: number }) {
         super()
 
         this.color = color
@@ -26,7 +26,7 @@ export class CameraComponent extends Component {
     position: Array3
     lookAt: Array3
 
-    constructor({ position, lookAt }: { position?: Array3, lookAt?: Array3 } = {}) {
+    constructor({ position, lookAt }: { position?: Array3; lookAt?: Array3 } = {}) {
         super()
 
         this.position = position ?? [0, 0, 0]

@@ -173,32 +173,34 @@ world.ecs.registerEntity(new Entity().addComponents(new CameraComponent()))
 
 // Player
 world.ecs.registerEntity(
-    new Entity().addComponents(
-        new Components.AnimationComponent('idle'),
-        new Components.CollidableComponent(),
-        new CameraTargetComponent(),
-        new DirectionComponent(),
-        new SunTargetComponent(),
-        new HitboxComponent(modelDB.wizard.radius),
-        new HealthComponent(20),
-        new InputComponent(DEFAULT_KEYMAP),
-        // new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
-        new PositionComponent({ position: [0, 0, -1] }),
-        new VelocityComponent(),
-        new DamagingComponent({
-            radius: 1,
-            theta: 2,
-            spoolUp: 0.25,
-            coolDown: 0.5,
-            damage: 5,
-        }),
-        new PointLightComponent({
-            color: 0xffeeff,
-            intensity: 3,
-            offset: [0, 2, 0],
-            castShadow: true,
-        }),
-    ).tag(tags.hero),
+    new Entity()
+        .addComponents(
+            new Components.AnimationComponent('idle'),
+            new Components.CollidableComponent(),
+            new CameraTargetComponent(),
+            new DirectionComponent(),
+            new SunTargetComponent(),
+            new HitboxComponent(modelDB.wizard.radius),
+            new HealthComponent(20),
+            new InputComponent(DEFAULT_KEYMAP),
+            // new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
+            new PositionComponent({ position: [0, 0, -1] }),
+            new VelocityComponent(),
+            new DamagingComponent({
+                radius: 1,
+                theta: 2,
+                spoolUp: 0.25,
+                coolDown: 0.5,
+                damage: 5,
+            }),
+            new PointLightComponent({
+                color: 0xffeeff,
+                intensity: 3,
+                offset: [0, 2, 0],
+                castShadow: true,
+            }),
+        )
+        .tag(tags.hero),
 )
 
 // Shibs

@@ -7,10 +7,12 @@ export type FunctionSystem = {
     label: string
 }
 
-export type System = {
-    filters: ECSFilter[]
+export type System =
+    | {
+          filters: ECSFilter[]
 
-    tick(world: World): void
+          tick(world: World): void
 
-    receiveEntity?: (entity: Entity, filter: ECSFilter) => void
-} | FunctionSystem
+          receiveEntity?: (entity: Entity, filter: ECSFilter) => void
+      }
+    | FunctionSystem

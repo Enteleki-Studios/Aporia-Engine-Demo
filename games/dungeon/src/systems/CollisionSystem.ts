@@ -1,5 +1,15 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
-import { createSystem, Capsule, PositionComponent, VelocityComponent, ORIGIN, Octree, World, heroFilter, movingEntitiesFilter } from 'gengine'
+import {
+    createSystem,
+    Capsule,
+    PositionComponent,
+    VelocityComponent,
+    ORIGIN,
+    Octree,
+    World,
+    heroFilter,
+    movingEntitiesFilter,
+} from 'gengine'
 // import { CollidableComponent } from 'dungeon/components'
 
 const playerCollider = new Capsule(undefined, undefined, 0.5)
@@ -7,7 +17,7 @@ const playerCollider = new Capsule(undefined, undefined, 0.5)
 // TODO just selecting the hero for now
 export const collisionsFilter = heroFilter.and(movingEntitiesFilter)
 
-export const collisionSystem = createSystem<{ octree: Octree }>('collisions', ({ octree }) => (world:World) => {
+export const collisionSystem = createSystem<{ octree: Octree }>('collisions', ({ octree }) => (world: World) => {
     world.ecs.filterBy(collisionsFilter).forEach((heroEntity) => {
         const { position } = heroEntity.get(PositionComponent)
         const { velocity } = heroEntity.get(VelocityComponent)
