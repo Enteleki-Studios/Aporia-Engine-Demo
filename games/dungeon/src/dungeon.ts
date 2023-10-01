@@ -47,6 +47,7 @@ import {
     firstPersonMovementFilter,
     heroFilter,
     Octree,
+    tags,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -180,7 +181,6 @@ world.ecs.registerEntity(
         new SunTargetComponent(),
         new HitboxComponent(modelDB.wizard.radius),
         new HealthComponent(20),
-        new HeroComponent(),
         new InputComponent(DEFAULT_KEYMAP),
         // new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
         new PositionComponent({ position: [0, 0, -1] }),
@@ -198,7 +198,7 @@ world.ecs.registerEntity(
             offset: [0, 2, 0],
             castShadow: true,
         }),
-    ),
+    ).tag(tags.hero),
 )
 
 // Shibs
