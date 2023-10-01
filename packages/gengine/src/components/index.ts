@@ -7,6 +7,9 @@ export const tags = {
 } as const
 
 export class AIComponent extends Component {}
+export class CameraTargetComponent extends Component {}
+export class HeroComponent extends Component {}
+export class SunTargetComponent extends Component {}
 
 export class AmbientLightComponent extends Component {
     color: number
@@ -33,8 +36,6 @@ export class CameraComponent extends Component {
         this.lookAt = lookAt ?? [0, 0, 0]
     }
 }
-
-export class CameraTargetComponent extends Component {}
 
 export { ColliderComponent, type Collider } from './ColliderComponent'
 export { DamagingComponent } from './DamagingComponent'
@@ -158,8 +159,6 @@ export class SpriteComponent extends Component {
         this.url = url
     }
 }
-
-export class SunTargetComponent extends Component {}
 
 export class VelocityComponent extends Component {
     velocity: Array3

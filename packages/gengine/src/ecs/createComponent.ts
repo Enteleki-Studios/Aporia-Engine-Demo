@@ -1,22 +1,50 @@
-type Component<T extends string = string> = { readonly type: T }
+type SerializablePrimitives = string | number | boolean
 
-type ComponentCreator<T extends string> = {
-    (): Component<T>
-    readonly type: T
-    match(component: Component): component is Component
+type InputProps = {
+    [K: string]: undefined | SerializablePrimitives | SerializablePrimitives[] | InputProps
 }
 
-export const createComponent = <T extends string>(type: T): ComponentCreator<T> => {
-    const componentCreator = () => ({ type })
+type ComponentProps = {
+    [K: string]: SerializablePrimitives | SerializablePrimitives[] | ComponentProps
+}
+
+type Component<T extends string = string, P = void> = { readonly type: T } & P
+
+type ComponentCreator<T extends string, I, P> = {
+    (input: I): Component<T, P>
+    readonly type: T
+    match(component: Component<string, unknown>): component is Component<T, P>
+}
+
+export const createComponent = <T extends string, I extends InputProps, P extends ComponentProps>(type: T, prepareComponent: (input: I) => P): ComponentCreator<T, I, P> => {
+    const componentCreator = (args: I) => ({
+        type,
+        ...prepareComponent(args),
+    })
 
     componentCreator.type = type
-    componentCreator.match = (component: Component): component is Component => component.type === type
+    componentCreator.match = (component: Component<string, unknown>): component is Component<T, P> => component.type === type
 
     return componentCreator
 }
 
-const testComponent = createComponent('test')
-const tc = testComponent()
-const type = tc.type
+// Tests
+// const testComponent1 = createComponent('test1', (props: { name?: string }) => ({
+//     name: props?.name ?? 'default',
+// }))
 
-console.debug(type, JSON.stringify(tc))
+// const tc12 = testComponent1({})
+// const tc13 = testComponent1({ name: 'tt' })
+// const tc11 = testComponent1() // fail
+// const tc14 = testComponent1({ name: 22 }) // fail
+// const tc15 = testComponent1({ na: 'tt' }) // fail
+
+// const tc16 = {
+//     type: 'test1',
+//     debug: 'matchTest',
+// }
+// if (testComponent1.match(tc16)) {
+//     console.debug(tc16)
+// }
+
+// console.debug(JSON.stringify({ tc11, tc12, tc13, tc14, tc15 }))
