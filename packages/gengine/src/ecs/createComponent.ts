@@ -8,9 +8,9 @@ type ComponentProps = {
     [K: string]: SerializablePrimitives | SerializablePrimitives[] | ComponentProps
 }
 
-type Component<T extends string = string, P = void> = { readonly type: T } & P
+type Component<T extends string = string, P = ComponentProps> = { readonly type: T } & P
 
-type ComponentCreator<T extends string, I, P> = {
+type ComponentCreator<T extends string, I extends InputProps, P extends ComponentProps> = {
     (input: I): Component<T, P>
     readonly type: T
     match(component: Component<string, unknown>): component is Component<T, P>
