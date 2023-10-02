@@ -1,11 +1,7 @@
 import type { World } from '../World'
 import type { ECSFilter } from './ECSFilter'
 import type { Entity } from './Entity'
-
-export type FunctionSystem = {
-    (world: World): void
-    label: string
-}
+import type { System as FunctionSystem } from './createSystem'
 
 export type System =
     | {

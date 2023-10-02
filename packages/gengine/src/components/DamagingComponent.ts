@@ -1,4 +1,4 @@
-import { Component } from '../ecs'
+import { createComponent } from 'ecs'
 
 type DamagingSettings = {
     radius: number
@@ -8,23 +8,25 @@ type DamagingSettings = {
     damage: number
 }
 
-export class DamagingComponent extends Component {
-    delta = 0
-    stage: 'spooling' | 'cooling' = 'spooling'
+type Stage = 'spooling' | 'cooling'
 
-    radius
-    theta
-    damage
-    readonly spoolUp
-    readonly coolDown
-
-    constructor({ radius, theta, spoolUp, coolDown, damage }: DamagingSettings) {
-        super()
-
-        this.radius = radius
-        this.theta = theta
-        this.damage = damage
-        this.spoolUp = spoolUp
-        this.coolDown = coolDown
-    }
-}
+export const damagingComponent = createComponent(
+    'damagingComponent',
+    ({ radius, theta, spoolUp, coolDown, damage }: DamagingSettings): {
+        radius: number,
+        theta: number,
+        damage: number,
+        spoolUp: number,
+        coolDown: number,
+        delta: number,
+        stage: Stage,
+    } => ({
+        radius,
+        theta,
+        damage,
+        spoolUp,
+        coolDown,
+        delta: 0,
+        stage: 'spooling',
+    }),
+)
