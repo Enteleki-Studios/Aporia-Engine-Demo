@@ -2,7 +2,7 @@ import { Vec3 } from 'gl-matrix/dist/esm'
 
 import { createSystem } from 'ecs'
 // import { roundToZero } from '../utils/vectorUtils'
-import { DirectionComponent, InputComponent, VelocityComponent } from 'components'
+import { directionComponent, inputComponent, velocityComponent } from 'components'
 import { ORIGIN } from 'definitions'
 import { World } from 'World'
 import { inputFilter, movingEntitiesFilter, rotatingEntitiesFilter } from 'filters'
@@ -21,9 +21,9 @@ export const firstPersonMovementSystem = createSystem('first-person movement', (
     const delta = world.timeElapsedS
 
     world.ecs.filterBy(firstPersonMovementFilter).forEach((entity) => {
-        const inputComponent = entity.get(InputComponent)
-        const { velocity } = entity.get(VelocityComponent)
-        const { direction } = entity.get(DirectionComponent)
+        const { input, mouse } = entity.get(inputComponent)
+        const { velocity } = entity.get(velocityComponent)
+        const { direction } = entity.get(directionComponent)
 
         // Calculate deceleration
         // const frameDeceleration = velocity.clone().multiplyScalar(DECELERATION).multiplyScalar(delta)
@@ -34,23 +34,23 @@ export const firstPersonMovementSystem = createSystem('first-person movement', (
         frameAcceleration.normalize()
 
         let targetAngle = 0
-        if (inputComponent.input.up.hold) {
-            if (inputComponent.input.left.hold) {
+        if (input.up.hold) {
+            if (input.left.hold) {
                 targetAngle = Math.PI / 4
-            } else if (inputComponent.input.right.hold) {
+            } else if (input.right.hold) {
                 targetAngle = Math.PI / -4
             }
-        } else if (inputComponent.input.down.hold) {
-            if (inputComponent.input.left.hold) {
+        } else if (input.down.hold) {
+            if (input.left.hold) {
                 targetAngle = (Math.PI / 4) * 3
-            } else if (inputComponent.input.right.hold) {
+            } else if (input.right.hold) {
                 targetAngle = (Math.PI / 4) * -3
             } else {
                 targetAngle = Math.PI
             }
-        } else if (inputComponent.input.left.hold) {
+        } else if (input.left.hold) {
             targetAngle = Math.PI / 2
-        } else if (inputComponent.input.right.hold) {
+        } else if (input.right.hold) {
             targetAngle = Math.PI / -2
         } else {
             // No input, no acceleration
@@ -61,14 +61,14 @@ export const firstPersonMovementSystem = createSystem('first-person movement', (
         Vec3.rotateY(frameAcceleration, frameAcceleration, ORIGIN, targetAngle)
 
         // Set acceleration magnitude
-        const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
+        const boost = input.run.hold ? RUN_BOOST : 1
         frameAcceleration.scale(BASE_SPEED * boost * delta)
 
         Vec3.add(velocity, velocity, frameDeceleration)
         Vec3.add(velocity, velocity, frameAcceleration)
         // roundToZero(velocity)
 
-        Vec3.rotateY(direction, direction, ORIGIN, -inputComponent.mouse.pan.x * delta * 0.1)
-        direction[1] -= inputComponent.mouse.pan.y * delta * 0.1
+        Vec3.rotateY(direction, direction, ORIGIN, -mouse.pan.x * delta * 0.1)
+        direction[1] -= mouse.pan.y * delta * 0.1
     })
 })

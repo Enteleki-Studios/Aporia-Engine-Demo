@@ -1,7 +1,7 @@
 import { Vector2 } from 'three'
 import { Vec3 } from 'gl-matrix/dist/esm'
 import { ECSFilter, System } from 'ecs'
-import { CameraComponent, DirectionComponent, InputComponent, PositionComponent, VelocityComponent } from 'components'
+import { cameraComponent, directionComponent, inputComponent, positionComponent, velocityComponent } from 'components'
 import { ORIGIN } from 'definitions'
 import { World } from 'World'
 
@@ -11,8 +11,8 @@ const RUN_BOOST = 2
 const BASE_SPEED = 15
 
 export class TwinStickMovementSystem implements System {
-    cameraFilter = new ECSFilter([CameraComponent])
-    movementFilter = new ECSFilter([DirectionComponent, InputComponent, PositionComponent, VelocityComponent])
+    cameraFilter = new ECSFilter([cameraComponent])
+    movementFilter = new ECSFilter([directionComponent, inputComponent, positionComponent, velocityComponent])
 
     filters = [this.cameraFilter, this.movementFilter]
 

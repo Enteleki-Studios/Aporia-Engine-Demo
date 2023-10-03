@@ -10,15 +10,8 @@ type PointLightSettings = {
 }
 
 export const pointLightComponent = createComponent(
-'pointLightComponent',
-    ({
-        color,
-        intensity,
-        distance = 0,
-        decay = 2,
-        offset = [0, 0, 0],
-        castShadow = false,
-    }: PointLightSettings) => ({
+    'pointLightComponent',
+    ({ color, intensity, distance = 0, decay = 2, offset = [0, 0, 0], castShadow = false }: PointLightSettings) => ({
         color: color,
         intensity: intensity,
         distance: distance,

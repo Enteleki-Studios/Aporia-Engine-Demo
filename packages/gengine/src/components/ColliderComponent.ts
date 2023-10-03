@@ -16,9 +16,6 @@ type BoxCollider = {
 
 export type Collider = BoxCollider | CylinderCollider
 
-export const colliderComponent = createComponent(
-    'colliderComponent',
-    ({ collider }: { collider: Collider }) => ({
-        collider,
-    })
-)
+export const colliderComponent = createComponent('colliderComponent', ({ collider }: { collider: Collider }) => ({
+    collider,
+}))

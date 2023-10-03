@@ -1,5 +1,5 @@
 import { ECSFilter, System } from '../ecs'
-import { DirectionalLightComponent, PositionComponent, SunTargetComponent } from '../components'
+import { directionalLightComponent, positionComponent, sunTargetComponent } from '../components'
 
 export class SunSystem implements System {
     directionalLightFilter = new ECSFilter([DirectionalLightComponent])

@@ -1,18 +1,18 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
 import { World } from '../World'
 import { System, ECSFilter } from '../ecs'
-import { DamagingComponent, HealthComponent, HitboxComponent, PositionComponent } from '../components'
+import { damagingComponent, healthComponent, hitboxComponent, positionComponent } from '../components'
 
 export class DamageSystem implements System {
-    damagingFilter = new ECSFilter([PositionComponent, DamagingComponent])
-    damagableFilter = new ECSFilter([PositionComponent, HealthComponent, HitboxComponent])
+    damagingFilter = new ECSFilter([positionComponent, damagingComponent])
+    damagableFilter = new ECSFilter([positionComponent, healthComponent, hitboxComponent])
 
     filters = [this.damagingFilter, this.damagableFilter]
 
     tick(world: World) {
         this.damagingFilter.entities.forEach((damagingEntity) => {
-            const damagingPosition = damagingEntity.get(PositionComponent)
-            const damageComponent = damagingEntity.get(DamagingComponent)
+            const damagingPosition = damagingEntity.get(positionComponent)
+            const damageComponent = damagingEntity.get(damagingComponent)
 
             damageComponent.delta += world.timeElapsedS
 
@@ -24,12 +24,12 @@ export class DamageSystem implements System {
                         return
                     }
 
-                    const targetPosition = targetEntity.get(PositionComponent)
-                    const targetHitbox = targetEntity.get(HitboxComponent)
+                    const targetPosition = targetEntity.get(positionComponent)
+                    const targetHitbox = targetEntity.get(hitboxComponent)
 
                     const maxDistance = damageComponent.radius + targetHitbox.radius
                     if (Vec3.distance(damagingPosition.position, targetPosition.position) < maxDistance) {
-                        const targetHealth = targetEntity.get(HealthComponent)
+                        const targetHealth = targetEntity.get(healthComponent)
                         if (targetHealth.health) {
                             targetHealth.health -= Math.min(damageComponent.damage, targetHealth.health)
                         }

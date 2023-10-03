@@ -2,8 +2,8 @@ import { Vec3 } from 'gl-matrix/dist/esm'
 import {
     createSystem,
     Capsule,
-    PositionComponent,
-    VelocityComponent,
+    positionComponent,
+    velocityComponent,
     ORIGIN,
     Octree,
     World,
@@ -19,8 +19,8 @@ export const collisionsFilter = heroFilter.and(movingEntitiesFilter)
 
 export const collisionSystem = createSystem<{ octree: Octree }>('collisions', ({ octree }) => (world: World) => {
     world.ecs.filterBy(collisionsFilter).forEach((heroEntity) => {
-        const { position } = heroEntity.get(PositionComponent)
-        const { velocity } = heroEntity.get(VelocityComponent)
+        const { position } = heroEntity.get(positionComponent)
+        const { velocity } = heroEntity.get(velocityComponent)
 
         // Capsule(start, end, radius)
         // const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)

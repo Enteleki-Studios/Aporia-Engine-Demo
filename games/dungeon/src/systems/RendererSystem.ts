@@ -14,21 +14,21 @@ import {
 } from 'three'
 
 import {
-    BasicGeometryComponent,
+    basicGeometryComponent,
     DirectionalLight,
-    DirectionalLightComponent,
-    DirectionComponent,
-    ModelComponent,
+    directionalLightComponent,
+    directionComponent,
+    modelComponent,
     TextSprite,
-    AmbientLightComponent,
-    PositionComponent,
-    CameraComponent,
+    ambientLightComponent,
+    positionComponent,
+    cameraComponent,
     ECSFilter,
-    HealthComponent,
-    PointLightComponent,
+    healthComponent,
+    pointLightComponent,
     RendererSystemBase,
     Entity,
-    ColliderComponent,
+    colliderComponent,
     Collider,
     Octree,
     OctreeHelper,
@@ -50,8 +50,8 @@ import type { Renderer } from 'Renderer'
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
 
-async function loadModel(modelComponent: ModelComponent<typeof modelDB>) {
-    const { modelName, castShadow } = modelComponent
+async function loadModel(modelC: ReturnType<typeof modelComponent>) {
+    const { modelName, castShadow } = modelC
 
     const { modelPath, texturePath, scale, translate } = modelDB[modelName]
 
@@ -65,8 +65,8 @@ async function loadModel(modelComponent: ModelComponent<typeof modelDB>) {
     return model
 }
 
-const makePointLight = (pointLightComponent: PointLightComponent) => {
-    const { color, intensity, decay, distance, offset, castShadow } = pointLightComponent
+const makePointLight = (pl: ReturnType<typeof pointLightComponent>) => {
+    const { color, intensity, decay, distance, offset, castShadow } = pl
     const pointLight = new PointLight(color, intensity, distance, decay)
     pointLight.castShadow = castShadow
     pointLight.position.fromArray(offset)
@@ -74,8 +74,8 @@ const makePointLight = (pointLightComponent: PointLightComponent) => {
     return pointLight
 }
 
-const makeHealthSprite = (healthComponent: HealthComponent) => {
-    const healthSprite = new TextSprite(healthComponent.health, {
+const makeHealthSprite = (health: ReturnType<typeof healthComponent>) => {
+    const healthSprite = new TextSprite(health.health, {
         font: 'arial',
         color: 'purple',
     })
@@ -84,13 +84,14 @@ const makeHealthSprite = (healthComponent: HealthComponent) => {
     return healthSprite
 }
 
-const makeBasicGeometry = (geoComponent: BasicGeometryComponent) => {
+const makeBasicGeometry = (geoComponent: ReturnType<typeof basicGeometryComponent>) => {
     const { geometryType, radius, size } = geoComponent
+    // TODO restore discriminated union here
     switch (geometryType) {
         case 'box':
-            return new BoxGeometry(size, size, size)
+            return new BoxGeometry(size ?? 1, size ?? 1, size ?? 1)
         case 'sphere':
-            return new SphereGeometry(radius)
+            return new SphereGeometry(radius ?? 1)
         default:
             return new BoxGeometry(1, 1, 1)
     }
@@ -132,7 +133,7 @@ export class RendererSystem extends RendererSystemBase {
     }
 
     updateHealthIndicator = this.applyToObject((ts, entity) => {
-        const { health } = entity.get(HealthComponent)
+        const { health } = entity.get(healthComponent)
         if (health) {
             if ((ts as TextSprite).text !== health.toString()) {
                 ;(ts as TextSprite).setText(health)
@@ -145,9 +146,9 @@ export class RendererSystem extends RendererSystemBase {
     receiveEntity(entity: Entity, filter: ECSFilter): void {
         switch (filter) {
             case modelFilter: {
-                const modelComponent = entity.get(ModelComponent)
-                modelComponent.isLoading = true
-                loadModel(modelComponent)
+                const mc = entity.get(modelComponent)
+                mc.isLoading = true
+                loadModel(mc)
                     .then((resource) => {
                         this.addObject(entity, 'model', resource)
                         const box = new Box3().setFromObject(resource)
@@ -157,8 +158,8 @@ export class RendererSystem extends RendererSystemBase {
                             healthSprite.position.y = box.max.y + 0.15
                         }
 
-                        modelComponent.resource = resource
-                        modelComponent.isLoading = false
+                        // mc.resource = resource
+                        mc.isLoading = false
                     })
                     .catch(() => {
                         /**/
@@ -166,7 +167,7 @@ export class RendererSystem extends RendererSystemBase {
                 break
             }
             case directionalLightFilter: {
-                const { intensity } = entity.get(DirectionalLightComponent)
+                const { intensity } = entity.get(directionalLightComponent)
                 const directionalLight = new DirectionalLight(0xffffff, intensity)
                 this.addObject(entity, 'directionalLight', directionalLight)
                 this.addObject(entity, 'directionalLightTarget', directionalLight.target)
@@ -175,24 +176,24 @@ export class RendererSystem extends RendererSystemBase {
                 break
             }
             case ambientLightFilter: {
-                const { color, intensity } = entity.get(AmbientLightComponent)
+                const { color, intensity } = entity.get(ambientLightComponent)
                 this.addObject(entity, 'ambient', new AmbientLight(color, intensity))
                 break
             }
             case boxFilter: {
-                const basicGeometryComponent = entity.get(BasicGeometryComponent)
+                const basicGeometry = entity.get(basicGeometryComponent)
 
                 const mesh = new Mesh(
-                    makeBasicGeometry(basicGeometryComponent),
-                    new MeshStandardMaterial({ color: basicGeometryComponent.color }),
+                    makeBasicGeometry(basicGeometry),
+                    new MeshStandardMaterial({ color: basicGeometry.color }),
                 )
                 this.addObject(entity, 'basicGeometry', mesh)
-                this.getGroup(entity).position.fromArray(entity.get(PositionComponent).position)
+                this.getGroup(entity).position.fromArray(entity.get(positionComponent).position)
                 break
             }
             case collidingFilter: {
-                const { collider } = entity.get(ColliderComponent)
-                const { position } = entity.get(PositionComponent)
+                const { collider } = entity.get(colliderComponent)
+                const { position } = entity.get(positionComponent)
 
                 const collisionHelper = new Mesh(
                     makeColliderHelper(collider).translate(0, collider.height / 2, 0),
@@ -217,16 +218,16 @@ export class RendererSystem extends RendererSystemBase {
                 break
         }
 
-        if (entity.has(HealthComponent)) {
+        if (entity.has(healthComponent)) {
             if (!this.hasObject(entity, 'health')) {
-                const healthSprite = makeHealthSprite(entity.get(HealthComponent))
+                const healthSprite = makeHealthSprite(entity.get(healthComponent))
                 this.addObject(entity, 'health', healthSprite)
             }
         }
 
-        if (entity.has(PointLightComponent)) {
+        if (entity.has(pointLightComponent)) {
             if (!this.hasObject(entity, 'pointLight')) {
-                const pointLight = makePointLight(entity.get(PointLightComponent))
+                const pointLight = makePointLight(entity.get(pointLightComponent))
                 this.addObject(entity, 'pointlight', pointLight)
 
                 const pointLightHelper = new PointLightHelper(pointLight, 0.25)
@@ -235,32 +236,32 @@ export class RendererSystem extends RendererSystemBase {
             }
         }
 
-        if (entity.has(PositionComponent)) {
-            this.getGroup(entity).position.fromArray(entity.get(PositionComponent).position)
+        if (entity.has(positionComponent)) {
+            this.getGroup(entity).position.fromArray(entity.get(positionComponent).position)
         }
     }
 
     tick(world: World) {
         world.ecs.filterBy(modelFilter).forEach((entity) => {
-            if (entity.has(HealthComponent)) {
+            if (entity.has(healthComponent)) {
                 this.updateHealthIndicator(entity)
             }
         })
 
         world.ecs.filterBy(directionalLightFilter).forEach((entity) => {
-            const { position, target } = entity.get(DirectionalLightComponent)
-            this.getObject(entity, 'directionalLight')?.position.copy(position)
-            this.getObject(entity, 'directionalLightTarget')?.position.copy(target)
+            const { position, target } = entity.get(directionalLightComponent)
+            this.getObject(entity, 'directionalLight')?.position.fromArray(position)
+            this.getObject(entity, 'directionalLightTarget')?.position.fromArray(target)
         })
 
         world.ecs.filterBy(cameraFilter).forEach((entity) => {
-            const { position, lookAt } = entity.get(CameraComponent)
+            const { position, lookAt } = entity.get(cameraComponent)
             this.renderer.camera.position.fromArray(position)
             this.renderer.camera.lookAt(...lookAt)
         })
 
         world.ecs.filterBy(movingEntitiesFilter).forEach((entity) => {
-            const { position } = entity.get(PositionComponent)
+            const { position } = entity.get(positionComponent)
             this.getGroup(entity).position.fromArray(position)
         })
 
@@ -268,8 +269,8 @@ export class RendererSystem extends RendererSystemBase {
         world.ecs.filterBy(rotatingEntitiesFilter).forEach((entity) => {
             // TODO this if statement is a hack...
             if (!entity.hasTag(tags.hero)) {
-                const { position } = entity.get(PositionComponent)
-                const { direction } = entity.get(DirectionComponent)
+                const { position } = entity.get(positionComponent)
+                const { direction } = entity.get(directionComponent)
                 // this.getGroup(entity).lookAt(position.clone().add(direction))
                 const lookAt: Array3 = [0, 0, 0]
                 Vec3.add(lookAt, position, direction)

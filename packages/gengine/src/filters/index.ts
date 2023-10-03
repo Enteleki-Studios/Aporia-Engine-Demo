@@ -5,7 +5,7 @@ import {
     cameraComponent,
     colliderComponent,
     directionComponent,
-    // directionalLightComponent,
+    directionalLightComponent,
     inputComponent,
     modelComponent,
     pointLightComponent,
@@ -17,12 +17,9 @@ import {
 export const ambientLightFilter = new ECSFilter([ambientLightComponent])
 export const boxFilter = new ECSFilter([basicGeometryComponent, positionComponent])
 export const cameraFilter = new ECSFilter([cameraComponent])
-export const cameraTargetFilter = new ECSFilter(
-    [positionComponent, directionComponent],
-    [tags.cameraTarget],
-)
+export const cameraTargetFilter = new ECSFilter([positionComponent, directionComponent], [tags.cameraTarget])
 export const collidingFilter = new ECSFilter([colliderComponent, positionComponent])
-// export const directionalLightFilter = new ECSFilter([directionalLightComponent])
+export const directionalLightFilter = new ECSFilter([directionalLightComponent])
 export const heroFilter = new ECSFilter([], [tags.hero])
 export const inputFilter = new ECSFilter([inputComponent])
 export const modelFilter = new ECSFilter([modelComponent, positionComponent])

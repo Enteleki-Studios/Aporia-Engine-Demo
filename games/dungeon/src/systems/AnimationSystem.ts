@@ -1,8 +1,8 @@
 import { AnimationMixer, LoopOnce } from 'three'
 import { Vec3 } from 'gl-matrix/dist/esm'
 
-import { ModelComponent, InputComponent, System, ECSFilter, World, HealthComponent, VelocityComponent } from 'gengine'
-import { AnimationComponent } from 'components'
+import { modelComponent, inputComponent, System, ECSFilter, World, healthComponent, velocityComponent } from 'gengine'
+// import { AnimationComponent } from 'components'
 
 import modelDB from 'modelDB'
 

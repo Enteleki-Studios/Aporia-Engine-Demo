@@ -10,10 +10,15 @@ type ComponentProps = {
 
 export type Component<T extends string = string, P = ComponentProps> = { readonly type: T } & P
 
-export type ComponentCreator<T extends string = string, I extends InputProps = InputProps, P extends ComponentProps = ComponentProps> = {
+export type ComponentCreator<
+    T extends string,
+    I,
+    P,
+> = {
     (input: I): Component<T, P>
     readonly type: T
     match(component: Component<string, unknown>): component is Component<T, P>
+    toString(): string
 }
 
 export const createComponent = <T extends string, I extends InputProps, P extends ComponentProps>(
@@ -28,9 +33,13 @@ export const createComponent = <T extends string, I extends InputProps, P extend
     componentCreator.type = type
     componentCreator.match = (component: Component<string, unknown>): component is Component<T, P> =>
         component.type === type
+    componentCreator.toString = () => type
 
     return componentCreator
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyComponentCreator = ComponentCreator<string, any, any>
 
 // Tests
 // const testComponent1 = createComponent('test1', (props: { name?: string }) => ({

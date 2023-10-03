@@ -1,5 +1,3 @@
-import { Vector3, type Object3D } from 'three'
-
 import type { Array3, Keymap } from 'definitions'
 import { createComponent } from 'ecs'
 
@@ -26,125 +24,97 @@ export const ambientLightComponent = createComponent(
 export const cameraComponent = createComponent(
     'cameraComponent',
     ({ position, lookAt }: { position?: Array3; lookAt?: Array3 }) => ({
-        position: position ?? [0, 0, 0],
-        lookAt: lookAt ?? [0, 0, 0],
+        position: position ?? ([0, 0, 0] as Array3),
+        lookAt: lookAt ?? ([0, 0, 0] as Array3),
     }),
 )
 
-// export class DirectionalLightComponent extends Component {
-//     offset: [number, number, number]
-//     intensity: number
-//     position = new Vector3()
-//     target = new Vector3()
-
-//     constructor(offset: [number, number, number], intensity: number) {
-//         super()
-//         this.offset = offset
-//         this.intensity = intensity
-//     }
-// }
-
-export const directionComponent = createComponent(
-    'directionComponent',
-    ({ direction }: { direction?: Array3 }) => ({
-        direction: direction ?? [0, 0, 1],
+export const directionalLightComponent = createComponent(
+    'directionalLightComponent',
+    ({ offset, intensity }: { offset: Array3, intensity: number }) => ({
+        offset,
+        intensity,
+        position: [0, 0, 0] as Array3,
+        target: [0, 0, 0] as Array3,
     }),
 )
 
-// export class EmitterComponent extends Component {
-//     prefabId: string
+export const directionComponent = createComponent('directionComponent', ({ direction }: { direction?: Array3 }) => ({
+    direction: direction ?? ([0, 0, 1] as Array3),
+}))
 
-//     constructor(id: string) {
-//         super()
+export const emitterComponent = createComponent('emitterComponent', ({ prefabId }: { prefabId: string }) => ({
+    prefabId,
+}))
 
-//         this.prefabId = id
-//     }
-// }
+export const healthComponent = createComponent('healthComponent', ({ health }: { health: number }) => ({
+    health,
+}))
 
-// export class HealthComponent extends Component {
-//     health: number
+export const hitboxComponent = createComponent(
+    'hitboxComponent',
 
-//     constructor(health: number) {
-//         super()
-//         this.health = health
-//     }
-// }
+    ({ radius = 1 }: { radius?: number }) => ({
+        radius,
+    }),
+)
 
-// export class HitboxComponent extends Component {
-//     radius
-
-//     constructor(radius = 1) {
-//         super()
-
-//         this.radius = radius
-//     }
-// }
-
-export const inputComponent = createComponent(
-    'inputComponent',
-    (keymap: Keymap) => {
-        const mouse = {
-            pan: {
+export const inputComponent = createComponent('inputComponent', ({ keymap }: { keymap: Keymap }) => {
+    const mouse: {
+        pan: { x: number, y: number },
+        position: { centerRel: { x: number, y: number } },
+    } = {
+        pan: {
+            x: 0,
+            y: 0,
+        },
+        position: {
+            centerRel: {
                 x: 0,
                 y: 0,
             },
-            position: {
-                centerRel: {
-                    x: 0,
-                    y: 0,
-                },
-            },
+        },
+    }
+
+    const input: Record<string, { press: boolean; hold: boolean }> = {}
+
+    Object.keys(keymap).forEach((action) => {
+        input[action] = {
+            press: false,
+            hold: false,
         }
+    })
 
-        const input: Record<string, { press: boolean; hold: boolean }> = {}
-
-        Object.keys(keymap).forEach((action) => {
-            input[action] = {
-                press: false,
-                hold: false,
-            }
-        })
-
-        return {
-            mouse,
-            input,
-        }
-    },
-)
+    return {
+        mouse,
+        input,
+    }
+})
 
 export const modelComponent = createComponent(
     'modelComponent',
     ({ modelName, castShadow }: { modelName: string; castShadow?: boolean }) => ({
         modelName,
         castShadow: castShadow ?? false,
-        isLoading: false,
+        isLoading: false as boolean,
         // resource: null as Object3D | null,
     }),
 )
 
+export const positionComponent = createComponent('positionComponent', ({ position }: { position?: Array3 }) => ({
+    position: position ?? ([0, 0, 0] as Array3),
+}))
 
-export const positionComponent = createComponent(
-    'positionComponent',
-    ({ position }: { position?: Array3 }) => ({
-        position: position ?? [0, 0, 0],
+export const spriteComponent = createComponent(
+    'spriteComponent',
+    ({ url }: { url: string }) => ({
+
+        url,
+        isLoaded: false,
+        isLoading: false,
     }),
 )
 
-// export class SpriteComponent extends Component {
-//     isLoaded = false
-//     isLoading = false
-//     url: string
-
-//     constructor({ url }: { url: string }) {
-//         super()
-
-//         this.url = url
-//     }
-// }
-
-export const velocityComponent = createComponent(
-    'velocityComponent',
-    ({ velocity }: { velocity?: Array3 }) => ({
-        velocity: velocity ?? [0, 0, 0],
-    }),
-)
+export const velocityComponent = createComponent('velocityComponent', ({ velocity }: { velocity?: Array3 }) => ({
+    velocity: velocity ?? ([0, 0, 0] as Array3),
+}))

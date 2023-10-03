@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid'
 
-import type { Component, ComponentCreator } from 'ecs'
+import type { Component, AnyComponentCreator } from 'ecs'
 
 export type EntityId = string
 
@@ -32,19 +32,20 @@ export class Entity {
     }
 
     /** @internal */
-    removeComponent_Unsafe(componentCreator: ComponentCreator) {
+    removeComponent_Unsafe(componentCreator: AnyComponentCreator) {
         this.components.delete(componentCreator.type)
     }
 
-    get<T, I, P>(componentCreator: ComponentCreator<T, I, P>) {
-        return this.components.get(componentCreator.type) as Component<T, P>
+    get<T extends AnyComponentCreator>(componentCreator: T) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return this.components.get(componentCreator.type) as ReturnType<T>
     }
 
-    has(componentCreator: ComponentCreator) {
+    has(componentCreator: AnyComponentCreator) {
         return this.components.has(componentCreator.type)
     }
 
-    hasAll(componentCreators: ComponentCreator[]) {
+    hasAll(componentCreators: AnyComponentCreator[]) {
         return componentCreators.every((c) => this.has(c))
     }
 
