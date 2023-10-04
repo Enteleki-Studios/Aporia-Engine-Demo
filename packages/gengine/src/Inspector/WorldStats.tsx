@@ -36,8 +36,8 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 <span>fps:</span>
                 <span>{stats.fps} ({stats.fpsAgg})</span>
 
-                <span>frame time(ms):</span>
-                <span>{stats.frameTime} ({stats.frameTimeAgg})</span>
+                <span>frame time:</span>
+                <span>{stats.frameTime} ({stats.frameTimeAgg}ms)</span>
 
                 <span>frames:</span>
                 <span>{stats.frames}</span>
