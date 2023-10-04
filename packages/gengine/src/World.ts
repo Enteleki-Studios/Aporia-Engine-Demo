@@ -86,7 +86,7 @@ export class World {
 
         this.ecs.tick(this)
 
-        this.stats.frameTime = performance.measure('Frame length', 'Framestart').duration
+        this.stats.frameTime = Math.floor(performance.measure('Frame length', 'Framestart').duration)
         this.stats.frames += 1
         this.stats.totalRuntime = this.clock.elapsedTime
         this.updateListeners('endframe')

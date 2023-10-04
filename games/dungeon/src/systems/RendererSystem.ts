@@ -132,16 +132,16 @@ export class RendererSystem extends RendererSystemBase {
         this.renderer.registerHelper(this.octreeHelper)
     }
 
-    updateHealthIndicator = this.applyToObject((ts, entity) => {
-        const { health } = entity.get(healthComponent)
-        if (health) {
-            if ((ts as TextSprite).text !== health.toString()) {
-                ;(ts as TextSprite).setText(health)
-            }
-        } else {
-            ts.visible = false
-        }
-    })('health')
+    // updateHealthIndicator = this.applyToObject((ts, entity) => {
+    //     const { health } = entity.get(healthComponent)
+    //     if (health) {
+    //         if ((ts as TextSprite).text !== health.toString()) {
+    //             ;(ts as TextSprite).setText(health)
+    //         }
+    //     } else {
+    //         ts.visible = false
+    //     }
+    // })('health')
 
     receiveEntity(entity: Entity, filter: ECSFilter): void {
         switch (filter) {
@@ -242,11 +242,11 @@ export class RendererSystem extends RendererSystemBase {
     }
 
     tick(world: World) {
-        world.ecs.filterBy(modelFilter).forEach((entity) => {
-            if (entity.has(healthComponent)) {
-                this.updateHealthIndicator(entity)
-            }
-        })
+        // world.ecs.filterBy(modelFilter).forEach((entity) => {
+        //     if (entity.has(healthComponent)) {
+        //         this.updateHealthIndicator(entity)
+        //     }
+        // })
 
         world.ecs.filterBy(directionalLightFilter).forEach((entity) => {
             const { position, target } = entity.get(directionalLightComponent)

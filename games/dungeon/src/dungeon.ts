@@ -100,6 +100,7 @@ world.ecs.registerFilters([
 ])
 
 world.ecs.registerSystems([
+    new Systems.RendererSystem(renderer, octree),
     inputSystem({ inputManager }),
     // new EmitterSystem({
     //     ball: () =>
@@ -123,7 +124,6 @@ world.ecs.registerSystems([
     firstPersonCameraSystem(),
     // new SunSystem(),
     // new Systems.AnimationSystem(),
-    new Systems.RendererSystem(renderer, octree),
 ])
 
 export const middleware: Middleware = () => (next) => (action: Action) => {
@@ -187,12 +187,12 @@ world.ecs.registerEntity(
                 coolDown: 0.5,
                 damage: 5,
             }),
-            pointLightComponent({
-                color: 0xffeeff,
-                intensity: 3,
-                offset: [0, 2, 0],
-                castShadow: true,
-            }),
+            // pointLightComponent({
+            //     color: 0xffeeff,
+            //     intensity: 3,
+            //     offset: [0, 2, 0],
+            //     castShadow: true,
+            // }),
         )
         .tag(tags.hero, tags.cameraTarget, tags.sunTarget),
 )

@@ -139,7 +139,7 @@ export class ECS {
             } else {
                 s(world)
             }
-            this.stats.systemsStats[i].runtime = performance.measure(`${name} finish`, name).duration
+            this.stats.systemsStats[i].runtime = Math.floor(performance.measure(`${name} finish`, name).duration)
         })
     }
 }
