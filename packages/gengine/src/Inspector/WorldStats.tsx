@@ -1,8 +1,11 @@
 import React, { Fragment, useEffect } from 'react'
+import { PiEngineDuotone, PiGraphDuotone, PiTimerDuotone } from 'react-icons/pi'
 
 import { secondsToClockString } from './utils'
 
 import { useForceUpdate } from 'reactjs/hooks/useForceUpdate'
+
+import { Icon } from 'Inspector/Icon'
 import { World } from '../World'
 
 type WorldStatsProps = {
@@ -25,13 +28,16 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
     return (
         <section className="WorldStats">
             <h3>Stats</h3>
-            <h4>Engine</h4>
+            <h4>
+                <Icon icon={<PiEngineDuotone />} />
+                Engine
+            </h4>
             <div className="table">
                 <span>fps:</span>
-                <span>{stats.fpsAgg}</span>
+                <span>{stats.fps} ({stats.fpsAgg})</span>
 
                 <span>frame time(ms):</span>
-                <span>{stats.frameTime}</span>
+                <span>{stats.frameTime} ({stats.frameTimeAgg})</span>
 
                 <span>frames:</span>
                 <span>{stats.frames}</span>
@@ -39,7 +45,10 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 <span>runtime:</span>
                 <span>{secondsToClockString(stats.totalRuntime, 3)}</span>
             </div>
-            <h4>ECS</h4>
+            <h4>
+                <Icon icon={<PiGraphDuotone />} />
+                ECS
+            </h4>
             <div className="table">
                 <span>entities:</span>
                 <span>{stats.ecs.entities}</span>
@@ -53,7 +62,10 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 <span>filters:</span>
                 <span>{stats.ecs.filters}</span>
             </div>
-            <h4>System runtimes</h4>
+            <h4>
+                <Icon icon={<PiTimerDuotone />} />
+                System runtimes
+            </h4>
             <div className="table">
                 {stats.ecs.systemsStats.map((sysStat) => (
                     <Fragment key={sysStat.name}>

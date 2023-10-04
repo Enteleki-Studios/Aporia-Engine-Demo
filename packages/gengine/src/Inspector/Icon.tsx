@@ -3,26 +3,22 @@ import React from 'react'
 import './Icon.scss'
 
 type IconProps = {
-    code: string
+    icon: React.ReactNode
     onClick?: () => void
     title?: string
 }
 
-export const Icon = ({ code, onClick, title }: IconProps) => {
+export const Icon = ({ icon, onClick, title }: IconProps) => {
     if (onClick) {
         return (
             <button className="Icon" onClick={onClick} type="button" title={title}>
-                <svg>
-                    <image xlinkHref={`/resources/icons/${code}.svg`} />
-                </svg>
+                {icon}
             </button>
         )
     }
     return (
         <span className="Icon">
-            <svg>
-                <image xlinkHref={`/resources/icons/${code}.svg`} />
-            </svg>
+            {icon}
         </span>
     )
 }

@@ -4,8 +4,8 @@ $white: #fefefe;
 $black: #121212;
 $darkBlue: #282a36;
 $lighterBlue: #3d3f4a;
-$darkGrey: #444;
-$grey: #666;
+$darkGrey: #43454f;
+$grey: #5e5f68;
 
 $colors: (
     default: (
@@ -51,7 +51,6 @@ $colors: (
         background-color: color(panel, background);
         color: color(panel, foreground);
         font-family: monospace;
-        border: 1px solid color(panel, border);
     }
 
     .header {
@@ -60,12 +59,17 @@ $colors: (
         background-color: #141414;
         font-size: 0.75rem;
         display: flex;
+        gap: 3rem;
 
         .title {
             flex: 1;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
         }
         .toolbar {
             display: flex;
+            gap: 0.25rem;
         }
     }
     .body {
@@ -85,7 +89,10 @@ $colors: (
             h4 {
                 font-size: 0.75rem;
                 padding: 0;
-                margin: 0.5rem 0 0 0;
+                margin: 0.75rem 0 0 0;
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
             }
             .table {
                 display: grid;

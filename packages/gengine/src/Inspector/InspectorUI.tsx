@@ -1,5 +1,6 @@
 import React, { FormEvent, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { PiGameControllerFill, PiPlayFill, PiSkipForwardFill, PiStopFill } from 'react-icons/pi'
 
 import type { World } from 'World'
 import { DebugMode, DebugModes, ENGINE_VERSION } from 'definitions'
@@ -46,11 +47,14 @@ export const InspectorUI = ({ getWorld }: InspectorUIProps) => {
         <div className="Inspector">
             <div className="window">
                 <div className="header">
-                    <div className="title">{title}</div>
+                    <div className="title">
+                        <Icon icon={<PiGameControllerFill />} />
+                        {title}
+                    </div>
                     <div className="toolbar">
-                        <Icon code="play" onClick={() => world.start()} title="Start world" />
-                        <Icon code="step" onClick={() => world.step()} title="Play one frame" />
-                        <Icon code="stop" onClick={() => world.stop()} title="Stop world" />
+                        <Icon icon={<PiPlayFill />} onClick={() => world.start()} title="Start world" />
+                        <Icon icon={<PiSkipForwardFill />} onClick={() => world.step()} title="Play one frame" />
+                        <Icon icon={<PiStopFill />} onClick={() => world.stop()} title="Stop world" />
                     </div>
                 </div>
                 <div className="body">
