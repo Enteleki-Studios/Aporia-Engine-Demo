@@ -10,11 +10,7 @@ type ComponentProps = {
 
 export type Component<T extends string = string, P = ComponentProps> = { readonly type: T } & P
 
-export type ComponentCreator<
-    T extends string,
-    I,
-    P,
-> = {
+export type ComponentCreator<T extends string, I, P> = {
     (input: I): Component<T, P>
     readonly type: T
     match(component: Component<string, unknown>): component is Component<T, P>

@@ -31,7 +31,7 @@ export const cameraComponent = createComponent(
 
 export const directionalLightComponent = createComponent(
     'directionalLightComponent',
-    ({ offset, intensity }: { offset: Array3, intensity: number }) => ({
+    ({ offset, intensity }: { offset: Array3; intensity: number }) => ({
         offset,
         intensity,
         position: [0, 0, 0] as Array3,
@@ -61,8 +61,8 @@ export const hitboxComponent = createComponent(
 
 export const inputComponent = createComponent('inputComponent', ({ keymap }: { keymap: Keymap }) => {
     const mouse: {
-        pan: { x: number, y: number },
-        position: { centerRel: { x: number, y: number } },
+        pan: { x: number; y: number }
+        position: { centerRel: { x: number; y: number } }
     } = {
         pan: {
             x: 0,
@@ -105,15 +105,11 @@ export const positionComponent = createComponent('positionComponent', ({ positio
     position: position ?? ([0, 0, 0] as Array3),
 }))
 
-export const spriteComponent = createComponent(
-    'spriteComponent',
-    ({ url }: { url: string }) => ({
-
-        url,
-        isLoaded: false,
-        isLoading: false,
-    }),
-)
+export const spriteComponent = createComponent('spriteComponent', ({ url }: { url: string }) => ({
+    url,
+    isLoaded: false,
+    isLoading: false,
+}))
 
 export const velocityComponent = createComponent('velocityComponent', ({ velocity }: { velocity?: Array3 }) => ({
     velocity: velocity ?? ([0, 0, 0] as Array3),

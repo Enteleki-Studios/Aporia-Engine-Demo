@@ -199,15 +199,17 @@ world.ecs.registerEntity(
 
 // Shibs
 world.ecs.registerEntity(
-    new Entity().addComponents(
-        // new Components.AnimationComponent('idle'),
-        modelComponent({ modelName: 'shiba', castShadow: true }),
-        positionComponent({ position: [1, 0, 2] }),
-        healthComponent({ health: 20 }),
-        directionComponent({}),
-        velocityComponent({}),
-        // new HitboxComponent(0.25),
-    ).tag(tags.ai),
+    new Entity()
+        .addComponents(
+            // new Components.AnimationComponent('idle'),
+            modelComponent({ modelName: 'shiba', castShadow: true }),
+            positionComponent({ position: [1, 0, 2] }),
+            healthComponent({ health: 20 }),
+            directionComponent({}),
+            velocityComponent({}),
+            // new HitboxComponent(0.25),
+        )
+        .tag(tags.ai),
 )
 
 // // Slime
@@ -226,12 +228,14 @@ items.forEach((item, i) => {
         new Entity().addComponents(
             modelComponent({ modelName: item, castShadow: true }),
             positionComponent({ position: [i * 3 - 12, 0, 8] }),
-            colliderComponent({ collider: {
-                type: 'cylinder',
-                radius: modelDB[item].radius ?? 1,
-                height: 2,
-                resolution: 10,
-            } }),
+            colliderComponent({
+                collider: {
+                    type: 'cylinder',
+                    radius: modelDB[item].radius ?? 1,
+                    height: 2,
+                    resolution: 10,
+                },
+            }),
         ),
     )
 })
@@ -241,12 +245,14 @@ world.ecs.registerEntity(
     new Entity().addComponents(
         modelComponent({ modelName: 'crate' }),
         positionComponent({ position: [5, 0, 5] }),
-        colliderComponent({ collider: {
-            type: 'box',
-            width: 0.75,
-            height: 0.75,
-            depth: 0.75,
-        } }),
+        colliderComponent({
+            collider: {
+                type: 'box',
+                width: 0.75,
+                height: 0.75,
+                depth: 0.75,
+            },
+        }),
     ),
 )
 
@@ -295,10 +301,7 @@ for (let i = 0; i < 32; i += 2) {
 const makePos = (): [number, number, number] => [Math.random() * 30 - 15, 0, Math.random() * 30 - 15]
 for (let i = 0; i < 200; i += 1) {
     world.ecs.registerEntity(
-        new Entity().addComponents(
-            modelComponent({ modelName: 'grass' }),
-            positionComponent({ position: makePos() }),
-        ),
+        new Entity().addComponents(modelComponent({ modelName: 'grass' }), positionComponent({ position: makePos() })),
     )
 }
 
