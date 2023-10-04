@@ -1,32 +1,41 @@
 type SerializablePrimitives = string | number | boolean
 
 type InputProps = {
-    [K: string]: undefined | SerializablePrimitives | SerializablePrimitives[] | InputProps
+    [K: string]: undefined | null | SerializablePrimitives | SerializablePrimitives[] | InputProps
 }
 
 type ComponentProps = {
-    [K: string]: SerializablePrimitives | SerializablePrimitives[] | ComponentProps
+    [K: string]: null | SerializablePrimitives | SerializablePrimitives[] | ComponentProps
 }
 
-type Component<T extends string = string, P = ComponentProps> = { readonly type: T } & P
+export type Component<T extends string = string, P = ComponentProps> = { readonly type: T } & P
 
-type ComponentCreator<T extends string, I extends InputProps, P extends ComponentProps> = {
+export type ComponentCreator<T extends string, I, P> = {
     (input: I): Component<T, P>
     readonly type: T
     match(component: Component<string, unknown>): component is Component<T, P>
+    toString(): string
 }
 
-export const createComponent = <T extends string, I extends InputProps, P extends ComponentProps>(type: T, prepareComponent: (input: I) => P): ComponentCreator<T, I, P> => {
+export const createComponent = <T extends string, I extends InputProps, P extends ComponentProps>(
+    type: T,
+    prepareComponent: (input: I) => P,
+): ComponentCreator<T, I, P> => {
     const componentCreator = (args: I) => ({
         type,
         ...prepareComponent(args),
     })
 
     componentCreator.type = type
-    componentCreator.match = (component: Component<string, unknown>): component is Component<T, P> => component.type === type
+    componentCreator.match = (component: Component<string, unknown>): component is Component<T, P> =>
+        component.type === type
+    componentCreator.toString = () => type
 
     return componentCreator
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyComponentCreator = ComponentCreator<string, any, any>
 
 // Tests
 // const testComponent1 = createComponent('test1', (props: { name?: string }) => ({

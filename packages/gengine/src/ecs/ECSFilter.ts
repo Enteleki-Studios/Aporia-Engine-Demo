@@ -1,16 +1,15 @@
-import type { AnyComponentConstructor } from './Component'
-import type { Entity } from './Entity'
+import type { Entity, AnyComponentCreator } from 'ecs'
 
 export class ECSFilter {
-    private readonly components: AnyComponentConstructor[]
+    private readonly components: AnyComponentCreator[]
     private readonly tags: string[]
 
-    constructor(components: AnyComponentConstructor[] = [], tags: string[] = []) {
+    constructor(components: AnyComponentCreator[] = [], tags: string[] = []) {
         this.components = [...new Set(components)].sort() // Remove duplicates
         this.tags = [...new Set(tags)].sort()
     }
 
-    static of(components?: AnyComponentConstructor[], tags?: string[]) {
+    static of(components?: AnyComponentCreator[], tags?: string[]) {
         return new ECSFilter(components, tags)
     }
 
@@ -18,7 +17,7 @@ export class ECSFilter {
         return entity.hasAll(this.components) && entity.hasTags(this.tags)
     }
 
-    with(components: AnyComponentConstructor[] = [], tags: string[] = []) {
+    with(components: AnyComponentCreator[] = [], tags: string[] = []) {
         return ECSFilter.of([...this.components, ...components], [...this.tags, ...tags])
     }
 
@@ -27,6 +26,6 @@ export class ECSFilter {
     }
 
     toString() {
-        return `([${this.components.map((c) => c.name).join(', ')}][${this.tags.join(', ')}])`
+        return `([${this.components.map((c) => c.type).join(', ')}][${this.tags.join(', ')}])`
     }
 }

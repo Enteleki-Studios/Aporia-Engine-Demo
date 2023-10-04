@@ -1,170 +1,116 @@
 import type { Array3, Keymap } from 'definitions'
-import { Vector3, type Object3D } from 'three'
-import { Component } from '../ecs'
+import { createComponent } from 'ecs'
 
 export const tags = {
     hero: 'hero',
+    ai: 'ai',
+    cameraTarget: 'cameraTarget',
+    sunTarget: 'sunTarget',
 } as const
 
-export class AIComponent extends Component {}
-export class CameraTargetComponent extends Component {}
-export class SunTargetComponent extends Component {}
+export { pointLightComponent } from './PointLightComponent'
+export { basicGeometryComponent } from './BasicGeometryComponent'
+export { colliderComponent, type Collider } from './ColliderComponent'
+export { damagingComponent } from './DamagingComponent'
 
-export class AmbientLightComponent extends Component {
-    color: number
-    intensity: number
+export const ambientLightComponent = createComponent(
+    'ambientLightComponent',
+    ({ color, intensity }: { color: number; intensity: number }) => ({
+        color,
+        intensity,
+    }),
+)
 
-    constructor({ color, intensity }: { color: number; intensity: number }) {
-        super()
+export const cameraComponent = createComponent(
+    'cameraComponent',
+    ({ position, lookAt }: { position?: Array3; lookAt?: Array3 }) => ({
+        position: position ?? ([0, 0, 0] as Array3),
+        lookAt: lookAt ?? ([0, 0, 0] as Array3),
+    }),
+)
 
-        this.color = color
-        this.intensity = intensity
-    }
-}
+export const directionalLightComponent = createComponent(
+    'directionalLightComponent',
+    ({ offset, intensity }: { offset: Array3; intensity: number }) => ({
+        offset,
+        intensity,
+        position: [0, 0, 0] as Array3,
+        target: [0, 0, 0] as Array3,
+    }),
+)
 
-export { BasicGeometryComponent } from './BasicGeometryComponent'
+export const directionComponent = createComponent('directionComponent', ({ direction }: { direction?: Array3 }) => ({
+    direction: direction ?? ([0, 0, 1] as Array3),
+}))
 
-export class CameraComponent extends Component {
-    position: Array3
-    lookAt: Array3
+export const emitterComponent = createComponent('emitterComponent', ({ prefabId }: { prefabId: string }) => ({
+    prefabId,
+}))
 
-    constructor({ position, lookAt }: { position?: Array3; lookAt?: Array3 } = {}) {
-        super()
+export const healthComponent = createComponent('healthComponent', ({ health }: { health: number }) => ({
+    health,
+}))
 
-        this.position = position ?? [0, 0, 0]
-        this.lookAt = lookAt ?? [0, 0, 0]
-    }
-}
+export const hitboxComponent = createComponent(
+    'hitboxComponent',
 
-export { ColliderComponent, type Collider } from './ColliderComponent'
-export { DamagingComponent } from './DamagingComponent'
+    ({ radius = 1 }: { radius?: number }) => ({
+        radius,
+    }),
+)
 
-export class DirectionalLightComponent extends Component {
-    offset: [number, number, number]
-    intensity: number
-    position = new Vector3()
-    target = new Vector3()
-
-    constructor(offset: [number, number, number], intensity: number) {
-        super()
-        this.offset = offset
-        this.intensity = intensity
-    }
-}
-export { DirectionComponent } from './DirectionComponent'
-
-export class EmitterComponent extends Component {
-    prefabId: string
-
-    constructor(id: string) {
-        super()
-
-        this.prefabId = id
-    }
-}
-
-export class HealthComponent extends Component {
-    health: number
-
-    constructor(health: number) {
-        super()
-        this.health = health
-    }
-}
-
-export class HitboxComponent extends Component {
-    radius
-
-    constructor(radius = 1) {
-        super()
-
-        this.radius = radius
-    }
-}
-
-export class InputComponent extends Component {
-    input: Record<string, { press: boolean; hold: boolean }> = {}
-    mouse: {
+export const inputComponent = createComponent('inputComponent', ({ keymap }: { keymap: Keymap }) => {
+    const mouse: {
+        pan: { x: number; y: number }
+        position: { centerRel: { x: number; y: number } }
+    } = {
         pan: {
-            x: number
-            y: number
-        }
+            x: 0,
+            y: 0,
+        },
         position: {
             centerRel: {
-                x: number
-                y: number
-            }
-        }
-    }
-
-    constructor(keymap: Keymap) {
-        super()
-
-        this.mouse = {
-            pan: {
                 x: 0,
                 y: 0,
             },
-            position: {
-                centerRel: {
-                    x: 0,
-                    y: 0,
-                },
-            },
+        },
+    }
+
+    const input: Record<string, { press: boolean; hold: boolean }> = {}
+
+    Object.keys(keymap).forEach((action) => {
+        input[action] = {
+            press: false,
+            hold: false,
         }
+    })
 
-        Object.keys(keymap).forEach((action) => {
-            this.input[action] = {
-                press: false,
-                hold: false,
-            }
-        })
+    return {
+        mouse,
+        input,
     }
-}
+})
 
-export class ModelComponent<ModelDB> extends Component {
-    readonly modelName: keyof ModelDB
-    isLoading = false
-    castShadow: boolean
-    resource: null | Object3D = null
+export const modelComponent = createComponent(
+    'modelComponent',
+    ({ modelName, castShadow }: { modelName: string; castShadow?: boolean }) => ({
+        modelName,
+        castShadow: castShadow ?? false,
+        isLoading: false as boolean,
+        // resource: null as Object3D | null,
+    }),
+)
 
-    constructor({ modelName, castShadow }: { modelName: keyof ModelDB; castShadow?: boolean }) {
-        super()
+export const positionComponent = createComponent('positionComponent', ({ position }: { position?: Array3 }) => ({
+    position: position ?? ([0, 0, 0] as Array3),
+}))
 
-        this.modelName = modelName
-        this.castShadow = castShadow ?? false
-    }
-}
-export { PointLightComponent } from './PointLightComponent'
+export const spriteComponent = createComponent('spriteComponent', ({ url }: { url: string }) => ({
+    url,
+    isLoaded: false,
+    isLoading: false,
+}))
 
-export class PositionComponent extends Component {
-    position: Array3
-
-    constructor({ position }: { position?: Array3 } = {}) {
-        super()
-
-        this.position = position ?? [0, 0, 0]
-    }
-}
-
-export class SpriteComponent extends Component {
-    isLoaded = false
-    isLoading = false
-    url: string
-
-    constructor({ url }: { url: string }) {
-        super()
-
-        this.url = url
-    }
-}
-
-export class VelocityComponent extends Component {
-    velocity: Array3
-
-    constructor({ velocity }: { velocity?: Array3 } = {}) {
-        super()
-
-        this.velocity = velocity ?? [0, 0, 0]
-    }
-}
+export const velocityComponent = createComponent('velocityComponent', ({ velocity }: { velocity?: Array3 }) => ({
+    velocity: velocity ?? ([0, 0, 0] as Array3),
+}))

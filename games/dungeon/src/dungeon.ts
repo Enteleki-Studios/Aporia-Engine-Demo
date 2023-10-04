@@ -1,37 +1,33 @@
 import { Action, Middleware } from '@reduxjs/toolkit'
 import {
-    AmbientLightComponent,
-    BasicGeometryComponent,
-    HealthComponent,
+    ambientLightComponent,
+    basicGeometryComponent,
+    healthComponent,
     // DirectionalLightComponent,
-    HeroComponent,
     InputManager,
-    ModelComponent,
+    modelComponent,
     DEFAULT_KEYMAP,
     inputSystem,
-    InputComponent,
-    PositionComponent,
-    HitboxComponent,
+    inputComponent,
+    positionComponent,
+    hitboxComponent,
     // ThirdPersonCameraSystem,
-    CameraComponent,
-    CameraTargetComponent,
-    VelocityComponent,
-    SunTargetComponent,
+    cameraComponent,
+    velocityComponent,
     // SunSystem,
     World,
     // TwinStickMovementSystem,
     applyVelocitySystem,
     // DamageSystem,
-    DamagingComponent,
-    PointLightComponent,
+    damagingComponent,
+    pointLightComponent,
     inspector,
     firstPersonCameraSystem,
-    DirectionComponent,
+    directionComponent,
     firstPersonMovementSystem,
-    EmitterComponent,
+    // emitterComponent,
     // EmitterSystem,
-    ColliderComponent,
-    AIComponent,
+    colliderComponent,
     Entity,
     movingEntitiesFilter,
     modelFilter,
@@ -53,7 +49,7 @@ import {
 // import { AppDispatch } from 'dungeon/store'
 
 import * as Systems from 'systems'
-import * as Components from 'components'
+// import * as Components from 'components'
 import { Renderer } from 'Renderer'
 // import tilesGenerator from 'utils/tilesGenerator'
 
@@ -141,11 +137,11 @@ export const middleware: Middleware = () => (next) => (action: Action) => {
 // Lighting
 world.ecs.registerEntity(
     new Entity().addComponents(
-        new AmbientLightComponent({
+        ambientLightComponent({
             color: 0xf4e99b,
             intensity: 0.05,
         }),
-        new PointLightComponent({
+        pointLightComponent({
             color: 0xf4e99b,
             intensity: 3,
             offset: [0, 2, 0],
@@ -162,59 +158,58 @@ world.ecs.registerEntity(
 // Test stuff
 world.ecs.registerEntity(
     new Entity().addComponents(
-        new BasicGeometryComponent({ geometryType: 'box' }),
-        new PositionComponent({ position: [0, 1, 5] }),
-        new EmitterComponent('ball'),
+        basicGeometryComponent({ geometryType: 'box' }),
+        positionComponent({ position: [0, 1, 5] }),
+        // emitterComponent('ball'),
     ),
 )
 
 // Camera
-world.ecs.registerEntity(new Entity().addComponents(new CameraComponent()))
+world.ecs.registerEntity(new Entity().addComponents(cameraComponent({})))
 
 // Player
 world.ecs.registerEntity(
     new Entity()
         .addComponents(
-            new Components.AnimationComponent('idle'),
-            new Components.CollidableComponent(),
-            new CameraTargetComponent(),
-            new DirectionComponent(),
-            new SunTargetComponent(),
-            new HitboxComponent(modelDB.wizard.radius),
-            new HealthComponent(20),
-            new InputComponent(DEFAULT_KEYMAP),
-            // new ModelComponent<typeof modelDB>({ modelName: 'wizard' }),
-            new PositionComponent({ position: [0, 0, -1] }),
-            new VelocityComponent(),
-            new DamagingComponent({
+            // new Components.AnimationComponent('idle'),
+            // new Components.CollidableComponent(),
+            directionComponent({}),
+            hitboxComponent({ radius: 1 }),
+            healthComponent({ health: 20 }),
+            inputComponent({ keymap: DEFAULT_KEYMAP }),
+            // modelComponent({ modelName: 'wizard' }),
+            positionComponent({ position: [0, 0, -1] }),
+            velocityComponent({}),
+            damagingComponent({
                 radius: 1,
                 theta: 2,
                 spoolUp: 0.25,
                 coolDown: 0.5,
                 damage: 5,
             }),
-            new PointLightComponent({
+            pointLightComponent({
                 color: 0xffeeff,
                 intensity: 3,
                 offset: [0, 2, 0],
                 castShadow: true,
             }),
         )
-        .tag(tags.hero),
+        .tag(tags.hero, tags.cameraTarget, tags.sunTarget),
 )
 
 // Shibs
 world.ecs.registerEntity(
-    new Entity().addComponents(
-        new Components.AnimationComponent('idle'),
-        new ModelComponent({ modelName: 'shiba', castShadow: true }),
-        new PositionComponent({ position: [1, 0, 2] }),
-        new HealthComponent(20),
-        new VelocityComponent(),
-        new AIComponent(),
-        new DirectionComponent(),
-        // new HitboxComponent(0.25),
-    ),
+    new Entity()
+        .addComponents(
+            // new Components.AnimationComponent('idle'),
+            modelComponent({ modelName: 'shiba', castShadow: true }),
+            positionComponent({ position: [1, 0, 2] }),
+            healthComponent({ health: 20 }),
+            directionComponent({}),
+            velocityComponent({}),
+            // new HitboxComponent(0.25),
+        )
+        .tag(tags.ai),
 )
 
 // // Slime
@@ -231,13 +226,15 @@ const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart']
 items.forEach((item, i) => {
     world.ecs.registerEntity(
         new Entity().addComponents(
-            new ModelComponent({ modelName: item, castShadow: true }),
-            new PositionComponent({ position: [i * 3 - 12, 0, 8] }),
-            new ColliderComponent({
-                type: 'cylinder',
-                radius: modelDB[item].radius ?? 1,
-                height: 2,
-                resolution: 10,
+            modelComponent({ modelName: item, castShadow: true }),
+            positionComponent({ position: [i * 3 - 12, 0, 8] }),
+            colliderComponent({
+                collider: {
+                    type: 'cylinder',
+                    radius: modelDB[item].radius ?? 1,
+                    height: 2,
+                    resolution: 10,
+                },
             }),
         ),
     )
@@ -246,13 +243,15 @@ items.forEach((item, i) => {
 // Crate
 world.ecs.registerEntity(
     new Entity().addComponents(
-        new ModelComponent({ modelName: 'crate' }),
-        new PositionComponent({ position: [5, 0, 5] }),
-        new ColliderComponent({
-            type: 'box',
-            width: 0.75,
-            height: 0.75,
-            depth: 0.75,
+        modelComponent({ modelName: 'crate' }),
+        positionComponent({ position: [5, 0, 5] }),
+        colliderComponent({
+            collider: {
+                type: 'box',
+                width: 0.75,
+                height: 0.75,
+                depth: 0.75,
+            },
         }),
     ),
 )
@@ -262,9 +261,9 @@ const torches = [9.75, 3.25, -3.25]
 torches.forEach((posZ) => {
     world.ecs.registerEntity(
         new Entity().addComponents(
-            new ModelComponent({ modelName: 'torchWall' }),
-            new PositionComponent({ position: [-16, 1.5, posZ] }),
-            new PointLightComponent({
+            modelComponent({ modelName: 'torchWall' }),
+            positionComponent({ position: [-16, 1.5, posZ] }),
+            pointLightComponent({
                 color: 0xff6700,
                 intensity: 3,
                 offset: [0.75, 0.5, 0],
@@ -276,14 +275,14 @@ torches.forEach((posZ) => {
 // Gold chest
 world.ecs.registerEntity(
     new Entity().addComponents(
-        new ModelComponent({ modelName: 'chest_gold' }),
-        new PositionComponent({ position: [-6, 0, -6] }),
-        new PointLightComponent({
+        modelComponent({ modelName: 'chest_gold' }),
+        positionComponent({ position: [-6, 0, -6] }),
+        pointLightComponent({
             color: 0xffd700,
             intensity: 1,
             offset: [0.5, 0.7, 0],
         }),
-        new ColliderComponent({ type: 'box', width: 1, height: 1, depth: 1 }),
+        colliderComponent({ collider: { type: 'box', width: 1, height: 1, depth: 1 } }),
     ),
 )
 
@@ -291,9 +290,9 @@ world.ecs.registerEntity(
 for (let i = 0; i < 32; i += 2) {
     world.ecs.registerEntity(
         new Entity().addComponents(
-            new ModelComponent({ modelName: 'stoneWallTop' }),
-            new PositionComponent({ position: [-16, 0, i - 15] }),
-            new ColliderComponent({ type: 'box', width: 0.25, height: 2, depth: 2 }),
+            modelComponent({ modelName: 'stoneWallTop' }),
+            positionComponent({ position: [-16, 0, i - 15] }),
+            colliderComponent({ collider: { type: 'box', width: 0.25, height: 2, depth: 2 } }),
         ),
     )
 }
@@ -302,10 +301,7 @@ for (let i = 0; i < 32; i += 2) {
 const makePos = (): [number, number, number] => [Math.random() * 30 - 15, 0, Math.random() * 30 - 15]
 for (let i = 0; i < 200; i += 1) {
     world.ecs.registerEntity(
-        new Entity().addComponents(
-            new ModelComponent({ modelName: 'grass' }),
-            new PositionComponent({ position: makePos() }),
-        ),
+        new Entity().addComponents(modelComponent({ modelName: 'grass' }), positionComponent({ position: makePos() })),
     )
 }
 

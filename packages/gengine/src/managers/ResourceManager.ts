@@ -1,6 +1,6 @@
 import { TextureLoader, SpriteMaterial, Sprite, Object3D } from 'three'
 
-import type { SpriteComponent } from '../components/SpriteComponent'
+import type { spriteComponent } from 'components'
 
 class RM {
     private resources: {
@@ -24,17 +24,17 @@ class RM {
         return this.resources[entityId]
     }
 
-    loadSprite(entityId: string, spriteComponent: SpriteComponent) {
-        const { url } = spriteComponent
+    loadSprite(entityId: string, sprite: ReturnType<typeof spriteComponent>) {
+        const { url } = sprite
         this.loading[entityId] = true
 
         const spriteTex = new TextureLoader().load(url, () => {
             this.loading[entityId] = false
         })
         const spriteMat = new SpriteMaterial({ map: spriteTex })
-        const sprite = new Sprite(spriteMat)
+        const spriteObj = new Sprite(spriteMat)
 
-        this.resources[entityId] = sprite
+        this.resources[entityId] = spriteObj
 
         return sprite
     }

@@ -1,9 +1,6 @@
 import type { World } from '../World'
 
-import type { Component } from './Component'
-import { ECSFilter } from './ECSFilter'
-import { Entity, EntityId } from './Entity'
-import { System } from './System'
+import type { Component, ECSFilter, Entity, EntityId, System } from 'ecs'
 
 type SystemStatsType = {
     /** System name pulled from its constructor */

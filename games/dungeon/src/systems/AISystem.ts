@@ -1,31 +1,31 @@
 import {
     type World,
     ECSFilter,
-    AIComponent,
-    PositionComponent,
+    positionComponent,
     Array3,
-    VelocityComponent,
-    DirectionComponent,
+    velocityComponent,
+    directionComponent,
     heroFilter,
     createSystem,
+    tags,
 } from 'gengine'
 import { Vec3 } from 'gl-matrix/dist/esm'
 
 const targetLocation: Array3 = [0, 0, 0]
 
-export const aiSystemFilter = new ECSFilter([AIComponent, DirectionComponent, PositionComponent, VelocityComponent])
+export const aiSystemFilter = new ECSFilter([directionComponent, positionComponent, velocityComponent], [tags.ai])
 
 export const aiSystem = createSystem('ai', () => (world: World) => {
     world.ecs.filterBy(heroFilter).forEach((hero) => {
         // TODO assumes one hero
-        const { position } = hero.get(PositionComponent)
+        const { position } = hero.get(positionComponent)
         Vec3.copy(targetLocation, position)
     })
 
     world.ecs.filterBy(aiSystemFilter).forEach((aiEntity) => {
-        const { position } = aiEntity.get(PositionComponent)
-        const { velocity } = aiEntity.get(VelocityComponent)
-        const { direction } = aiEntity.get(DirectionComponent)
+        const { position } = aiEntity.get(positionComponent)
+        const { velocity } = aiEntity.get(velocityComponent)
+        const { direction } = aiEntity.get(directionComponent)
 
         const isMoving = Vec3.squaredLength(velocity) > 0
 

@@ -1,13 +1,13 @@
 import { v4 as uuid } from 'uuid'
 
-import { Component, ComponentConstructor, AnyComponentConstructor } from 'ecs/Component'
+import type { Component, AnyComponentCreator } from 'ecs'
 
 export type EntityId = string
 
 export class Entity {
     id: EntityId
     onAddComponents: ((components: Component[]) => void) | undefined
-    private components = new Map<AnyComponentConstructor, Component>()
+    private components = new Map<string, Component>()
     private tags = new Set<string>()
 
     constructor(id?: EntityId) {
@@ -20,7 +20,7 @@ export class Entity {
      */
     addComponents(...components: Component[]) {
         components.forEach((component) => {
-            this.components.set(component.constructor, component)
+            this.components.set(component.type, component)
         })
         this.onAddComponents?.(components)
 
@@ -32,20 +32,21 @@ export class Entity {
     }
 
     /** @internal */
-    removeComponent_Unsafe(compClass: AnyComponentConstructor) {
-        this.components.delete(compClass)
+    removeComponent_Unsafe(componentCreator: AnyComponentCreator) {
+        this.components.delete(componentCreator.type)
     }
 
-    get<T extends Component>(compClass: ComponentConstructor<T>) {
-        return this.components.get(compClass) as T
+    get<T extends AnyComponentCreator>(componentCreator: T) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return this.components.get(componentCreator.type) as ReturnType<T>
     }
 
-    has(compClass: AnyComponentConstructor) {
-        return this.components.has(compClass)
+    has(componentCreator: AnyComponentCreator) {
+        return this.components.has(componentCreator.type)
     }
 
-    hasAll(compClasses: AnyComponentConstructor[]) {
-        return compClasses.every((c) => this.has(c))
+    hasAll(componentCreators: AnyComponentCreator[]) {
+        return componentCreators.every((c) => this.has(c))
     }
 
     size() {

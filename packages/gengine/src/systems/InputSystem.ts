@@ -1,7 +1,7 @@
 import type { World } from 'World'
 import { createSystem } from '../ecs'
 import type { InputManager } from '../managers/InputManager'
-import { InputComponent } from 'components'
+import { inputComponent } from 'components'
 import { inputFilter } from 'filters'
 
 export const inputSystem = createSystem<{ inputManager: InputManager }>(
@@ -13,9 +13,9 @@ export const inputSystem = createSystem<{ inputManager: InputManager }>(
             inputManager.resetMouse()
 
             world.ecs.filterBy(inputFilter).forEach((entity) => {
-                const inputComponent = entity.get(InputComponent)
+                const { input, mouse } = entity.get(inputComponent)
                 Object.keys(liveInput).forEach((action) => {
-                    const actionInput = inputComponent.input[action]
+                    const actionInput = input[action]
                     if (liveInput[action]) {
                         if (!actionInput.hold) {
                             if (actionInput.press) {
@@ -32,11 +32,11 @@ export const inputSystem = createSystem<{ inputManager: InputManager }>(
                     actionInput.press = liveInput[action]
                 })
 
-                inputComponent.mouse.pan.x = panX
-                inputComponent.mouse.pan.y = panY
+                mouse.pan.x = panX
+                mouse.pan.y = panY
 
-                inputComponent.mouse.position.centerRel.x = centerRelX
-                inputComponent.mouse.position.centerRel.y = centerRelY
+                mouse.position.centerRel.x = centerRelX
+                mouse.position.centerRel.y = centerRelY
             })
         },
 )

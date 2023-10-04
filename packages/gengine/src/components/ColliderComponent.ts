@@ -1,4 +1,4 @@
-import { Component } from '../ecs'
+import { createComponent } from 'ecs'
 
 type CylinderCollider = {
     type: 'cylinder'
@@ -16,12 +16,6 @@ type BoxCollider = {
 
 export type Collider = BoxCollider | CylinderCollider
 
-export class ColliderComponent extends Component {
-    collider
-
-    constructor(collider: Collider) {
-        super()
-
-        this.collider = collider
-    }
-}
+export const colliderComponent = createComponent('colliderComponent', ({ collider }: { collider: Collider }) => ({
+    collider,
+}))
