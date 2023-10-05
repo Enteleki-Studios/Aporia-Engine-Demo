@@ -38,9 +38,6 @@ export default defineConfig({
             },
         },
     },
-    esbuild: {
-        minifyIdentifiers: false,
-    },
     plugins: [
         react(),
         dts({ entryRoot: './src/' }),

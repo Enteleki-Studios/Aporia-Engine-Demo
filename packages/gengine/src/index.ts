@@ -23,7 +23,6 @@ export { RendererSystemBase } from './systems/RendererSystemBase'
 export { SunSystem } from './systems/SunSystem'
 
 // Managers
-export { ComponentManager } from './managers/ComponentManager'
 export { InputManager } from './managers/InputManager'
 export { ResourceManager } from './managers/ResourceManager'
 
