@@ -35,6 +35,7 @@ export { useForceUpdate } from './reactjs/hooks/useForceUpdate'
 // Utils
 export * as arrayUtils from './utils/arrayUtils'
 export * as vectorUtils from './utils/vectorUtils'
+export { Graph } from './utils/graph'
 export { log } from './utils/log'
 
 // THREEJS

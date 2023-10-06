@@ -16,9 +16,5 @@ export const Icon = ({ icon, onClick, title }: IconProps) => {
             </button>
         )
     }
-    return (
-        <span className="Icon">
-            {icon}
-        </span>
-    )
+    return <span className="Icon">{icon}</span>
 }

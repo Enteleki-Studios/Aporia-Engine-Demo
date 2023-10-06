@@ -2,7 +2,7 @@ import { Clock } from 'three'
 
 import { ECS, type ECSStatsType } from 'ecs'
 
-import { AGG_SIZE_DEFAULT, WORLD_MAX_DELTA_DEFAULT, WorldEvent } from 'definitions'
+import { AGG_SIZE_DEFAULT, WORLD_MAX_DELTA_DEFAULT, WORLD_MIN_DELTA_DEFAULT, WorldEvent } from 'definitions'
 import { log } from 'utils/log'
 
 export type StatsType = {
@@ -36,6 +36,7 @@ export class World {
      * Default is around 50ms. Unit is seconds.
      */
     MAX_DELTA = WORLD_MAX_DELTA_DEFAULT
+    MIN_DELTA = WORLD_MIN_DELTA_DEFAULT
     AGG_SIZE = AGG_SIZE_DEFAULT
 
     private clock = new Clock()
@@ -81,7 +82,7 @@ export class World {
 
     private tick() {
         performance.mark('Framestart')
-        this.delta = Math.min(this.clock.getDelta(), this.MAX_DELTA)
+        this.delta = Math.min(Math.max(this.clock.getDelta(), 0.001), this.MAX_DELTA)
         this.stats.fps = Math.floor(1 / this.delta)
 
         this.ecs.tick(this)

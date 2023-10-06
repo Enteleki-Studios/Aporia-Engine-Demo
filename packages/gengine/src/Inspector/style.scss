@@ -102,6 +102,11 @@ $colors: (
                     padding: 0.12rem 0.25rem;
                     white-space: nowrap;
                     min-width: 2rem;
+
+                    i {
+                        display: block;
+                        padding: 0.25rem 0;
+                    }
                 }
                 span:nth-child(2n + 1) {
                     padding-right: 0.5rem;

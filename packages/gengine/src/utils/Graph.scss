@@ -1,0 +1,19 @@
+.Graph {
+    &.hasName {
+        font-family: monospace;
+        padding: 0.25rem;
+
+        canvas {
+            border: 1px solid #333;
+            margin-top: 0.25rem;
+        }
+    }
+
+    span {
+        margin-left: 0.5rem;
+    }
+    canvas {
+        display: block;
+        width: 100%;
+    }
+}
