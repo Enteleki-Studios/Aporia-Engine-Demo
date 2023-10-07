@@ -70,6 +70,8 @@ const inputManager = new InputManager({
     pointerLock: true,
 })
 
+const rendererSystem = new Systems.RendererSystem(renderer, octree)
+
 inputManager.addActionListener('debug', () => {
     const { debugMode } = renderer
     if (debugMode === 'game') {
@@ -99,8 +101,14 @@ world.ecs.registerFilters([
     Systems.collisionsFilter,
 ])
 
+// TODO: Very temporary
+world.ecs.addFilterListener(modelFilter, (e, f) => rendererSystem.receiveEntity(e, f))
+world.ecs.addFilterListener(ambientLightFilter, (e, f) => rendererSystem.receiveEntity(e, f))
+world.ecs.addFilterListener(boxFilter, (e, f) => rendererSystem.receiveEntity(e, f))
+world.ecs.addFilterListener(collidingFilter, (e, f) => rendererSystem.receiveEntity(e, f))
+
 world.ecs.registerSystems([
-    new Systems.RendererSystem(renderer, octree),
+    rendererSystem,
     inputSystem({ inputManager }),
     // new EmitterSystem({
     //     ball: () =>

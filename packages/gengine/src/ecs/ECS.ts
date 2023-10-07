@@ -1,6 +1,6 @@
 import type { World } from '../World'
 
-import type { Component, ECSFilter, Entity, EntityId, System } from 'ecs'
+import { Component, ECSFilter, Entity, EntityId, System } from 'ecs'
 
 type SystemStatsType = {
     /** System name pulled from its constructor */
@@ -8,6 +8,8 @@ type SystemStatsType = {
     /** How long it took to run the system last frame (ms) */
     runtime: number
 }
+
+type FilterListenerCallback = (entity: Entity, filter: ECSFilter) => void
 
 export type ECSStatsType = {
     /** Number of entities */
@@ -28,6 +30,7 @@ export class ECS {
     private systems: System[] = []
     private entitiesById = new Map<EntityId, Entity>()
     private entitiesByFilter = new Map<ECSFilter, Set<Entity>>()
+    private listenersByFilter = new Map<ECSFilter, Set<FilterListenerCallback>>()
 
     stats: ECSStatsType = {
         entities: 0,
@@ -42,12 +45,8 @@ export class ECS {
             if (filter.match(entity)) {
                 if (!entities.has(entity)) {
                     entities.add(entity)
-                    // TODO this is temporary
-                    this.systems.forEach((s) => {
-                        if ('receiveEntity' in s) {
-                            s.receiveEntity?.(entity, filter)
-                        }
-                    })
+
+                    this.listenersByFilter.get(filter)?.forEach((cb) => cb(entity, filter))
                 }
             } else {
                 // TODO tell systems that entity was removed
@@ -65,10 +64,6 @@ export class ECS {
         }
     }
 
-    getEntity(entityId: EntityId) {
-        return this.entitiesById.get(entityId)
-    }
-
     filterBy(filter: ECSFilter): Set<Entity> {
         const entities = this.entitiesByFilter.get(filter)
         if (entities) {
@@ -78,6 +73,17 @@ export class ECS {
             console.warn(`Filter ${filter.toString()} is not registered with the ECS`)
             return EMPTY_SET
         }
+    }
+
+    addFilterListener(filter: ECSFilter, cb: FilterListenerCallback) {
+        if (!this.listenersByFilter.has(filter)) {
+            this.listenersByFilter.set(filter, new Set())
+        }
+        this.listenersByFilter.get(filter)?.add(cb)
+    }
+
+    removeFilterListener(filter: ECSFilter, cb: FilterListenerCallback) {
+        this.listenersByFilter.get(filter)?.delete(cb)
     }
 
     // removeEntity(entityId: EntityId) {
@@ -106,11 +112,6 @@ export class ECS {
             name: 'label' in system ? system.label : system.constructor.name,
             runtime: 0,
         })
-
-        // TODO temporary
-        if ('filters' in system) {
-            this.registerFilters(system.filters)
-        }
     }
 
     registerFilter(filter: ECSFilter) {
@@ -127,6 +128,10 @@ export class ECS {
 
     registerFilters(filters: ECSFilter[]) {
         filters.forEach((f) => this.registerFilter(f))
+    }
+
+    getEntity(entityId: EntityId) {
+        return this.entitiesById.get(entityId)
     }
 
     /** @internal */
