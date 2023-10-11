@@ -46,6 +46,10 @@ export class ResourceManager<Container, Resource, Key = string> {
         return false
     }
 
+    hasResource(key: Key, name: string) {
+        return !!this.getResource(key, name)
+    }
+
     newContainer(key: Key) {
         const newContainer = this.containerInterface.init()
 
@@ -68,20 +72,11 @@ export class ResourceManager<Container, Resource, Key = string> {
 
         return false
     }
+
+    hasContainer(key: Key) {
+        return this.containers.has(key)
+    }
 }
-
-// import { Group, Mesh, Object3D } from "three"
-// const threeObject3DManager = new ResourceManager<Group, Object3D>({
-//     init: () => new Group(),
-//     name: (obj, name) => obj.name = name,
-//     add: (group, obj) => group.add(obj),
-//     get: (group, name) => group.getObjectByName(name),
-//     remove: (group, obj) => group.remove(obj)
-// })
-
-// Test
-// threeObject3DManager.addResource('myEntity', 'mesh', new Mesh())
-// console.debug(threeObject3DManager.getResource('myEntity', 'mesh'))
 
 // loadSprite(entityId: string, sprite: ReturnType<typeof spriteComponent>) {
 //     const { url } = sprite

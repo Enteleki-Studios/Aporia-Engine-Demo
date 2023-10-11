@@ -19,7 +19,6 @@ export { firstPersonMovementSystem, firstPersonMovementFilter } from './systems/
 export { inputSystem } from './systems/InputSystem'
 export { TwinStickMovementSystem } from './systems/TwinStickMovementSystem'
 export { ThirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'
-export { RendererSystemBase } from './systems/RendererSystemBase'
 export { SunSystem } from './systems/SunSystem'
 
 // Managers
@@ -50,6 +49,7 @@ export { StandardRenderer } from './threejs/StandardRenderer'
 export { TextSprite } from './threejs/TextSprite'
 export { SkySphere } from './threejs/SkySphere'
 export * from './threejs/threejsUtils'
+export { makeObject3dManager } from './threejs/object3dManager'
 
 // Three re-exports
 export { Capsule } from 'three/examples/jsm/math/Capsule'

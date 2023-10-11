@@ -109,7 +109,7 @@ export class ECS {
 
         this.stats.systems = this.systems.length
         this.stats.systemsStats.push({
-            name: 'label' in system ? system.label : system.constructor.name,
+            name: system.label,
             runtime: 0,
         })
     }
@@ -136,14 +136,10 @@ export class ECS {
 
     /** @internal */
     tick(world: World) {
-        this.systems.forEach((s, i) => {
-            const name = `System: ${'label' in s ? s.label : s.constructor.name}`
+        this.systems.forEach((system, i) => {
+            const name = `System: ${system.label}`
             performance.mark(name)
-            if ('tick' in s) {
-                s.tick(world)
-            } else {
-                s(world)
-            }
+            system(world)
             this.stats.systemsStats[i].runtime = Math.floor(performance.measure(`${name} finish`, name).duration)
         })
     }

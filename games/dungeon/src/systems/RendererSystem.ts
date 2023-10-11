@@ -8,9 +8,9 @@ import {
     MeshStandardMaterial,
     PointLight,
     PointLightHelper,
-    Color,
     SphereGeometry,
     CylinderGeometry,
+    Object3D,
 } from 'three'
 
 import {
@@ -26,7 +26,6 @@ import {
     ECSFilter,
     healthComponent,
     pointLightComponent,
-    RendererSystemBase,
     Entity,
     colliderComponent,
     Collider,
@@ -43,6 +42,8 @@ import {
     movingEntitiesFilter,
     rotatingEntitiesFilter,
     tags,
+    ResourceManager,
+    createSystem,
 } from 'gengine'
 
 import type { Renderer } from 'Renderer'
@@ -112,48 +113,73 @@ const makeColliderHelper = (collider: Collider) => {
     }
 }
 
-export class RendererSystem extends RendererSystemBase {
-    renderer: Renderer
+export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: ResourceManager<Group, Object3D> }>(
+    'render',
+    ({ renderer, objectManager }) =>
+        (world: World) => {
+            // world.ecs.filterBy(modelFilter).forEach((entity) => {
+            //     if (entity.has(healthComponent)) {
+            //         this.updateHealthIndicator(entity)
+            //     }
+            // })
 
-    // TODO For testing only
-    // octree = new Octree()
-    octree: Octree
-    octreeHelper: OctreeHelper
+            world.ecs.filterBy(directionalLightFilter).forEach((entity) => {
+                const { position, target } = entity.get(directionalLightComponent)
+                objectManager.getResource(entity.id, 'directionalLight')?.position.fromArray(position)
+                objectManager.getResource(entity.id, 'directionalLightTarget')?.position.fromArray(target)
+            })
 
-    constructor(renderer: Renderer, octree: Octree) {
-        super(renderer)
+            world.ecs.filterBy(cameraFilter).forEach((entity) => {
+                const { position, lookAt } = entity.get(cameraComponent)
+                renderer.camera.position.fromArray(position)
+                renderer.camera.lookAt(...lookAt)
+            })
 
-        this.renderer = renderer
+            world.ecs.filterBy(movingEntitiesFilter).forEach((entity) => {
+                const { position } = entity.get(positionComponent)
+                objectManager.getContainer(entity.id)?.position.fromArray(position)
+            })
 
-        this.octree = octree
-        this.octreeHelper = new OctreeHelper(this.octree, new Color(0x0089cc))
-        // this.octreeHelper.visible = false
-        this.renderer.scene.add(this.octreeHelper)
-        this.renderer.registerHelper(this.octreeHelper)
-    }
+            // TODO only do this for dirty entities/components
+            world.ecs.filterBy(rotatingEntitiesFilter).forEach((entity) => {
+                // TODO this if statement is a hack...
+                if (!entity.hasTag(tags.hero)) {
+                    const { position } = entity.get(positionComponent)
+                    const { direction } = entity.get(directionComponent)
+                    // this.getGroup(entity).lookAt(position.clone().add(direction))
+                    const lookAt: Array3 = [0, 0, 0]
+                    Vec3.add(lookAt, position, direction)
+                    objectManager.getContainer(entity.id)?.lookAt(...lookAt)
+                }
+            })
 
-    // updateHealthIndicator = this.applyToObject((ts, entity) => {
-    //     const { health } = entity.get(healthComponent)
-    //     if (health) {
-    //         if ((ts as TextSprite).text !== health.toString()) {
-    //             ;(ts as TextSprite).setText(health)
-    //         }
-    //     } else {
-    //         ts.visible = false
-    //     }
-    // })('health')
+            renderer.render()
+        },
+)
 
-    receiveEntity(entity: Entity, filter: ECSFilter): void {
+export const entityReceiver =
+    ({
+        renderer,
+        objectManager,
+        octree,
+        octreeHelper,
+    }: {
+        renderer: Renderer
+        objectManager: ResourceManager<Group, Object3D>
+        octree: Octree
+        octreeHelper: OctreeHelper
+    }) =>
+    (entity: Entity, filter: ECSFilter) => {
         switch (filter) {
             case modelFilter: {
                 const mc = entity.get(modelComponent)
                 mc.isLoading = true
                 loadModel(mc)
                     .then((resource) => {
-                        this.addObject(entity, 'model', resource)
+                        objectManager.addResource(entity.id, 'model', resource)
                         const box = new Box3().setFromObject(resource)
 
-                        const healthSprite = this.getObject(entity, 'health')
+                        const healthSprite = objectManager.getResource(entity.id, 'health')
                         if (healthSprite) {
                             healthSprite.position.y = box.max.y + 0.15
                         }
@@ -169,15 +195,15 @@ export class RendererSystem extends RendererSystemBase {
             case directionalLightFilter: {
                 const { intensity } = entity.get(directionalLightComponent)
                 const directionalLight = new DirectionalLight(0xffffff, intensity)
-                this.addObject(entity, 'directionalLight', directionalLight)
-                this.addObject(entity, 'directionalLightTarget', directionalLight.target)
+                objectManager.addResource(entity.id, 'directionalLight', directionalLight)
+                objectManager.addResource(entity.id, 'directionalLightTarget', directionalLight.target)
 
-                this.renderer.addHelpers(directionalLight.helper, directionalLight.shadowHelper)
+                renderer.addHelpers(directionalLight.helper, directionalLight.shadowHelper)
                 break
             }
             case ambientLightFilter: {
                 const { color, intensity } = entity.get(ambientLightComponent)
-                this.addObject(entity, 'ambient', new AmbientLight(color, intensity))
+                objectManager.addResource(entity.id, 'ambient', new AmbientLight(color, intensity))
                 break
             }
             case boxFilter: {
@@ -187,8 +213,8 @@ export class RendererSystem extends RendererSystemBase {
                     makeBasicGeometry(basicGeometry),
                     new MeshStandardMaterial({ color: basicGeometry.color }),
                 )
-                this.addObject(entity, 'basicGeometry', mesh)
-                this.getGroup(entity).position.fromArray(entity.get(positionComponent).position)
+                objectManager.addResource(entity.id, 'basicGeometry', mesh)
+                objectManager.getContainer(entity.id)?.position.fromArray(entity.get(positionComponent).position)
                 break
             }
             case collidingFilter: {
@@ -207,11 +233,11 @@ export class RendererSystem extends RendererSystemBase {
                 )
                 collisionHelper.position.fromArray(position)
 
-                this.renderer.scene.add(collisionHelper)
-                this.renderer.registerHelper(collisionHelper)
+                renderer.scene.add(collisionHelper)
+                renderer.registerHelper(collisionHelper)
 
-                this.octree.fromGraphNode(collisionHelper)
-                this.octreeHelper.update()
+                octree.fromGraphNode(collisionHelper)
+                octreeHelper.update()
                 break
             }
             default:
@@ -219,68 +245,28 @@ export class RendererSystem extends RendererSystemBase {
         }
 
         if (entity.has(healthComponent)) {
-            if (!this.hasObject(entity, 'health')) {
+            if (!objectManager.getResource(entity.id, 'health')) {
                 const healthSprite = makeHealthSprite(entity.get(healthComponent))
-                this.addObject(entity, 'health', healthSprite)
+                objectManager.addResource(entity.id, 'health', healthSprite)
             }
         }
 
         if (entity.has(pointLightComponent)) {
-            if (!this.hasObject(entity, 'pointLight')) {
+            if (!objectManager.getResource(entity.id, 'pointLight')) {
                 const pointLight = makePointLight(entity.get(pointLightComponent))
-                this.addObject(entity, 'pointlight', pointLight)
+                objectManager.addResource(entity.id, 'pointlight', pointLight)
 
                 const pointLightHelper = new PointLightHelper(pointLight, 0.25)
-                this.renderer.scene.add(pointLightHelper)
-                this.renderer.registerHelper(pointLightHelper)
+                renderer.scene.add(pointLightHelper)
+                renderer.registerHelper(pointLightHelper)
             }
         }
 
         if (entity.has(positionComponent)) {
-            this.getGroup(entity).position.fromArray(entity.get(positionComponent).position)
+            const group = objectManager.getContainer(entity.id) ?? objectManager.newContainer(entity.id)
+            group.position.fromArray(entity.get(positionComponent).position)
         }
     }
-
-    tick(world: World) {
-        // world.ecs.filterBy(modelFilter).forEach((entity) => {
-        //     if (entity.has(healthComponent)) {
-        //         this.updateHealthIndicator(entity)
-        //     }
-        // })
-
-        world.ecs.filterBy(directionalLightFilter).forEach((entity) => {
-            const { position, target } = entity.get(directionalLightComponent)
-            this.getObject(entity, 'directionalLight')?.position.fromArray(position)
-            this.getObject(entity, 'directionalLightTarget')?.position.fromArray(target)
-        })
-
-        world.ecs.filterBy(cameraFilter).forEach((entity) => {
-            const { position, lookAt } = entity.get(cameraComponent)
-            this.renderer.camera.position.fromArray(position)
-            this.renderer.camera.lookAt(...lookAt)
-        })
-
-        world.ecs.filterBy(movingEntitiesFilter).forEach((entity) => {
-            const { position } = entity.get(positionComponent)
-            this.getGroup(entity).position.fromArray(position)
-        })
-
-        // TODO only do this for dirty entities/components
-        world.ecs.filterBy(rotatingEntitiesFilter).forEach((entity) => {
-            // TODO this if statement is a hack...
-            if (!entity.hasTag(tags.hero)) {
-                const { position } = entity.get(positionComponent)
-                const { direction } = entity.get(directionComponent)
-                // this.getGroup(entity).lookAt(position.clone().add(direction))
-                const lookAt: Array3 = [0, 0, 0]
-                Vec3.add(lookAt, position, direction)
-                this.getGroup(entity).lookAt(...lookAt)
-            }
-        })
-
-        this.renderer.render()
-    }
-}
 
 // const labelText = entity.id.split('-')[0]
 // const sprite = new TextSprite(labelText)
@@ -306,3 +292,14 @@ export class RendererSystem extends RendererSystemBase {
 //         this.renderer.registerHelper(pointLightHelper)
 //     }
 // })
+
+// updateHealthIndicator = this.applyToObject((ts, entity) => {
+//     const { health } = entity.get(healthComponent)
+//     if (health) {
+//         if ((ts as TextSprite).text !== health.toString()) {
+//             ;(ts as TextSprite).setText(health)
+//         }
+//     } else {
+//         ts.visible = false
+//     }
+// })('health')

@@ -43,7 +43,9 @@ import {
     firstPersonMovementFilter,
     heroFilter,
     Octree,
+    OctreeHelper,
     tags,
+    makeObject3dManager,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -57,8 +59,6 @@ import modelDB from 'modelDB'
 
 export const world = new World()
 
-const octree = new Octree()
-
 const renderer = new Renderer({})
 export const updateCanvasContainer = (container: HTMLDivElement) => {
     renderer.setCanvasContainer(container)
@@ -70,7 +70,13 @@ const inputManager = new InputManager({
     pointerLock: true,
 })
 
-const rendererSystem = new Systems.RendererSystem(renderer, octree)
+const octree = new Octree()
+const octreeHelper = new OctreeHelper(octree, '#0089cc')
+renderer.scene.add(octreeHelper)
+renderer.registerHelper(octreeHelper)
+const objectManager = makeObject3dManager(renderer)
+const threeEntityReceiver = Systems.entityReceiver({ renderer, objectManager, octree, octreeHelper })
+const rendererSystem = Systems.rendererSystem({ renderer, objectManager })
 
 inputManager.addActionListener('debug', () => {
     const { debugMode } = renderer
@@ -102,10 +108,10 @@ world.ecs.registerFilters([
 ])
 
 // TODO: Very temporary
-world.ecs.addFilterListener(modelFilter, (e, f) => rendererSystem.receiveEntity(e, f))
-world.ecs.addFilterListener(ambientLightFilter, (e, f) => rendererSystem.receiveEntity(e, f))
-world.ecs.addFilterListener(boxFilter, (e, f) => rendererSystem.receiveEntity(e, f))
-world.ecs.addFilterListener(collidingFilter, (e, f) => rendererSystem.receiveEntity(e, f))
+world.ecs.addFilterListener(modelFilter, (e, f) => threeEntityReceiver(e, f))
+world.ecs.addFilterListener(ambientLightFilter, (e, f) => threeEntityReceiver(e, f))
+world.ecs.addFilterListener(boxFilter, (e, f) => threeEntityReceiver(e, f))
+world.ecs.addFilterListener(collidingFilter, (e, f) => threeEntityReceiver(e, f))
 
 world.ecs.registerSystems([
     rendererSystem,
