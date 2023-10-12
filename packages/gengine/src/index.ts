@@ -12,14 +12,14 @@ export * from './filters'
 
 // Systems
 export { applyVelocitySystem } from './systems/applyVelocitySystem'
-export { DamageSystem } from './systems/DamageSystem'
-export { EmitterSystem } from './systems/EmitterSystem'
+export { damageSystem, damagingFilter, damagableFilter } from './systems/DamageSystem'
+export { emitterSystem, emitterFilter } from './systems/EmitterSystem'
 export { firstPersonCameraSystem } from './systems/FirstPersonCameraSystem'
 export { firstPersonMovementSystem, firstPersonMovementFilter } from './systems/FirstPersonMovementSystem'
 export { inputSystem } from './systems/InputSystem'
-export { TwinStickMovementSystem } from './systems/TwinStickMovementSystem'
-export { ThirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'
-export { SunSystem } from './systems/SunSystem'
+export { twinStickMovementSystem, twinStickMovementFilter } from './systems/TwinStickMovementSystem'
+export { thirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'
+export { sunSystem, sunTargetFilter, directionalLightFilter } from './systems/SunSystem'
 
 // Managers
 export { InputManager } from './managers/InputManager'

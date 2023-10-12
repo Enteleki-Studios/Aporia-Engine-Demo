@@ -1,35 +1,26 @@
-import { ECSFilter, System, Entity } from 'ecs'
-import { World } from 'World'
+import type { World } from 'World'
+import { ECSFilter, Entity, createSystem } from 'ecs'
 import { emitterComponent, positionComponent } from 'components'
 
-export class EmitterSystem implements System {
-    emitterFilter = new ECSFilter([emitterComponent, positionComponent])
-    timeSinceLastTrigger = 0
-    prefabs: Record<string, undefined | (() => Entity)>
+export const emitterFilter = new ECSFilter([emitterComponent, positionComponent])
 
-    filters = [this.emitterFilter]
+export const emitterSystem = createSystem<{ prefabs: Record<string, undefined | (() => Entity)> }>('emitter', ({ prefabs }) => (world: World) => {
+    world.ecs.filterBy(emitterFilter).forEach((entity) => {
+        const { position } = entity.get(positionComponent)
+        const emitter = entity.get(emitterComponent)
+        const { prefabId, delay, elapsed } = emitter
 
-    constructor(prefabs: Record<string, undefined | (() => Entity)>) {
-        this.prefabs = prefabs
-    }
+        if (elapsed >= delay) {
+            emitter.elapsed = 0
 
-    tick(world: World) {
-        this.timeSinceLastTrigger += world.timeElapsedS
-
-        if (this.timeSinceLastTrigger >= 2) {
-            this.emitterFilter.entities.forEach((entity) => {
-                const { position } = entity.get(positionComponent)
-                const { prefabId } = entity.get(emitterComponent)
-
-                const newEntity = this.prefabs[prefabId]?.()
-                if (newEntity) {
-                    // TODO can't assume that this entity has or wants a position
-                    newEntity.get(positionComponent).position = [...position]
-                    world.ecs.registerEntity(newEntity)
-                }
-            })
-
-            this.timeSinceLastTrigger = 0
+            const newEntity = prefabs[prefabId]?.()
+            if (newEntity) {
+                // TODO can't assume that this entity has or wants a position
+                newEntity.get(positionComponent).position = [...position]
+                world.ecs.registerEntity(newEntity)
+            }
+        } else {
+            emitter.elapsed += world.timeElapsedS
         }
-    }
-}
+    })
+})

@@ -1,33 +1,28 @@
 import { Vector2 } from 'three'
 import { Vec3 } from 'gl-matrix/dist/esm'
-import { ECSFilter, System } from 'ecs'
+import { createSystem } from 'ecs'
 import { cameraComponent, directionComponent, inputComponent, positionComponent, velocityComponent } from 'components'
 import { ORIGIN } from 'definitions'
-import { World } from 'World'
+import type { World } from 'World'
+import { cameraFilter, movingEntitiesFilter, rotatingEntitiesFilter, inputFilter } from 'filters'
 
 const deceleration = new Vec3(-5, -0.0001, -5)
 
 const RUN_BOOST = 2
 const BASE_SPEED = 15
 
-export class TwinStickMovementSystem implements System {
-    cameraFilter = new ECSFilter([cameraComponent])
-    movementFilter = new ECSFilter([directionComponent, inputComponent, positionComponent, velocityComponent])
+export const twinStickMovementFilter = inputFilter.and(movingEntitiesFilter).and(rotatingEntitiesFilter)
 
-    filters = [this.cameraFilter, this.movementFilter]
+export const twinStickMovementSystem = createSystem('twin-stick movement', () => (world: World) => {
+    const delta = world.timeElapsedS
+    world.ecs.filterBy(cameraFilter).forEach((cameraEntity) => {
+        world.ecs.filterBy(twinStickMovementFilter).forEach((entity) => {
+            const { input } = entity.get(inputComponent)
+            const { position } = entity.get(positionComponent)
+            const { velocity } = entity.get(velocityComponent)
 
-    tick(world: World) {
-        const [cameraEntity] = this.cameraFilter.entities
-        const delta = world.timeElapsedS
-
-        this.movementFilter.entities.forEach((entity) => {
-            const inputComponent = entity.get(InputComponent)
-            const positionComponent = entity.get(PositionComponent)
-            const velocityComponent = entity.get(VelocityComponent)
-
-            const { position: camPosition } = cameraEntity.get(CameraComponent)
-            const cameraDirection = Vec3.sub(new Vec3(), camPosition, positionComponent.position)
-            const { velocity } = velocityComponent
+            const { position: camPosition } = cameraEntity.get(cameraComponent)
+            const cameraDirection = Vec3.sub(new Vec3(), camPosition, position)
 
             // Calculate deceleration
             const frameDeceleration = Vec3.multiply(new Vec3(), velocity, deceleration)
@@ -39,23 +34,23 @@ export class TwinStickMovementSystem implements System {
             frameAcceleration.negate().normalize()
 
             let targetAngle = 0
-            if (inputComponent.input.up.hold) {
-                if (inputComponent.input.left.hold) {
+            if (input.up.hold) {
+                if (input.left.hold) {
                     targetAngle = Math.PI / 4
-                } else if (inputComponent.input.right.hold) {
+                } else if (input.right.hold) {
                     targetAngle = Math.PI / -4
                 }
-            } else if (inputComponent.input.down.hold) {
-                if (inputComponent.input.left.hold) {
+            } else if (input.down.hold) {
+                if (input.left.hold) {
                     targetAngle = (Math.PI / 4) * 3
-                } else if (inputComponent.input.right.hold) {
+                } else if (input.right.hold) {
                     targetAngle = (Math.PI / 4) * -3
                 } else {
                     targetAngle = Math.PI
                 }
-            } else if (inputComponent.input.left.hold) {
+            } else if (input.left.hold) {
                 targetAngle = Math.PI / 2
-            } else if (inputComponent.input.right.hold) {
+            } else if (input.right.hold) {
                 targetAngle = Math.PI / -2
             } else {
                 // No input, no acceleration
@@ -66,23 +61,23 @@ export class TwinStickMovementSystem implements System {
             Vec3.rotateY(frameAcceleration, frameAcceleration, ORIGIN, targetAngle)
 
             // Set acceleration magnitude
-            const boost = inputComponent.input.run.hold ? RUN_BOOST : 1
+            const boost = input.run.hold ? RUN_BOOST : 1
             Vec3.scale(frameAcceleration, frameAcceleration, BASE_SPEED * boost * delta)
 
             Vec3.add(velocity, velocity, frameDeceleration)
             Vec3.add(velocity, velocity, frameAcceleration)
 
             // Character rotation
-            const { x, y } = entity.get(InputComponent).mouse.position.centerRel
+            const { x, y } = entity.get(inputComponent).mouse.position.centerRel
             let angle = new Vector2(x, y).negate().angle()
 
             const camPos = new Vector2(cameraDirection[0], cameraDirection[2]).angle()
 
             angle -= camPos
 
-            const { direction } = entity.get(DirectionComponent)
+            const { direction } = entity.get(directionComponent)
             Vec3.set(direction, 0, 0, 1)
             Vec3.rotateY(direction, direction, ORIGIN, angle)
         })
-    }
-}
+    })
+})

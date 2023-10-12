@@ -1,7 +1,7 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
 
 import { cameraComponent, directionComponent, positionComponent } from '../components'
-import { World } from 'World'
+import type { World } from 'World'
 import { cameraFilter, cameraTargetFilter } from 'filters'
 import { createSystem } from 'ecs'
 

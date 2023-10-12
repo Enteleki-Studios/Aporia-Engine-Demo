@@ -45,6 +45,9 @@ export const directionComponent = createComponent('directionComponent', ({ direc
 
 export const emitterComponent = createComponent('emitterComponent', ({ prefabId }: { prefabId: string }) => ({
     prefabId,
+    // TODO move to timer component
+    delay: 2 as number,
+    elapsed: 0 as number,
 }))
 
 export const healthComponent = createComponent('healthComponent', ({ health }: { health: number }) => ({
