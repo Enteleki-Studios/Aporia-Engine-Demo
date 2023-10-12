@@ -43,10 +43,10 @@ export const directionComponent = createComponent('directionComponent', ({ direc
     direction: direction ?? ([0, 0, 1] as Array3),
 }))
 
-export const emitterComponent = createComponent('emitterComponent', ({ prefabId }: { prefabId: string }) => ({
+export const emitterComponent = createComponent('emitterComponent', ({ prefabId, delay }: { prefabId: string, delay: number }) => ({
     prefabId,
     // TODO move to timer component
-    delay: 2 as number,
+    delay,
     elapsed: 0 as number,
 }))
 

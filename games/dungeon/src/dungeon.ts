@@ -18,15 +18,18 @@ import {
     World,
     // TwinStickMovementSystem,
     applyVelocitySystem,
-    // DamageSystem,
+    damageSystem,
     damagingComponent,
+    damagableFilter,
+    damagingFilter,
     pointLightComponent,
     inspector,
     firstPersonCameraSystem,
     directionComponent,
     firstPersonMovementSystem,
-    // emitterComponent,
-    // EmitterSystem,
+    emitterComponent,
+    emitterSystem,
+    emitterFilter,
     colliderComponent,
     Entity,
     movingEntitiesFilter,
@@ -105,6 +108,9 @@ world.ecs.registerFilters([
     heroFilter,
     Systems.aiSystemFilter,
     Systems.collisionsFilter,
+    emitterFilter,
+    damagingFilter,
+    damagableFilter,
 ])
 
 // TODO: Very temporary
@@ -116,24 +122,26 @@ world.ecs.addFilterListener(collidingFilter, (e, f) => threeEntityReceiver(e, f)
 world.ecs.registerSystems([
     rendererSystem,
     inputSystem({ inputManager }),
-    // new EmitterSystem({
-    //     ball: () =>
-    //         new Entity().addComponents(
-    //             new BasicGeometryComponent({
-    //                 geometryType: 'sphere',
-    //                 radius: 0.25,
-    //                 color: 0xff0099,
-    //             }),
-    //             new PositionComponent(),
-    //             new VelocityComponent({ velocity: [-2, 0, 0] }),
-    //         ),
-    // }),
+    emitterSystem({
+        prefabs: {
+            ball: () =>
+                new Entity().addComponents(
+                    basicGeometryComponent({
+                        geometryType: 'sphere',
+                        radius: 0.25,
+                        color: 0xff0099,
+                    }),
+                    positionComponent({}),
+                    velocityComponent({ velocity: [-2, 0, 0] }),
+                ),
+        },
+    }),
     // new TwinStickMovementSystem(),
     firstPersonMovementSystem(),
     Systems.aiSystem(),
     Systems.collisionSystem({ octree }),
     applyVelocitySystem(),
-    // new DamageSystem(),
+    damageSystem(),
     // new ThirdPersonCameraSystem(),
     firstPersonCameraSystem(),
     // new SunSystem(),
@@ -174,7 +182,7 @@ world.ecs.registerEntity(
     new Entity().addComponents(
         basicGeometryComponent({ geometryType: 'box' }),
         positionComponent({ position: [0, 1, 5] }),
-        // emitterComponent('ball'),
+        emitterComponent({ prefabId: 'ball', delay: 2 }),
     ),
 )
 
@@ -221,7 +229,7 @@ world.ecs.registerEntity(
             healthComponent({ health: 20 }),
             directionComponent({}),
             velocityComponent({}),
-            // new HitboxComponent(0.25),
+            hitboxComponent({ radius: 0.25 }),
         )
         .tag(tags.ai),
 )
