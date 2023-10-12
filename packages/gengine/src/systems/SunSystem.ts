@@ -12,14 +12,13 @@ export const sunSystem = createSystem('sun', () => (world: World) => {
         const { position: targetPosition } = targetEntity.get(positionComponent)
 
         world.ecs.filterBy(directionalLightFilter).forEach((sunEntity) => {
-        const { position: sunPosition, offset: sunOffset, target: sunTarget } = sunEntity.get(directionalLightComponent)
+            const {
+                position: sunPosition,
+                offset: sunOffset,
+                target: sunTarget,
+            } = sunEntity.get(directionalLightComponent)
 
-            Vec3.set(
-                sunPosition,
-                targetPosition[0] + sunOffset[0],
-                sunOffset[1],
-                targetPosition[2] + sunOffset[2],
-            )
+            Vec3.set(sunPosition, targetPosition[0] + sunOffset[0], sunOffset[1], targetPosition[2] + sunOffset[2])
 
             Vec3.copy(sunTarget, targetPosition)
         })

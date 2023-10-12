@@ -100,7 +100,10 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                         <span>{sysStat.runtime}</span>
                         {Object.entries(sysStat.extra).map(([k, v]) => (
                             <Fragment key={k}>
-                                <span><Icon icon={<PiArrowElbowDownRight />} />{`${k}: `}</span>
+                                <span>
+                                    <Icon icon={<PiArrowElbowDownRight />} />
+                                    {`${k}: `}
+                                </span>
                                 <span>{v}</span>
                             </Fragment>
                         ))}

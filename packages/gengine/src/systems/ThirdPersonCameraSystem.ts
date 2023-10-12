@@ -2,12 +2,12 @@ import { Vec3, Vec3Like } from 'gl-matrix/dist/esm'
 
 import type { World } from 'World'
 import { positionComponent, cameraComponent } from 'components'
-import { createSystem} from 'ecs'
+import { createSystem } from 'ecs'
 import { cameraFilter, cameraTargetFilter } from 'filters'
 
 const camPosition: Vec3Like = [0, 0, 0]
 
-export const  thirdPersonCameraSystem = createSystem('third-person camera', () => (world: World) => {
+export const thirdPersonCameraSystem = createSystem('third-person camera', () => (world: World) => {
     const delta = world.timeElapsedS
     const cameraTargets = [...world.ecs.filterBy(cameraTargetFilter)]
 

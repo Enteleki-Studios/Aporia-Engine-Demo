@@ -143,7 +143,9 @@ export class ECS {
             const name = `System: ${system.label}`
             performance.mark(name)
             system(world)
-            this.stats.systemsStats[system.label].runtime = Math.floor(performance.measure(`${name} finish`, name).duration)
+            this.stats.systemsStats[system.label].runtime = Math.floor(
+                performance.measure(`${name} finish`, name).duration,
+            )
         })
     }
 }
