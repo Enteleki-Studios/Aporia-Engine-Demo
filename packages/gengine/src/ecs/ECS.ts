@@ -3,10 +3,12 @@ import type { World } from '../World'
 import { Component, ECSFilter, Entity, EntityId, System } from 'ecs'
 
 type SystemStatsType = {
-    /** System name pulled from its constructor */
-    name: string
+    /** Provided system label */
+    label: string
     /** How long it took to run the system last frame (ms) */
     runtime: number
+    /** Exta debug information provided by the system */
+    extra: Record<string, string | number | boolean>
 }
 
 type FilterListenerCallback = (entity: Entity, filter: ECSFilter) => void
@@ -21,7 +23,7 @@ export type ECSStatsType = {
     /** Number of registered filters */
     filters: number
     /** Array of last frame system stats */
-    systemsStats: SystemStatsType[]
+    systemsStats: Record<string, SystemStatsType>
 }
 
 const EMPTY_SET = Object.freeze(new Set<Entity>())
@@ -37,7 +39,7 @@ export class ECS {
         components: 0,
         systems: 0,
         filters: 0,
-        systemsStats: [],
+        systemsStats: {},
     }
 
     private updateFiltersForEntity(entity: Entity) {
@@ -108,10 +110,11 @@ export class ECS {
         this.systems.push(system)
 
         this.stats.systems = this.systems.length
-        this.stats.systemsStats.push({
-            name: system.label,
+        this.stats.systemsStats[system.label] = {
+            label: system.label,
             runtime: 0,
-        })
+            extra: {},
+        }
     }
 
     registerFilter(filter: ECSFilter) {
@@ -136,11 +139,11 @@ export class ECS {
 
     /** @internal */
     tick(world: World) {
-        this.systems.forEach((system, i) => {
+        this.systems.forEach((system) => {
             const name = `System: ${system.label}`
             performance.mark(name)
             system(world)
-            this.stats.systemsStats[i].runtime = Math.floor(performance.measure(`${name} finish`, name).duration)
+            this.stats.systemsStats[system.label].runtime = Math.floor(performance.measure(`${name} finish`, name).duration)
         })
     }
 }

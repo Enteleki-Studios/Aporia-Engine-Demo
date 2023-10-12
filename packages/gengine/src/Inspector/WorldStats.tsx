@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useRef } from 'react'
-import { PiEngineDuotone, PiGraphDuotone, PiTimerDuotone } from 'react-icons/pi'
+import { PiArrowElbowDownRight, PiEngineDuotone, PiGraphDuotone, PiTimerDuotone } from 'react-icons/pi'
 
 import { secondsToClockString } from './utils'
 
@@ -94,10 +94,16 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 System runtimes
             </h4>
             <div className="table">
-                {stats.ecs.systemsStats.map((sysStat) => (
-                    <Fragment key={sysStat.name}>
-                        <span>{`${sysStat.name}: `}</span>
+                {Object.values(stats.ecs.systemsStats).map((sysStat) => (
+                    <Fragment key={sysStat.label}>
+                        <span>{`${sysStat.label}: `}</span>
                         <span>{sysStat.runtime}</span>
+                        {Object.entries(sysStat.extra).map(([k, v]) => (
+                            <Fragment key={k}>
+                                <span><Icon icon={<PiArrowElbowDownRight />} />{`${k}: `}</span>
+                                <span>{v}</span>
+                            </Fragment>
+                        ))}
                     </Fragment>
                 ))}
             </div>

@@ -103,9 +103,8 @@ $colors: (
                     white-space: nowrap;
                     min-width: 2rem;
 
-                    i {
-                        display: block;
-                        padding: 0.25rem 0;
+                    .Icon {
+                        margin-right: 0.25rem;
                     }
                 }
                 span:nth-child(2n + 1) {

@@ -56,8 +56,9 @@ export class StandardRenderer {
         // this.renderer.setPixelRatio(window.devicePixelRatio)
         this.renderer.setPixelRatio(1)
         this.renderer.debug.checkShaderErrors = true
-        this.renderer.autoClear = false
         this.renderer.setScissorTest(true)
+        this.renderer.autoClear = false
+        this.renderer.info.autoReset = false
 
         this.composer = new EffectComposer(this.renderer, {
             frameBufferType: HalfFloatType,

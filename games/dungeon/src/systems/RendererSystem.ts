@@ -113,8 +113,9 @@ const makeColliderHelper = (collider: Collider) => {
     }
 }
 
+const LABEL = 'render'
 export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: ResourceManager<Group, Object3D> }>(
-    'render',
+    LABEL,
     ({ renderer, objectManager }) =>
         (world: World) => {
             // world.ecs.filterBy(modelFilter).forEach((entity) => {
@@ -154,6 +155,15 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
             })
 
             renderer.render()
+
+            world.ecs.stats.systemsStats[LABEL].extra.calls = renderer.renderer.info.render.calls
+            world.ecs.stats.systemsStats[LABEL].extra.triangles = renderer.renderer.info.render.triangles
+            world.ecs.stats.systemsStats[LABEL].extra.shaders = renderer.renderer.info.programs.length
+            world.ecs.stats.systemsStats[LABEL].extra.geometries = renderer.renderer.info.memory.geometries
+            world.ecs.stats.systemsStats[LABEL].extra.textures = renderer.renderer.info.memory.textures
+
+            // TODO move this to renderer core
+            renderer.renderer.info.reset()
         },
 )
 
