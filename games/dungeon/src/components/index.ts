@@ -1,5 +1,14 @@
+import { createComponent } from 'gengine'
+
+export const animationComponent = createComponent(
+    'animationComponent',
+    ({ state }: { state?: string }) => ({
+        state: state ?? null,
+        prevState: null as string | null,
+    })
+)
+
 // import type { AnimationClip, AnimationAction, Vector3 } from 'three'
-// import { Component } from 'gengine'
 
 // export class AnimationComponent extends Component {
 //     needsUpdate = true

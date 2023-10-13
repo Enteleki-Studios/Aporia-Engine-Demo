@@ -11,7 +11,7 @@ import {
     inputComponent,
     positionComponent,
     hitboxComponent,
-    // ThirdPersonCameraSystem,
+    thirdPersonCameraSystem,
     cameraComponent,
     velocityComponent,
     // SunSystem,
@@ -49,6 +49,7 @@ import {
     OctreeHelper,
     tags,
     makeObject3dManager,
+    makeAnimationManager,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -59,6 +60,7 @@ import { Renderer } from 'Renderer'
 // import tilesGenerator from 'utils/tilesGenerator'
 
 import modelDB from 'modelDB'
+import { animationComponent } from 'components'
 
 export const world = new World()
 
@@ -78,7 +80,8 @@ const octreeHelper = new OctreeHelper(octree, '#0089cc')
 renderer.scene.add(octreeHelper)
 renderer.registerHelper(octreeHelper)
 const objectManager = makeObject3dManager(renderer)
-const threeEntityReceiver = Systems.entityReceiver({ renderer, objectManager, octree, octreeHelper })
+const animationManager = makeAnimationManager()
+const threeEntityReceiver = Systems.entityReceiver({ renderer, objectManager, octree, octreeHelper, animationManager })
 const rendererSystem = Systems.rendererSystem({ renderer, objectManager })
 
 inputManager.addActionListener('debug', () => {
@@ -111,6 +114,7 @@ world.ecs.registerFilters([
     emitterFilter,
     damagingFilter,
     damagableFilter,
+    Systems.animatedFilter,
 ])
 
 // TODO: Very temporary
@@ -136,16 +140,16 @@ world.ecs.registerSystems([
                 ),
         },
     }),
-    // new TwinStickMovementSystem(),
+    // twinStickMovementSystem(),
     firstPersonMovementSystem(),
     Systems.aiSystem(),
     Systems.collisionSystem({ octree }),
     applyVelocitySystem(),
     damageSystem(),
-    // new ThirdPersonCameraSystem(),
-    firstPersonCameraSystem(),
-    // new SunSystem(),
-    // new Systems.AnimationSystem(),
+    thirdPersonCameraSystem(),
+    // firstPersonCameraSystem(),
+    // sunSystem(),
+    Systems.animationSystem({ animationManager }),
 ])
 
 export const middleware: Middleware = () => (next) => (action: Action) => {
@@ -193,13 +197,13 @@ world.ecs.registerEntity(new Entity().addComponents(cameraComponent({})))
 world.ecs.registerEntity(
     new Entity()
         .addComponents(
-            // new Components.AnimationComponent('idle'),
+            animationComponent({ state: 'idle' }),
             // new Components.CollidableComponent(),
             directionComponent({}),
             hitboxComponent({ radius: 1 }),
             healthComponent({ health: 20 }),
             inputComponent({ keymap: DEFAULT_KEYMAP }),
-            // modelComponent({ modelName: 'wizard' }),
+            modelComponent({ modelName: 'wizard' }),
             positionComponent({ position: [0, 0, -1] }),
             velocityComponent({}),
             damagingComponent({
@@ -223,7 +227,7 @@ world.ecs.registerEntity(
 world.ecs.registerEntity(
     new Entity()
         .addComponents(
-            // new Components.AnimationComponent('idle'),
+            animationComponent({ state: 'idle' }),
             modelComponent({ modelName: 'shiba', castShadow: true }),
             positionComponent({ position: [1, 0, 2] }),
             healthComponent({ health: 20 }),

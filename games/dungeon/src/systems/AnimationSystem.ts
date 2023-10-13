@@ -1,140 +1,101 @@
-import { AnimationMixer, LoopOnce } from 'three'
+import { LoopOnce } from 'three'
 import { Vec3 } from 'gl-matrix/dist/esm'
 
-import { modelComponent, inputComponent, System, ECSFilter, World, healthComponent, velocityComponent } from 'gengine'
-// import { AnimationComponent } from 'components'
+import { modelComponent, inputComponent, ECSFilter, World, healthComponent, velocityComponent, createSystem, makeAnimationManager } from 'gengine'
+import { animationComponent } from 'components'
 
-import modelDB from 'modelDB'
+export const animatedFilter = new ECSFilter([animationComponent, modelComponent])
 
-function loadAnimations(animationComponent: AnimationComponent, modelComponent: ModelComponent<typeof modelDB>) {
-    const { resource: model } = modelComponent
-    const { animations: animationIndex } = modelDB[modelComponent.modelName]
+// TODO TEMP
+const jobs: ((delta: number) => void)[] = []
 
-    if (!model) {
-        // TODO can we remove this check?
-        return null
-    }
+export const animationSystem = createSystem<{ animationManager: ReturnType<typeof makeAnimationManager>}>('animation', ({ animationManager }) => (world: World) => {
+    // TODO TEMP
+    jobs.forEach((job) => job(world.timeElapsedS))
+    // jobs.push((d) => mixer.update(d))
 
-    const mixer = new AnimationMixer(model)
+    world.ecs.filterBy(animatedFilter).forEach((entity) => {
+        const animation = entity.get(animationComponent)
 
-    // console.debug(model.animations)
+        let nextState = 'idle'
 
-    if (model.animations.length && animationIndex) {
-        Object.entries(animationIndex).forEach(([key, name]) => {
-            const animation = model.animations.find((a) => a.name === name)
-            if (animation) {
-                animationComponent.animations[key] = {
-                    clip: animation,
-                    action: mixer.clipAction(animation),
-                }
-            }
-        })
-    }
-
-    return mixer
-}
-
-export class AnimationSystem implements System {
-    private jobs: ((delta: number) => void)[] = []
-
-    private updatingEntities = new ECSFilter([AnimationComponent])
-    private loadingEntities = new ECSFilter([AnimationComponent, ModelComponent])
-
-    filters = [this.updatingEntities, this.loadingEntities]
-
-    tick(world: World) {
-        this.updatingEntities.entities.forEach((entity) => {
-            const animationComponent = entity.get(AnimationComponent)
-
-            let nextState = 'idle'
-
-            if (entity.has(InputComponent)) {
-                const inputComponent = entity.get(InputComponent)
-                if (
-                    inputComponent.input.up.hold ||
-                    inputComponent.input.left.hold ||
-                    inputComponent.input.right.hold ||
-                    inputComponent.input.down.hold
-                ) {
-                    nextState = 'walk'
-                    if (inputComponent.input.run.hold) {
-                        nextState = 'run'
-                    }
-                }
-            }
-
-            if (entity.has(VelocityComponent)) {
-                const { velocity } = entity.get(VelocityComponent)
-                if (Vec3.squaredLength(velocity) > 0) {
-                    nextState = 'walk'
-                }
-            }
-
-            if (entity.has(HealthComponent)) {
-                if (!entity.get(HealthComponent).health) {
-                    nextState = 'death'
-                }
-            }
-
-            // if (inputComponent.attacking) {
-            //     nextState = 'attack'
-            // }
-
-            if (animationComponent.state !== nextState) {
-                animationComponent.prevState = animationComponent.state
-                animationComponent.state = nextState
-                animationComponent.needsUpdate = true
-            }
-        })
-
-        this.loadingEntities.entities.forEach((entity) => {
-            const animationComponent = entity.get(AnimationComponent)
-            const modelComponent = entity.get(ModelComponent)
-
+        if (entity.has(inputComponent)) {
+            const { input } = entity.get(inputComponent)
             if (
-                !animationComponent.loaded &&
-                !animationComponent.isLoading &&
-                // && this._dbLoaded
-                modelComponent.resource
+                input.up.hold ||
+                    input.left.hold ||
+                    input.right.hold ||
+                    input.down.hold
             ) {
-                animationComponent.isLoading = true
-                const mixer = loadAnimations(animationComponent, modelComponent)
-                animationComponent.isLoading = false
-                if (mixer) {
-                    animationComponent.loaded = true
-                    this.jobs.push((d) => mixer.update(d))
+                nextState = 'walk'
+                if (input.run.hold) {
+                    nextState = 'run'
                 }
-            } else if (animationComponent.loaded && animationComponent.needsUpdate) {
-                // Update animation
-                const { animations, state } = animationComponent
-                const animation = animations[state]
-                if (animation) {
-                    const { action } = animation
+            }
+        }
+
+        if (entity.has(velocityComponent)) {
+            const { velocity } = entity.get(velocityComponent)
+            if (Vec3.squaredLength(velocity) > 0) {
+                nextState = 'walk'
+            }
+        }
+
+        if (entity.has(healthComponent)) {
+            if (!entity.get(healthComponent).health) {
+                nextState = 'death'
+            }
+        }
+
+        // if (inputComponent.attacking) {
+        //     nextState = 'attack'
+        // }
+
+        if (animation.state !== nextState) {
+            animation.prevState = animation.state
+            animation.state = nextState
+        }
+        // else if (animation.state !== animation.prevState) {
+        //     animation.prevState = animation.state
+        // }
+
+        const animationsContainer = animationManager.getContainer(entity.id)
+
+        if (animationsContainer) {
+            if (animation.state !== animation.prevState) {
+                const nextAnimation = animationManager.getResource(entity.id, nextState)
+
+                if (nextAnimation) {
+                    const { action } = nextAnimation
                     action.time = 0.0
                     action.enabled = true
                     action.setEffectiveTimeScale(1.0)
                     action.setEffectiveWeight(1.0)
-                    if (animationComponent.prevState) {
-                        const prevAnimation = animations[animationComponent.prevState]
+
+                    if (animation.prevState) {
+                        const prevAnimation = animationManager.getResource(entity.id, animation.prevState)
                         if (prevAnimation) {
                             const { action: prevAction } = prevAnimation
-                            if (animationComponent.state !== 'attack') {
+                            if (animation.state !== 'attack') {
                                 const ratio = action.getClip().duration / prevAction.getClip().duration
                                 action.time = prevAction.time * ratio
                             }
-                            if (animationComponent.state === 'death') {
+                            if (animation.state === 'death') {
                                 action.loop = LoopOnce
                                 action.clampWhenFinished = true
                             }
                             action.crossFadeFrom(prevAction, 0.5, true)
                         }
                     }
-                    action.play()
-                    animationComponent.needsUpdate = false
-                }
-            }
-        })
 
-        this.jobs.forEach((job) => job(world.timeElapsedS))
-    }
-}
+                    action.play()
+                }
+
+                // Only reset prevState if we've responded to it
+                // TODO Properly implement triggering current animation on model load
+                animation.prevState = animation.state
+            }
+            animationsContainer.mixer?.update(world.timeElapsedS)
+        }
+    })
+})

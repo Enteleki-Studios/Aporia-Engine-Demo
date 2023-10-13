@@ -11,6 +11,9 @@ import {
     SphereGeometry,
     CylinderGeometry,
     Object3D,
+    AnimationMixer,
+    AnimationClip,
+    AnimationAction,
 } from 'three'
 
 import {
@@ -44,12 +47,14 @@ import {
     tags,
     ResourceManager,
     createSystem,
+    makeAnimationManager,
 } from 'gengine'
 
 import type { Renderer } from 'Renderer'
 
 import loadFBX from 'utils/loadFBX'
 import modelDB from 'modelDB'
+import { animationComponent } from 'components'
 
 async function loadModel(modelC: ReturnType<typeof modelComponent>) {
     const { modelName, castShadow } = modelC
@@ -110,6 +115,36 @@ const makeColliderHelper = (collider: Collider) => {
         }
         default:
             return new BoxGeometry(1, 1, 1)
+    }
+}
+
+function loadAnimations(modelComponent: { modelName: string }, model: Object3D) {
+    const { modelName } = modelComponent
+    const { animations: animationIndex } = modelDB[modelName]
+
+    const mixer = new AnimationMixer(model)
+
+    // console.debug(model.animations)
+
+    const animations: { name: string, clip: AnimationClip, action:AnimationAction }[] = []
+
+    if (model.animations.length && animationIndex) {
+        // TODO refactor to map
+        Object.entries(animationIndex).forEach(([key, name]) => {
+            const animation = model.animations.find((a) => a.name === name)
+            if (animation) {
+                animations.push({
+                    name: key,
+                    clip: animation,
+                    action: mixer.clipAction(animation),
+                })
+            }
+        })
+    }
+
+    return {
+        mixer,
+        animations,
     }
 }
 
@@ -177,11 +212,13 @@ export const entityReceiver =
         objectManager,
         octree,
         octreeHelper,
+        animationManager,
     }: {
         renderer: Renderer
         objectManager: ResourceManager<Group, Object3D>
         octree: Octree
         octreeHelper: OctreeHelper
+        animationManager: ReturnType<typeof makeAnimationManager>
     }) =>
     (entity: Entity, filter: ECSFilter) => {
         switch (filter) {
@@ -198,8 +235,16 @@ export const entityReceiver =
                             healthSprite.position.y = box.max.y + 0.15
                         }
 
-                        // mc.resource = resource
                         mc.isLoading = false
+
+                        if (entity.has(animationComponent)) {
+                            const { mixer, animations } = loadAnimations(mc, resource)
+
+                            animationManager.newContainer(entity.id, mixer)
+                            animations.forEach((animation) => {
+                                animationManager.addResource(entity.id, animation.name, animation)
+                            })
+                        }
                     })
                     .catch(() => {
                         /**/

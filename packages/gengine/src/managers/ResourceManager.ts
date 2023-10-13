@@ -1,9 +1,8 @@
 type ContainerInterface<C, R> = {
-    init: () => C
-    name: (resource: R, name: string) => void
-    add: (container: C, resource: R) => void
+    init: (args?: any) => C
+    add: (container: C, name: string, resource: R) => void
     get: (container: C, name: string) => R | undefined
-    remove: (container: C, resource: R) => void
+    remove: (container: C, name: string, resource: R) => void
 }
 
 export class ResourceManager<Container, Resource, Key = string> {
@@ -20,8 +19,7 @@ export class ResourceManager<Container, Resource, Key = string> {
         // Remove if the resource already exists
         this.removeResource(key, name)
 
-        this.containerInterface.name(resource, name)
-        this.containerInterface.add(container, resource)
+        this.containerInterface.add(container, name, resource)
 
         return this
     }
@@ -39,7 +37,7 @@ export class ResourceManager<Container, Resource, Key = string> {
         const resource = this.getResource(key, name)
 
         if (container && resource) {
-            this.containerInterface.remove(container, resource)
+            this.containerInterface.remove(container, name, resource)
             return true
         }
 
@@ -50,8 +48,8 @@ export class ResourceManager<Container, Resource, Key = string> {
         return !!this.getResource(key, name)
     }
 
-    newContainer(key: Key) {
-        const newContainer = this.containerInterface.init()
+    newContainer(key: Key, ...args: any) {
+        const newContainer = this.containerInterface.init(...args)
 
         this.containers.set(key, newContainer)
 
