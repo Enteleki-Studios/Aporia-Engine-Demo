@@ -9,11 +9,11 @@ const camPosition: Vec3Like = [0, 0, 0]
 
 export const thirdPersonCameraSystem = createSystem('third-person camera', () => (world: World) => {
     const delta = world.timeElapsedS
-    const cameraTargets = [...world.ecs.filterBy(cameraTargetFilter)]
+    const [cameraTarget] = world.ecs.filterBy(cameraTargetFilter)
 
     world.ecs.filterBy(cameraFilter).forEach((cameraEntity) => {
         const { position, lookAt } = cameraEntity.get(cameraComponent)
-        const { position: targetPosition } = cameraTargets[0].get(positionComponent)
+        const { position: targetPosition } = cameraTarget.get(positionComponent)
 
         Vec3.copy(camPosition, targetPosition)
         Vec3.add(camPosition, camPosition, [5, 7, 7])

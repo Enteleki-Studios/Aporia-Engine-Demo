@@ -1,4 +1,3 @@
-import { Vec3 } from 'gl-matrix/dist/esm'
 import {
     AmbientLight,
     BoxGeometry,
@@ -34,7 +33,6 @@ import {
     Collider,
     Octree,
     OctreeHelper,
-    Array3,
     World,
     modelFilter,
     directionalLightFilter,
@@ -80,15 +78,15 @@ const makePointLight = (pl: ReturnType<typeof pointLightComponent>) => {
     return pointLight
 }
 
-const makeHealthSprite = (health: ReturnType<typeof healthComponent>) => {
-    const healthSprite = new TextSprite(health.health, {
-        font: 'arial',
-        color: 'purple',
-    })
-    healthSprite.name = 'health'
-    healthSprite.center.set(0.5, 0)
-    return healthSprite
-}
+// const makeHealthSprite = (health: ReturnType<typeof healthComponent>) => {
+//     const healthSprite = new TextSprite(health.health, {
+//         font: 'arial',
+//         color: 'purple',
+//     })
+//     healthSprite.name = 'health'
+//     healthSprite.center.set(0.5, 0)
+//     return healthSprite
+// }
 
 const makeBasicGeometry = (geoComponent: ReturnType<typeof basicGeometryComponent>) => {
     const { geometryType, radius, size } = geoComponent
@@ -179,14 +177,16 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
             // TODO only do this for dirty entities/components
             world.ecs.filterBy(rotatingEntitiesFilter).forEach((entity) => {
                 // TODO this if statement is a hack...
-                if (!entity.hasTag(tags.hero)) {
-                    const { position } = entity.get(positionComponent)
-                    const { direction } = entity.get(directionComponent)
-                    // this.getGroup(entity).lookAt(position.clone().add(direction))
-                    const lookAt: Array3 = [0, 0, 0]
-                    Vec3.add(lookAt, position, direction)
-                    objectManager.getContainer(entity.id)?.lookAt(...lookAt)
-                }
+                // if (!entity.hasTag(tags.hero)) {
+                const { position } = entity.get(positionComponent)
+                const { direction } = entity.get(directionComponent)
+
+                objectManager.getContainer(entity.id)?.lookAt(
+                    position[0] + direction[0],
+                    position[1] + direction[1],
+                    position[2] + direction[2],
+                )
+                // }
             })
 
             renderer.render()
@@ -303,12 +303,12 @@ export const entityReceiver =
                 break
         }
 
-        if (entity.has(healthComponent)) {
-            if (!objectManager.getResource(entity.id, 'health')) {
-                const healthSprite = makeHealthSprite(entity.get(healthComponent))
-                objectManager.addResource(entity.id, 'health', healthSprite)
-            }
-        }
+        // if (entity.has(healthComponent)) {
+        //     if (!objectManager.getResource(entity.id, 'health')) {
+        //         const healthSprite = makeHealthSprite(entity.get(healthComponent))
+        //         objectManager.addResource(entity.id, 'health', healthSprite)
+        //     }
+        // }
 
         if (entity.has(pointLightComponent)) {
             if (!objectManager.getResource(entity.id, 'pointLight')) {
@@ -336,21 +336,6 @@ export const entityReceiver =
 // sprite.center.set(0.5, 0) // Set origin to center bottom
 
 // group.add(new ArrowHelper(new Vector3(0, 0, 1), new Vector3(), 2, 0x00ff00))
-
-// this.pointLightFilter.entities.forEach((entity) => {
-//     if (!entity.has(ModelComponent)) {
-//         const {
-//             color, intensity, decay, distance, offset, castShadow,
-//         } = entity.get(PointLightComponent)
-//         const pointLight = new PointLight(color, intensity, distance, decay)
-//         pointLight.castShadow = castShadow
-//         pointLight.position.fromArray(offset)
-//         this.renderer.scene.add(pointLight)
-//         const pointLightHelper = new PointLightHelper(pointLight, 0.25)
-//         this.renderer.scene.add(pointLightHelper)
-//         this.renderer.registerHelper(pointLightHelper)
-//     }
-// })
 
 // updateHealthIndicator = this.applyToObject((ts, entity) => {
 //     const { health } = entity.get(healthComponent)

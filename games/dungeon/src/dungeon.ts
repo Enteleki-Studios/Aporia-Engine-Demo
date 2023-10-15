@@ -16,7 +16,7 @@ import {
     velocityComponent,
     // SunSystem,
     World,
-    // TwinStickMovementSystem,
+    twinStickMovementSystem,
     applyVelocitySystem,
     damageSystem,
     damagingComponent,
@@ -24,9 +24,9 @@ import {
     damagingFilter,
     pointLightComponent,
     inspector,
-    firstPersonCameraSystem,
+    // firstPersonCameraSystem,
     directionComponent,
-    firstPersonMovementSystem,
+    // firstPersonMovementSystem,
     emitterComponent,
     emitterSystem,
     emitterFilter,
@@ -61,6 +61,7 @@ import { Renderer } from 'Renderer'
 
 import modelDB from 'modelDB'
 import { animationComponent } from 'components'
+import { twinStickMovementFilter } from 'gengine'
 
 export const world = new World()
 
@@ -72,7 +73,8 @@ export const updateCanvasContainer = (container: HTMLDivElement) => {
 const inputManager = new InputManager({
     domElement: renderer.canvas,
     keymap: DEFAULT_KEYMAP,
-    pointerLock: true,
+    // pointerLock: true,
+    pointerLock: false,
 })
 
 const octree = new Octree()
@@ -107,7 +109,8 @@ world.ecs.registerFilters([
     boxFilter,
     rotatingEntitiesFilter,
     collidingFilter,
-    firstPersonMovementFilter,
+    // firstPersonMovementFilter,
+    twinStickMovementFilter,
     heroFilter,
     Systems.aiSystemFilter,
     Systems.collisionsFilter,
@@ -140,8 +143,8 @@ world.ecs.registerSystems([
                 ),
         },
     }),
-    // twinStickMovementSystem(),
-    firstPersonMovementSystem(),
+    twinStickMovementSystem(),
+    // firstPersonMovementSystem(),
     Systems.aiSystem(),
     Systems.collisionSystem({ octree }),
     applyVelocitySystem(),

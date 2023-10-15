@@ -6,14 +6,7 @@ import { animationComponent } from 'components'
 
 export const animatedFilter = new ECSFilter([animationComponent, modelComponent])
 
-// TODO TEMP
-const jobs: ((delta: number) => void)[] = []
-
 export const animationSystem = createSystem<{ animationManager: ReturnType<typeof makeAnimationManager>}>('animation', ({ animationManager }) => (world: World) => {
-    // TODO TEMP
-    jobs.forEach((job) => job(world.timeElapsedS))
-    // jobs.push((d) => mixer.update(d))
-
     world.ecs.filterBy(animatedFilter).forEach((entity) => {
         const animation = entity.get(animationComponent)
 
@@ -32,10 +25,9 @@ export const animationSystem = createSystem<{ animationManager: ReturnType<typeo
                     nextState = 'run'
                 }
             }
-        }
-
-        if (entity.has(velocityComponent)) {
+        } else if (entity.has(velocityComponent)) {
             const { velocity } = entity.get(velocityComponent)
+
             if (Vec3.squaredLength(velocity) > 0) {
                 nextState = 'walk'
             }
@@ -95,6 +87,7 @@ export const animationSystem = createSystem<{ animationManager: ReturnType<typeo
                 // TODO Properly implement triggering current animation on model load
                 animation.prevState = animation.state
             }
+
             animationsContainer.mixer?.update(world.timeElapsedS)
         }
     })

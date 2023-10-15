@@ -1,5 +1,7 @@
+import { Texture, sRGBEncoding, TextureLoader, Group } from 'three'
+
 import { isThreeMesh } from 'gengine'
-import { Texture, sRGBEncoding, TextureLoader, MeshBasicMaterial, Group } from 'three'
+
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 const loader = new FBXLoader()
@@ -25,11 +27,8 @@ export default function loadFBX(modelPath: string, texturePath?: string, config?
                     c.castShadow = config?.castShadow ?? false
                     c.receiveShadow = true
 
-                    if (texturePath) {
-                        if (c.material instanceof MeshBasicMaterial) {
-                            c.material.map = texture
-                            // c.material.side = DoubleSide
-                        }
+                    if (texturePath && 'material' in c && !Array.isArray(c.material) && 'map' in c.material) {
+                        c.material.map = texture
                     }
                 }
             })
