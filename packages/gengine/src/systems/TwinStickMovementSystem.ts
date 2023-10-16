@@ -78,18 +78,24 @@ export const twinStickMovementSystem = createSystem('twin-stick movement', () =>
                 roundToZero(velocity, velocity)
 
                 // Character rotation
-                const { x, y } = mouse.position.centerRel
-
-                Vec2.set(charAngleVector, x, y)
-                Vec2.negate(charAngleVector, charAngleVector)
-
-                Vec2.set(camAngleVector, cameraDirection[0], cameraDirection[2])
-
-                const angle = angle2(charAngleVector) - angle2(camAngleVector)
-
                 const { direction } = entity.get(directionComponent)
-                Vec3.set(direction, 0, 0, 1)
-                Vec3.rotateY(direction, direction, ORIGIN, angle)
+                // Rotate with velocity
+                if (Vec3.squaredLength(frameAcceleration)) {
+                    Vec3.normalize(direction, velocity)
+                }
+
+                // Rotate towards cursor (in progress)
+                // const { x, y } = mouse.position.centerRel
+
+                // Vec2.set(charAngleVector, x, y)
+                // Vec2.negate(charAngleVector, charAngleVector)
+
+                // Vec2.set(camAngleVector, cameraDirection[0], cameraDirection[2])
+
+                // const angle = angle2(charAngleVector) - angle2(camAngleVector) + Math.PI / 2
+
+                // Vec3.set(direction, 1, 0, 0)
+                // Vec3.rotateY(direction, direction, ORIGIN, angle)
             })
         })
     }
