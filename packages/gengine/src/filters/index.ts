@@ -12,6 +12,8 @@ import {
     positionComponent,
     velocityComponent,
     tags,
+    mesh2D,
+    transform3D,
 } from 'components'
 
 export const ambientLightFilter = new ECSFilter([ambientLightComponent])
@@ -26,3 +28,5 @@ export const modelFilter = new ECSFilter([modelComponent, positionComponent])
 export const movingEntitiesFilter = new ECSFilter([positionComponent, velocityComponent])
 export const pointLightFilter = new ECSFilter([positionComponent, pointLightComponent])
 export const rotatingEntitiesFilter = new ECSFilter([directionComponent, positionComponent])
+
+export const mesh2DFilter = ECSFilter.of([mesh2D, transform3D])

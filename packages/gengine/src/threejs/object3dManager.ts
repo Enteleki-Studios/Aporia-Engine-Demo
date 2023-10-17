@@ -2,7 +2,7 @@ import { AnimationAction, AnimationClip, AnimationMixer, Group, Object3D } from 
 import { ResourceManager } from 'managers/ResourceManager'
 import { StandardRenderer } from './StandardRenderer'
 
-export const makeObject3dManager = (renderer: StandardRenderer) => (
+export const makeObject3dManager = (renderer: StandardRenderer) =>
     new ResourceManager<Group, Object3D>({
         init: () => {
             const group = new Group()
@@ -16,7 +16,6 @@ export const makeObject3dManager = (renderer: StandardRenderer) => (
         get: (group, name) => group.getObjectByName(name),
         remove: (group, _, obj) => group.remove(obj),
     })
-)
 
 type AnimationWrapper = {
     name: string
@@ -29,7 +28,7 @@ type AnimationsContainer = {
     animations: Record<string, AnimationWrapper>
 }
 
-export const makeAnimationManager = () => (
+export const makeAnimationManager = () =>
     new ResourceManager<AnimationsContainer, AnimationWrapper>({
         init: (mixer?: AnimationMixer) => ({ mixer, animations: {} }),
         add: (container, name, wrapper) => {
@@ -38,7 +37,6 @@ export const makeAnimationManager = () => (
         get: (container, name) => container.animations[name],
         remove: (container, name) => delete container.animations[name],
     })
-)
 
 // Test
 // threeObject3DManager.addResource('myEntity', 'mesh', new Mesh())

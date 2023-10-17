@@ -43,13 +43,18 @@ import {
     collidingFilter,
     cameraTargetFilter,
     inputFilter,
-    firstPersonMovementFilter,
+    // firstPersonMovementFilter,
+    twinStickMovementFilter,
     heroFilter,
     Octree,
     OctreeHelper,
     tags,
     makeObject3dManager,
     makeAnimationManager,
+    mesh2D,
+    mesh2DFilter,
+    material,
+    transform3D,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -61,7 +66,6 @@ import { Renderer } from 'Renderer'
 
 import modelDB from 'modelDB'
 import { animationComponent } from 'components'
-import { twinStickMovementFilter } from 'gengine'
 
 export const world = new World()
 
@@ -118,6 +122,7 @@ world.ecs.registerFilters([
     damagingFilter,
     damagableFilter,
     Systems.animatedFilter,
+    mesh2DFilter,
 ])
 
 // TODO: Very temporary
@@ -125,6 +130,7 @@ world.ecs.addFilterListener(modelFilter, (e, f) => threeEntityReceiver(e, f))
 world.ecs.addFilterListener(ambientLightFilter, (e, f) => threeEntityReceiver(e, f))
 world.ecs.addFilterListener(boxFilter, (e, f) => threeEntityReceiver(e, f))
 world.ecs.addFilterListener(collidingFilter, (e, f) => threeEntityReceiver(e, f))
+world.ecs.addFilterListener(mesh2DFilter, (e, f) => threeEntityReceiver(e, f))
 
 world.ecs.registerSystems([
     rendererSystem,
@@ -175,6 +181,24 @@ world.ecs.registerEntity(
             intensity: 3,
             offset: [0, 2, 0],
             castShadow: true,
+        }),
+    ),
+)
+
+// Floor
+world.ecs.registerEntity(
+    new Entity().addComponents(
+        mesh2D({ shape: 'plane', width: 32, height: 32 }),
+        transform3D({
+            rotation: [-Math.PI / 2, 0, 0],
+        }),
+        material({
+            material: 'standard',
+            mapUrl: '/resources/textures/floor.jpg',
+            wrapS: true,
+            wrapT: true,
+            repeatX: 32,
+            repeatY: 32,
         }),
     ),
 )

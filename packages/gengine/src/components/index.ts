@@ -43,12 +43,15 @@ export const directionComponent = createComponent('directionComponent', ({ direc
     direction: direction ?? ([0, 0, 1] as Array3),
 }))
 
-export const emitterComponent = createComponent('emitterComponent', ({ prefabId, delay }: { prefabId: string, delay: number }) => ({
-    prefabId,
-    // TODO move to timer component
-    delay,
-    elapsed: 0 as number,
-}))
+export const emitterComponent = createComponent(
+    'emitterComponent',
+    ({ prefabId, delay }: { prefabId: string; delay: number }) => ({
+        prefabId,
+        // TODO move to timer component
+        delay,
+        elapsed: 0 as number,
+    }),
+)
 
 export const healthComponent = createComponent('healthComponent', ({ health }: { health: number }) => ({
     health,
@@ -108,6 +111,15 @@ export const positionComponent = createComponent('positionComponent', ({ positio
     position: position ?? ([0, 0, 0] as Array3),
 }))
 
+export const transform3D = createComponent(
+    'transform3D',
+    ({ position, rotation, scale }: { position?: Array3; rotation?: Array3; scale?: Array3 }) => ({
+        position: position ?? ([0, 0, 0] as Array3),
+        rotation: rotation ?? ([0, 0, 0] as Array3),
+        scale: scale ?? ([1, 1, 1] as Array3),
+    }),
+)
+
 export const spriteComponent = createComponent('spriteComponent', ({ url }: { url: string }) => ({
     url,
     isLoaded: false,
@@ -117,3 +129,33 @@ export const spriteComponent = createComponent('spriteComponent', ({ url }: { ur
 export const velocityComponent = createComponent('velocityComponent', ({ velocity }: { velocity?: Array3 }) => ({
     velocity: velocity ?? ([0, 0, 0] as Array3),
 }))
+
+type Geometry2DPlane = {
+    shape: 'plane'
+    width: number
+    height: number
+}
+
+type Geometry2DCircle = {
+    shape: 'circle'
+    radius: number
+}
+
+export const mesh2D = createComponent('geometry2D', (props: Geometry2DPlane | Geometry2DCircle) => props)
+
+type MaterialBasic = {
+    material: 'basic'
+    color: string
+}
+
+type MaterialStandard = {
+    material: 'standard'
+    color?: string
+    mapUrl?: string
+    wrapS?: boolean
+    wrapT?: boolean
+    repeatX?: number
+    repeatY?: number
+}
+
+export const material = createComponent('material', (props: MaterialBasic | MaterialStandard) => props)

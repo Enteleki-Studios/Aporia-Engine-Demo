@@ -13,6 +13,13 @@ import {
     AnimationMixer,
     AnimationClip,
     AnimationAction,
+    PlaneGeometry,
+    MeshBasicMaterial,
+    BufferGeometry,
+    CircleGeometry,
+    Material,
+    TextureLoader,
+    RepeatWrapping,
 } from 'three'
 
 import {
@@ -46,6 +53,10 @@ import {
     ResourceManager,
     createSystem,
     makeAnimationManager,
+    mesh2DFilter,
+    mesh2D,
+    transform3D,
+    material,
 } from 'gengine'
 
 import type { Renderer } from 'Renderer'
@@ -124,7 +135,7 @@ function loadAnimations(modelComponent: { modelName: string }, model: Object3D) 
 
     // console.debug(model.animations)
 
-    const animations: { name: string, clip: AnimationClip, action:AnimationAction }[] = []
+    const animations: { name: string; clip: AnimationClip; action: AnimationAction }[] = []
 
     if (model.animations.length && animationIndex) {
         // TODO refactor to map
@@ -181,11 +192,9 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
                 const { position } = entity.get(positionComponent)
                 const { direction } = entity.get(directionComponent)
 
-                objectManager.getContainer(entity.id)?.lookAt(
-                    position[0] + direction[0],
-                    position[1] + direction[1],
-                    position[2] + direction[2],
-                )
+                objectManager
+                    .getContainer(entity.id)
+                    ?.lookAt(position[0] + direction[0], position[1] + direction[1], position[2] + direction[2])
                 // }
             })
 
@@ -205,6 +214,8 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
             renderer.renderer.info.reset()
         },
 )
+
+const textureLoader = new TextureLoader()
 
 export const entityReceiver =
     ({
@@ -299,6 +310,65 @@ export const entityReceiver =
                 octreeHelper.update()
                 break
             }
+            case mesh2DFilter: {
+                const meshComponent = entity.get(mesh2D)
+
+                let geometry: BufferGeometry | null = null
+                let mat: Material = new MeshBasicMaterial({ color: '#ff0088' })
+
+                switch (meshComponent.shape) {
+                    case 'plane': {
+                        geometry = new PlaneGeometry(meshComponent.width, meshComponent.height)
+                        break
+                    }
+                    case 'circle':
+                        geometry = new CircleGeometry(meshComponent.radius)
+                        break
+                    default:
+                        break
+                }
+
+                if (entity.has(material)) {
+                    const materialComponent = entity.get(material)
+                    switch (materialComponent.material) {
+                        case 'basic':
+                            mat = new MeshBasicMaterial({ color: materialComponent.color })
+                            break
+                        case 'standard': {
+                            const sMat = new MeshStandardMaterial()
+                            const { color, mapUrl, wrapS, wrapT, repeatX, repeatY } = materialComponent
+                            if (color) {
+                                sMat.color.set(color)
+                            }
+                            if (mapUrl) {
+                                const texture = textureLoader.load(mapUrl)
+                                sMat.map = texture
+
+                                if (wrapS) {
+                                    texture.wrapS = RepeatWrapping
+                                }
+                                if (wrapT) {
+                                    texture.wrapT = RepeatWrapping
+                                }
+                                if (repeatX || repeatY) {
+                                    texture.repeat.set(repeatX ?? 1, repeatY ?? 1)
+                                }
+                            }
+                            mat = sMat
+                            break
+                        }
+                        default:
+                            break
+                    }
+                }
+
+                if (geometry) {
+                    const mesh = new Mesh(geometry, mat)
+                    objectManager.addResource(entity.id, 'mesh2D', mesh)
+                }
+
+                break
+            }
             default:
                 break
         }
@@ -321,9 +391,20 @@ export const entityReceiver =
             }
         }
 
+        // TODO deprecate position component
         if (entity.has(positionComponent)) {
             const group = objectManager.getContainer(entity.id) ?? objectManager.newContainer(entity.id)
             group.position.fromArray(entity.get(positionComponent).position)
+        }
+
+        if (entity.has(transform3D)) {
+            const group = objectManager.getContainer(entity.id) ?? objectManager.newContainer(entity.id)
+
+            const { position, rotation, scale } = entity.get(transform3D)
+
+            group.position.fromArray(position)
+            group.scale.fromArray(scale)
+            group.rotation.fromArray(rotation)
         }
     }
 

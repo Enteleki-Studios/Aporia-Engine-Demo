@@ -5,11 +5,6 @@ import {
     SkySphere,
 } from 'gengine'
 import {
-    MeshStandardMaterial,
-    PlaneGeometry,
-    Mesh,
-    TextureLoader,
-    RepeatWrapping,
     // Fog,
     Color,
 } from 'three'
@@ -28,31 +23,13 @@ export class Renderer extends StandardRenderer {
 
         // this.scene.add(new DefaultGrid(32, { text: 'Dungeon' }))
 
-        const dirtTex = new TextureLoader().load('/resources/textures/floor.jpg')
-        dirtTex.wrapS = RepeatWrapping
-        dirtTex.wrapT = RepeatWrapping
-        dirtTex.repeat.set(32, 32)
-        const dirtMat = new MeshStandardMaterial({
-            map: dirtTex,
-        })
-        const dirtGeo = new PlaneGeometry(32, 32)
-        const dirtMesh = new Mesh(dirtGeo, dirtMat)
-        dirtMesh.rotation.x = -Math.PI / 2
-        dirtMesh.receiveShadow = true
-        this.scene.add(dirtMesh)
-
-        // const pointLight = new PointLight(0xffee88, 3, 0, 2)
-        // pointLight.castShadow = true
-        // pointLight.position.y = 2
-        // pointLight.shadow.radius = 5
-        // // pointLight.visible = false
-        // this.scene.add(pointLight)
-        // const pointLightHelper = new PointLightHelper(pointLight, 0.5)
-        // this.scene.add(pointLightHelper)
+        // dirtMesh.receiveShadow = true
+        // this.scene.add(dirtMesh)
 
         // this.scene.fog = new Fog(0x161616, 15, 40)
         this.scene.background = new Color(0x161616)
         this.scene.add(new SkySphere())
+        // this.scene.overrideMaterial = new MeshBasicMaterial({ wireframe: true, color: '#0089cc' })
     }
 }
 
