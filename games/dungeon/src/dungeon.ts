@@ -43,7 +43,7 @@ import {
     collidingFilter,
     cameraTargetFilter,
     inputFilter,
-    // firstPersonMovementFilter,
+    firstPersonMovementFilter,
     twinStickMovementFilter,
     heroFilter,
     Octree,

@@ -2,11 +2,14 @@ import {
     DirectionalLight,
     StandardRenderer,
     // DefaultGrid,
-    SkySphere,
+    // SkySphere,
 } from 'gengine'
 import {
     // Fog,
-    Color,
+    // Color,
+    EquirectangularReflectionMapping,
+    SRGBColorSpace,
+    TextureLoader,
 } from 'three'
 
 export class Renderer extends StandardRenderer {
@@ -27,8 +30,12 @@ export class Renderer extends StandardRenderer {
         // this.scene.add(dirtMesh)
 
         // this.scene.fog = new Fog(0x161616, 15, 40)
-        this.scene.background = new Color(0x161616)
-        this.scene.add(new SkySphere())
+        // this.scene.background = new Color(0x161616)
+        // this.scene.add(new SkySphere())
+        const sky = new TextureLoader().load('/resources/sky/PurplyBlueSky.png')
+        sky.mapping = EquirectangularReflectionMapping
+        sky.colorSpace = SRGBColorSpace
+        this.scene.background = sky
         // this.scene.overrideMaterial = new MeshBasicMaterial({ wireframe: true, color: '#0089cc' })
     }
 }
