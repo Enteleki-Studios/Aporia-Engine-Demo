@@ -30,7 +30,7 @@
         "typedoc": "^0.25.1",
         "typedoc-plugin-missing-exports": "^2.0.0",
         "vite-plugin-dts": "^3.2.0",
-        "vite-plugin-static-copy": "^0.17.0"
+        "vite-plugin-static-copy": "^1.0.0"
     },
     "dependencies": {
         "postprocessing": "^6.30.2"
@@ -38,6 +38,6 @@
     "peerDependencies": {
         "react": "^18.2.0",
         "react-redux": "^8.0.5",
-        "three": "^0.157.0"
+        "three": "^0.158.0"
     }
 }
