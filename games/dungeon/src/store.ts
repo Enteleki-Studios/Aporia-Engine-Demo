@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import logger from 'redux-logger'
+// import logger from 'redux-logger'
 
 import { rootReducer } from 'models/reducers'
 
@@ -10,7 +10,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
             // dungeonMiddleware,
-            logger,
+            // logger,
         ]),
 })
 

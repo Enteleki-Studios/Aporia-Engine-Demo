@@ -1,4 +1,4 @@
-import { Action, Middleware } from '@reduxjs/toolkit'
+import { Middleware } from '@reduxjs/toolkit'
 import {
     ambientLightComponent,
     basicGeometryComponent,
@@ -161,7 +161,7 @@ world.ecs.registerSystems([
     Systems.animationSystem({ animationManager }),
 ])
 
-export const middleware: Middleware = () => (next) => (action: Action) => {
+export const middleware: Middleware = () => (next) => (action: unknown) => {
     if (inspector.slice.actions.setDebugMode.match(action)) {
         renderer.setDebugMode(action.payload)
     }

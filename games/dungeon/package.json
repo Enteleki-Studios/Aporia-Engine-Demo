@@ -1,6 +1,7 @@
 {
     "name": "dungeon",
     "version": "0.1.0",
+    "type": "module",
     "main": "src/index.tsx",
     "scripts": {
         "start": "vite",
