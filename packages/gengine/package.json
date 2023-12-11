@@ -37,7 +37,7 @@
     },
     "peerDependencies": {
         "react": "^18.2.0",
-        "react-redux": "^8.0.5",
-        "three": "^0.158.0"
+        "react-redux": "^9.0.3",
+        "three": "^0.159.0"
     }
 }
