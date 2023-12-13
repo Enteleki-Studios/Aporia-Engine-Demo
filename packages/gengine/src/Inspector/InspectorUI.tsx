@@ -52,9 +52,9 @@ export const InspectorUI = ({ getWorld }: InspectorUIProps) => {
                         {title}
                     </div>
                     <div className="toolbar">
-                        <Icon icon={<PiPlayFill />} onClick={() => world.start()} title="Start world" />
-                        <Icon icon={<PiSkipForwardFill />} onClick={() => world.step()} title="Play one frame" />
-                        <Icon icon={<PiStopFill />} onClick={() => world.stop()} title="Stop world" />
+                        <Icon disabled={world.isRunning} icon={<PiPlayFill />} onClick={() => world.start()} title="Start world" />
+                        <Icon disabled={world.isRunning} icon={<PiSkipForwardFill />} onClick={() => world.step()} title="Play one frame" />
+                        <Icon disabled={!world.isRunning} icon={<PiStopFill />} onClick={() => world.stop()} title="Stop world" />
                     </div>
                 </div>
                 <div className="body">

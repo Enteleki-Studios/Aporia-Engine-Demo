@@ -1,9 +1,18 @@
 import { Clock } from 'three'
 
-import { ECS, type ECSStatsType } from 'ecs'
+import { ECS, type ECSStatsType, type System  } from 'ecs'
 
 import { AGG_SIZE_DEFAULT, WORLD_MAX_DELTA_DEFAULT, WORLD_MIN_DELTA_DEFAULT, WorldEvent } from 'definitions'
 import { log } from 'utils/log'
+
+type SystemStatsType = {
+    /** Provided system label */
+    label: string
+    /** How long it took to run the system last frame (ms) */
+    runtime: number
+    /** Exta debug information provided by the system */
+    extra: Record<string, string | number | boolean>
+}
 
 export type StatsType = {
     /** Game engine frames per second.
@@ -26,6 +35,10 @@ export type StatsType = {
     aggCounter: number
     aggFpsInter: number
     aggFrameTimeInter: number
+    /** Number of registered systems */
+    systems: number
+    /** Array of last frame system stats */
+    systemsStats: Record<string, SystemStatsType>
 }
 
 export class World {
@@ -41,11 +54,13 @@ export class World {
 
     private clock = new Clock()
     private delta = 0 // Seconds
+    private systems: System[] = []
     private observers: Record<WorldEvent, (() => void)[]> = {
         start: [],
         stop: [],
         endframe: [],
     }
+
 
     readonly stats: StatsType
     readonly ecs: ECS
@@ -68,6 +83,8 @@ export class World {
             aggCounter: 0,
             aggFpsInter: 0,
             aggFrameTimeInter: 0,
+            systemsStats: {},
+            systems: 0,
         }
 
         this.addEventListener.bind(this)
@@ -85,7 +102,14 @@ export class World {
         this.delta = Math.min(Math.max(this.clock.getDelta(), 0.001), this.MAX_DELTA)
         this.stats.fps = Math.floor(1 / this.delta)
 
-        this.ecs.tick(this)
+        this.systems.forEach((system) => {
+            const name = `System: ${system.label}`
+            performance.mark(name)
+            system(this)
+            this.stats.systemsStats[system.label].runtime = Math.floor(
+                performance.measure(`${name} finish`, name).duration,
+            )
+        })
 
         this.stats.frameTime = Math.floor(performance.measure('Frame length', 'Framestart').duration)
         this.stats.frames += 1
@@ -145,5 +169,24 @@ export class World {
 
     private updateListeners(eventName: WorldEvent) {
         this.observers[eventName].forEach((c) => c())
+    }
+
+    registerSystem(system: System) {
+        this.systems.push(system)
+
+        this.stats.systems = this.systems.length
+        this.stats.systemsStats[system.label] = {
+            label: system.label,
+            runtime: 0,
+            extra: {},
+        }
+
+        return this
+    }
+
+    registerSystems(systems: System[]) {
+        systems.forEach((s) => this.registerSystem(s))
+
+        return this
     }
 }

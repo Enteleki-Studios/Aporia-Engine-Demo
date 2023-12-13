@@ -132,7 +132,7 @@ world.ecs.addFilterListener(boxFilter, (e, f) => threeEntityReceiver(e, f))
 world.ecs.addFilterListener(collidingFilter, (e, f) => threeEntityReceiver(e, f))
 world.ecs.addFilterListener(mesh2DFilter, (e, f) => threeEntityReceiver(e, f))
 
-world.ecs.registerSystems([
+world.registerSystems([
     rendererSystem,
     inputSystem({ inputManager }),
     emitterSystem({

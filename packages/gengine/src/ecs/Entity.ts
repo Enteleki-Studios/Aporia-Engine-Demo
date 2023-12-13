@@ -6,7 +6,7 @@ export type EntityId = string
 
 export class Entity {
     id: EntityId
-    onAddComponents: ((components: Component[]) => void) | undefined
+    private onAddComponents: ((components: Component[]) => void) | undefined
     private components = new Map<string, Component>()
     private tags = new Set<string>()
 
@@ -14,10 +14,6 @@ export class Entity {
         this.id = id ?? uuid()
     }
 
-    /**
-     * This passes the components along to the ECS
-     * which does the actual component processing
-     */
     addComponents(...components: Component[]) {
         components.forEach((component) => {
             this.components.set(component.type, component)
@@ -65,5 +61,9 @@ export class Entity {
 
     hasTags(tags: string[]) {
         return tags.every((t) => this.hasTag(t))
+    }
+
+    registerAddComponentCallback(cb: (components: Component[]) => void) {
+        this.onAddComponents = cb
     }
 }

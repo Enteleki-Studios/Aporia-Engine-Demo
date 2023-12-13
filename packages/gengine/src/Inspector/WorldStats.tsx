@@ -84,7 +84,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 <span>{stats.ecs.components}</span>
 
                 <span>systems:</span>
-                <span>{stats.ecs.systems}</span>
+                <span>{stats.systems}</span>
 
                 <span>filters:</span>
                 <span>{stats.ecs.filters}</span>
@@ -94,7 +94,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 System runtimes
             </h4>
             <div className="table">
-                {Object.values(stats.ecs.systemsStats).map((sysStat) => (
+                {Object.values(stats.systemsStats).map((sysStat) => (
                     <Fragment key={sysStat.label}>
                         <span>{`${sysStat.label}: `}</span>
                         <span>{sysStat.runtime}</span>

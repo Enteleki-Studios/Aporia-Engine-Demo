@@ -1,15 +1,4 @@
-import type { World } from '../World'
-
 import { Component, ECSFilter, Entity, EntityId, System } from 'ecs'
-
-type SystemStatsType = {
-    /** Provided system label */
-    label: string
-    /** How long it took to run the system last frame (ms) */
-    runtime: number
-    /** Exta debug information provided by the system */
-    extra: Record<string, string | number | boolean>
-}
 
 type FilterListenerCallback = (entity: Entity, filter: ECSFilter) => void
 
@@ -18,18 +7,13 @@ export type ECSStatsType = {
     entities: number
     /** Number of components */
     components: number
-    /** Number of active systems */
-    systems: number
     /** Number of registered filters */
     filters: number
-    /** Array of last frame system stats */
-    systemsStats: Record<string, SystemStatsType>
 }
 
 const EMPTY_SET = Object.freeze(new Set<Entity>())
 
 export class ECS {
-    private systems: System[] = []
     private entitiesById = new Map<EntityId, Entity>()
     private entitiesByFilter = new Map<ECSFilter, Set<Entity>>()
     private listenersByFilter = new Map<ECSFilter, Set<FilterListenerCallback>>()
@@ -37,9 +21,7 @@ export class ECS {
     stats: ECSStatsType = {
         entities: 0,
         components: 0,
-        systems: 0,
         filters: 0,
-        systemsStats: {},
     }
 
     private updateFiltersForEntity(entity: Entity) {
@@ -94,8 +76,8 @@ export class ECS {
     // }
 
     registerEntity(entity: Entity) {
-        // Inject add component handler to entity
-        entity.onAddComponents = (components) => this.trackNewComponents(entity.id, components)
+        // Add component handler to entity
+        entity.registerAddComponentCallback((components) => this.trackNewComponents(entity.id, components))
 
         this.entitiesById.set(entity.id, entity)
 
@@ -106,17 +88,6 @@ export class ECS {
         this.stats.entities += 1
     }
 
-    registerSystem(system: System) {
-        this.systems.push(system)
-
-        this.stats.systems = this.systems.length
-        this.stats.systemsStats[system.label] = {
-            label: system.label,
-            runtime: 0,
-            extra: {},
-        }
-    }
-
     registerFilter(filter: ECSFilter) {
         if (!this.entitiesByFilter.has(filter)) {
             this.entitiesByFilter.set(filter, new Set<Entity>())
@@ -125,9 +96,6 @@ export class ECS {
         this.stats.filters = this.entitiesByFilter.size
     }
 
-    registerSystems(systems: System[]) {
-        systems.forEach((s) => this.registerSystem(s))
-    }
 
     registerFilters(filters: ECSFilter[]) {
         filters.forEach((f) => this.registerFilter(f))
@@ -135,17 +103,5 @@ export class ECS {
 
     getEntity(entityId: EntityId) {
         return this.entitiesById.get(entityId)
-    }
-
-    /** @internal */
-    tick(world: World) {
-        this.systems.forEach((system) => {
-            const name = `System: ${system.label}`
-            performance.mark(name)
-            system(world)
-            this.stats.systemsStats[system.label].runtime = Math.floor(
-                performance.measure(`${name} finish`, name).duration,
-            )
-        })
     }
 }

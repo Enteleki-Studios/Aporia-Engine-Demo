@@ -200,14 +200,14 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
 
             renderer.render()
 
-            world.ecs.stats.systemsStats[LABEL].extra.calls = renderer.renderer.info.render.calls
-            world.ecs.stats.systemsStats[LABEL].extra.triangles = renderer.renderer.info.render.triangles
-            world.ecs.stats.systemsStats[LABEL].extra.geometries = renderer.renderer.info.memory.geometries
-            world.ecs.stats.systemsStats[LABEL].extra.textures = renderer.renderer.info.memory.textures
+            world.stats.systemsStats[LABEL].extra.calls = renderer.renderer.info.render.calls
+            world.stats.systemsStats[LABEL].extra.triangles = renderer.renderer.info.render.triangles
+            world.stats.systemsStats[LABEL].extra.geometries = renderer.renderer.info.memory.geometries
+            world.stats.systemsStats[LABEL].extra.textures = renderer.renderer.info.memory.textures
 
             const shaders = renderer.renderer.info.programs
             if (shaders) {
-                world.ecs.stats.systemsStats[LABEL].extra.shaders = shaders.length
+                world.stats.systemsStats[LABEL].extra.shaders = shaders.length
             }
 
             // TODO move this to renderer core
