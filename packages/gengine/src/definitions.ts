@@ -1,3 +1,5 @@
+import { type Entity } from 'ecs'
+
 import npmPackage from '../package.json'
 
 // Input management
@@ -47,3 +49,8 @@ export const ENGINE_VERSION = `${npmPackage.version} - alpha`
 
 // Utility types
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
+
+// Engine types
+export type Query = {
+    match(entity: Entity): boolean
+}

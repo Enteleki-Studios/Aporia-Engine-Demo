@@ -1,8 +1,5 @@
-// World
-export { World, type StatsType } from './World'
-
-// ECS
-export * from './ecs'
+// Core
+export * from './core'
 
 // Components
 export * from './components'

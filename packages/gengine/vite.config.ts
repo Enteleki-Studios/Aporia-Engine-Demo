@@ -9,7 +9,7 @@ export default defineConfig({
     resolve: {
         alias: {
             components: resolve(__dirname, 'src/components/'),
-            ecs: resolve(__dirname, 'src/ecs/'),
+            core: resolve(__dirname, 'src/core/'),
             filters: resolve(__dirname, 'src/filters'),
             Inspector: resolve(__dirname, 'src/Inspector/'),
             managers: resolve(__dirname, 'src/managers/'),

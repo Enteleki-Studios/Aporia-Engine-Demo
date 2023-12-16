@@ -1,8 +1,7 @@
 import { Vec2, Vec3 } from 'gl-matrix/dist/esm'
-import { createSystem } from 'ecs'
+import { createSystem, type World } from 'core'
 import { cameraComponent, directionComponent, inputComponent, positionComponent, velocityComponent } from 'components'
 import { Array2, Array3, ORIGIN } from 'definitions'
-import type { World } from 'World'
 import { cameraFilter, movingEntitiesFilter, rotatingEntitiesFilter, inputFilter } from 'filters'
 import { angle2, roundToZero } from 'utils/vectorUtils'
 

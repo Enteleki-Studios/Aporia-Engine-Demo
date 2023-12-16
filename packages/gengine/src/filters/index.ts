@@ -1,4 +1,4 @@
-import { ECSFilter } from 'ecs'
+import { ECSFilter } from 'core'
 import {
     ambientLightComponent,
     basicGeometryComponent,

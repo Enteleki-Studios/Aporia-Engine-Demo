@@ -1,4 +1,4 @@
-import type { Entity, AnyComponentCreator } from 'ecs'
+import type { Entity, AnyComponentCreator } from 'core'
 
 export class ECSFilter {
     private readonly components: AnyComponentCreator[]

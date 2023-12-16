@@ -1,5 +1,4 @@
-import type { World } from 'World'
-import { createSystem } from '../ecs'
+import { createSystem, type World } from 'core'
 import type { InputManager } from '../managers/InputManager'
 import { inputComponent } from 'components'
 import { inputFilter } from 'filters'

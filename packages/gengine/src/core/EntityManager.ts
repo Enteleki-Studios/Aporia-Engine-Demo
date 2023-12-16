@@ -1,4 +1,4 @@
-import { Component, ECSFilter, Entity, EntityId, System } from 'ecs'
+import { Component, ECSFilter, Entity, EntityId } from 'core'
 
 type FilterListenerCallback = (entity: Entity, filter: ECSFilter) => void
 
@@ -13,7 +13,7 @@ export type ECSStatsType = {
 
 const EMPTY_SET = Object.freeze(new Set<Entity>())
 
-export class ECS {
+export class EntityManager {
     private entitiesById = new Map<EntityId, Entity>()
     private entitiesByFilter = new Map<ECSFilter, Set<Entity>>()
     private listenersByFilter = new Map<ECSFilter, Set<FilterListenerCallback>>()

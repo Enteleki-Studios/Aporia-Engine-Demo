@@ -1,9 +1,8 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
 
 import { cameraComponent, directionComponent, positionComponent } from '../components'
-import type { World } from 'World'
 import { cameraFilter, cameraTargetFilter } from 'filters'
-import { createSystem } from 'ecs'
+import { type World, createSystem } from 'core'
 
 export const firstPersonCameraSystem = createSystem('first-person camera', () => (world: World) => {
     const [cameraTarget] = world.ecs.filterBy(cameraTargetFilter)

@@ -1,9 +1,8 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
 
-import { World } from 'World'
 import { positionComponent, velocityComponent } from 'components'
 import { movingEntitiesFilter } from 'filters'
-import { createSystem } from 'ecs'
+import { type World, createSystem } from 'core'
 
 export const applyVelocitySystem = createSystem('apply velocity', () => (world: World) => {
     world.ecs.filterBy(movingEntitiesFilter).forEach((entity) => {

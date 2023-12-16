@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid'
 
-import type { Component, AnyComponentCreator } from 'ecs'
+import type { Component, AnyComponentCreator } from 'core'
 
 export type EntityId = string
 

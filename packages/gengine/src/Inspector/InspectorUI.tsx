@@ -2,7 +2,7 @@ import React, { FormEvent, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PiGameControllerFill, PiPlayFill, PiSkipForwardFill, PiStopFill } from 'react-icons/pi'
 
-import type { World } from 'World'
+import type { World } from 'core'
 import { DebugMode, DebugModes, ENGINE_VERSION } from 'definitions'
 
 import { setDebugMode, getDebugMode } from './slice'

@@ -1,5 +1,5 @@
 import type { Array3, Keymap } from 'definitions'
-import { createComponent } from 'ecs'
+import { createComponent } from 'core'
 
 export const tags = {
     hero: 'hero',

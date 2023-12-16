@@ -1,6 +1,6 @@
 import { Clock } from 'three'
 
-import { ECS, type ECSStatsType, type System  } from 'ecs'
+import { EntityManager, type ECSStatsType, type System } from 'core'
 
 import { AGG_SIZE_DEFAULT, WORLD_MAX_DELTA_DEFAULT, WORLD_MIN_DELTA_DEFAULT, WorldEvent } from 'definitions'
 import { log } from 'utils/log'
@@ -63,14 +63,14 @@ export class World {
 
 
     readonly stats: StatsType
-    readonly ecs: ECS
+    readonly ecs: EntityManager
 
     isRunning = false
 
     frameSync = true
 
     constructor() {
-        this.ecs = new ECS()
+        this.ecs = new EntityManager()
 
         this.stats = {
             fps: 0,
