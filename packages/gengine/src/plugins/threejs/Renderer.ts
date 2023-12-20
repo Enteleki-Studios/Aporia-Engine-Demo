@@ -1,9 +1,9 @@
 import {
     DirectionalLight,
-    StandardRenderer,
     // DefaultGrid,
     // SkySphere,
-} from 'gengine'
+} from 'threejs/DirectionalLight'
+import { StandardRenderer } from 'threejs/StandardRenderer'
 import {
     // Fog,
     // Color,

@@ -1,6 +1,6 @@
 import { Clock } from 'three'
 
-import { EntityManager, type ECSStatsType, type System } from 'core'
+import { EntityManager, type ECSStatsType, type System, Plugin } from 'core'
 
 import { AGG_SIZE_DEFAULT, WORLD_MAX_DELTA_DEFAULT, WORLD_MIN_DELTA_DEFAULT, WorldEvent } from 'definitions'
 import { log } from 'utils/log'
@@ -60,7 +60,6 @@ export class World {
         stop: [],
         endframe: [],
     }
-
 
     readonly stats: StatsType
     readonly ecs: EntityManager
@@ -187,6 +186,12 @@ export class World {
     registerSystems(systems: System[]) {
         systems.forEach((s) => this.registerSystem(s))
 
+        return this
+    }
+
+    registerPlugin(plugin: Plugin) {
+        plugin.init(this)
+        // TODO keep track of the plugin
         return this
     }
 }

@@ -43,33 +43,31 @@ import {
     collidingFilter,
     cameraTargetFilter,
     inputFilter,
-    firstPersonMovementFilter,
+    // firstPersonMovementFilter,
     twinStickMovementFilter,
     heroFilter,
-    Octree,
-    OctreeHelper,
     tags,
-    makeObject3dManager,
-    makeAnimationManager,
     mesh2D,
     mesh2DFilter,
     material,
     transform3D,
+    threejsPlugin,
+    animationComponent,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
 
 import * as Systems from 'systems'
 // import * as Components from 'components'
-import { Renderer } from 'Renderer'
 // import tilesGenerator from 'utils/tilesGenerator'
 
 import modelDB from 'modelDB'
-import { animationComponent } from 'components'
 
 export const world = new World()
 
-const renderer = new Renderer({})
+const threejs = threejsPlugin()
+const { renderer, octree } = threejs.resources
+
 export const updateCanvasContainer = (container: HTMLDivElement) => {
     renderer.setCanvasContainer(container)
 }
@@ -80,15 +78,6 @@ const inputManager = new InputManager({
     // pointerLock: true,
     pointerLock: false,
 })
-
-const octree = new Octree()
-const octreeHelper = new OctreeHelper(octree, '#0089cc')
-renderer.scene.add(octreeHelper)
-renderer.registerHelper(octreeHelper)
-const objectManager = makeObject3dManager(renderer)
-const animationManager = makeAnimationManager()
-const threeEntityReceiver = Systems.entityReceiver({ renderer, objectManager, octree, octreeHelper, animationManager })
-const rendererSystem = Systems.rendererSystem({ renderer, objectManager })
 
 inputManager.addActionListener('debug', () => {
     const { debugMode } = renderer
@@ -125,41 +114,35 @@ world.ecs.registerFilters([
     mesh2DFilter,
 ])
 
-// TODO: Very temporary
-world.ecs.addFilterListener(modelFilter, (e, f) => threeEntityReceiver(e, f))
-world.ecs.addFilterListener(ambientLightFilter, (e, f) => threeEntityReceiver(e, f))
-world.ecs.addFilterListener(boxFilter, (e, f) => threeEntityReceiver(e, f))
-world.ecs.addFilterListener(collidingFilter, (e, f) => threeEntityReceiver(e, f))
-world.ecs.addFilterListener(mesh2DFilter, (e, f) => threeEntityReceiver(e, f))
-
-world.registerSystems([
-    rendererSystem,
-    inputSystem({ inputManager }),
-    emitterSystem({
-        prefabs: {
-            ball: () =>
-                new Entity().addComponents(
-                    basicGeometryComponent({
-                        geometryType: 'sphere',
-                        radius: 0.25,
-                        color: 0xff0099,
-                    }),
-                    positionComponent({}),
-                    velocityComponent({ velocity: [-2, 0, 0] }),
-                ),
-        },
-    }),
-    twinStickMovementSystem(),
-    // firstPersonMovementSystem(),
-    Systems.aiSystem(),
-    Systems.collisionSystem({ octree }),
-    applyVelocitySystem(),
-    damageSystem(),
-    thirdPersonCameraSystem(),
-    // firstPersonCameraSystem(),
-    // sunSystem(),
-    Systems.animationSystem({ animationManager }),
-])
+world
+    .registerPlugin(threejs)
+    .registerSystems([
+        inputSystem({ inputManager }),
+        emitterSystem({
+            prefabs: {
+                ball: () =>
+                    new Entity().addComponents(
+                        basicGeometryComponent({
+                            geometryType: 'sphere',
+                            radius: 0.25,
+                            color: 0xff0099,
+                        }),
+                        positionComponent({}),
+                        velocityComponent({ velocity: [-2, 0, 0] }),
+                    ),
+            },
+        }),
+        twinStickMovementSystem(),
+        // firstPersonMovementSystem(),
+        Systems.aiSystem(),
+        Systems.collisionSystem({ octree }),
+        applyVelocitySystem(),
+        damageSystem(),
+        thirdPersonCameraSystem(),
+        // firstPersonCameraSystem(),
+        // sunSystem(),
+        Systems.animationSystem({ animationManager: threejs.resources.animationManager }),
+    ])
 
 export const middleware: Middleware = () => (next) => (action: unknown) => {
     if (inspector.slice.actions.setDebugMode.match(action)) {
@@ -230,7 +213,7 @@ world.ecs.registerEntity(
             hitboxComponent({ radius: 1 }),
             healthComponent({ health: 20 }),
             inputComponent({ keymap: DEFAULT_KEYMAP }),
-            modelComponent({ modelName: 'wizard' }),
+            modelComponent({ modelName: 'wizard', data: modelDB['wizard'] }),
             positionComponent({ position: [0, 0, -1] }),
             velocityComponent({}),
             damagingComponent({
@@ -255,7 +238,7 @@ world.ecs.registerEntity(
     new Entity()
         .addComponents(
             animationComponent({ state: 'idle' }),
-            modelComponent({ modelName: 'shiba', castShadow: true }),
+            modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
             positionComponent({ position: [1, 0, 2] }),
             healthComponent({ health: 20 }),
             directionComponent({}),
@@ -279,7 +262,7 @@ const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart']
 items.forEach((item, i) => {
     world.ecs.registerEntity(
         new Entity().addComponents(
-            modelComponent({ modelName: item, castShadow: true }),
+            modelComponent({ modelName: item, castShadow: true, data: modelDB[item] }),
             positionComponent({ position: [i * 3 - 12, 0, 8] }),
             colliderComponent({
                 collider: {
@@ -296,7 +279,7 @@ items.forEach((item, i) => {
 // Crate
 world.ecs.registerEntity(
     new Entity().addComponents(
-        modelComponent({ modelName: 'crate' }),
+        modelComponent({ modelName: 'crate', data: modelDB['crate'] }),
         positionComponent({ position: [5, 0, 5] }),
         colliderComponent({
             collider: {
@@ -314,7 +297,7 @@ const torches = [9.75, 3.25, -3.25]
 torches.forEach((posZ) => {
     world.ecs.registerEntity(
         new Entity().addComponents(
-            modelComponent({ modelName: 'torchWall' }),
+            modelComponent({ modelName: 'torchWall', data: modelDB['torchWall'] }),
             positionComponent({ position: [-16, 1.5, posZ] }),
             pointLightComponent({
                 color: 0xff6700,
@@ -328,7 +311,7 @@ torches.forEach((posZ) => {
 // Gold chest
 world.ecs.registerEntity(
     new Entity().addComponents(
-        modelComponent({ modelName: 'chest_gold' }),
+        modelComponent({ modelName: 'chest_gold', data: modelDB['chest_gold'] }),
         positionComponent({ position: [-6, 0, -6] }),
         pointLightComponent({
             color: 0xffd700,
@@ -343,7 +326,7 @@ world.ecs.registerEntity(
 for (let i = 0; i < 32; i += 2) {
     world.ecs.registerEntity(
         new Entity().addComponents(
-            modelComponent({ modelName: 'stoneWallTop' }),
+            modelComponent({ modelName: 'stoneWallTop', data: modelDB['stoneWallTop'] }),
             positionComponent({ position: [-16, 0, i - 15] }),
             colliderComponent({ collider: { type: 'box', width: 0.25, height: 2, depth: 2 } }),
         ),
@@ -354,7 +337,7 @@ for (let i = 0; i < 32; i += 2) {
 const makePos = (): [number, number, number] => [Math.random() * 30 - 15, 0, Math.random() * 30 - 15]
 for (let i = 0; i < 200; i += 1) {
     world.ecs.registerEntity(
-        new Entity().addComponents(modelComponent({ modelName: 'grass' }), positionComponent({ position: makePos() })),
+        new Entity().addComponents(modelComponent({ modelName: 'grass', data: modelDB['grass'] }), positionComponent({ position: makePos() })),
     )
 }
 

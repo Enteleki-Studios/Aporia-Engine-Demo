@@ -97,15 +97,28 @@ export const inputComponent = createComponent('inputComponent', ({ keymap }: { k
     }
 })
 
+type Model = {
+    modelPath: string
+    texturePath?: string
+    scale: number
+    animations?: Record<string, string>
+    translate?: [number, number, number]
+    radius?: number
+}
 export const modelComponent = createComponent(
     'modelComponent',
-    ({ modelName, castShadow }: { modelName: string; castShadow?: boolean }) => ({
+    ({ modelName, castShadow, data }: { modelName: string; castShadow?: boolean, data: Model }) => ({
         modelName,
         castShadow: castShadow ?? false,
         isLoading: false as boolean,
-        // resource: null as Object3D | null,
+        data,
     }),
 )
+
+export const animationComponent = createComponent('animationComponent', ({ state }: { state?: string }) => ({
+    state: state ?? null,
+    prevState: null as string | null,
+}))
 
 export const positionComponent = createComponent('positionComponent', ({ position }: { position?: Array3 }) => ({
     position: position ?? ([0, 0, 0] as Array3),

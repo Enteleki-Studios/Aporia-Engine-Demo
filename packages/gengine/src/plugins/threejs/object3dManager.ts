@@ -1,6 +1,6 @@
 import { AnimationAction, AnimationClip, AnimationMixer, Group, Object3D } from 'three'
 import { ResourceManager } from 'managers/ResourceManager'
-import { StandardRenderer } from './StandardRenderer'
+import { StandardRenderer } from '../../threejs/StandardRenderer'
 
 export const makeObject3dManager = (renderer: StandardRenderer) =>
     new ResourceManager<Group, Object3D>({

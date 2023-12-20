@@ -18,6 +18,9 @@ export { twinStickMovementSystem, twinStickMovementFilter } from './systems/Twin
 export { thirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'
 export { sunSystem, sunTargetFilter, directionalLightFilter } from './systems/SunSystem'
 
+// Plugins
+export { threejsPlugin } from './plugins/threejs'
+
 // Managers
 export { InputManager } from './managers/InputManager'
 export { ResourceManager } from './managers/ResourceManager'
@@ -46,7 +49,6 @@ export { StandardRenderer } from './threejs/StandardRenderer'
 export { TextSprite } from './threejs/TextSprite'
 export { SkySphere } from './threejs/SkySphere'
 export * from './threejs/threejsUtils'
-export { makeObject3dManager, makeAnimationManager } from './threejs/object3dManager'
 
 // Three re-exports
 export { Capsule } from 'three/examples/jsm/math/Capsule'

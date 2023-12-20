@@ -1,4 +1,4 @@
-import { type Entity } from 'ecs'
+import { type Entity } from 'core'
 
 import npmPackage from '../package.json'
 

@@ -9,13 +9,13 @@ import {
     healthComponent,
     velocityComponent,
     createSystem,
-    makeAnimationManager,
+    type threejsPlugin,
+    animationComponent,
 } from 'gengine'
-import { animationComponent } from 'components'
 
 export const animatedFilter = new ECSFilter([animationComponent, modelComponent])
 
-export const animationSystem = createSystem<{ animationManager: ReturnType<typeof makeAnimationManager> }>(
+export const animationSystem = createSystem<{ animationManager: ReturnType<typeof threejsPlugin>['resources']['animationManager'] }>(
     'animation',
     ({ animationManager }) =>
         (world: World) => {
