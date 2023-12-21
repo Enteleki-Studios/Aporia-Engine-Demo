@@ -1,6 +1,13 @@
 import { Clock } from 'three'
 
-import { EntityManager, type ECSStatsType, type System, type Plugin, type PluginCreator, PluginFromPluginCreator } from 'core'
+import {
+    EntityManager,
+    type ECSStatsType,
+    type System,
+    type Plugin,
+    type PluginCreator,
+    type PluginFromPluginCreator,
+} from 'core'
 
 import { AGG_SIZE_DEFAULT, WORLD_MAX_DELTA_DEFAULT, WORLD_MIN_DELTA_DEFAULT, WorldEvent } from 'definitions'
 import { log } from 'utils/log'
@@ -56,7 +63,7 @@ export class World {
 
     private clock = new Clock()
     private delta = 0 // Seconds
-    private plugins = new Map<PluginCreator['label'], Plugin>
+    private plugins = new Map<PluginCreator['label'], Plugin>()
     private systems: System[] = []
     private observers: Record<WorldEvent, (() => void)[]> = {
         start: [],

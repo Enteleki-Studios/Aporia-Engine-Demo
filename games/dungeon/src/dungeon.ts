@@ -115,35 +115,33 @@ world.ecs.registerFilters([
     mesh2DFilter,
 ])
 
-world
-    .registerPlugin(threejs)
-    .registerSystems([
-        inputSystem({ inputManager }),
-        emitterSystem({
-            prefabs: {
-                ball: () =>
-                    new Entity().addComponents(
-                        basicGeometryComponent({
-                            geometryType: 'sphere',
-                            radius: 0.25,
-                            color: 0xff0099,
-                        }),
-                        positionComponent({}),
-                        velocityComponent({ velocity: [-2, 0, 0] }),
-                    ),
-            },
-        }),
-        twinStickMovementSystem(),
-        // firstPersonMovementSystem(),
-        Systems.aiSystem(),
-        Systems.collisionSystem({ octree }),
-        applyVelocitySystem(),
-        damageSystem(),
-        thirdPersonCameraSystem(),
-        // firstPersonCameraSystem(),
-        // sunSystem(),
-        Systems.animationSystem({ animationManager: threejs.resources.animationManager }),
-    ])
+world.registerPlugin(threejs).registerSystems([
+    inputSystem({ inputManager }),
+    emitterSystem({
+        prefabs: {
+            ball: () =>
+                new Entity().addComponents(
+                    basicGeometryComponent({
+                        geometryType: 'sphere',
+                        radius: 0.25,
+                        color: 0xff0099,
+                    }),
+                    positionComponent({}),
+                    velocityComponent({ velocity: [-2, 0, 0] }),
+                ),
+        },
+    }),
+    twinStickMovementSystem(),
+    // firstPersonMovementSystem(),
+    Systems.aiSystem(),
+    Systems.collisionSystem({ octree }),
+    applyVelocitySystem(),
+    damageSystem(),
+    thirdPersonCameraSystem(),
+    // firstPersonCameraSystem(),
+    // sunSystem(),
+    Systems.animationSystem({ animationManager: threejs.resources.animationManager }),
+])
 
 export const middleware: Middleware = () => (next) => (action: unknown) => {
     if (inspector.slice.actions.setDebugMode.match(action)) {
@@ -338,7 +336,10 @@ for (let i = 0; i < 32; i += 2) {
 const makePos = (): [number, number, number] => [Math.random() * 30 - 15, 0, Math.random() * 30 - 15]
 for (let i = 0; i < 200; i += 1) {
     world.ecs.registerEntity(
-        new Entity().addComponents(modelComponent({ modelName: 'grass', data: modelDB['grass'] }), positionComponent({ position: makePos() })),
+        new Entity().addComponents(
+            modelComponent({ modelName: 'grass', data: modelDB['grass'] }),
+            positionComponent({ position: makePos() }),
+        ),
     )
 }
 

@@ -116,7 +116,10 @@ const makeColliderHelper = (collider: Collider) => {
     }
 }
 
-function loadAnimations(modelComponent: { modelName: string, data: { animations?: Record<string, string> } }, model: Object3D) {
+function loadAnimations(
+    modelComponent: { modelName: string; data: { animations?: Record<string, string> } },
+    model: Object3D,
+) {
     const { data } = modelComponent
     const { animations: animationIndex } = data
 

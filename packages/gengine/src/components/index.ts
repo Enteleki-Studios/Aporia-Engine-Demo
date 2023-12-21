@@ -107,7 +107,7 @@ type Model = {
 }
 export const modelComponent = createComponent(
     'modelComponent',
-    ({ modelName, castShadow, data }: { modelName: string; castShadow?: boolean, data: Model }) => ({
+    ({ modelName, castShadow, data }: { modelName: string; castShadow?: boolean; data: Model }) => ({
         modelName,
         castShadow: castShadow ?? false,
         isLoading: false as boolean,

@@ -96,7 +96,6 @@ export class EntityManager {
         this.stats.filters = this.entitiesByFilter.size
     }
 
-
     registerFilters(filters: ECSFilter[]) {
         filters.forEach((f) => this.registerFilter(f))
     }

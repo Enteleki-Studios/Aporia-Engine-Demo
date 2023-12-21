@@ -13,13 +13,16 @@ export type Plugin = {
 }
 
 export type PluginCreator<P = Plugin, T = void> = {
-    (options: T): P,
-    label: string,
+    (options: T): P
+    label: string
 }
 
 export type PluginFromPluginCreator<PC extends PluginCreator> = ReturnType<PC>
 
-export const createPlugin = <P = Unnamed<Plugin>, T = void>(name: string, preparePlugin: PreparePlugin<P, T>): PluginCreator<Named<P>, T> => {
+export const createPlugin = <P = Unnamed<Plugin>, T = void>(
+    name: string,
+    preparePlugin: PreparePlugin<P, T>,
+): PluginCreator<Named<P>, T> => {
     const pluginCreator = (options: T): Named<P> => {
         const plugin = {
             name,

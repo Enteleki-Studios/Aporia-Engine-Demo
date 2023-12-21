@@ -2,17 +2,9 @@ import { Group, Object3D } from 'three'
 
 import { createSystem, World } from 'core'
 import { ResourceManager } from 'managers/ResourceManager'
-import {
-    cameraFilter,
-    movingEntitiesFilter,
-    rotatingEntitiesFilter,
-} from 'filters'
+import { cameraFilter, movingEntitiesFilter, rotatingEntitiesFilter } from 'filters'
 
-import {
-    cameraComponent,
-    positionComponent,
-    directionComponent,
-} from 'components'
+import { cameraComponent, positionComponent, directionComponent } from 'components'
 
 import { Renderer } from './Renderer'
 
