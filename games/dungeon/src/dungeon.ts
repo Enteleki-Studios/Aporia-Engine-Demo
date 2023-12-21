@@ -70,7 +70,7 @@ const threejs = threejsPlugin()
 const { renderer, octree } = threejs.resources
 
 export const updateCanvasContainer = (container: HTMLDivElement) => {
-    world.getPlugin(threejsPlugin).setCanvasContainer(container)
+    world.getPlugin(threejsPlugin).api.setCanvasContainer(container)
 }
 
 const inputManager = new InputManager({

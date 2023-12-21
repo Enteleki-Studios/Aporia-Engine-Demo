@@ -56,8 +56,10 @@ export const threejsPlugin = createPlugin('Three.js plugin', () => {
             objectManager,
             animationManager,
         },
-        setCanvasContainer(container: HTMLDivElement) {
-            renderer.setCanvasContainer(container)
-        }
+        api: {
+            setCanvasContainer(container: HTMLDivElement) {
+                renderer.setCanvasContainer(container)
+            }
+        },
     }
 })
