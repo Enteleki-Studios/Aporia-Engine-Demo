@@ -37,6 +37,8 @@ export type StatsType = {
     aggFrameTimeInter: number
     /** Number of registered systems */
     systems: number
+    /** Number of registered plugins */
+    plugins: number
     /** Array of last frame system stats */
     systemsStats: Record<string, SystemStatsType>
 }
@@ -85,6 +87,7 @@ export class World {
             aggFrameTimeInter: 0,
             systemsStats: {},
             systems: 0,
+            plugins: 0,
         }
 
         this.addEventListener.bind(this)
@@ -192,6 +195,8 @@ export class World {
 
     registerPlugin(plugin: Plugin) {
         this.plugins.set(plugin.name, plugin)
+
+        this.stats.plugins = this.plugins.size
 
         plugin.init(this)
 

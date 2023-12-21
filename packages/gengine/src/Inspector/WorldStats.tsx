@@ -83,6 +83,9 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 <span>components:</span>
                 <span>{stats.ecs.components}</span>
 
+                <span>plugins:</span>
+                <span>{stats.plugins}</span>
+
                 <span>systems:</span>
                 <span>{stats.systems}</span>
 
