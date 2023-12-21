@@ -64,12 +64,13 @@ import * as Systems from 'systems'
 import modelDB from 'modelDB'
 
 export const world = new World()
+world.getPlugin(threejsPlugin)
 
 const threejs = threejsPlugin()
 const { renderer, octree } = threejs.resources
 
 export const updateCanvasContainer = (container: HTMLDivElement) => {
-    renderer.setCanvasContainer(container)
+    world.getPlugin(threejsPlugin).setCanvasContainer(container)
 }
 
 const inputManager = new InputManager({
