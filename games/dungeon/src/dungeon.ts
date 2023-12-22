@@ -64,7 +64,6 @@ import * as Systems from 'systems'
 import modelDB from 'modelDB'
 
 export const world = new World()
-world.getPlugin(threejsPlugin)
 
 const threejs = threejsPlugin()
 const { renderer, octree } = threejs.resources
@@ -140,7 +139,7 @@ world.registerPlugin(threejs).registerSystems([
     thirdPersonCameraSystem(),
     // firstPersonCameraSystem(),
     // sunSystem(),
-    Systems.animationSystem({ animationManager: threejs.resources.animationManager }),
+    Systems.animationSystem(),
 ])
 
 export const middleware: Middleware = () => (next) => (action: unknown) => {

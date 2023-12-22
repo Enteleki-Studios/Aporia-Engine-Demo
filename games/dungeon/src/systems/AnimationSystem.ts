@@ -9,15 +9,15 @@ import {
     healthComponent,
     velocityComponent,
     createSystem,
-    type threejsPlugin,
+    threejsPlugin,
     animationComponent,
 } from 'gengine'
 
 export const animatedFilter = new ECSFilter([animationComponent, modelComponent])
 
-export const animationSystem = createSystem<{
-    animationManager: ReturnType<typeof threejsPlugin>['resources']['animationManager']
-}>('animation', ({ animationManager }) => (world: World) => {
+export const animationSystem = createSystem('animations', () => (world: World) => {
+    const { animationManager } = world.getPlugin(threejsPlugin).resources
+
     world.ecs.filterBy(animatedFilter).forEach((entity) => {
         const animation = entity.get(animationComponent)
 

@@ -97,8 +97,6 @@ export class World {
             plugins: 0,
         }
 
-        this.addEventListener.bind(this)
-
         log.i('Gengine started')
     }
 
@@ -107,7 +105,7 @@ export class World {
         return this.delta
     }
 
-    private tick() {
+    private tick = () => {
         performance.mark('Framestart')
         this.delta = Math.min(Math.max(this.clock.getDelta(), 0.001), this.MAX_DELTA)
         this.stats.fps = Math.floor(1 / this.delta)
@@ -140,9 +138,9 @@ export class World {
 
         if (this.isRunning) {
             if (this.frameSync) {
-                requestAnimationFrame(this.tick.bind(this))
+                requestAnimationFrame(this.tick)
             } else {
-                setTimeout(this.tick.bind(this))
+                setTimeout(this.tick)
             }
         }
     }
