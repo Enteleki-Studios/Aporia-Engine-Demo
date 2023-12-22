@@ -10,7 +10,7 @@ export const thirdPersonCameraSystem = createSystem('third-person camera', () =>
     const delta = world.timeElapsedS
     const [cameraTarget] = world.ecs.filterBy(cameraTargetFilter)
 
-    world.ecs.filterBy(cameraFilter).forEach((cameraEntity) => {
+    for (const cameraEntity of world.ecs.filterBy(cameraFilter)) {
         const { position, lookAt } = cameraEntity.get(cameraComponent)
         const { position: targetPosition } = cameraTarget.get(positionComponent)
 
@@ -22,7 +22,7 @@ export const thirdPersonCameraSystem = createSystem('third-person camera', () =>
         Vec3.lerp(lookAt, lookAt, targetPosition, 1 - 0.005 ** delta)
         // cameraComponent.position.copy(camPosition)
         // cameraComponent.lookAt.copy(targetPosition)
-    })
+    }
 })
 // Panning
 // forwardQ.setFromAxisAngle(Y_AXIS, -2 * Math.PI * inputComponent.mouse.pan.x * delta * 0.01)

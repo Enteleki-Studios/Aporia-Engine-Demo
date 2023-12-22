@@ -25,19 +25,19 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
             //     objectManager.getResource(entity.id, 'directionalLightTarget')?.position.fromArray(target)
             // })
 
-            world.ecs.filterBy(cameraFilter).forEach((entity) => {
+            for (const entity of world.ecs.filterBy(cameraFilter)) {
                 const { position, lookAt } = entity.get(cameraComponent)
                 renderer.camera.position.fromArray(position)
                 renderer.camera.lookAt(...lookAt)
-            })
+            }
 
-            world.ecs.filterBy(movingEntitiesFilter).forEach((entity) => {
+            for (const entity of world.ecs.filterBy(movingEntitiesFilter)) {
                 const { position } = entity.get(positionComponent)
                 objectManager.getContainer(entity.id)?.position.fromArray(position)
-            })
+            }
 
             // TODO only do this for dirty entities/components
-            world.ecs.filterBy(rotatingEntitiesFilter).forEach((entity) => {
+            for (const entity of world.ecs.filterBy(rotatingEntitiesFilter)) {
                 // TODO this if statement is a hack...
                 // if (!entity.hasTag(tags.hero)) {
                 const { position } = entity.get(positionComponent)
@@ -47,7 +47,7 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
                     .getContainer(entity.id)
                     ?.lookAt(position[0] + direction[0], position[1] + direction[1], position[2] + direction[2])
                 // }
-            })
+            }
 
             renderer.render()
 

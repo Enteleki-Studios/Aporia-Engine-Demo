@@ -22,8 +22,8 @@ export const twinStickMovementSystem = createSystem('twin-stick movement', () =>
 
     return (world: World) => {
         const delta = world.timeElapsedS
-        world.ecs.filterBy(cameraFilter).forEach((cameraEntity) => {
-            world.ecs.filterBy(twinStickMovementFilter).forEach((entity) => {
+        for (const cameraEntity of world.ecs.filterBy(cameraFilter)) {
+            for (const entity of world.ecs.filterBy(twinStickMovementFilter)) {
                 const { input, mouse } = entity.get(inputComponent)
                 const { position } = entity.get(positionComponent)
                 const { velocity } = entity.get(velocityComponent)
@@ -95,7 +95,7 @@ export const twinStickMovementSystem = createSystem('twin-stick movement', () =>
 
                 // Vec3.set(direction, 1, 0, 0)
                 // Vec3.rotateY(direction, direction, ORIGIN, angle)
-            })
-        })
+            }
+        }
     }
 })

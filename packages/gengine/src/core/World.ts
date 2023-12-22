@@ -106,20 +106,17 @@ export class World {
     }
 
     private tick = () => {
-        performance.mark('Framestart')
+        const frameStart = performance.now()
         this.delta = Math.min(Math.max(this.clock.getDelta(), 0.001), this.MAX_DELTA)
         this.stats.fps = Math.floor(1 / this.delta)
 
-        this.systems.forEach((system) => {
-            const name = `System: ${system.label}`
-            performance.mark(name)
+        for (const system of this.systems) {
+            const systemStart = performance.now()
             system(this)
-            this.stats.systemsStats[system.label].runtime = Math.floor(
-                performance.measure(`${name} finish`, name).duration,
-            )
-        })
+            this.stats.systemsStats[system.label].runtime = Math.floor(performance.now() - systemStart)
+        }
 
-        this.stats.frameTime = Math.floor(performance.measure('Frame length', 'Framestart').duration)
+        this.stats.frameTime = Math.floor(performance.now() - frameStart)
         this.stats.frames += 1
         this.stats.totalRuntime = this.clock.elapsedTime
         this.updateListeners('endframe')
@@ -176,7 +173,9 @@ export class World {
     }
 
     private updateListeners(eventName: WorldEvent) {
-        this.observers[eventName].forEach((c) => c())
+        for (const callback of this.observers[eventName]) {
+            callback()
+        }
     }
 
     registerSystem(system: System) {

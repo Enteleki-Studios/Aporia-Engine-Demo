@@ -7,7 +7,7 @@ export const emitterSystem = createSystem<{ prefabs: Record<string, undefined | 
     'emitter',
     ({ prefabs }) =>
         (world: World) => {
-            world.ecs.filterBy(emitterFilter).forEach((entity) => {
+            for (const entity of world.ecs.filterBy(emitterFilter)) {
                 const { position } = entity.get(positionComponent)
                 const emitter = entity.get(emitterComponent)
                 const { prefabId, delay, elapsed } = emitter
@@ -24,6 +24,6 @@ export const emitterSystem = createSystem<{ prefabs: Record<string, undefined | 
                 } else {
                     emitter.elapsed += world.timeElapsedS
                 }
-            })
+            }
         },
 )
