@@ -6,7 +6,7 @@ import { secondsToClockString } from './utils'
 import { useForceUpdate } from 'reactjs/hooks/useForceUpdate'
 
 import { Icon } from 'Inspector/Icon'
-import { World } from '../World'
+import { type World } from 'core'
 import { Graph } from 'utils/graph'
 
 type WorldStatsProps = {
@@ -82,6 +82,9 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
 
                 <span>components:</span>
                 <span>{stats.ecs.components}</span>
+
+                <span>plugins:</span>
+                <span>{stats.plugins}</span>
 
                 <span>systems:</span>
                 <span>{stats.systems}</span>

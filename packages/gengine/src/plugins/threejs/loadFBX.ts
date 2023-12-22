@@ -1,6 +1,6 @@
 import { Texture, sRGBEncoding, TextureLoader, Group } from 'three'
 
-import { isThreeMesh } from 'gengine'
+import { isThreeMesh } from 'threejs/threejsUtils'
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
@@ -11,7 +11,7 @@ type LoadFBXConfig = {
     castShadow?: boolean
 }
 
-export default function loadFBX(modelPath: string, texturePath?: string, config?: LoadFBXConfig): Promise<Group> {
+export function loadFBX(modelPath: string, texturePath?: string, config?: LoadFBXConfig): Promise<Group> {
     return new Promise((resolve) => {
         loader.load(modelPath, (model: Group) => {
             let texture: Texture | null = null

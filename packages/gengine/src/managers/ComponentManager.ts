@@ -1,4 +1,4 @@
-import type { Component } from '../ecs'
+import type { Component } from 'core'
 
 type Entity = Map<string, Component>
 type ComponentTuple = Component[]

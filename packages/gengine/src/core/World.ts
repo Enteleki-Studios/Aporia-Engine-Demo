@@ -1,6 +1,13 @@
 import { Clock } from 'three'
 
-import { ECS, type ECSStatsType, type System  } from 'ecs'
+import {
+    EntityManager,
+    type ECSStatsType,
+    type System,
+    type Plugin,
+    type PluginCreator,
+    type PluginFromPluginCreator,
+} from 'core'
 
 import { AGG_SIZE_DEFAULT, WORLD_MAX_DELTA_DEFAULT, WORLD_MIN_DELTA_DEFAULT, WorldEvent } from 'definitions'
 import { log } from 'utils/log'
@@ -37,6 +44,8 @@ export type StatsType = {
     aggFrameTimeInter: number
     /** Number of registered systems */
     systems: number
+    /** Number of registered plugins */
+    plugins: number
     /** Array of last frame system stats */
     systemsStats: Record<string, SystemStatsType>
 }
@@ -54,6 +63,7 @@ export class World {
 
     private clock = new Clock()
     private delta = 0 // Seconds
+    private plugins = new Map<PluginCreator['label'], Plugin>()
     private systems: System[] = []
     private observers: Record<WorldEvent, (() => void)[]> = {
         start: [],
@@ -61,16 +71,15 @@ export class World {
         endframe: [],
     }
 
-
     readonly stats: StatsType
-    readonly ecs: ECS
+    readonly ecs: EntityManager
 
     isRunning = false
 
     frameSync = true
 
     constructor() {
-        this.ecs = new ECS()
+        this.ecs = new EntityManager()
 
         this.stats = {
             fps: 0,
@@ -85,9 +94,8 @@ export class World {
             aggFrameTimeInter: 0,
             systemsStats: {},
             systems: 0,
+            plugins: 0,
         }
-
-        this.addEventListener.bind(this)
 
         log.i('Gengine started')
     }
@@ -97,7 +105,7 @@ export class World {
         return this.delta
     }
 
-    private tick() {
+    private tick = () => {
         performance.mark('Framestart')
         this.delta = Math.min(Math.max(this.clock.getDelta(), 0.001), this.MAX_DELTA)
         this.stats.fps = Math.floor(1 / this.delta)
@@ -130,9 +138,9 @@ export class World {
 
         if (this.isRunning) {
             if (this.frameSync) {
-                requestAnimationFrame(this.tick.bind(this))
+                requestAnimationFrame(this.tick)
             } else {
-                setTimeout(this.tick.bind(this))
+                setTimeout(this.tick)
             }
         }
     }
@@ -188,5 +196,19 @@ export class World {
         systems.forEach((s) => this.registerSystem(s))
 
         return this
+    }
+
+    registerPlugin(plugin: Plugin) {
+        this.plugins.set(plugin.name, plugin)
+
+        this.stats.plugins = this.plugins.size
+
+        plugin.init(this)
+
+        return this
+    }
+
+    getPlugin<T extends PluginCreator>(pluginCreator: T) {
+        return this.plugins.get(pluginCreator.label) as PluginFromPluginCreator<T>
     }
 }

@@ -1,8 +1,5 @@
-// World
-export { World, type StatsType } from './World'
-
-// ECS
-export * from './ecs'
+// Core
+export * from './core'
 
 // Components
 export * from './components'
@@ -20,6 +17,9 @@ export { inputSystem } from './systems/InputSystem'
 export { twinStickMovementSystem, twinStickMovementFilter } from './systems/TwinStickMovementSystem'
 export { thirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'
 export { sunSystem, sunTargetFilter, directionalLightFilter } from './systems/SunSystem'
+
+// Plugins
+export { threejsPlugin } from './plugins/threejs'
 
 // Managers
 export { InputManager } from './managers/InputManager'
@@ -49,7 +49,6 @@ export { StandardRenderer } from './threejs/StandardRenderer'
 export { TextSprite } from './threejs/TextSprite'
 export { SkySphere } from './threejs/SkySphere'
 export * from './threejs/threejsUtils'
-export { makeObject3dManager, makeAnimationManager } from './threejs/object3dManager'
 
 // Three re-exports
 export { Capsule } from 'three/examples/jsm/math/Capsule'

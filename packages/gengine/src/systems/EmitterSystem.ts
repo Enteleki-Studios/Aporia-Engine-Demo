@@ -1,5 +1,4 @@
-import type { World } from 'World'
-import { ECSFilter, Entity, createSystem } from 'ecs'
+import { type World, ECSFilter, Entity, createSystem } from 'core'
 import { emitterComponent, positionComponent } from 'components'
 
 export const emitterFilter = new ECSFilter([emitterComponent, positionComponent])

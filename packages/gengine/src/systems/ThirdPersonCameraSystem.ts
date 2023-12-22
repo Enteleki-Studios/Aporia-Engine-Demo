@@ -1,8 +1,7 @@
 import { Vec3, Vec3Like } from 'gl-matrix/dist/esm'
 
-import type { World } from 'World'
 import { positionComponent, cameraComponent } from 'components'
-import { createSystem } from 'ecs'
+import { createSystem, type World } from 'core'
 import { cameraFilter, cameraTargetFilter } from 'filters'
 
 const camPosition: Vec3Like = [0, 0, 0]

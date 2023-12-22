@@ -1,4 +1,4 @@
-import { createComponent } from 'ecs'
+import { createComponent } from 'core'
 
 type CylinderCollider = {
     type: 'cylinder'

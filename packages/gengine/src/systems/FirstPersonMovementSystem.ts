@@ -1,10 +1,9 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
 
-import { createSystem } from 'ecs'
+import { createSystem, type World } from 'core'
 // import { roundToZero } from '../utils/vectorUtils'
 import { directionComponent, inputComponent, velocityComponent } from 'components'
 import { ORIGIN } from 'definitions'
-import { World } from 'World'
 import { inputFilter, movingEntitiesFilter, rotatingEntitiesFilter } from 'filters'
 
 const DECELERATION = -5

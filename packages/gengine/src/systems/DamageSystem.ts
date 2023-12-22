@@ -1,7 +1,6 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
 
-import type { World } from 'World'
-import { ECSFilter, createSystem } from 'ecs'
+import { ECSFilter, createSystem, type World } from 'core'
 import { damagingComponent, healthComponent, hitboxComponent, positionComponent } from 'components'
 
 export const damagingFilter = new ECSFilter([positionComponent, damagingComponent])
