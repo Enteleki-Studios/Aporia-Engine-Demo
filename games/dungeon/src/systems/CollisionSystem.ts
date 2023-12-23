@@ -12,36 +12,37 @@ import {
 } from 'gengine'
 // import { CollidableComponent } from 'dungeon/components'
 
-const playerCollider = new Capsule(undefined, undefined, 0.5)
-
 // TODO just selecting the hero for now
 export const collisionsFilter = heroFilter.and(movingEntitiesFilter)
 
-export const collisionSystem = createSystem<{ octree: Octree }>('collisions', ({ octree }) => (world: World) => {
-    world.ecs.filterBy(collisionsFilter).forEach((heroEntity) => {
-        const { position } = heroEntity.get(positionComponent)
-        const { velocity } = heroEntity.get(velocityComponent)
+export const collisionSystem = createSystem<{ octree: Octree }>('collisions', ({ octree }) => {
+    const playerCollider = new Capsule(undefined, undefined, 0.5)
 
-        // Capsule(start, end, radius)
-        // const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
-        playerCollider.start.fromArray(position)
-        playerCollider.end.fromArray(position).setY(2)
+    return (world: World) => {
+        for (const heroEntity of world.ecs.filterBy(collisionsFilter)) {
+            const { position } = heroEntity.get(positionComponent)
+            const { velocity } = heroEntity.get(velocityComponent)
 
-        playerCollider.start
-        const collisionResult = octree.capsuleIntersect(playerCollider)
-        if (collisionResult) {
-            const { normal } = collisionResult
+            // Capsule(start, end, radius)
+            // const playerCollider = new Capsule(position, position.clone().setY(2), 0.5)
+            playerCollider.start.fromArray(position)
+            playerCollider.end.fromArray(position).setY(2)
 
-            const collisionVector = new Vec3(normal.x, normal.y, normal.z)
-            if (Vec3.dot(collisionVector, velocity) < 0) {
-                // Rotate 90 degrees to get tangent vector
-                Vec3.rotateY(collisionVector, collisionVector, ORIGIN, -Math.PI / 2)
+            const collisionResult = octree.capsuleIntersect(playerCollider)
+            if (collisionResult) {
+                const { normal } = collisionResult
 
-                // Project velocity onto tangent
-                Vec3.scale(velocity, collisionVector, Vec3.dot(collisionVector, velocity))
+                const collisionVector = new Vec3(normal.x, normal.y, normal.z)
+                if (Vec3.dot(collisionVector, velocity) < 0) {
+                    // Rotate 90 degrees to get tangent vector
+                    Vec3.rotateY(collisionVector, collisionVector, ORIGIN, -Math.PI / 2)
+
+                    // Project velocity onto tangent
+                    Vec3.scale(velocity, collisionVector, Vec3.dot(collisionVector, velocity))
+                }
             }
         }
-    })
+    }
 })
 
 // export class CollisionSystem extends System {

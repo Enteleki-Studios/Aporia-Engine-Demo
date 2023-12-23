@@ -11,7 +11,7 @@ export const inputSystem = createSystem<{ inputManager: InputManager }>(
             const { panX, panY, centerRelX, centerRelY } = inputManager.readMouse()
             inputManager.resetMouse()
 
-            world.ecs.filterBy(inputFilter).forEach((entity) => {
+            for (const entity of world.ecs.filterBy(inputFilter)) {
                 const { input, mouse } = entity.get(inputComponent)
                 Object.keys(liveInput).forEach((action) => {
                     const actionInput = input[action]
@@ -36,6 +36,6 @@ export const inputSystem = createSystem<{ inputManager: InputManager }>(
 
                 mouse.position.centerRel.x = centerRelX
                 mouse.position.centerRel.y = centerRelY
-            })
+            }
         },
 )

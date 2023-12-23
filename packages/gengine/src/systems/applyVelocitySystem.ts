@@ -5,10 +5,10 @@ import { movingEntitiesFilter } from 'filters'
 import { type World, createSystem } from 'core'
 
 export const applyVelocitySystem = createSystem('apply velocity', () => (world: World) => {
-    world.ecs.filterBy(movingEntitiesFilter).forEach((entity) => {
+    for (const entity of world.ecs.filterBy(movingEntitiesFilter)) {
         const { position } = entity.get(positionComponent)
         const { velocity } = entity.get(velocityComponent)
 
         Vec3.scaleAndAdd(position, position, velocity, world.timeElapsedS)
-    })
+    }
 })

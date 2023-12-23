@@ -18,7 +18,7 @@ export const animatedFilter = new ECSFilter([animationComponent, modelComponent]
 export const animationSystem = createSystem('animations', () => (world: World) => {
     const { animationManager } = world.getPlugin(threejsPlugin).resources
 
-    world.ecs.filterBy(animatedFilter).forEach((entity) => {
+    for (const entity of world.ecs.filterBy(animatedFilter)) {
         const animation = entity.get(animationComponent)
 
         let nextState = 'idle'
@@ -96,5 +96,5 @@ export const animationSystem = createSystem('animations', () => (world: World) =
 
             animationsContainer.mixer?.update(world.timeElapsedS)
         }
-    })
+    }
 })

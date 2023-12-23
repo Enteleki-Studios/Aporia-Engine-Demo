@@ -7,7 +7,7 @@ export const damagingFilter = new ECSFilter([positionComponent, damagingComponen
 export const damagableFilter = new ECSFilter([positionComponent, healthComponent, hitboxComponent])
 
 export const damageSystem = createSystem('damage', () => (world: World) => {
-    world.ecs.filterBy(damagingFilter).forEach((damagingEntity) => {
+    for (const damagingEntity of world.ecs.filterBy(damagingFilter)) {
         const damagingPosition = damagingEntity.get(positionComponent)
         const damageComponent = damagingEntity.get(damagingComponent)
 
@@ -16,7 +16,7 @@ export const damageSystem = createSystem('damage', () => (world: World) => {
         if (damageComponent.stage === 'spooling' && damageComponent.delta > damageComponent.spoolUp) {
             damageComponent.stage = 'cooling'
 
-            world.ecs.filterBy(damagableFilter).forEach((targetEntity) => {
+            for (const targetEntity of world.ecs.filterBy(damagableFilter)) {
                 if (damagingEntity.id === targetEntity.id) {
                     return
                 }
@@ -31,7 +31,7 @@ export const damageSystem = createSystem('damage', () => (world: World) => {
                         targetHealth.health -= Math.min(damageComponent.damage, targetHealth.health)
                     }
                 }
-            })
+            }
         } else if (damageComponent.stage === 'cooling' && damageComponent.delta > damageComponent.coolDown) {
             damageComponent.stage = 'spooling'
             damageComponent.delta = 0
@@ -41,5 +41,5 @@ export const damageSystem = createSystem('damage', () => (world: World) => {
             // Grenades are all the time
             // Passive effects while in range
         }
-    })
+    }
 })
