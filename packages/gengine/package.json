@@ -38,6 +38,6 @@
     "peerDependencies": {
         "react": "^18.2.0",
         "react-redux": "^9.0.3",
-        "three": "^0.159.0"
+        "three": "^0.160.0"
     }
 }
