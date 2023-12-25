@@ -23,8 +23,8 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
     useEffect(() => {
         const onEndFrame = () => {
             forceUpdate()
-            fpsGraph.current?.update(world.stats.fps)
-            frameGraph.current?.update(world.stats.frameTime)
+            fpsGraph.current?.update(world.time.fps)
+            frameGraph.current?.update(world.time.frameLength)
         }
 
         world.addEventListener('endframe', onEndFrame)
@@ -46,7 +46,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
         }
     }, [])
 
-    const { stats } = world
+    const { stats, time } = world
 
     return (
         <section className="WorldStats">
@@ -58,19 +58,19 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
             <div className="table">
                 <span>fps:</span>
                 <span>
-                    {stats.fpsAgg} <i ref={fpsGraphRef} />
+                    {time.fps} <i ref={fpsGraphRef} />
                 </span>
 
                 <span>frame time:</span>
                 <span>
-                    {stats.frameTimeAgg} <i ref={frameGraphRef} />
+                    {time.frameLength} <i ref={frameGraphRef} />
                 </span>
 
                 <span>frames:</span>
-                <span>{stats.frames}</span>
+                <span>{time.frames}</span>
 
                 <span>runtime:</span>
-                <span>{secondsToClockString(stats.totalRuntime, 3)}</span>
+                <span>{secondsToClockString(time.elapsedTime, 3)}</span>
             </div>
             <h4>
                 <Icon icon={<PiGraphDuotone />} />

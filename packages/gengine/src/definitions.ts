@@ -25,14 +25,6 @@ export const Y_AXIS: Readonly<Array3> = Object.freeze([0, 1, 0])
 export const Z_AXIS: Readonly<Array3> = Object.freeze([0, 0, 1])
 export const ORIGIN: Readonly<Array3> = Object.freeze([0, 0, 0])
 
-// Engine defaults
-// Max reported frame length
-export const WORLD_MAX_DELTA_DEFAULT = 0.1
-// Min reported frame length
-export const WORLD_MIN_DELTA_DEFAULT = 0.001
-// How many frames to average for fps stats
-export const AGG_SIZE_DEFAULT = 10
-
 // Rendering
 export type DebugMode = 'game' | 'debug' | 'sideBySide'
 export const DebugModes: { value: DebugMode; label: string }[] = [
