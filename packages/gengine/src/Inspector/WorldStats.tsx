@@ -63,7 +63,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
 
                 <span>frame time:</span>
                 <span>
-                    {time.frameLength} <i ref={frameGraphRef} />
+                    {Math.ceil(time.frameLength)} <i ref={frameGraphRef} />
                 </span>
 
                 <span>frames:</span>

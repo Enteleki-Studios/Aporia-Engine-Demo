@@ -75,7 +75,7 @@ export class World {
         for (const system of this.systems) {
             const systemStart = Clock.now()
             system(this)
-            this.stats.systemsStats[system.label].runtime = Math.floor(Clock.now() - systemStart)
+            this.stats.systemsStats[system.label].runtime = Math.ceil(Clock.now() - systemStart)
         }
 
         this.updateListeners('endframe')

@@ -62,6 +62,7 @@ export class Clock {
         return this._frameBudget
     }
 
+    /** Mark the start of a new frame */
     startFrame() {
         this.trueDelta = (Clock.now() - this.frameStart) / 1000
         this.frameStart = Clock.now()
@@ -70,6 +71,7 @@ export class Clock {
         this.elapsedTime = (Clock.now() - this.clockStart) / 1000
     }
 
+    /** Mark the end of all work that needed to be done this frame */
     endFrame() {
         this.frameEnd = Clock.now()
         this.frameLength = this.frameEnd - this.frameStart
