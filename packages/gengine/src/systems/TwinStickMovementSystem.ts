@@ -1,6 +1,6 @@
 import { Vec2, Vec3 } from 'gl-matrix/dist/esm'
 import { createSystem, type World } from 'core'
-import { cameraComponent, directionComponent, inputComponent, positionComponent, velocityComponent } from 'components'
+import { cameraComponent, directionComponent, inputComponent, transform3D, velocityComponent } from 'components'
 import { Array2, Array3, ORIGIN } from 'definitions'
 import { cameraFilter, movingEntitiesFilter, rotatingEntitiesFilter, inputFilter } from 'filters'
 import { angle2, roundToZero } from 'utils/vectorUtils'
@@ -25,7 +25,7 @@ export const twinStickMovementSystem = createSystem('twin-stick movement', () =>
         for (const cameraEntity of world.ecs.filterBy(cameraFilter)) {
             for (const entity of world.ecs.filterBy(twinStickMovementFilter)) {
                 const { input, mouse } = entity.get(inputComponent)
-                const { position } = entity.get(positionComponent)
+                const { position } = entity.get(transform3D)
                 const { velocity } = entity.get(velocityComponent)
 
                 const { position: camPosition } = cameraEntity.get(cameraComponent)
@@ -80,7 +80,9 @@ export const twinStickMovementSystem = createSystem('twin-stick movement', () =>
                 const { direction } = entity.get(directionComponent)
                 // Rotate with velocity
                 if (Vec3.squaredLength(frameAcceleration)) {
-                    Vec3.normalize(direction, velocity)
+                    Vec3.copy(direction, velocity)
+                    direction[1] = 0
+                    Vec3.normalize(direction, direction)
                 }
 
                 // Rotate towards cursor (in progress)

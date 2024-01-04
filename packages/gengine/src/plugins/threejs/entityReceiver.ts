@@ -34,7 +34,6 @@ import {
     basicGeometryComponent,
     ambientLightComponent,
     colliderComponent,
-    positionComponent,
     transform3D,
     mesh2D,
     material,
@@ -218,12 +217,12 @@ export const entityReceiver =
                     new MeshStandardMaterial({ color: basicGeometry.color }),
                 )
                 objectManager.addResource(entity.id, 'basicGeometry', mesh)
-                objectManager.getContainer(entity.id)?.position.fromArray(entity.get(positionComponent).position)
+                objectManager.getContainer(entity.id)?.position.fromArray(entity.get(transform3D).position)
                 break
             }
             case collidingFilter: {
                 const { collider } = entity.get(colliderComponent)
-                const { position } = entity.get(positionComponent)
+                const { position } = entity.get(transform3D)
 
                 const collisionHelper = new Mesh(
                     makeColliderHelper(collider).translate(0, collider.height / 2, 0),
@@ -326,9 +325,9 @@ export const entityReceiver =
         }
 
         // TODO deprecate position component
-        if (entity.has(positionComponent)) {
+        if (entity.has(transform3D)) {
             const group = objectManager.getContainer(entity.id) ?? objectManager.newContainer(entity.id)
-            group.position.fromArray(entity.get(positionComponent).position)
+            group.position.fromArray(entity.get(transform3D).position)
         }
 
         if (entity.has(transform3D)) {

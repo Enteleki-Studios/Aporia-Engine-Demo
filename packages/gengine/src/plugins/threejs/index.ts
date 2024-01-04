@@ -12,6 +12,7 @@ import {
     boxFilter,
     collidingFilter,
     mesh2DFilter,
+    positionedEntitiesFilter,
 } from 'filters'
 
 import { Renderer } from './Renderer'
@@ -41,6 +42,7 @@ export const threejsPlugin = createPlugin('Three.js plugin', () => {
                 cameraFilter,
                 movingEntitiesFilter,
                 rotatingEntitiesFilter,
+                positionedEntitiesFilter,
             ])
 
             // TODO: Very temporary

@@ -2,9 +2,9 @@ import { Group, Object3D } from 'three'
 
 import { createSystem, World } from 'core'
 import { ResourceManager } from 'managers/ResourceManager'
-import { cameraFilter, movingEntitiesFilter, rotatingEntitiesFilter } from 'filters'
+import { cameraFilter, movingEntitiesFilter, positionedEntitiesFilter, rotatingEntitiesFilter } from 'filters'
 
-import { cameraComponent, positionComponent, directionComponent } from 'components'
+import { cameraComponent, directionComponent, transform3D } from 'components'
 
 import { Renderer } from './Renderer'
 
@@ -31,8 +31,8 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
                 renderer.camera.lookAt(...lookAt)
             }
 
-            for (const entity of world.ecs.filterBy(movingEntitiesFilter)) {
-                const { position } = entity.get(positionComponent)
+            for (const entity of world.ecs.filterBy(positionedEntitiesFilter)) {
+                const { position } = entity.get(transform3D)
                 objectManager.getContainer(entity.id)?.position.fromArray(position)
             }
 
@@ -40,7 +40,7 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
             for (const entity of world.ecs.filterBy(rotatingEntitiesFilter)) {
                 // TODO this if statement is a hack...
                 // if (!entity.hasTag(tags.hero)) {
-                const { position } = entity.get(positionComponent)
+                const { position } = entity.get(transform3D)
                 const { direction } = entity.get(directionComponent)
 
                 objectManager

@@ -20,6 +20,7 @@ export { sunSystem, sunTargetFilter, directionalLightFilter } from './systems/Su
 
 // Plugins
 export { threejsPlugin } from './plugins/threejs'
+export { physicsPlugin, physicsComponents } from './plugins/physics'
 
 // Managers
 export { InputManager } from './managers/InputManager'

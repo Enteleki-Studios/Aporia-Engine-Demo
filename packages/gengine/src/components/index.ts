@@ -120,10 +120,6 @@ export const animationComponent = createComponent('animationComponent', ({ state
     prevState: null as string | null,
 }))
 
-export const positionComponent = createComponent('positionComponent', ({ position }: { position?: Array3 }) => ({
-    position: position ?? ([0, 0, 0] as Array3),
-}))
-
 export const transform3D = createComponent(
     'transform3D',
     ({ position, rotation, scale }: { position?: Array3; rotation?: Array3; scale?: Array3 }) => ({

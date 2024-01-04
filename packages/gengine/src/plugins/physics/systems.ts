@@ -1,0 +1,44 @@
+import { World, createSystem } from 'core'
+
+import { physicsPlugin, physicsFilter, physicsExtVelocityFilter } from '.'
+import { transform3D, velocityComponent } from 'components'
+
+export const physicsSystem = createSystem('physics', () => (world: World) => {
+    const { physicsWorld, physicsBodyByEntityId } = world.getPlugin(physicsPlugin).resources
+
+    for (const entity of world.ecs.filterBy(physicsExtVelocityFilter)) {
+        const body = physicsBodyByEntityId.get(entity.id)
+
+        if (body) {
+            const { velocity } = entity.get(velocityComponent)
+
+            body.velocity.x = velocity[0]
+            body.velocity.y = velocity[1]
+            body.velocity.z = velocity[2]
+        }
+    }
+
+    physicsWorld.fixedStep()
+
+    for (const entity of world.ecs.filterBy(physicsFilter)) {
+        const body = physicsBodyByEntityId.get(entity.id)
+
+        if (body) {
+            const { position } = entity.get(transform3D)
+
+            position[0] = body.position.x
+            position[1] = body.position.y
+            position[2] = body.position.z
+
+            if (entity.has(velocityComponent)) {
+                const { velocity } = entity.get(velocityComponent)
+
+                velocity[0] = body.velocity.x
+                velocity[1] = body.velocity.y
+                velocity[2] = body.velocity.z
+            }
+        }
+    }
+
+    world.stats.systemsStats['physics'].extra.bodies = physicsWorld.bodies.length
+})
