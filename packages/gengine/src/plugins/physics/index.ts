@@ -60,7 +60,7 @@ const physicsBodyReceiver = (physicsWorld: cannon.World, physicsBodyByEntityId: 
         mass: settings.mass,
         fixedRotation: settings.fixedRotation ?? settings.externalControl,
         shape: makePhysicsShape(settings.shape),
-        material: settings.material ? new cannon.Material(settings.material) : settings.externalControl ? extControlMaterial : physicsWorld.defaultMaterial
+        material: settings.material ? new cannon.Material(settings.material) : settings.externalControl ? extControlMaterial : physicsWorld.defaultMaterial,
     })
 
     const { position, rotation } = entity.get(transform3D)

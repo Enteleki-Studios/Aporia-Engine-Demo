@@ -43,9 +43,13 @@ export const aiSystem = createSystem('ai', () => {
 
             // Rotate entity to face player
             Vec3.copy(direction, velocity)
+            direction[1] = 0
 
             // Set enemy speed
             Vec3.scale(velocity, velocity, shouldMove ? 2 : 0)
+
+            // TODO allow for 3D, something with snap to floor
+            velocity[1] = 0
         }
     }
 })

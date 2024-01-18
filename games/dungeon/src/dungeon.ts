@@ -267,8 +267,8 @@ world.ecs.registerEntity(
                 mass: 40,
                 externalControl: true,
                 shape: {
-                    type: 'sphere',
-                    radius: 0.5,
+                    type: 'cylinder',
+                    height: 0.5,
                 },
             }),
         )
