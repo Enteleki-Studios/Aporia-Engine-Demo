@@ -142,14 +142,11 @@ world.registerPlugin(threejs)
                                 type: 'sphere',
                                 radius: 0.25,
                             },
-                            material: {
-                                restitution: 1.3,
-                            },
                         }),
                     ),
             },
         }),
-        Systems.collisionSystem({ octree }),
+        // Systems.collisionSystem({ octree }),
         // applyVelocitySystem(),
         damageSystem(),
         thirdPersonCameraSystem(),
@@ -239,8 +236,8 @@ world.ecs.registerEntity(
                 mass: 80,
                 // fixedRotation: true,
                 shape: {
-                    type: 'sphere',
-                    radius: 1,
+                    type: 'cylinder',
+                    height: 2,
                 },
             }),
             // pointLightComponent({
@@ -347,7 +344,7 @@ for (let i = 0; i < 32; i += 2) {
     world.ecs.registerEntity(
         new Entity().addComponents(
             modelComponent({ modelName: 'stoneWallTop', data: modelDB['stoneWallTop'] }),
-            transform3D({ position: [-16, 0, i - 15] }),
+            transform3D({ position: [-16, 1, i - 15] }),
             colliderComponent({ collider: { type: 'box', width: 0.25, height: 2, depth: 2 } }),
             physicsComponents.physicsBody({
                 shape: {

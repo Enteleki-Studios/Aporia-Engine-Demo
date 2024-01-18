@@ -61,8 +61,9 @@ async function loadModel(modelC: ReturnType<typeof modelComponent>) {
     const model: Group = await loadFBX(modelPath, texturePath, { castShadow })
     model.scale.setScalar(scale)
     if (translate) {
-        const obj = model.children[0] as Mesh
-        obj.geometry.translate(...translate)
+        // const obj = model.children[0] as Mesh
+        // obj.geometry.translate(...translate)
+        model.position.set(...translate)
     }
 
     return model
@@ -168,18 +169,15 @@ export const entityReceiver =
         switch (filter) {
             case modelFilter: {
                 const mc = entity.get(modelComponent)
-                mc.isLoading = true
                 loadModel(mc)
                     .then((resource) => {
                         objectManager.addResource(entity.id, 'model', resource)
-                        const box = new Box3().setFromObject(resource)
 
                         const healthSprite = objectManager.getResource(entity.id, 'health')
                         if (healthSprite) {
+                            const box = new Box3().setFromObject(resource)
                             healthSprite.position.y = box.max.y + 0.15
                         }
-
-                        mc.isLoading = false
 
                         if (entity.has(animationComponent)) {
                             const { mixer, animations } = loadAnimations(mc, resource)
@@ -225,7 +223,7 @@ export const entityReceiver =
                 const { position } = entity.get(transform3D)
 
                 const collisionHelper = new Mesh(
-                    makeColliderHelper(collider).translate(0, collider.height / 2, 0),
+                    makeColliderHelper(collider),
                     new MeshStandardMaterial({
                         transparent: true,
                         opacity: 0.3,
@@ -322,12 +320,6 @@ export const entityReceiver =
                 renderer.scene.add(pointLightHelper)
                 renderer.registerHelper(pointLightHelper)
             }
-        }
-
-        // TODO deprecate position component
-        if (entity.has(transform3D)) {
-            const group = objectManager.getContainer(entity.id) ?? objectManager.newContainer(entity.id)
-            group.position.fromArray(entity.get(transform3D).position)
         }
 
         if (entity.has(transform3D)) {

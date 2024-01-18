@@ -69,6 +69,10 @@ const makePhysicsShape = (shape: Shape): cannon.Shape => {
             return new cannon.Plane()
         case 'sphere':
             return new cannon.Sphere(shape.radius)
+        case 'cylinder': {
+            const { radiusTop, radiusBottom, height, numSegments } = shape
+            return new cannon.Cylinder(radiusTop, radiusBottom, height, numSegments)
+        }
         default:
             return new cannon.Shape()
     }

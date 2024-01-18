@@ -110,7 +110,6 @@ export const modelComponent = createComponent(
     ({ modelName, castShadow, data }: { modelName: string; castShadow?: boolean; data: Model }) => ({
         modelName,
         castShadow: castShadow ?? false,
-        isLoading: false as boolean,
         data,
     }),
 )

@@ -32,22 +32,27 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
             }
 
             for (const entity of world.ecs.filterBy(positionedEntitiesFilter)) {
-                const { position } = entity.get(transform3D)
-                objectManager.getContainer(entity.id)?.position.fromArray(position)
+                const { position, rotation } = entity.get(transform3D)
+                const group = objectManager.getContainer(entity.id)
+
+                if (group) {
+                    group.position.fromArray(position)
+                    group.rotation.fromArray(rotation)
+                }
             }
 
             // TODO only do this for dirty entities/components
-            for (const entity of world.ecs.filterBy(rotatingEntitiesFilter)) {
-                // TODO this if statement is a hack...
-                // if (!entity.hasTag(tags.hero)) {
-                const { position } = entity.get(transform3D)
-                const { direction } = entity.get(directionComponent)
+            // for (const entity of world.ecs.filterBy(rotatingEntitiesFilter)) {
+            //     // TODO this if statement is a hack...
+            //     // if (!entity.hasTag(tags.hero)) {
+            //     const { position } = entity.get(transform3D)
+            //     const { direction } = entity.get(directionComponent)
 
-                objectManager
-                    .getContainer(entity.id)
-                    ?.lookAt(position[0] + direction[0], position[1] + direction[1], position[2] + direction[2])
-                // }
-            }
+            //     objectManager
+            //         .getContainer(entity.id)
+            //         ?.lookAt(position[0] + direction[0], position[1] + direction[1], position[2] + direction[2])
+            //     // }
+            // }
 
             renderer.render()
 

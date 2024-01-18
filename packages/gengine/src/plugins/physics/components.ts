@@ -9,6 +9,12 @@ export type Shape = {
     radius: number
 } | {
     type: 'plane'
+} | {
+    type: 'cylinder',
+    radiusTop?: number,
+    radiusBottom?: number,
+    height?: number,
+    numSegments?: number,
 }
 
 type PhysicsBodyProps = {
