@@ -115,12 +115,10 @@ world.ecs.registerFilters([
     mesh2DFilter,
 ])
 
-world.registerPlugin(threejs)
+world
+    .registerPlugin(threejs)
     .registerSystem(inputSystem({ inputManager }))
-    .registerSystems([
-        twinStickMovementSystem(),
-        Systems.aiSystem(),
-    ])
+    .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])
     .registerPlugin(physicsPlugin())
     .registerSystems([
         // inputSystem({ inputManager }),
@@ -192,7 +190,7 @@ world.ecs.registerEntity(
             repeatX: 32,
             repeatY: 32,
         }),
-        physicsComponents.physicsBody({ shape: { type: 'plane' } })
+        physicsComponents.physicsBody({ shape: { type: 'plane' } }),
     ),
 )
 
@@ -360,8 +358,8 @@ for (let i = 0; i < 32; i += 2) {
                 shape: {
                     type: 'box',
                     size: [0.25, 2, 2],
-                }
-            })
+                },
+            }),
         ),
     )
 }

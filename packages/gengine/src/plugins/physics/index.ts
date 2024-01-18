@@ -23,13 +23,13 @@ export const physicsPlugin = createPlugin('Physics 3D plugin (Cannon)', () => {
         new cannon.ContactMaterial(physicsWorld.defaultMaterial, extControlMaterial, {
             friction: 0,
             restitution: 0.2,
-        })
+        }),
     )
     physicsWorld.addContactMaterial(
         new cannon.ContactMaterial(extControlMaterial, extControlMaterial, {
             friction: 0,
             restitution: 0.2,
-        })
+        }),
     )
 
     return {
@@ -52,30 +52,33 @@ export const physicsComponents = {
     physicsBody,
 }
 
+const physicsBodyReceiver =
+    (physicsWorld: cannon.World, physicsBodyByEntityId: Map<EntityId, cannon.Body>) => (entity: Entity) => {
+        const settings = entity.get(physicsBody)
 
-const physicsBodyReceiver = (physicsWorld: cannon.World, physicsBodyByEntityId: Map<EntityId, cannon.Body>) => (entity: Entity) => {
-    const settings = entity.get(physicsBody)
+        const body = new cannon.Body({
+            mass: settings.mass,
+            fixedRotation: settings.fixedRotation ?? settings.externalControl,
+            shape: makePhysicsShape(settings.shape),
+            material: settings.material
+                ? new cannon.Material(settings.material)
+                : settings.externalControl
+                  ? extControlMaterial
+                  : physicsWorld.defaultMaterial,
+        })
 
-    const body = new cannon.Body({
-        mass: settings.mass,
-        fixedRotation: settings.fixedRotation ?? settings.externalControl,
-        shape: makePhysicsShape(settings.shape),
-        material: settings.material ? new cannon.Material(settings.material) : settings.externalControl ? extControlMaterial : physicsWorld.defaultMaterial,
-    })
+        const { position, rotation } = entity.get(transform3D)
 
-    const { position, rotation } = entity.get(transform3D)
+        body.position.set(...position)
+        body.quaternion.setFromEuler(...rotation)
 
-    body.position.set(...position)
-    body.quaternion.setFromEuler(...rotation)
+        if (settings.velocity) {
+            body.velocity.set(...settings.velocity)
+        }
 
-    if (settings.velocity) {
-        body.velocity.set(...settings.velocity)
+        physicsWorld.addBody(body)
+        physicsBodyByEntityId.set(entity.id, body)
     }
-
-
-    physicsWorld.addBody(body)
-    physicsBodyByEntityId.set(entity.id, body)
-}
 
 const makePhysicsShape = (shape: Shape): cannon.Shape => {
     switch (shape.type) {
