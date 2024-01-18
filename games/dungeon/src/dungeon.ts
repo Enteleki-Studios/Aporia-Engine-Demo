@@ -234,10 +234,12 @@ world.ecs.registerEntity(
             }),
             physicsComponents.physicsBody({
                 mass: 80,
-                // fixedRotation: true,
+                externalControl: true,
                 shape: {
                     type: 'cylinder',
                     height: 2,
+                    radiusTop: 0.5,
+                    radiusBottom: 0.5,
                 },
             }),
             // pointLightComponent({
@@ -261,6 +263,14 @@ world.ecs.registerEntity(
             directionComponent({}),
             velocityComponent({}),
             hitboxComponent({ radius: 0.25 }),
+            physicsComponents.physicsBody({
+                mass: 40,
+                externalControl: true,
+                shape: {
+                    type: 'sphere',
+                    radius: 0.5,
+                },
+            }),
         )
         .tag(tags.ai),
 )

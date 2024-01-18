@@ -6,6 +6,8 @@ import { physicsSystem } from './systems'
 import { Shape, physicsBody } from './components'
 import { transform3D, velocityComponent } from 'components'
 
+const extControlMaterial = new cannon.Material()
+
 export const physicsFilter = ECSFilter.of([transform3D, physicsBody])
 export const physicsExtVelocityFilter = ECSFilter.of([transform3D, velocityComponent, physicsBody])
 
@@ -16,6 +18,19 @@ export const physicsPlugin = createPlugin('Physics 3D plugin (Cannon)', () => {
     const physicsBodyByEntityId = new Map<EntityId, cannon.Body>()
 
     const receiver = physicsBodyReceiver(physicsWorld, physicsBodyByEntityId)
+
+    physicsWorld.addContactMaterial(
+        new cannon.ContactMaterial(physicsWorld.defaultMaterial, extControlMaterial, {
+            friction: 0,
+            restitution: 0.2,
+        })
+    )
+    physicsWorld.addContactMaterial(
+        new cannon.ContactMaterial(extControlMaterial, extControlMaterial, {
+            friction: 0,
+            restitution: 0.2,
+        })
+    )
 
     return {
         init(world) {
@@ -37,14 +52,15 @@ export const physicsComponents = {
     physicsBody,
 }
 
+
 const physicsBodyReceiver = (physicsWorld: cannon.World, physicsBodyByEntityId: Map<EntityId, cannon.Body>) => (entity: Entity) => {
     const settings = entity.get(physicsBody)
 
     const body = new cannon.Body({
         mass: settings.mass,
-        fixedRotation: settings.fixedRotation,
+        fixedRotation: settings.fixedRotation ?? settings.externalControl,
         shape: makePhysicsShape(settings.shape),
-        material: settings.material ? new cannon.Material(settings.material) : undefined
+        material: settings.material ? new cannon.Material(settings.material) : settings.externalControl ? extControlMaterial : physicsWorld.defaultMaterial
     })
 
     const { position, rotation } = entity.get(transform3D)

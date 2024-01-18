@@ -18,6 +18,10 @@ export type Shape = {
 }
 
 type PhysicsBodyProps = {
+    // Custom
+    externalControl?: boolean
+
+    // Native
     shape: Shape
     mass?: number
     fixedRotation?: boolean

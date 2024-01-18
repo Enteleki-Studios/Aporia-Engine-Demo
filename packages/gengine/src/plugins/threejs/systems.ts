@@ -42,17 +42,17 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
             }
 
             // TODO only do this for dirty entities/components
-            // for (const entity of world.ecs.filterBy(rotatingEntitiesFilter)) {
-            //     // TODO this if statement is a hack...
-            //     // if (!entity.hasTag(tags.hero)) {
-            //     const { position } = entity.get(transform3D)
-            //     const { direction } = entity.get(directionComponent)
+            for (const entity of world.ecs.filterBy(rotatingEntitiesFilter)) {
+                // TODO this if statement is a hack...
+                // if (!entity.hasTag(tags.hero)) {
+                const { position } = entity.get(transform3D)
+                const { direction } = entity.get(directionComponent)
 
-            //     objectManager
-            //         .getContainer(entity.id)
-            //         ?.lookAt(position[0] + direction[0], position[1] + direction[1], position[2] + direction[2])
-            //     // }
-            // }
+                objectManager
+                    .getContainer(entity.id)
+                    ?.lookAt(position[0] + direction[0], position[1] + direction[1], position[2] + direction[2])
+                // }
+            }
 
             renderer.render()
 
