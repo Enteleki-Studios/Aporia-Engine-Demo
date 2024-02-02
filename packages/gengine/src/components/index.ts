@@ -110,7 +110,6 @@ export const modelComponent = createComponent(
     ({ modelName, castShadow, data }: { modelName: string; castShadow?: boolean; data: Model }) => ({
         modelName,
         castShadow: castShadow ?? false,
-        isLoading: false as boolean,
         data,
     }),
 )
@@ -118,10 +117,6 @@ export const modelComponent = createComponent(
 export const animationComponent = createComponent('animationComponent', ({ state }: { state?: string }) => ({
     state: state ?? null,
     prevState: null as string | null,
-}))
-
-export const positionComponent = createComponent('positionComponent', ({ position }: { position?: Array3 }) => ({
-    position: position ?? ([0, 0, 0] as Array3),
 }))
 
 export const transform3D = createComponent(

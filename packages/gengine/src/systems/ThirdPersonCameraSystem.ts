@@ -1,6 +1,6 @@
 import { Vec3, Vec3Like } from 'gl-matrix/dist/esm'
 
-import { positionComponent, cameraComponent } from 'components'
+import { transform3D, cameraComponent } from 'components'
 import { createSystem, type World } from 'core'
 import { cameraFilter, cameraTargetFilter } from 'filters'
 
@@ -12,7 +12,7 @@ export const thirdPersonCameraSystem = createSystem('third-person camera', () =>
 
     for (const cameraEntity of world.ecs.filterBy(cameraFilter)) {
         const { position, lookAt } = cameraEntity.get(cameraComponent)
-        const { position: targetPosition } = cameraTarget.get(positionComponent)
+        const { position: targetPosition } = cameraTarget.get(transform3D)
 
         Vec3.copy(camPosition, targetPosition)
         Vec3.add(camPosition, camPosition, [5, 7, 7])

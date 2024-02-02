@@ -2,9 +2,9 @@ import { Group, Object3D } from 'three'
 
 import { createSystem, World } from 'core'
 import { ResourceManager } from 'managers/ResourceManager'
-import { cameraFilter, movingEntitiesFilter, rotatingEntitiesFilter } from 'filters'
+import { cameraFilter, movingEntitiesFilter, positionedEntitiesFilter, rotatingEntitiesFilter } from 'filters'
 
-import { cameraComponent, positionComponent, directionComponent } from 'components'
+import { cameraComponent, directionComponent, transform3D } from 'components'
 
 import { Renderer } from './Renderer'
 
@@ -31,16 +31,21 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
                 renderer.camera.lookAt(...lookAt)
             }
 
-            for (const entity of world.ecs.filterBy(movingEntitiesFilter)) {
-                const { position } = entity.get(positionComponent)
-                objectManager.getContainer(entity.id)?.position.fromArray(position)
+            for (const entity of world.ecs.filterBy(positionedEntitiesFilter)) {
+                const { position, rotation } = entity.get(transform3D)
+                const group = objectManager.getContainer(entity.id)
+
+                if (group) {
+                    group.position.fromArray(position)
+                    group.rotation.fromArray(rotation)
+                }
             }
 
             // TODO only do this for dirty entities/components
             for (const entity of world.ecs.filterBy(rotatingEntitiesFilter)) {
                 // TODO this if statement is a hack...
                 // if (!entity.hasTag(tags.hero)) {
-                const { position } = entity.get(positionComponent)
+                const { position } = entity.get(transform3D)
                 const { direction } = entity.get(directionComponent)
 
                 objectManager

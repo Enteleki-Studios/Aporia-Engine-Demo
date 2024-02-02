@@ -9,7 +9,7 @@ export class Clock {
     /**  Target fps used to calculate frameRemaining */
     private _fpsTarget = 60
     /** Frame length target in ms. Updated when fpsTarget is set */
-    private _frameBudget = (1/60) * 1000
+    private _frameBudget = (1 / 60) * 1000
 
     // Internal
     /** Time when clock was created in ms */

@@ -9,7 +9,6 @@ import {
     DEFAULT_KEYMAP,
     inputSystem,
     inputComponent,
-    positionComponent,
     hitboxComponent,
     thirdPersonCameraSystem,
     cameraComponent,
@@ -53,6 +52,7 @@ import {
     transform3D,
     threejsPlugin,
     animationComponent,
+    physicsPlugin,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -62,6 +62,7 @@ import * as Systems from 'systems'
 // import tilesGenerator from 'utils/tilesGenerator'
 
 import modelDB from 'modelDB'
+import { physicsComponents } from 'gengine'
 
 export const world = new World()
 
@@ -114,33 +115,41 @@ world.ecs.registerFilters([
     mesh2DFilter,
 ])
 
-world.registerPlugin(threejs).registerSystems([
-    inputSystem({ inputManager }),
-    emitterSystem({
-        prefabs: {
-            ball: () =>
-                new Entity().addComponents(
-                    basicGeometryComponent({
-                        geometryType: 'sphere',
-                        radius: 0.25,
-                        color: 0xff0099,
-                    }),
-                    positionComponent({}),
-                    velocityComponent({ velocity: [-2, 0, 0] }),
-                ),
-        },
-    }),
-    twinStickMovementSystem(),
-    // firstPersonMovementSystem(),
-    Systems.aiSystem(),
-    Systems.collisionSystem({ octree }),
-    applyVelocitySystem(),
-    damageSystem(),
-    thirdPersonCameraSystem(),
-    // firstPersonCameraSystem(),
-    // sunSystem(),
-    Systems.animationSystem(),
-])
+world
+    .registerPlugin(threejs)
+    .registerSystem(inputSystem({ inputManager }))
+    .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])
+    .registerPlugin(physicsPlugin())
+    .registerSystems([
+        // inputSystem({ inputManager }),
+        emitterSystem({
+            prefabs: {
+                ball: () =>
+                    new Entity().addComponents(
+                        basicGeometryComponent({
+                            geometryType: 'sphere',
+                            radius: 0.25,
+                            color: 0xff0099,
+                        }),
+                        transform3D({}),
+                        // velocityComponent({ velocity: [-2, 0, 0] }),
+                        physicsComponents.physicsBody({
+                            velocity: [-6, 0, Math.random() - 0.5],
+                            mass: 1,
+                            shape: {
+                                type: 'sphere',
+                                radius: 0.25,
+                            },
+                        }),
+                    ),
+            },
+        }),
+        // Systems.collisionSystem({ octree }),
+        // applyVelocitySystem(),
+        damageSystem(),
+        thirdPersonCameraSystem(),
+        Systems.animationSystem(),
+    ])
 
 export const middleware: Middleware = () => (next) => (action: unknown) => {
     if (inspector.slice.actions.setDebugMode.match(action)) {
@@ -155,7 +164,7 @@ world.ecs.registerEntity(
     new Entity().addComponents(
         ambientLightComponent({
             color: 0xf4e99b,
-            intensity: 0.05,
+            intensity: 0.2,
         }),
         pointLightComponent({
             color: 0xf4e99b,
@@ -181,6 +190,7 @@ world.ecs.registerEntity(
             repeatX: 32,
             repeatY: 32,
         }),
+        physicsComponents.physicsBody({ shape: { type: 'plane' } }),
     ),
 )
 
@@ -193,7 +203,7 @@ world.ecs.registerEntity(
 world.ecs.registerEntity(
     new Entity().addComponents(
         basicGeometryComponent({ geometryType: 'box' }),
-        positionComponent({ position: [0, 1, 5] }),
+        transform3D({ position: [0, 1, 5] }),
         emitterComponent({ prefabId: 'ball', delay: 2 }),
     ),
 )
@@ -206,13 +216,12 @@ world.ecs.registerEntity(
     new Entity()
         .addComponents(
             animationComponent({ state: 'idle' }),
-            // new Components.CollidableComponent(),
             directionComponent({}),
             hitboxComponent({ radius: 1 }),
             healthComponent({ health: 20 }),
             inputComponent({ keymap: DEFAULT_KEYMAP }),
             modelComponent({ modelName: 'wizard', data: modelDB['wizard'] }),
-            positionComponent({ position: [0, 0, -1] }),
+            transform3D({ position: [0, 1, -1] }),
             velocityComponent({}),
             damagingComponent({
                 radius: 1,
@@ -220,6 +229,16 @@ world.ecs.registerEntity(
                 spoolUp: 0.25,
                 coolDown: 0.5,
                 damage: 5,
+            }),
+            physicsComponents.physicsBody({
+                mass: 80,
+                externalControl: true,
+                shape: {
+                    type: 'cylinder',
+                    height: 2,
+                    radiusTop: 0.5,
+                    radiusBottom: 0.5,
+                },
             }),
             // pointLightComponent({
             //     color: 0xffeeff,
@@ -237,11 +256,19 @@ world.ecs.registerEntity(
         .addComponents(
             animationComponent({ state: 'idle' }),
             modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
-            positionComponent({ position: [1, 0, 2] }),
+            transform3D({ position: [1, 0, 2] }),
             healthComponent({ health: 20 }),
             directionComponent({}),
             velocityComponent({}),
             hitboxComponent({ radius: 0.25 }),
+            physicsComponents.physicsBody({
+                mass: 40,
+                externalControl: true,
+                shape: {
+                    type: 'cylinder',
+                    height: 0.5,
+                },
+            }),
         )
         .tag(tags.ai),
 )
@@ -261,7 +288,7 @@ items.forEach((item, i) => {
     world.ecs.registerEntity(
         new Entity().addComponents(
             modelComponent({ modelName: item, castShadow: true, data: modelDB[item] }),
-            positionComponent({ position: [i * 3 - 12, 0, 8] }),
+            transform3D({ position: [i * 3 - 12, 0, 8] }),
             colliderComponent({
                 collider: {
                     type: 'cylinder',
@@ -278,7 +305,7 @@ items.forEach((item, i) => {
 world.ecs.registerEntity(
     new Entity().addComponents(
         modelComponent({ modelName: 'crate', data: modelDB['crate'] }),
-        positionComponent({ position: [5, 0, 5] }),
+        transform3D({ position: [5, 0, 5] }),
         colliderComponent({
             collider: {
                 type: 'box',
@@ -296,7 +323,7 @@ torches.forEach((posZ) => {
     world.ecs.registerEntity(
         new Entity().addComponents(
             modelComponent({ modelName: 'torchWall', data: modelDB['torchWall'] }),
-            positionComponent({ position: [-16, 1.5, posZ] }),
+            transform3D({ position: [-16, 1.5, posZ] }),
             pointLightComponent({
                 color: 0xff6700,
                 intensity: 3,
@@ -310,7 +337,7 @@ torches.forEach((posZ) => {
 world.ecs.registerEntity(
     new Entity().addComponents(
         modelComponent({ modelName: 'chest_gold', data: modelDB['chest_gold'] }),
-        positionComponent({ position: [-6, 0, -6] }),
+        transform3D({ position: [-6, 0, -6] }),
         pointLightComponent({
             color: 0xffd700,
             intensity: 1,
@@ -325,8 +352,14 @@ for (let i = 0; i < 32; i += 2) {
     world.ecs.registerEntity(
         new Entity().addComponents(
             modelComponent({ modelName: 'stoneWallTop', data: modelDB['stoneWallTop'] }),
-            positionComponent({ position: [-16, 0, i - 15] }),
+            transform3D({ position: [-16, 1, i - 15] }),
             colliderComponent({ collider: { type: 'box', width: 0.25, height: 2, depth: 2 } }),
+            physicsComponents.physicsBody({
+                shape: {
+                    type: 'box',
+                    size: [0.25, 2, 2],
+                },
+            }),
         ),
     )
 }
@@ -337,7 +370,7 @@ for (let i = 0; i < 200; i += 1) {
     world.ecs.registerEntity(
         new Entity().addComponents(
             modelComponent({ modelName: 'grass', data: modelDB['grass'] }),
-            positionComponent({ position: makePos() }),
+            transform3D({ position: makePos() }),
         ),
     )
 }

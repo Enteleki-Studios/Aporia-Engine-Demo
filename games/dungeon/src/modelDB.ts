@@ -65,6 +65,7 @@ const modelDB: Record<string, Model> = {
             roll: 'CharacterArmature|Roll',
         },
         radius: 0.5,
+        translate: [0, -1, 0],
     },
     skeleton: {
         modelPath: `${MF}/enemies/skeleton/Skeleton.fbx`,
@@ -150,7 +151,7 @@ const modelDB: Record<string, Model> = {
     stoneWallTop: {
         modelPath: `${MF}/items/ModularStoneWall_top.fbx`,
         scale: 0.01,
-        translate: [0, 0, 1],
+        translate: [0, 0, 0],
     },
 
     grass: {

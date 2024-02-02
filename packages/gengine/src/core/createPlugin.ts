@@ -1,4 +1,4 @@
-import { type World } from 'core'
+import { type AnyComponentCreator, type World } from 'core'
 
 type Unnamed<T> = Omit<T, 'name'>
 type Named<T> = T & { name: string }
@@ -15,6 +15,7 @@ export type Plugin = {
 export type PluginCreator<P = Plugin, T = void> = {
     (options: T): P
     label: string
+    components?: Record<string, AnyComponentCreator>
 }
 
 export type PluginFromPluginCreator<PC extends PluginCreator> = ReturnType<PC>

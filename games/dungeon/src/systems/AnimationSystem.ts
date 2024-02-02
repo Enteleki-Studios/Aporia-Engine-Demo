@@ -34,7 +34,7 @@ export const animationSystem = createSystem('animations', () => (world: World) =
         } else if (entity.has(velocityComponent)) {
             const { velocity } = entity.get(velocityComponent)
 
-            if (Vec3.squaredLength(velocity) > 0) {
+            if (Vec3.squaredLength(velocity) > 0.1) {
                 nextState = 'walk'
             }
         }

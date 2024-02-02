@@ -1,7 +1,7 @@
 import {
     type World,
     ECSFilter,
-    positionComponent,
+    transform3D,
     Array3,
     velocityComponent,
     directionComponent,
@@ -11,7 +11,7 @@ import {
 } from 'gengine'
 import { Vec3 } from 'gl-matrix/dist/esm'
 
-export const aiSystemFilter = new ECSFilter([directionComponent, positionComponent, velocityComponent], [tags.ai])
+export const aiSystemFilter = new ECSFilter([directionComponent, transform3D, velocityComponent], [tags.ai])
 
 export const aiSystem = createSystem('ai', () => {
     const targetLocation: Array3 = [0, 0, 0]
@@ -19,12 +19,12 @@ export const aiSystem = createSystem('ai', () => {
     return (world: World) => {
         for (const hero of world.ecs.filterBy(heroFilter)) {
             // TODO assumes one hero
-            const { position } = hero.get(positionComponent)
+            const { position } = hero.get(transform3D)
             Vec3.copy(targetLocation, position)
         }
 
         for (const aiEntity of world.ecs.filterBy(aiSystemFilter)) {
-            const { position } = aiEntity.get(positionComponent)
+            const { position } = aiEntity.get(transform3D)
             const { velocity } = aiEntity.get(velocityComponent)
             const { direction } = aiEntity.get(directionComponent)
 
@@ -43,9 +43,13 @@ export const aiSystem = createSystem('ai', () => {
 
             // Rotate entity to face player
             Vec3.copy(direction, velocity)
+            direction[1] = 0
 
             // Set enemy speed
             Vec3.scale(velocity, velocity, shouldMove ? 2 : 0)
+
+            // TODO allow for 3D, something with snap to floor
+            velocity[1] = 0
         }
     }
 })

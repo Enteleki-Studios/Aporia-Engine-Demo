@@ -9,7 +9,6 @@ import {
     inputComponent,
     modelComponent,
     pointLightComponent,
-    positionComponent,
     velocityComponent,
     tags,
     mesh2D,
@@ -17,16 +16,18 @@ import {
 } from 'components'
 
 export const ambientLightFilter = new ECSFilter([ambientLightComponent])
-export const boxFilter = new ECSFilter([basicGeometryComponent, positionComponent])
+export const boxFilter = new ECSFilter([basicGeometryComponent, transform3D])
 export const cameraFilter = new ECSFilter([cameraComponent])
-export const cameraTargetFilter = new ECSFilter([positionComponent, directionComponent], [tags.cameraTarget])
-export const collidingFilter = new ECSFilter([colliderComponent, positionComponent])
+export const cameraTargetFilter = new ECSFilter([transform3D, directionComponent], [tags.cameraTarget])
+export const collidingFilter = new ECSFilter([colliderComponent, transform3D])
 export const directionalLightFilter = new ECSFilter([directionalLightComponent])
 export const heroFilter = new ECSFilter([], [tags.hero])
 export const inputFilter = new ECSFilter([inputComponent])
-export const modelFilter = new ECSFilter([modelComponent, positionComponent])
-export const movingEntitiesFilter = new ECSFilter([positionComponent, velocityComponent])
-export const pointLightFilter = new ECSFilter([positionComponent, pointLightComponent])
-export const rotatingEntitiesFilter = new ECSFilter([directionComponent, positionComponent])
+export const modelFilter = new ECSFilter([modelComponent, transform3D])
+export const movingEntitiesFilter = new ECSFilter([transform3D, velocityComponent])
+export const pointLightFilter = new ECSFilter([transform3D, pointLightComponent])
+export const rotatingEntitiesFilter = new ECSFilter([directionComponent, transform3D])
 
 export const mesh2DFilter = ECSFilter.of([mesh2D, transform3D])
+
+export const positionedEntitiesFilter = ECSFilter.of([transform3D])
