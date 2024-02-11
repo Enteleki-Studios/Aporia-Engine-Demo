@@ -1,10 +1,10 @@
 import * as cannon from 'cannon-es'
 
 import { ECSFilter, Entity, EntityId, createPlugin } from 'core'
+import { transform3D, velocityComponent } from 'components'
 
 import { physicsSystem } from './systems'
 import { Shape, physicsBody } from './components'
-import { transform3D, velocityComponent } from 'components'
 
 const extControlMaterial = new cannon.Material()
 

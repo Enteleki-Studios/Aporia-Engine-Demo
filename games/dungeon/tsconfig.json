@@ -3,5 +3,11 @@
     "compilerOptions": {
         "baseUrl": "src",
         "outDir": "dist"
-    }
+    },
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../../packages/gengine"
+        }
+    ]
 }

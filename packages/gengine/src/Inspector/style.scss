@@ -106,6 +106,9 @@ $colors: (
                     .Icon {
                         margin-right: 0.25rem;
                     }
+                    &.subline {
+                        padding-left: 1.5rem;
+                    }
                 }
                 span:nth-child(2n + 1) {
                     padding-right: 0.5rem;
