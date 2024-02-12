@@ -5,16 +5,7 @@
     "files": [
         "dist"
     ],
-    "main": "./dist/gengine.umd.cjs",
-    "module": "./dist/gengine.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/gengine.js",
-            "require": "./dist/gengine.umd.cjs"
-        },
-        "./style": "./dist/style.css"
-    },
+    "main": "./src/index.ts",
     "scripts": {
         "start": "vite build --watch",
         "build": "vite build",

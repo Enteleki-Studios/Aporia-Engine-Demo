@@ -44,6 +44,11 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
         if (frameGraphRef.current) {
             frameGraphRef.current.appendChild(frameGraph.current.domElement)
         }
+
+        return () => {
+            fpsGraphRef.current?.replaceChildren()
+            frameGraphRef.current?.replaceChildren()
+        }
     }, [])
 
     const { stats, time } = world
@@ -103,10 +108,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                         <span>{sysStat.runtime}</span>
                         {Object.entries(sysStat.extra).map(([k, v]) => (
                             <Fragment key={k}>
-                                <span>
-                                    <Icon icon={<PiArrowElbowDownRight />} />
-                                    {`${k}: `}
-                                </span>
+                                <span className="subline">{`${k}: `}</span>
                                 <span>{v}</span>
                             </Fragment>
                         ))}

@@ -53,6 +53,7 @@ import {
     threejsPlugin,
     animationComponent,
     physicsPlugin,
+    physicsComponents,
 } from 'gengine'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -62,7 +63,6 @@ import * as Systems from 'systems'
 // import tilesGenerator from 'utils/tilesGenerator'
 
 import modelDB from 'modelDB'
-import { physicsComponents } from 'gengine'
 
 export const world = new World()
 

@@ -1,7 +1,8 @@
 {
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project": "**/tsconfig.json"
+        "project": ["./packages/*/tsconfig.json", "./games/*/tsconfig.json"],
+        "EXPERIMENTAL_useProjectService": true
     },
     "plugins": ["@typescript-eslint"],
     "extends": [
