@@ -1,5 +1,5 @@
 import { createSlice, combineReducers } from '@reduxjs/toolkit'
-import { inspector } from 'gengine'
+import { slice as inspectorSlice } from '@gengine/inspector'
 
 const health = createSlice({
     name: 'health',
@@ -15,5 +15,5 @@ const health = createSlice({
 
 export const rootReducer = combineReducers({
     health: health.reducer,
-    inspector: inspector.slice.reducer,
+    inspector: inspectorSlice.reducer,
 })

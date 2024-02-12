@@ -26,9 +26,6 @@ export { physicsPlugin, physicsComponents } from './plugins/physics'
 export { InputManager } from './managers/InputManager'
 export { ResourceManager } from './managers/ResourceManager'
 
-// Inspector
-export * as inspector from './Inspector'
-
 // React
 export { useForceUpdate } from './reactjs/hooks/useForceUpdate'
 

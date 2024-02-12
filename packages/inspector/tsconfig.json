@@ -6,7 +6,6 @@
     },
     "include": ["src"],
     "references": [
-        { "path": "../../packages/gengine" },
-        { "path": "../../packages/inspector" }
+        { "path": "../gengine" }
     ]
 }

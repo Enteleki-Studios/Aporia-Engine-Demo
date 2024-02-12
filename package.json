@@ -1,10 +1,10 @@
 {
-    "name": "gamedev",
+    "name": "gamedev-monorepo",
     "version": "0.1.0",
     "description": "game dev monorepo",
-    "repository": "github.com",
+    "repository": "https://github.com/mikeymaxdb/GameDev",
     "main": "index.js",
-    "author": "",
+    "author": "mikeymaxdb",
     "license": "ISC",
     "scripts": {
         "prettier": "prettier --check .",
@@ -33,7 +33,10 @@
         "sass": "^1.62.1",
         "ts-jest": "^29.1.0",
         "typescript": "^5.2.2",
-        "vite": "^5.0.2"
+        "vite": "^5.0.2",
+        "vite-plugin-dts": "^3.2.0",
+        "vite-plugin-static-copy": "^1.0.0",
+        "vite-tsconfig-paths": "^4.3.1"
     },
     "dependencies": {
         "@reduxjs/toolkit": "^2.0.1",
@@ -44,8 +47,7 @@
         "react-icons": "^4.11.0",
         "react-redux": "^9.0.3",
         "three": "^0.160.0",
-        "uuid": "^9.0.0",
-        "vite-tsconfig-paths": "^4.3.1"
+        "uuid": "^9.0.0"
     },
     "workspaces": [
         "./games/*",

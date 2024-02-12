@@ -13,6 +13,7 @@
         "@types/redux-logger": "^3.0.9"
     },
     "dependencies": {
+        "@gengine/inspector": "*",
         "gengine": "*",
         "redux-logger": "^3.0.6",
         "rot-js": "^2.2.0"

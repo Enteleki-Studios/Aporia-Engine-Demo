@@ -1,8 +1,7 @@
 {
     "files": [],
     "references": [
-        {
-            "path": "packages/gengine"
-        }
+        { "path": "packages/gengine" },
+        { "path": "packages/inspector" }
     ]
 }

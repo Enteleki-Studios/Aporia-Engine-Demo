@@ -22,7 +22,6 @@ import {
     damagableFilter,
     damagingFilter,
     pointLightComponent,
-    inspector,
     // firstPersonCameraSystem,
     directionComponent,
     // firstPersonMovementSystem,
@@ -55,6 +54,7 @@ import {
     physicsPlugin,
     physicsComponents,
 } from 'gengine'
+import { slice as inspectorSlice } from '@gengine/inspector'
 
 // import { AppDispatch } from 'dungeon/store'
 
@@ -152,7 +152,7 @@ world
     ])
 
 export const middleware: Middleware = () => (next) => (action: unknown) => {
-    if (inspector.slice.actions.setDebugMode.match(action)) {
+    if (inspectorSlice.actions.setDebugMode.match(action)) {
         renderer.setDebugMode(action.payload)
     }
 

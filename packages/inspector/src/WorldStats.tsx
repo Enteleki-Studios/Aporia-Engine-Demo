@@ -1,13 +1,10 @@
 import React, { Fragment, useEffect, useRef } from 'react'
-import { PiArrowElbowDownRight, PiEngineDuotone, PiGraphDuotone, PiTimerDuotone } from 'react-icons/pi'
+import { PiEngineDuotone, PiGraphDuotone, PiTimerDuotone } from 'react-icons/pi'
 
 import { secondsToClockString } from './utils'
 
-import { useForceUpdate } from 'reactjs/hooks/useForceUpdate'
-
-import { Icon } from 'Inspector/Icon'
-import { type World } from 'core'
-import { Graph } from 'utils/graph'
+import { Icon } from './Icon'
+import { type World, Graph, useForceUpdate } from 'gengine'
 
 type WorldStatsProps = {
     world: World
