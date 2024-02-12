@@ -2,9 +2,6 @@
     "files": [],
     "references": [
         {
-            "path": "games/dungeon"
-        },
-        {
             "path": "packages/gengine"
         }
     ]

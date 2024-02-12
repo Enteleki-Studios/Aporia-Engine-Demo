@@ -108,9 +108,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                         <span>{sysStat.runtime}</span>
                         {Object.entries(sysStat.extra).map(([k, v]) => (
                             <Fragment key={k}>
-                                <span className="subline">
-                                    {`${k}: `}
-                                </span>
+                                <span className="subline">{`${k}: `}</span>
                                 <span>{v}</span>
                             </Fragment>
                         ))}
