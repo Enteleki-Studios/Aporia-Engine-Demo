@@ -17,11 +17,5 @@
         "resolveJsonModule": true,
         "noImplicitAny": true,
         "allowJs": true
-    },
-    "files": [],
-    "references": [
-        {
-            "path": "packages/gengine"
-        }
-    ]
+    }
 }
