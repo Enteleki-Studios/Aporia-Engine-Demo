@@ -8,7 +8,7 @@ import {
     heroFilter,
     createSystem,
     tags,
-} from 'gengine'
+} from '@gengine/core'
 import { Vec3 } from 'gl-matrix/dist/esm'
 
 export const aiSystemFilter = new ECSFilter([directionComponent, transform3D, velocityComponent], [tags.ai])

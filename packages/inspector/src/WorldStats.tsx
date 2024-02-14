@@ -4,7 +4,7 @@ import { PiEngineDuotone, PiGraphDuotone, PiTimerDuotone } from 'react-icons/pi'
 import { secondsToClockString } from './utils'
 
 import { Icon } from './Icon'
-import { type World, Graph, useForceUpdate } from 'gengine'
+import { type World, Graph, useForceUpdate } from '@gengine/core'
 
 type WorldStatsProps = {
     world: World

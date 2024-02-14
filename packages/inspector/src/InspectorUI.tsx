@@ -2,7 +2,7 @@ import React, { FormEvent, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PiGameControllerFill, PiPlayFill, PiSkipForwardFill, PiStopFill } from 'react-icons/pi'
 
-import { type World, DebugMode, DebugModes, ENGINE_VERSION } from 'gengine'
+import { type World, DebugMode, DebugModes, ENGINE_VERSION } from '@gengine/core'
 
 import { setDebugMode, getDebugMode } from './slice'
 import { Icon } from './Icon'

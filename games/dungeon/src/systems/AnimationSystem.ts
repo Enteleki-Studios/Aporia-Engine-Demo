@@ -11,7 +11,7 @@ import {
     createSystem,
     threejsPlugin,
     animationComponent,
-} from 'gengine'
+} from '@gengine/core'
 
 export const animatedFilter = new ECSFilter([animationComponent, modelComponent])
 

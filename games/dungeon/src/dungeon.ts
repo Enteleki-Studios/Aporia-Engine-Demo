@@ -53,7 +53,7 @@ import {
     animationComponent,
     physicsPlugin,
     physicsComponents,
-} from 'gengine'
+} from '@gengine/core'
 import { slice as inspectorSlice } from '@gengine/inspector'
 
 // import { AppDispatch } from 'dungeon/store'

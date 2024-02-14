@@ -9,7 +9,7 @@ import {
     World,
     heroFilter,
     movingEntitiesFilter,
-} from 'gengine'
+} from '@gengine/core'
 // import { CollidableComponent } from 'dungeon/components'
 
 // TODO just selecting the hero for now
