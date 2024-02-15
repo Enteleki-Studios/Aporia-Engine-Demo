@@ -1,9 +1,10 @@
 import { Texture, sRGBEncoding, TextureLoader, Group } from 'three'
 
-import { isThreeMesh } from 'threejs/threejsUtils'
+import { isThreeMesh } from 'utils'
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
+// TODO don't create stuff in this scope
 const loader = new FBXLoader()
 const textureLoader = new TextureLoader()
 

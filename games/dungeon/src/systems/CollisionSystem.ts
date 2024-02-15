@@ -1,15 +1,15 @@
 import { Vec3 } from 'gl-matrix/dist/esm'
 import {
     createSystem,
-    Capsule,
     transform3D,
     velocityComponent,
     ORIGIN,
-    Octree,
     World,
     heroFilter,
     movingEntitiesFilter,
 } from '@gengine/core'
+
+import { Capsule, Octree } from '@gengine/plugin-threejs'
 // import { CollidableComponent } from 'dungeon/components'
 
 // TODO just selecting the hero for now

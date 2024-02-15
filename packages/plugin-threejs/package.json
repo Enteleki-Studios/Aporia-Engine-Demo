@@ -1,5 +1,5 @@
 {
-    "name": "@gengine/inspector",
+    "name": "@gengine/plugin-threejs",
     "version": "0.1.0",
     "main": "./src/index.ts",
     "scripts": {

@@ -1,7 +1,7 @@
 import { Octree } from 'three/examples/jsm/math/Octree'
 import { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
 
-import { createPlugin, World } from 'core'
+import { createPlugin, World } from '@gengine/core'
 import {
     directionalLightFilter,
     cameraFilter,
@@ -13,7 +13,7 @@ import {
     collidingFilter,
     mesh2DFilter,
     positionedEntitiesFilter,
-} from 'filters'
+} from '@gengine/core'
 
 import { Renderer } from './Renderer'
 import { makeObject3dManager, makeAnimationManager } from './object3dManager'

@@ -14,8 +14,8 @@ import {
     HalfFloatType,
 } from 'three'
 
-import { DebugMode } from 'definitions'
-import { AxesHelper } from 'threejs/AxesHelper'
+import { DebugMode } from '@gengine/core'
+import { AxesHelper } from 'objects/AxesHelper'
 
 type StandardRendererParams = {
     canvas?: HTMLCanvasElement

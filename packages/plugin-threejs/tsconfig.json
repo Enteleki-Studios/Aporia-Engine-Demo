@@ -6,8 +6,6 @@
     },
     "include": ["src"],
     "references": [
-        { "path": "../../packages/core" },
-        { "path": "../../packages/inspector" },
-        { "path": "../../packages/plugin-threejs" }
+        { "path": "../core" }
     ]
 }

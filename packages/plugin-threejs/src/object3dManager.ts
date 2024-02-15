@@ -1,6 +1,6 @@
 import { AnimationAction, AnimationClip, AnimationMixer, Group, Object3D } from 'three'
-import { ResourceManager } from 'managers/ResourceManager'
-import { StandardRenderer } from '../../threejs/StandardRenderer'
+import { ResourceManager } from '@gengine/core'
+import { StandardRenderer } from '@gengine/core'
 
 export const makeObject3dManager = (renderer: StandardRenderer) =>
     new ResourceManager<Group, Object3D>({

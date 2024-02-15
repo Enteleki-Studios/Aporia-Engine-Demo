@@ -1,10 +1,10 @@
 import { Group, Object3D } from 'three'
 
-import { createSystem, World } from 'core'
-import { ResourceManager } from 'managers/ResourceManager'
-import { cameraFilter, movingEntitiesFilter, positionedEntitiesFilter, rotatingEntitiesFilter } from 'filters'
+import { createSystem, World } from '@gengine/core'
+import { ResourceManager } from '@gengine/core'
+import { cameraFilter, movingEntitiesFilter, positionedEntitiesFilter, rotatingEntitiesFilter } from '@gengine/core'
 
-import { cameraComponent, directionComponent, transform3D } from 'components'
+import { cameraComponent, directionComponent, transform3D } from '@gengine/core'
 
 import { Renderer } from './Renderer'
 

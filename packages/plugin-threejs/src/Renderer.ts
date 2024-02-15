@@ -1,15 +1,5 @@
-import {
-    DirectionalLight,
-    // DefaultGrid,
-    // SkySphere,
-} from 'threejs/DirectionalLight'
-import { StandardRenderer } from 'threejs/StandardRenderer'
-import {} from // Fog,
-// Color,
-// EquirectangularReflectionMapping,
-// SRGBColorSpace,
-// TextureLoader,
-'three'
+import { DirectionalLight } from 'objects/DirectionalLight'
+import { StandardRenderer } from 'StandardRenderer'
 
 export class Renderer extends StandardRenderer {
     directionalLight?: DirectionalLight // TODO: is this the best place for this?

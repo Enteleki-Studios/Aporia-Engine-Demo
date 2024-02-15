@@ -2,6 +2,7 @@
     "files": [],
     "references": [
         { "path": "packages/core" },
-        { "path": "packages/inspector" }
+        { "path": "packages/inspector" },
+        { "path": "packages/plugin-threejs" }
     ]
 }

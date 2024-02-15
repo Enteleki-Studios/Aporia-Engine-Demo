@@ -24,9 +24,9 @@ import {
 import { Octree } from 'three/examples/jsm/math/Octree'
 import { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
 
-import { Entity, ECSFilter } from 'core'
-import { ResourceManager } from 'managers/ResourceManager'
-import { DirectionalLight } from 'threejs/DirectionalLight'
+import { Entity, ECSFilter } from '@gengine/core'
+import { ResourceManager } from '@gengine/core'
+import { DirectionalLight } from 'objects/DirectionalLight'
 import {
     animationComponent,
     modelComponent,
@@ -39,7 +39,7 @@ import {
     material,
     Collider,
     directionalLightComponent,
-} from 'components'
+} from '@gengine/core'
 import {
     modelFilter,
     directionalLightFilter,
@@ -47,7 +47,7 @@ import {
     boxFilter,
     collidingFilter,
     mesh2DFilter,
-} from 'filters'
+} from '@gengine/core'
 
 import type { Renderer } from './Renderer'
 import { loadFBX } from './loadFBX'

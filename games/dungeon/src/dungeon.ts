@@ -49,12 +49,12 @@ import {
     mesh2DFilter,
     material,
     transform3D,
-    threejsPlugin,
     animationComponent,
     physicsPlugin,
     physicsComponents,
 } from '@gengine/core'
 import { slice as inspectorSlice } from '@gengine/inspector'
+import { threejsPlugin } from '@gengine/plugin-threejs'
 
 // import { AppDispatch } from 'dungeon/store'
 

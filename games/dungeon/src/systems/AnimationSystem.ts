@@ -9,9 +9,10 @@ import {
     healthComponent,
     velocityComponent,
     createSystem,
-    threejsPlugin,
     animationComponent,
 } from '@gengine/core'
+
+import { threejsPlugin } from '@gengine/plugin-threejs'
 
 export const animatedFilter = new ECSFilter([animationComponent, modelComponent])
 
