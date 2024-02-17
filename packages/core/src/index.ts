@@ -18,9 +18,6 @@ export { twinStickMovementSystem, twinStickMovementFilter } from './systems/Twin
 export { thirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'
 export { sunSystem, sunTargetFilter, directionalLightFilter } from './systems/SunSystem'
 
-// Plugins
-export { physicsPlugin, physicsComponents } from './plugins/physics'
-
 // Managers
 export { InputManager } from './managers/InputManager'
 export { ResourceManager } from './managers/ResourceManager'

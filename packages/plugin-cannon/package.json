@@ -1,0 +1,12 @@
+{
+    "name": "@gengine/plugin-cannon",
+    "version": "0.1.0",
+    "main": "./src/index.ts",
+    "scripts": {
+        "lint": "eslint src",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@gengine/core": "*"
+    }
+}

@@ -1,17 +1,19 @@
 import * as cannon from 'cannon-es'
 
-import { ECSFilter, Entity, EntityId, createPlugin } from 'core'
-import { transform3D, velocityComponent } from 'components'
+import { ECSFilter, Entity, EntityId, createPlugin } from '@gengine/core'
+import { transform3D, velocityComponent } from '@gengine/core'
 
-import { physicsSystem } from './systems'
-import { Shape, physicsBody } from './components'
+import { physicsSystem } from 'systems'
+import { Shape, physicsBody } from 'components'
+
+export { physicsBody } from 'components'
 
 const extControlMaterial = new cannon.Material()
 
 export const physicsFilter = ECSFilter.of([transform3D, physicsBody])
 export const physicsExtVelocityFilter = ECSFilter.of([transform3D, velocityComponent, physicsBody])
 
-export const physicsPlugin = createPlugin('Physics 3D plugin (Cannon)', () => {
+export const cannonPhysicsPlugin = createPlugin('Cannon Physics 3D Plugin', () => {
     const physicsWorld = new cannon.World({
         gravity: new cannon.Vec3(0, -9.8, 0),
     })
@@ -48,7 +50,7 @@ export const physicsPlugin = createPlugin('Physics 3D plugin (Cannon)', () => {
     }
 })
 
-export const physicsComponents = {
+export const components = {
     physicsBody,
 }
 

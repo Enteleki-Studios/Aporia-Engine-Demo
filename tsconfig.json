@@ -3,6 +3,7 @@
     "references": [
         { "path": "packages/core" },
         { "path": "packages/inspector" },
+        { "path": "packages/plugin-cannon" },
         { "path": "packages/plugin-threejs" }
     ]
 }

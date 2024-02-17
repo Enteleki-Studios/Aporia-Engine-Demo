@@ -16,7 +16,7 @@ import {
     // SunSystem,
     World,
     twinStickMovementSystem,
-    applyVelocitySystem,
+    // applyVelocitySystem,
     damageSystem,
     damagingComponent,
     damagableFilter,
@@ -50,10 +50,9 @@ import {
     material,
     transform3D,
     animationComponent,
-    physicsPlugin,
-    physicsComponents,
 } from '@gengine/core'
 import { slice as inspectorSlice } from '@gengine/inspector'
+import { cannonPhysicsPlugin, components as physicsComponents } from '@gengine/plugin-cannon'
 import { threejsPlugin } from '@gengine/plugin-threejs'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -67,7 +66,7 @@ import modelDB from 'modelDB'
 export const world = new World()
 
 const threejs = threejsPlugin()
-const { renderer, octree } = threejs.resources
+const { renderer } = threejs.resources
 
 export const updateCanvasContainer = (container: HTMLDivElement) => {
     world.getPlugin(threejsPlugin).api.setCanvasContainer(container)
@@ -119,7 +118,7 @@ world
     .registerPlugin(threejs)
     .registerSystem(inputSystem({ inputManager }))
     .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])
-    .registerPlugin(physicsPlugin())
+    .registerPlugin(cannonPhysicsPlugin())
     .registerSystems([
         // inputSystem({ inputManager }),
         emitterSystem({

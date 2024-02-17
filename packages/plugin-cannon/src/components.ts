@@ -1,5 +1,4 @@
-import { createComponent } from 'core'
-import { Array3 } from 'definitions'
+import { createComponent, Array3 } from '@gengine/core'
 
 export type Shape =
     | {
