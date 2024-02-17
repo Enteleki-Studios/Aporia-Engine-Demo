@@ -9,15 +9,7 @@
         "typecheck": "tsc --noEmit",
         "lint": "eslint src"
     },
-    "devDependencies": {
-        "@types/redux-logger": "^3.0.9"
-    },
     "dependencies": {
-        "@gengine/core": "*",
-        "@gengine/inspector": "*",
-        "@gengine/plugin-cannon": "*",
-        "@gengine/plugin-threejs": "*",
-        "redux-logger": "^3.0.6",
         "rot-js": "^2.2.0"
     }
 }

@@ -11,18 +11,5 @@
         "typecheck": "tsc --noEmit",
         "lint": "eslint src",
         "lint:fix": "eslint src --fix"
-    },
-    "devDependencies": {
-        "ts-node": "^10.9.1",
-        "typedoc": "^0.25.1",
-        "typedoc-plugin-missing-exports": "^2.0.0"
-    },
-    "dependencies": {
-        "postprocessing": "^6.30.2"
-    },
-    "peerDependencies": {
-        "react": "^18.2.0",
-        "react-redux": "^9.0.3",
-        "three": "^0.160.0"
     }
 }
