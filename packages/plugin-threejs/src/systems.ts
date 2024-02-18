@@ -8,9 +8,8 @@ import { cameraComponent, directionComponent, transform3D } from '@gengine/core'
 
 import { Renderer } from './Renderer'
 
-const LABEL = 'render'
-export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: ResourceManager<Group, Object3D> }>(
-    LABEL,
+export const syncThreeSystem = createSystem<{ renderer: Renderer; objectManager: ResourceManager<Group, Object3D> }>(
+    'threejs sync',
     ({ renderer, objectManager }) =>
         (world: World) => {
             // world.ecs.filterBy(modelFilter).forEach((entity) => {
@@ -43,8 +42,6 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
 
             // TODO only do this for dirty entities/components
             for (const entity of world.ecs.filterBy(rotatingEntitiesFilter)) {
-                // TODO this if statement is a hack...
-                // if (!entity.hasTag(tags.hero)) {
                 const { position } = entity.get(transform3D)
                 const { direction } = entity.get(directionComponent)
 
@@ -54,19 +51,24 @@ export const rendererSystem = createSystem<{ renderer: Renderer; objectManager: 
                 // }
             }
 
-            renderer.render()
-
-            world.stats.systemsStats[LABEL].extra.calls = renderer.renderer.info.render.calls
-            world.stats.systemsStats[LABEL].extra.triangles = renderer.renderer.info.render.triangles
-            world.stats.systemsStats[LABEL].extra.geometries = renderer.renderer.info.memory.geometries
-            world.stats.systemsStats[LABEL].extra.textures = renderer.renderer.info.memory.textures
-
-            const shaders = renderer.renderer.info.programs
-            if (shaders) {
-                world.stats.systemsStats[LABEL].extra.shaders = shaders.length
-            }
-
-            // TODO move this to renderer core
-            renderer.renderer.info.reset()
         },
 )
+
+const LABEL = 'render'
+export const renderSystem = createSystem<{ renderer: Renderer }>(LABEL, ({ renderer }) => (world: World) => {
+    renderer.render()
+
+    // TODO refactor to not use direct object access
+    world.stats.systemsStats[LABEL].extra.calls = renderer.renderer.info.render.calls
+    world.stats.systemsStats[LABEL].extra.triangles = renderer.renderer.info.render.triangles
+    world.stats.systemsStats[LABEL].extra.geometries = renderer.renderer.info.memory.geometries
+    world.stats.systemsStats[LABEL].extra.textures = renderer.renderer.info.memory.textures
+
+    const shaders = renderer.renderer.info.programs
+    if (shaders) {
+        world.stats.systemsStats[LABEL].extra.shaders = shaders.length
+    }
+
+    // TODO move this to renderer core
+    renderer.renderer.info.reset()
+})

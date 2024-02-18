@@ -99,18 +99,21 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 System runtimes
             </h4>
             <div className="table">
-                {Object.values(stats.systemsStats).map((sysStat) => (
-                    <Fragment key={sysStat.label}>
-                        <span>{`${sysStat.label}: `}</span>
-                        <span>{sysStat.runtime}</span>
-                        {Object.entries(sysStat.extra).map(([k, v]) => (
-                            <Fragment key={k}>
-                                <span className="subline">{`${k}: `}</span>
-                                <span>{v}</span>
-                            </Fragment>
-                        ))}
-                    </Fragment>
-                ))}
+                {world.systems.map((wrapper) => {
+                    const sysStat = world.stats.systemsStats[wrapper.key]
+                    return (
+                        <Fragment key={sysStat.label}>
+                            <span>{`${sysStat.label}: `}</span>
+                            <span>{sysStat.runtime}</span>
+                            {Object.entries(sysStat.extra).map(([k, v]) => (
+                                <Fragment key={k}>
+                                    <span className="subline">{`${k}: `}</span>
+                                    <span>{v}</span>
+                                </Fragment>
+                            ))}
+                        </Fragment>
+                    )
+                })}
             </div>
         </section>
     )

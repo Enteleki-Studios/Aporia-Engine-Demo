@@ -115,7 +115,6 @@ world.ecs.registerFilters([
 ])
 
 world
-    .registerPlugin(threejs)
     .registerSystem(inputSystem({ inputManager }))
     .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])
     .registerPlugin(cannonPhysicsPlugin())
@@ -149,6 +148,7 @@ world
         thirdPersonCameraSystem(),
         Systems.animationSystem(),
     ])
+    .registerPlugin(threejs)
 
 export const middleware: Middleware = () => (next) => (action: unknown) => {
     if (inspectorSlice.actions.setDebugMode.match(action)) {

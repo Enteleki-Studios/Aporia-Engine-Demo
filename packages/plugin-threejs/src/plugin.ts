@@ -18,7 +18,7 @@ import {
 import { Renderer } from './Renderer'
 import { makeObject3dManager, makeAnimationManager } from './object3dManager'
 import { entityReceiver } from './entityReceiver'
-import { rendererSystem } from './systems'
+import { syncThreeSystem, renderSystem } from './systems'
 
 export const threejsPlugin = createPlugin('Three.js plugin', () => {
     const renderer = new Renderer({})
@@ -34,7 +34,8 @@ export const threejsPlugin = createPlugin('Three.js plugin', () => {
 
     return {
         init(world: World) {
-            world.registerSystem(rendererSystem({ renderer, objectManager }))
+            world.registerSystem(renderSystem({ renderer }), 0)
+            world.registerSystem(syncThreeSystem({ renderer, objectManager }))
 
             // TODO remove need to register filters
             world.ecs.registerFilters([
