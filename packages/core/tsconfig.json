@@ -1,8 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "baseUrl": "src",
-        "outDir": "dist"
+        "baseUrl": "src"
     },
     "include": ["src", "package.json", "jest.config.ts", "vite.config.ts"]
 }
