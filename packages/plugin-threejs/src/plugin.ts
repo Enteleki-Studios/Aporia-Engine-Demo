@@ -37,15 +37,6 @@ export const threejsPlugin = createPlugin('Three.js plugin', () => {
             world.registerSystem(renderSystem({ renderer }), 0)
             world.registerSystem(syncThreeSystem({ renderer, objectManager }))
 
-            // TODO remove need to register filters
-            world.ecs.registerFilters([
-                directionalLightFilter,
-                cameraFilter,
-                movingEntitiesFilter,
-                rotatingEntitiesFilter,
-                positionedEntitiesFilter,
-            ])
-
             // TODO: Very temporary
             world.ecs.addFilterListener(modelFilter, (e, f) => threeEntityReceiver(e, f))
             world.ecs.addFilterListener(ambientLightFilter, (e, f) => threeEntityReceiver(e, f))

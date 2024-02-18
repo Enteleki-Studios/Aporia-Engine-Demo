@@ -11,8 +11,6 @@ export type ECSStatsType = {
     filters: number
 }
 
-const EMPTY_SET = Object.freeze(new Set<Entity>())
-
 export class EntityManager {
     private entitiesById = new Map<EntityId, Entity>()
     private entitiesByFilter = new Map<ECSFilter, Set<Entity>>()
@@ -53,9 +51,7 @@ export class EntityManager {
         if (entities) {
             return entities
         } else {
-            // eslint-disable-next-line no-console
-            console.warn(`Filter ${filter.toString()} is not registered with the ECS`)
-            return EMPTY_SET
+            return this.registerFilter(filter)
         }
     }
 
@@ -64,6 +60,17 @@ export class EntityManager {
             this.listenersByFilter.set(filter, new Set())
         }
         this.listenersByFilter.get(filter)?.add(cb)
+
+        const existingEntities = this.entitiesByFilter.get(filter)
+        if (existingEntities) {
+            // Trigger the callback for all existing entities
+            existingEntities.forEach((entity) => {
+                cb(entity, filter)
+            })
+        } else {
+            // Otherwise, register the filter to pick up on future entities
+            this.registerFilter(filter)
+        }
     }
 
     removeFilterListener(filter: ECSFilter, cb: FilterListenerCallback) {
@@ -89,11 +96,36 @@ export class EntityManager {
     }
 
     registerFilter(filter: ECSFilter) {
-        if (!this.entitiesByFilter.has(filter)) {
-            this.entitiesByFilter.set(filter, new Set<Entity>())
+        const existingEntities = this.entitiesByFilter.get(filter)
+
+        if (existingEntities) {
+            return existingEntities
+        }
+
+        // Setup new entity set for the filter
+        const entitySet = new Set<Entity>()
+
+        // TODO replace with an iter.filter() when browsers support
+        // Go through all entities and add matching ones to the new set
+        for (const entity of this.entitiesById.values()) {
+            if (filter.match(entity)) {
+                entitySet.add(entity)
+            }
+        }
+
+        // Update filter map
+        this.entitiesByFilter.set(filter, entitySet)
+
+        // Trigger existing listeners that their filters were updated
+        if (this.listenersByFilter.has(filter)) {
+            entitySet.forEach((entity) => {
+                this.listenersByFilter.get(filter)?.forEach((cb) => cb(entity, filter))
+            })
         }
 
         this.stats.filters = this.entitiesByFilter.size
+
+        return entitySet
     }
 
     registerFilters(filters: ECSFilter[]) {

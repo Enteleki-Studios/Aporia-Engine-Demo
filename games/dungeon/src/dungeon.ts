@@ -90,30 +90,6 @@ inputManager.addActionListener('debug', () => {
     }
 })
 
-world.ecs.registerFilters([
-    movingEntitiesFilter,
-    modelFilter,
-    directionalLightFilter,
-    inputFilter,
-    ambientLightFilter,
-    cameraFilter,
-    cameraTargetFilter,
-    pointLightFilter,
-    boxFilter,
-    rotatingEntitiesFilter,
-    collidingFilter,
-    // firstPersonMovementFilter,
-    twinStickMovementFilter,
-    heroFilter,
-    Systems.aiSystemFilter,
-    Systems.collisionsFilter,
-    emitterFilter,
-    damagingFilter,
-    damagableFilter,
-    Systems.animatedFilter,
-    mesh2DFilter,
-])
-
 world
     .registerSystem(inputSystem({ inputManager }))
     .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])

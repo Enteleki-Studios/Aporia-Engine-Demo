@@ -38,9 +38,6 @@ export const cannonPhysicsPlugin = createPlugin('Cannon Physics 3D Plugin', () =
         init(world) {
             world.registerSystem(physicsSystem())
 
-            world.ecs.registerFilter(physicsFilter)
-            world.ecs.registerFilter(physicsExtVelocityFilter)
-
             world.ecs.addFilterListener(physicsFilter, receiver)
         },
         resources: {
