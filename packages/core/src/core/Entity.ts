@@ -4,14 +4,22 @@ import type { Component, AnyComponentCreator } from 'core'
 
 export type EntityId = string
 
+type EntityOptions = {
+    id?: EntityId
+    name?: string
+}
+
 export class Entity {
-    id: EntityId
+    readonly id: EntityId
+    readonly name?: string
+
     private onAddComponents: ((components: Component[]) => void) | undefined
     private components = new Map<string, Component>()
     private tags = new Set<string>()
 
-    constructor(id?: EntityId) {
-        this.id = id ?? uuid()
+    constructor(options?: EntityOptions) {
+        this.id = options?.id ?? uuid()
+        this.name = options?.name
     }
 
     addComponents(...components: Component[]) {

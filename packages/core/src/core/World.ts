@@ -46,7 +46,8 @@ export class World {
     }
 
     readonly stats: StatsType
-    readonly ecs: EntityManager
+    readonly ecs: EntityManager // TODO deprecate
+    readonly entities: EntityManager
     readonly time: Clock
 
     systems: SystemWrapper[] = []
@@ -58,7 +59,8 @@ export class World {
     frameSync = true
 
     constructor() {
-        this.ecs = new EntityManager()
+        this.entities = new EntityManager()
+        this.ecs = this.entities
         this.time = new Clock()
 
         this.stats = {

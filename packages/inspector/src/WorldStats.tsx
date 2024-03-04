@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useRef } from 'react'
-import { PiEngineDuotone, PiGraphDuotone, PiTimerDuotone } from 'react-icons/pi'
+import { Engine, Graph as GraphIcon, Timer } from '@phosphor-icons/react'
 
 import { secondsToClockString } from './utils'
 
@@ -54,7 +54,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
         <section className="WorldStats">
             <h3>Stats</h3>
             <h4>
-                <Icon icon={<PiEngineDuotone />} />
+                <Icon icon={<Engine />} />
                 Engine
             </h4>
             <div className="table">
@@ -75,8 +75,8 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 <span>{secondsToClockString(time.elapsedTime, 3)}</span>
             </div>
             <h4>
-                <Icon icon={<PiGraphDuotone />} />
-                ECS
+                <Icon icon={<GraphIcon />} />
+                Content
             </h4>
             <div className="table">
                 <span>entities:</span>
@@ -95,7 +95,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 <span>{stats.ecs.filters}</span>
             </div>
             <h4>
-                <Icon icon={<PiTimerDuotone />} />
+                <Icon icon={<Timer />} />
                 System runtimes
             </h4>
             <div className="table">

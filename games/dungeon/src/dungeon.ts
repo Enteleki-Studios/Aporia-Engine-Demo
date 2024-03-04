@@ -62,16 +62,16 @@ const inputManager = new InputManager({
     pointerLock: false,
 })
 
-inputManager.addActionListener('debug', () => {
-    const { debugMode } = renderer
-    if (debugMode === 'game') {
-        renderer.setDebugMode('debug')
-        inputManager.disablePointerLock()
-    } else {
-        renderer.setDebugMode('game')
-        inputManager.allowPointerLock()
-    }
-})
+// inputManager.addActionListener('debug', () => {
+//     const { debugMode } = renderer
+//     if (debugMode === 'game') {
+//         renderer.setDebugMode('debug')
+//         inputManager.disablePointerLock()
+//     } else {
+//         renderer.setDebugMode('game')
+//         inputManager.allowPointerLock()
+//     }
+// })
 
 world
     .registerSystem(inputSystem({ inputManager }))
@@ -171,7 +171,7 @@ world.ecs.registerEntity(new Entity().addComponents(cameraComponent({})))
 
 // Player
 world.ecs.registerEntity(
-    new Entity()
+    new Entity({ name: 'hero' })
         .addComponents(
             animationComponent({ state: 'idle' }),
             directionComponent({}),

@@ -24,6 +24,7 @@ export { ResourceManager } from './managers/ResourceManager'
 
 // React
 export { useForceUpdate } from './reactjs/hooks/useForceUpdate'
+export * from './reactjs/contexts'
 
 // Utils
 export * as arrayUtils from './utils/arrayUtils'
