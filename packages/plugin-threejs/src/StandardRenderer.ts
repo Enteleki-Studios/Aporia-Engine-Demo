@@ -1,4 +1,5 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { MapControls } from 'three/examples/jsm/controls/MapControls'
 
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect } from 'postprocessing'
 
@@ -14,8 +15,9 @@ import {
     HalfFloatType,
 } from 'three'
 
-import { DebugMode } from '@gengine/core'
 import { AxesHelper } from 'objects/AxesHelper'
+
+const DEBUG_CAMERA_LAYER = 1
 
 type StandardRendererParams = {
     canvas?: HTMLCanvasElement
@@ -37,11 +39,13 @@ export class StandardRenderer {
     viewport = new Vector4()
     canvas: HTMLCanvasElement
 
+    shouldRender = false
+    shouldRenderDebug = false
+
     debugHelpers: Object3D[] = []
-    debug = false
-    debugMode: DebugMode = 'game'
-    debugOrbitControls: OrbitControls
-    debugViewport = new Vector4()
+    debugControls: OrbitControls
+    debugCanvas: HTMLCanvasElement
+    debugContext: CanvasRenderingContext2D | null
 
     constructor({ canvas, fov = 60, aspect = 1, near = 0.1, far = 100 }: StandardRendererParams) {
         this.renderer = new WebGLRenderer({
@@ -53,10 +57,8 @@ export class StandardRenderer {
         this.renderer.toneMappingExposure = 2
         this.renderer.shadowMap.enabled = true
         this.renderer.shadowMap.type = PCFSoftShadowMap
-        // this.renderer.setPixelRatio(window.devicePixelRatio)
-        this.renderer.setPixelRatio(1)
+        this.renderer.setPixelRatio(1 /* window.devicePixelRatio */)
         this.renderer.debug.checkShaderErrors = true
-        this.renderer.setScissorTest(true)
         this.renderer.autoClear = false
         this.renderer.info.autoReset = false
 
@@ -72,14 +74,15 @@ export class StandardRenderer {
 
         this.debugCamera = new PerspectiveCamera(fov, aspect, near, 500)
         this.debugCamera.position.set(20, 20, 20)
+        this.debugCamera.layers.enable(DEBUG_CAMERA_LAYER)
+        this.debugCanvas = document.createElement('canvas')
+        this.debugContext = this.debugCanvas.getContext('2d')
 
-        this.debugOrbitControls = new OrbitControls(this.debugCamera, this.renderer.domElement)
+        this.debugControls = new MapControls(this.debugCamera, this.debugCanvas)
 
         this.setSize(1280, 720)
 
         this.addHelpers(new AxesHelper(), new CameraHelper(this.camera))
-
-        this.updateViewports()
 
         this.composer.addPass(new RenderPass(this.scene, this.camera))
         // this.composer.addPass(new EffectPass(this.camera, new PixelationEffect(4)))
@@ -88,24 +91,18 @@ export class StandardRenderer {
     }
 
     render() {
-        if (this.debugMode !== 'debug') {
-            this.renderer.setViewport(this.viewport)
-            this.renderer.setScissor(this.viewport)
+        if (this.shouldRenderDebug) {
+            this.renderer.clear()
+            this.renderer.render(this.scene, this.debugCamera)
+
+            this.debugContext?.drawImage(this.canvas, 0, 0)
+        }
+
+        if (this.shouldRender) {
             // this.renderer.render(this.scene, this.camera)
             this.composer.render()
         }
 
-        if (this.debugMode !== 'game') {
-            this.debugHelpers.forEach((h) => {
-                h.visible = true
-            })
-            this.renderer.setViewport(this.debugViewport)
-            this.renderer.setScissor(this.debugViewport)
-            this.renderer.render(this.scene, this.debugCamera)
-            this.debugHelpers.forEach((h) => {
-                h.visible = false
-            })
-        }
     }
 
     addHelpers(...helpers: Object3D[]) {
@@ -116,13 +113,8 @@ export class StandardRenderer {
     }
 
     registerHelper(helper: Object3D) {
-        helper.visible = false
+        helper.layers.set(DEBUG_CAMERA_LAYER)
         this.debugHelpers.push(helper)
-    }
-
-    setDebugMode(mode: DebugMode) {
-        this.debugMode = mode
-        this.updateViewports()
     }
 
     setSize(width: number, height: number) {
@@ -135,25 +127,29 @@ export class StandardRenderer {
 
         this.debugCamera.aspect = this.aspect
         this.debugCamera.updateProjectionMatrix()
+        this.debugCanvas.width = width
+        this.debugCanvas.height = height
 
         this.renderer.setSize(width, height, false)
         this.composer.setSize(width, height)
-
-        this.updateViewports()
     }
 
-    updateViewports() {
-        if (this.debugMode === 'sideBySide') {
-            this.viewport.set(0, this.height / 4, this.width / 2, this.height / 2)
-            this.debugViewport.set(this.width / 2, this.height / 4, this.width / 2, this.height / 2)
+    setCanvasContainer(element: HTMLElement | null) {
+        if (element) {
+            element.appendChild(this.canvas)
+            this.shouldRender = true
         } else {
-            this.viewport.set(0, 0, this.width, this.height)
-            this.debugViewport.set(0, 0, this.width, this.height)
+            this.shouldRender = false
         }
     }
 
-    setCanvasContainer(element: HTMLElement) {
-        element.appendChild(this.canvas)
+    setDebugCanvasContainer(element: HTMLElement | null) {
+        if (element) {
+            element.appendChild(this.debugCanvas)
+            this.shouldRenderDebug = true
+        } else {
+            this.shouldRenderDebug = false
+        }
     }
 
     // updateInfoDomElement(delta: number) {

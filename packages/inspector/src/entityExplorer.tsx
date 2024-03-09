@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { ArrowsClockwise } from '@phosphor-icons/react'
+import React, { useState, useEffect } from 'react'
+import { ArrowClockwise, Eye, EyeSlash } from '@phosphor-icons/react'
 
 import { EntityId, Entity, Component, useWorld, useForceUpdate } from '@gengine/core'
 import { Icon } from 'Icon'
@@ -22,6 +22,22 @@ const ComponentView = ({ component }: { component: Component }) => {
 
 const EntityView = ({ entity }: { entity: Entity }) => {
     const forceUpdate = useForceUpdate()
+    const world = useWorld()
+    const [autoUpdate, setAutoUpdate] = useState(false)
+
+    useEffect(() => {
+        const onEndFrame = () => {
+            forceUpdate()
+        }
+
+        if (autoUpdate) {
+            world?.addEventListener('endframe', onEndFrame)
+        }
+
+        return () => {
+            world?.removeEventListener('endframe', onEndFrame)
+        }
+    }, [world, forceUpdate, autoUpdate])
 
     const components = []
     // @ts-expect-error accessing private member
@@ -32,15 +48,31 @@ const EntityView = ({ entity }: { entity: Entity }) => {
         <div className="EntityView" onClick={forceUpdate}>
             <div className="toolbar">
                 <div>
-                    Entity {entity.name && `(${entity.name})`}
+                    Entity
                 </div>
-                <Icon icon={<ArrowsClockwise />} onClick={forceUpdate} />
+                <div className="tools">
+                    <Icon
+                        icon={<ArrowClockwise />}
+                        onClick={forceUpdate}
+                        title="Refresh"
+                    />
+                    <Icon
+                        icon={autoUpdate ? <Eye /> : <EyeSlash />}
+                        onClick={() => setAutoUpdate(!autoUpdate)}
+                        title={autoUpdate ? 'Auto update on' : 'Auto update off'}
+                    />
+                </div>
             </div>
-            <p>id: {entity.id}</p>
-            <p>components: {entity.size()}</p>
-            {components.map((c) => (
-                <ComponentView key={c.type} component={c} />
-            ))}
+            <div className="entityData">
+                <p>id: {entity.id}</p>
+                <p>name: {entity.name}</p>
+                <p>components: {entity.size()}</p>
+                {/* @ts-expect-error accessing private member */}
+                <p>tags: {[...entity.tags].join(', ')}</p>
+                {components.map((c) => (
+                    <ComponentView key={c.type} component={c} />
+                ))}
+            </div>
         </div>
     )
 }
@@ -53,6 +85,7 @@ const EntityRow = ({ entity, onClick, isSelected }: { entity: Entity, onClick: (
 )
 
 export const EntityExplorer = () => {
+    const forceUpdate = useForceUpdate()
     const world = useWorld()
 
     const [selectedEntityId, setSelectedEntityId] = useState<EntityId | null>(null)
@@ -79,7 +112,17 @@ export const EntityExplorer = () => {
     return (
         <div className="EntityExplorer">
             <section className="entities">
-                {entities}
+                <div className="toolbar">
+                    <div>Entities ({entities.length})</div>
+                    <Icon
+                        icon={<ArrowClockwise />}
+                        onClick={forceUpdate}
+                        title="Refresh"
+                    />
+                </div>
+                <div className="entitiesTable">
+                    {entities}
+                </div>
             </section>
             <section>
                 {selectedEntity ? <EntityView entity={selectedEntity} /> : 'Select entity'}

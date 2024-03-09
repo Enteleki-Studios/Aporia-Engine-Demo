@@ -1,10 +1,21 @@
 import React, { FormEvent, useCallback, useEffect, useState, ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { GameController, Play, SkipForward, Stop, X, IconContext } from '@phosphor-icons/react'
+import {
+    GameController,
+    Play,
+    SkipForward,
+    Pause,
+    X,
+    IconContext,
+    SquareSplitHorizontal,
+    NumberSquareOne,
+    NumberSquareTwo,
+} from '@phosphor-icons/react'
 
 import { DebugMode, DebugModes, ENGINE_VERSION, useWorld } from '@gengine/core'
 
 import { EntityExplorer } from 'entityExplorer'
+import { DebugView } from 'debugView'
 import { setDebugMode, getDebugMode } from './slice'
 import { Icon } from './Icon'
 import { WorldStats } from './WorldStats'
@@ -22,6 +33,8 @@ export const InspectorUI = ({ children, passthroughOff }: InspectorUIProps) => {
     const world = useWorld()
 
     const [isPassthroughMode, setIsPassthroughMode] = useState(!passthroughOff)
+    const [isGameViewVisible, setIsGameViewVisible] = useState(true)
+    const [isDebugViewVisible, setIsDebugViewVisible] = useState(false)
 
     const [status, setStatus] = useState('')
 
@@ -68,8 +81,6 @@ export const InspectorUI = ({ children, passthroughOff }: InspectorUIProps) => {
         return children
     }
 
-    const title = `Inspector | Engine: ${status}`
-
     return (
         <IconContext.Provider value={{
             size: 18,
@@ -80,7 +91,7 @@ export const InspectorUI = ({ children, passthroughOff }: InspectorUIProps) => {
                 <div className="header">
                     <div className="title">
                         <Icon icon={<GameController />} />
-                        {title}
+                        Inspector
                     </div>
                     <div className="toolbar">
                         <Icon
@@ -97,13 +108,42 @@ export const InspectorUI = ({ children, passthroughOff }: InspectorUIProps) => {
                         />
                         <Icon
                             disabled={!world?.isRunning}
-                            icon={<Stop />}
+                            icon={<Pause />}
                             onClick={() => world?.stop()}
                             title="Stop world"
                         />
                     </div>
+                    <div className="toolbar views">
+                        <Icon
+                            icon={<NumberSquareOne weight="regular" size="20" />}
+                            onClick={() => {
+                                setIsGameViewVisible(true)
+                                setIsDebugViewVisible(false)
+                            }}
+                            title="Game view"
+                            disabled={isGameViewVisible && !isDebugViewVisible}
+                        />
+                        <Icon
+                            icon={<NumberSquareTwo weight="regular" size="20" />}
+                            onClick={() => {
+                                setIsDebugViewVisible(true)
+                                setIsGameViewVisible(false)
+                            }}
+                            title="Debug view"
+                            disabled={isDebugViewVisible && !isGameViewVisible}
+                        />
+                        <Icon
+                            icon={<SquareSplitHorizontal weight="regular" size="22" />}
+                            onClick={() => {
+                                setIsGameViewVisible(true)
+                                setIsDebugViewVisible(true)
+                            }}
+                            title="Split view"
+                            disabled={isGameViewVisible && isDebugViewVisible}
+                        />
+                    </div>
                     <Icon
-                        icon={<X />}
+                        icon={<X weight="regular" />}
                         onClick={() => setIsPassthroughMode(true)}
                         title="Close inspector"
                     />
@@ -134,8 +174,17 @@ export const InspectorUI = ({ children, passthroughOff }: InspectorUIProps) => {
                         <EntityExplorer />
                     </div>
                 </div>
-                <div className="game">
-                    {children}
+                <div className="gameViewsContainer">
+                    {isGameViewVisible && (
+                        <div className="game">
+                            {children}
+                        </div>
+                    )}
+                    {isDebugViewVisible && (
+                        <div className="gameDebug">
+                            <DebugView />
+                        </div>
+                    )}
                 </div>
                 <footer>
                     version: {ENGINE_VERSION} | Enteleki Studios

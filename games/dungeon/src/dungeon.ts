@@ -34,7 +34,6 @@ import {
     transform3D,
     animationComponent,
 } from '@gengine/core'
-import { slice as inspectorSlice } from '@gengine/inspector'
 import { cannonPhysicsPlugin, components as physicsComponents } from '@gengine/plugin-cannon'
 import { threejsPlugin } from '@gengine/plugin-threejs'
 
@@ -61,17 +60,6 @@ const inputManager = new InputManager({
     // pointerLock: true,
     pointerLock: false,
 })
-
-// inputManager.addActionListener('debug', () => {
-//     const { debugMode } = renderer
-//     if (debugMode === 'game') {
-//         renderer.setDebugMode('debug')
-//         inputManager.disablePointerLock()
-//     } else {
-//         renderer.setDebugMode('game')
-//         inputManager.allowPointerLock()
-//     }
-// })
 
 world
     .registerSystem(inputSystem({ inputManager }))
@@ -110,16 +98,16 @@ world
     .registerPlugin(threejs)
 
 export const middleware: Middleware = () => (next) => (action: unknown) => {
-    if (inspectorSlice.actions.setDebugMode.match(action)) {
-        renderer.setDebugMode(action.payload)
-    }
+    // if (inspectorSlice.actions.setDebugMode.match(action)) {
+    //     renderer.setDebugMode(action.payload)
+    // }
 
     return next(action)
 }
 
 // Lighting
 world.ecs.registerEntity(
-    new Entity().addComponents(
+    new Entity({ name: 'lighting' }).addComponents(
         ambientLightComponent({
             color: 0xf4e99b,
             intensity: 0.2,
@@ -135,7 +123,7 @@ world.ecs.registerEntity(
 
 // Floor
 world.ecs.registerEntity(
-    new Entity().addComponents(
+    new Entity({ name: 'floor' }).addComponents(
         mesh2D({ shape: 'plane', width: 32, height: 32 }),
         transform3D({
             rotation: [-Math.PI / 2, 0, 0],
@@ -159,7 +147,7 @@ world.ecs.registerEntity(
 
 // Test stuff
 world.ecs.registerEntity(
-    new Entity().addComponents(
+    new Entity({ name: 'test box' }).addComponents(
         basicGeometryComponent({ geometryType: 'box' }),
         transform3D({ position: [0, 1, 5] }),
         emitterComponent({ prefabId: 'ball', delay: 2 }),
@@ -167,7 +155,7 @@ world.ecs.registerEntity(
 )
 
 // Camera
-world.ecs.registerEntity(new Entity().addComponents(cameraComponent({})))
+world.ecs.registerEntity(new Entity({ name: 'camera' }).addComponents(cameraComponent({})))
 
 // Player
 world.ecs.registerEntity(
@@ -210,7 +198,7 @@ world.ecs.registerEntity(
 
 // Shibs
 world.ecs.registerEntity(
-    new Entity()
+    new Entity({ name: 'dog' })
         .addComponents(
             animationComponent({ state: 'idle' }),
             modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
@@ -244,7 +232,7 @@ world.ecs.registerEntity(
 const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart']
 items.forEach((item, i) => {
     world.ecs.registerEntity(
-        new Entity().addComponents(
+        new Entity({ name: item }).addComponents(
             modelComponent({ modelName: item, castShadow: true, data: modelDB[item] }),
             transform3D({ position: [i * 3 - 12, 0, 8] }),
             colliderComponent({
@@ -261,7 +249,7 @@ items.forEach((item, i) => {
 
 // Crate
 world.ecs.registerEntity(
-    new Entity().addComponents(
+    new Entity({ name: 'crate' }).addComponents(
         modelComponent({ modelName: 'crate', data: modelDB['crate'] }),
         transform3D({ position: [5, 0, 5] }),
         colliderComponent({
@@ -277,9 +265,9 @@ world.ecs.registerEntity(
 
 // Wall torches
 const torches = [9.75, 3.25, -3.25]
-torches.forEach((posZ) => {
+torches.forEach((posZ, i) => {
     world.ecs.registerEntity(
-        new Entity().addComponents(
+        new Entity({ name: `torch (${i})` }).addComponents(
             modelComponent({ modelName: 'torchWall', data: modelDB['torchWall'] }),
             transform3D({ position: [-16, 1.5, posZ] }),
             pointLightComponent({
@@ -293,7 +281,7 @@ torches.forEach((posZ) => {
 
 // Gold chest
 world.ecs.registerEntity(
-    new Entity().addComponents(
+    new Entity({ name: 'chest' }).addComponents(
         modelComponent({ modelName: 'chest_gold', data: modelDB['chest_gold'] }),
         transform3D({ position: [-6, 0, -6] }),
         pointLightComponent({
@@ -308,7 +296,7 @@ world.ecs.registerEntity(
 // Walls
 for (let i = 0; i < 32; i += 2) {
     world.ecs.registerEntity(
-        new Entity().addComponents(
+        new Entity({ name: `wall (${i})` }).addComponents(
             modelComponent({ modelName: 'stoneWallTop', data: modelDB['stoneWallTop'] }),
             transform3D({ position: [-16, 1, i - 15] }),
             colliderComponent({ collider: { type: 'box', width: 0.25, height: 2, depth: 2 } }),

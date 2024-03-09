@@ -54,7 +54,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
         <section className="WorldStats">
             <h3>Stats</h3>
             <h4>
-                <Icon icon={<Engine />} />
+                <Icon icon={<Engine weight="duotone" />} />
                 Engine
             </h4>
             <div className="table">
@@ -75,7 +75,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 <span>{secondsToClockString(time.elapsedTime, 3)}</span>
             </div>
             <h4>
-                <Icon icon={<GraphIcon />} />
+                <Icon icon={<GraphIcon weight="duotone" />} />
                 Content
             </h4>
             <div className="table">
@@ -95,7 +95,7 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 <span>{stats.ecs.filters}</span>
             </div>
             <h4>
-                <Icon icon={<Timer />} />
+                <Icon icon={<Timer weight="duotone" />} />
                 System runtimes
             </h4>
             <div className="table">

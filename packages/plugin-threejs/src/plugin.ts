@@ -3,16 +3,11 @@ import { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
 
 import { createPlugin, World } from '@gengine/core'
 import {
-    directionalLightFilter,
-    cameraFilter,
-    movingEntitiesFilter,
-    rotatingEntitiesFilter,
     modelFilter,
     ambientLightFilter,
     boxFilter,
     collidingFilter,
     mesh2DFilter,
-    positionedEntitiesFilter,
 } from '@gengine/core'
 
 import { Renderer } from './Renderer'

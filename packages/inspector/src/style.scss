@@ -13,6 +13,7 @@ $colors: (
         backgroundLighter: color.scale($black, $lightness: 5%),
         foreground: $white,
         disabled: $grey,
+        caption: color.scale($grey, $lightness: 20%),
     ),
     panel: (
         background: $darkBlue,
@@ -51,13 +52,13 @@ $colors: (
     grid-template-rows: auto 1fr 30rem auto;
     grid-template-areas:
         "header header"
-        "sidebar game"
+        "sidebar gameviews"
         "sidebar explorer"
         "footer footer";
     width: 100vw;
     height: 100vh;
-    font-size: 100%;
-    font-family: Arial, sans-serif;
+    font-size: 0.75rem;
+    font-family: monospace, sans-serif;
     background: color(panel, background);
     color: color(default, foreground);
 
@@ -66,17 +67,26 @@ $colors: (
         padding: 0;
     }
 
-    .game {
-        grid-area: game;
-        background: repeating-conic-gradient(color(default, background) 0% 25%, color(default, backgroundLighter) 0% 50%) 50% / 20px 20px;
-        overflow: hidden;
+    .gameViewsContainer {
+        grid-area: gameviews;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        overflow: hidden;
+
+        .game, .gameDebug {
+            background: repeating-conic-gradient(color(default, background) 0% 25%, color(default, backgroundLighter) 0% 50%) 50% / 20px 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        .gameDebug {
+            border-left: 1px solid color(panel, border);
+        }
     }
     .explorer {
         grid-area: explorer;
-        border-top: 1px solid color(panel, border);
+        border-top: 2px solid color(panel, border);
         padding: 0.25rem;
         display: grid;
         grid-auto-rows: auto 1fr;
@@ -98,50 +108,78 @@ $colors: (
             overflow: hidden;
 
             .EntityExplorer {
-                font-family: monospace;
                 height: 100%;
                 display: grid;
                 grid-template-areas: "entities entity";
                 grid-auto-columns: auto 1fr;
 
                 section {
-                    overflow-y: auto;
-                    padding: 0.25rem 0.5rem;
-                    scrollbar-gutter: stable;
+                    border-right: 1px solid color(panel, border);
+                    overflow: hidden;
 
                     ul {
                         list-style: none;
                     }
                 }
 
+                .toolbar {
+                    padding: 0.25rem 0.5rem;
+                    display: flex;
+                    justify-content: space-between;
+                    background-color: color(panel, toolbar);
+
+                    .tools {
+                        display: flex;
+                        gap: 0.5rem;
+                    }
+                }
                 .entities {
                     display: grid;
-                    grid-template-areas: "id name";
-                    grid-auto-columns: auto;
+                    grid-template-areas: "t" "g";
+                    grid-auto-rows: auto 1fr;
+                    overflow: hidden;
 
-                    .EntityRow {
-                        cursor: pointer;
-                        display: contents;
+                    .entitiesTable {
+                        overflow-y: auto;
+                        padding: 0.25rem 0.5rem;
+                        scrollbar-gutter: stable;
+                        display: grid;
+                        grid-template-areas: "id name";
+                        grid-auto-columns: auto;
 
-                        div {
-                            padding: 0.25rem;
+                        .EntityRow {
+                            cursor: pointer;
+                            display: contents;
 
-                        }
-                        &:hover > div,
-                        &.isSelected > div { 
-                            background-color: color(panel, hover);
+                            div {
+                                padding: 0.25rem;
+                                border-bottom: solid 1px color(panel, border);
+
+                            }
+                            &:hover > div,
+                            &.isSelected > div { 
+                                background-color: color(panel, hover);
+                            }
                         }
                     }
                 }
                 .EntityView {
+                    overflow: hidden;
+                    display: grid;
+                    grid-template-areas: "t" "g";
+                    grid-auto-rows: auto 1fr;
+                    height: 100%;
+
                     .toolbar {
                         background-color: color(panel, toolbar);
                         padding: 0.25rem 0.5rem;
-                        position: sticky;
-                        top: 0;
                         margin-bottom: 0.25rem;
                         display: flex;
                         justify-content: space-between;
+                    }
+                    .entityData {
+                        overflow-y: auto;
+                        padding: 0.25rem 0.5rem;
                     }
                 }
                 .ComponentView {
@@ -164,9 +202,9 @@ $colors: (
     }
     footer {
         grid-area: footer;
-        border-top: 1px solid color(panel, border);
+        border-top: 2px solid color(panel, border);
         padding: 0.25rem;
-        color: color(default, disabled);
+        color: color(default, caption);
         text-align: center;
         font-size: 0.6rem;
     }
@@ -175,18 +213,17 @@ $colors: (
         grid-area: sidebar;
         background-color: color(panel, background);
         color: color(panel, foreground);
-        font-family: monospace;
-        border-right: 1px solid color(panel, border);
+        border-right: 2px solid color(panel, border);
         overflow: auto;
     }
 
     .header {
         grid-area: header;
-        border-bottom: 1px solid color(panel, border);
-        padding: 0.5rem;
+        border-bottom: 2px solid color(panel, border);
+        padding: 0.25rem 0.5rem;
         background-color: color(default, background);
-        font-size: 0.75rem;
         display: flex;
+        align-items: center;
         gap: 3rem;
 
         .title {
@@ -199,11 +236,15 @@ $colors: (
             display: flex;
             gap: 0.25rem;
             justify-content: center;
+            align-items: center;
+
+            &.views {
+                flex: initial;
+            }
         }
     }
     .body {
         padding: 0.5rem;
-        font-size: 0.75rem;
 
         section {
             border-bottom: 1px solid color(panel, border);
@@ -250,7 +291,6 @@ $colors: (
             .log {
                 background-color: color(log, background);
                 padding: 0.25rem 2rem 0.25rem 0.25rem;
-                font-family: monospace;
 
                 .ln {
                     color: color(log, lineNumber);

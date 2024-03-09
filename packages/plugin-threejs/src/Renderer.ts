@@ -6,12 +6,10 @@ export class Renderer extends StandardRenderer {
 
     hasWorld = false
 
-    constructor(params: { canvas?: HTMLCanvasElement }) {
-        super(params)
+    constructor() {
+        super({})
 
         this.setSize(1920, 1080)
-
-        // this.setDebugMode('sideBySide')
 
         // this.scene.add(new DefaultGrid(32, { text: 'Dungeon' }))
 
@@ -28,11 +26,6 @@ export class Renderer extends StandardRenderer {
         // this.scene.overrideMaterial = new MeshBasicMaterial({ wireframe: true, color: '#0089cc' })
     }
 }
-
-// if (!this.hasWorld) {
-//     const [levelComponent] = componentManager.getTuplesByQueryGeneric<[LevelComponent]>([LEVEL])[0]
-//     this.addWorld(levelComponent)
-// }
 
 // addWorld(levelComponent: LevelComponent) {
 //     const wallGeometries = []

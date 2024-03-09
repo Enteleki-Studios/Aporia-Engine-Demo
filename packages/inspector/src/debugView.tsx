@@ -1,33 +1,27 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 
 import { useWorld } from '@gengine/core'
 import { threejsPlugin } from '@gengine/plugin-threejs'
 
-// import Header from 'UI/components/ingame/Header'
+import './debugView.scss'
 
-import { init } from 'dungeon'
-
-const UI = () => {
+export const DebugView = () => {
     const world = useWorld()
     const canvasContainerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         const three = world?.getPlugin(threejsPlugin)
         if (three && canvasContainerRef.current) {
-            three.resources.renderer.setCanvasContainer(canvasContainerRef.current)
-            init()
+            three.resources.renderer.setDebugCanvasContainer(canvasContainerRef.current)
         }
         return () => {
-            three?.resources.renderer.setCanvasContainer(null)
+            three?.resources.renderer.setDebugCanvasContainer(null)
         }
     }, [world])
 
     return (
-        <div className="UI">
-            <div className="reticle" />
+        <div className="DebugView">
             <div ref={canvasContainerRef} />
         </div>
     )
 }
-
-export default UI
