@@ -60,6 +60,7 @@ async function loadModel(modelC: ReturnType<typeof modelComponent>) {
 
     const model: Group = await loadFBX(modelPath, texturePath, { castShadow })
     model.scale.setScalar(scale)
+    model.castShadow = true
     if (translate) {
         // const obj = model.children[0] as Mesh
         // obj.geometry.translate(...translate)
@@ -295,6 +296,7 @@ export const entityReceiver =
 
                 if (geometry) {
                     const mesh = new Mesh(geometry, mat)
+                    mesh.receiveShadow = true
                     objectManager.addResource(entity.id, 'mesh2D', mesh)
                 }
 

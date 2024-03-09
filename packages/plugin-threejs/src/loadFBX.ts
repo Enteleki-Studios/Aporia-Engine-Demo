@@ -1,4 +1,4 @@
-import { Texture, sRGBEncoding, TextureLoader, Group } from 'three'
+import { Texture, TextureLoader, Group } from 'three'
 
 import { isThreeMesh } from 'utils'
 
@@ -19,7 +19,6 @@ export function loadFBX(modelPath: string, texturePath?: string, config?: LoadFB
 
             if (texturePath) {
                 texture = textureLoader.load(texturePath)
-                texture.encoding = sRGBEncoding
                 texture.flipY = true
             }
 

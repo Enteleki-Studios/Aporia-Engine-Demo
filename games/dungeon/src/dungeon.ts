@@ -66,7 +66,6 @@ world
     .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])
     .registerPlugin(cannonPhysicsPlugin())
     .registerSystems([
-        // inputSystem({ inputManager }),
         emitterSystem({
             prefabs: {
                 ball: () =>
@@ -166,7 +165,7 @@ world.ecs.registerEntity(
             hitboxComponent({ radius: 1 }),
             healthComponent({ health: 20 }),
             inputComponent({ keymap: DEFAULT_KEYMAP }),
-            modelComponent({ modelName: 'wizard', data: modelDB['wizard'] }),
+            modelComponent({ modelName: 'wizard', data: modelDB['wizard'], castShadow: true }),
             transform3D({ position: [0, 1, -1] }),
             velocityComponent({}),
             damagingComponent({
