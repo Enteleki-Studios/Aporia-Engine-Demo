@@ -4,7 +4,5 @@
         "baseUrl": "src"
     },
     "include": ["src"],
-    "references": [
-        { "path": "../core" }
-    ]
+    "references": [{ "path": "../core" }]
 }

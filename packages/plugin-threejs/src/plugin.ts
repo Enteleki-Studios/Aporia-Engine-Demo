@@ -2,13 +2,7 @@ import { Octree } from 'three/examples/jsm/math/Octree'
 import { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
 
 import { createPlugin, World } from '@gengine/core'
-import {
-    modelFilter,
-    ambientLightFilter,
-    boxFilter,
-    collidingFilter,
-    mesh2DFilter,
-} from '@gengine/core'
+import { modelFilter, ambientLightFilter, boxFilter, collidingFilter, mesh2DFilter } from '@gengine/core'
 
 import { Renderer } from './Renderer'
 import { makeObject3dManager, makeAnimationManager } from './object3dManager'

@@ -82,11 +82,13 @@ export const InspectorUI = ({ children, passthroughOff }: InspectorUIProps) => {
     }
 
     return (
-        <IconContext.Provider value={{
-            size: 18,
-            weight: 'fill',
-            color: '#ffffff',
-        }}>
+        <IconContext.Provider
+            value={{
+                size: 18,
+                weight: 'fill',
+                color: '#ffffff',
+            }}
+        >
             <div className="Inspector">
                 <div className="header">
                     <div className="title">
@@ -175,20 +177,14 @@ export const InspectorUI = ({ children, passthroughOff }: InspectorUIProps) => {
                     </div>
                 </div>
                 <div className="gameViewsContainer">
-                    {isGameViewVisible && (
-                        <div className="game">
-                            {children}
-                        </div>
-                    )}
+                    {isGameViewVisible && <div className="game">{children}</div>}
                     {isDebugViewVisible && (
                         <div className="gameDebug">
                             <DebugView />
                         </div>
                     )}
                 </div>
-                <footer>
-                    version: {ENGINE_VERSION} | Enteleki Studios
-                </footer>
+                <footer>version: {ENGINE_VERSION} | Enteleki Studios</footer>
             </div>
         </IconContext.Provider>
     )

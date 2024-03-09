@@ -102,7 +102,6 @@ export class StandardRenderer {
             // this.renderer.render(this.scene, this.camera)
             this.composer.render()
         }
-
     }
 
     addHelpers(...helpers: Object3D[]) {

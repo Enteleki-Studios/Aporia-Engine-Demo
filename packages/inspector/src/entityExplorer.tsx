@@ -47,15 +47,9 @@ const EntityView = ({ entity }: { entity: Entity }) => {
     return (
         <div className="EntityView" onClick={forceUpdate}>
             <div className="toolbar">
-                <div>
-                    Entity
-                </div>
+                <div>Entity</div>
                 <div className="tools">
-                    <Icon
-                        icon={<ArrowClockwise />}
-                        onClick={forceUpdate}
-                        title="Refresh"
-                    />
+                    <Icon icon={<ArrowClockwise />} onClick={forceUpdate} title="Refresh" />
                     <Icon
                         icon={autoUpdate ? <Eye /> : <EyeSlash />}
                         onClick={() => setAutoUpdate(!autoUpdate)}
@@ -77,7 +71,7 @@ const EntityView = ({ entity }: { entity: Entity }) => {
     )
 }
 
-const EntityRow = ({ entity, onClick, isSelected }: { entity: Entity, onClick: () => void, isSelected?: boolean }) => (
+const EntityRow = ({ entity, onClick, isSelected }: { entity: Entity; onClick: () => void; isSelected?: boolean }) => (
     <div className={`EntityRow ${isSelected && 'isSelected'}`} onClick={onClick}>
         <div>{entity.id.substring(0, 8)}</div>
         <div>{entity.name}</div>
@@ -103,7 +97,7 @@ export const EntityExplorer = () => {
                 key={id}
                 onClick={() => setSelectedEntityId(id)}
                 isSelected={selectedEntityId === id}
-            />
+            />,
         )
     }
 
@@ -114,19 +108,11 @@ export const EntityExplorer = () => {
             <section className="entities">
                 <div className="toolbar">
                     <div>Entities ({entities.length})</div>
-                    <Icon
-                        icon={<ArrowClockwise />}
-                        onClick={forceUpdate}
-                        title="Refresh"
-                    />
+                    <Icon icon={<ArrowClockwise />} onClick={forceUpdate} title="Refresh" />
                 </div>
-                <div className="entitiesTable">
-                    {entities}
-                </div>
+                <div className="entitiesTable">{entities}</div>
             </section>
-            <section>
-                {selectedEntity ? <EntityView entity={selectedEntity} /> : 'Select entity'}
-            </section>
+            <section>{selectedEntity ? <EntityView entity={selectedEntity} /> : 'Select entity'}</section>
         </div>
     )
 }

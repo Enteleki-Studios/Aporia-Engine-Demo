@@ -50,7 +50,6 @@ export const syncThreeSystem = createSystem<{ renderer: Renderer; objectManager:
                     ?.lookAt(position[0] + direction[0], position[1] + direction[1], position[2] + direction[2])
                 // }
             }
-
         },
 )
 

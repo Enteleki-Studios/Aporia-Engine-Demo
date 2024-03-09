@@ -51,10 +51,10 @@ $colors: (
     grid-template-columns: 17rem 1fr;
     grid-template-rows: auto 1fr 30rem auto;
     grid-template-areas:
-        "header header"
-        "sidebar gameviews"
-        "sidebar explorer"
-        "footer footer";
+        'header header'
+        'sidebar gameviews'
+        'sidebar explorer'
+        'footer footer';
     width: 100vw;
     height: 100vh;
     font-size: 0.75rem;
@@ -62,7 +62,9 @@ $colors: (
     background: color(panel, background);
     color: color(default, foreground);
 
-    ul, li, p {
+    ul,
+    li,
+    p {
         margin: 0;
         padding: 0;
     }
@@ -72,8 +74,13 @@ $colors: (
         display: flex;
         overflow: hidden;
 
-        .game, .gameDebug {
-            background: repeating-conic-gradient(color(default, background) 0% 25%, color(default, backgroundLighter) 0% 50%) 50% / 20px 20px;
+        .game,
+        .gameDebug {
+            background: repeating-conic-gradient(
+                    color(default, background) 0% 25%,
+                    color(default, backgroundLighter) 0% 50%
+                )
+                50% / 20px 20px;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -110,7 +117,7 @@ $colors: (
             .EntityExplorer {
                 height: 100%;
                 display: grid;
-                grid-template-areas: "entities entity";
+                grid-template-areas: 'entities entity';
                 grid-auto-columns: auto 1fr;
 
                 section {
@@ -135,7 +142,7 @@ $colors: (
                 }
                 .entities {
                     display: grid;
-                    grid-template-areas: "t" "g";
+                    grid-template-areas: 't' 'g';
                     grid-auto-rows: auto 1fr;
                     overflow: hidden;
 
@@ -144,7 +151,7 @@ $colors: (
                         padding: 0.25rem 0.5rem;
                         scrollbar-gutter: stable;
                         display: grid;
-                        grid-template-areas: "id name";
+                        grid-template-areas: 'id name';
                         grid-auto-columns: auto;
 
                         .EntityRow {
@@ -154,10 +161,9 @@ $colors: (
                             div {
                                 padding: 0.25rem;
                                 border-bottom: solid 1px color(panel, border);
-
                             }
                             &:hover > div,
-                            &.isSelected > div { 
+                            &.isSelected > div {
                                 background-color: color(panel, hover);
                             }
                         }
@@ -166,7 +172,7 @@ $colors: (
                 .EntityView {
                     overflow: hidden;
                     display: grid;
-                    grid-template-areas: "t" "g";
+                    grid-template-areas: 't' 'g';
                     grid-auto-rows: auto 1fr;
                     height: 100%;
 
@@ -188,7 +194,7 @@ $colors: (
                     .values {
                         padding-left: 1rem;
                         display: grid;
-                        grid-template-areas: "key value";
+                        grid-template-areas: 'key value';
                         grid-auto-columns: auto 1fr;
                         grid-column-gap: 1rem;
 
