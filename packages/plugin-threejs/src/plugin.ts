@@ -1,6 +1,3 @@
-import { Octree } from 'three/examples/jsm/math/Octree'
-import { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
-
 import { createPlugin, World } from '@gengine/core'
 import { modelFilter, ambientLightFilter, boxFilter, collidingFilter, mesh2DFilter } from '@gengine/core'
 
@@ -10,16 +7,11 @@ import { entityReceiver } from './entityReceiver'
 import { syncThreeSystem, renderSystem } from './systems'
 
 export const threejsPlugin = createPlugin('Three.js plugin', () => {
-    const renderer = new Renderer({})
+    const renderer = new Renderer()
     const objectManager = makeObject3dManager(renderer)
     const animationManager = makeAnimationManager()
-    const octree = new Octree()
 
-    const octreeHelper = new OctreeHelper(octree, '#0089cc')
-    renderer.scene.add(octreeHelper)
-    renderer.registerHelper(octreeHelper)
-
-    const threeEntityReceiver = entityReceiver({ renderer, objectManager, octree, octreeHelper, animationManager })
+    const threeEntityReceiver = entityReceiver({ renderer, objectManager, animationManager })
 
     return {
         init(world: World) {
@@ -34,7 +26,6 @@ export const threejsPlugin = createPlugin('Three.js plugin', () => {
             world.ecs.addFilterListener(mesh2DFilter, (e, f) => threeEntityReceiver(e, f))
         },
         resources: {
-            octree,
             renderer,
             objectManager,
             animationManager,

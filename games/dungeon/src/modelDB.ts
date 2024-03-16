@@ -167,6 +167,14 @@ const modelDB: Record<string, Model> = {
         modelPath: `${MF}/decorative/Cart.fbx`,
         scale: 0.01,
     },
+    stairs: {
+        modelPath: `${MF}/items/Stairs.fbx`,
+        scale: 0.01,
+    },
+    floor: {
+        modelPath: `${MF}/items/ModularFloor.fbx`,
+        scale: 0.01,
+    },
 }
 
 export default modelDB

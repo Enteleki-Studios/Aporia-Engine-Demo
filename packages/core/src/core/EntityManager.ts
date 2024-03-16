@@ -1,6 +1,7 @@
-import { Component, ECSFilter, Entity, EntityId } from 'core'
+import { Component, Entity, EntityId } from 'core'
+import { Query } from 'definitions'
 
-type FilterListenerCallback = (entity: Entity, filter: ECSFilter) => void
+type FilterListenerCallback = (entity: Entity, filter: Query) => void
 
 export type ECSStatsType = {
     /** Number of entities */
@@ -13,8 +14,8 @@ export type ECSStatsType = {
 
 export class EntityManager {
     private entitiesById = new Map<EntityId, Entity>()
-    private entitiesByFilter = new Map<ECSFilter, Set<Entity>>()
-    private listenersByFilter = new Map<ECSFilter, Set<FilterListenerCallback>>()
+    private entitiesByFilter = new Map<Query, Set<Entity>>()
+    private listenersByFilter = new Map<Query, Set<FilterListenerCallback>>()
 
     stats: ECSStatsType = {
         entities: 0,
@@ -46,7 +47,7 @@ export class EntityManager {
         }
     }
 
-    filterBy(filter: ECSFilter): Set<Entity> {
+    filterBy(filter: Query): Set<Entity> {
         const entities = this.entitiesByFilter.get(filter)
         if (entities) {
             return entities
@@ -55,7 +56,7 @@ export class EntityManager {
         }
     }
 
-    addFilterListener(filter: ECSFilter, cb: FilterListenerCallback) {
+    addFilterListener(filter: Query, cb: FilterListenerCallback) {
         if (!this.listenersByFilter.has(filter)) {
             this.listenersByFilter.set(filter, new Set())
         }
@@ -73,7 +74,7 @@ export class EntityManager {
         }
     }
 
-    removeFilterListener(filter: ECSFilter, cb: FilterListenerCallback) {
+    removeFilterListener(filter: Query, cb: FilterListenerCallback) {
         this.listenersByFilter.get(filter)?.delete(cb)
     }
 
@@ -95,7 +96,7 @@ export class EntityManager {
         this.stats.entities += 1
     }
 
-    registerFilter(filter: ECSFilter) {
+    registerFilter(filter: Query) {
         const existingEntities = this.entitiesByFilter.get(filter)
 
         if (existingEntities) {
@@ -128,7 +129,7 @@ export class EntityManager {
         return entitySet
     }
 
-    registerFilters(filters: ECSFilter[]) {
+    registerFilters(filters: Query[]) {
         filters.forEach((f) => this.registerFilter(f))
     }
 

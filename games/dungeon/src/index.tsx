@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 
 import { WorldContext } from '@gengine/core'
-import { InspectorUI } from '@gengine/inspector'
+import { Inspector } from '@gengine/inspector'
 
 import { world } from './dungeon'
 import { store } from './store'
@@ -17,9 +17,9 @@ if (root) {
     createRoot(root).render(
         <Provider store={store}>
             <WorldContext.Provider value={world}>
-                <InspectorUI passthroughOff>
+                <Inspector startOpen>
                     <UI />
-                </InspectorUI>
+                </Inspector>
             </WorldContext.Provider>
         </Provider>,
     )

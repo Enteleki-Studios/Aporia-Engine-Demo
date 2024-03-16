@@ -9,7 +9,7 @@
         "jsx": "react",
         "lib": ["dom", "esnext"],
         "module": "esnext",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "rootDir": ".",
         "sourceMap": true,
         "strict": true,

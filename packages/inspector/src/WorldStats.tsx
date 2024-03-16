@@ -4,7 +4,7 @@ import { Engine, Graph as GraphIcon, Timer } from '@phosphor-icons/react'
 import { secondsToClockString } from './utils'
 
 import { Icon } from './Icon'
-import { type World, Graph, useForceUpdate } from '@gengine/core'
+import { type World, Graph, useForceUpdate, useSmoothNumber } from '@gengine/core'
 
 type WorldStatsProps = {
     world: World
@@ -50,6 +50,9 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
 
     const { stats, time } = world
 
+    const smoothFps = Math.floor(useSmoothNumber(time.fps))
+    const smoothFrameLength = Math.ceil(useSmoothNumber(time.frameLength))
+
     return (
         <section className="WorldStats">
             <h3>Stats</h3>
@@ -58,14 +61,14 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 Engine
             </h4>
             <div className="table">
-                <span>fps:</span>
+                <span title="10 frame average">fps:</span>
                 <span>
-                    {time.fps} <i ref={fpsGraphRef} />
+                    {smoothFps} <i ref={fpsGraphRef} />
                 </span>
 
-                <span>frame time:</span>
+                <span title="10 frame average">frame time:</span>
                 <span>
-                    {Math.ceil(time.frameLength)} <i ref={frameGraphRef} />
+                    {smoothFrameLength} <i ref={frameGraphRef} />
                 </span>
 
                 <span>frames:</span>

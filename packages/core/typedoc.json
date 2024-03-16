@@ -1,5 +1,5 @@
 {
-    "entryPoints": ["src/gengine/index.ts"],
+    "entryPoints": ["src/index.ts"],
     "out": "dist/docs/",
     "excludeExternals": true,
     "sort": ["instance-first", "source-order"],

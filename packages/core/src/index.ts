@@ -24,6 +24,7 @@ export { ResourceManager } from './managers/ResourceManager'
 
 // React
 export { useForceUpdate } from './reactjs/hooks/useForceUpdate'
+export { useSmoothNumber } from './reactjs/hooks/useSmoothNumber'
 export * from './reactjs/contexts'
 
 // Utils
@@ -34,3 +35,4 @@ export { log } from './utils/log'
 
 // Constants
 export * from './definitions'
+export { type Shape } from './shapes'

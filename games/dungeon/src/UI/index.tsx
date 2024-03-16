@@ -24,7 +24,6 @@ const UI = () => {
 
     return (
         <div className="UI">
-            <div className="reticle" />
             <div ref={canvasContainerRef} />
         </div>
     )

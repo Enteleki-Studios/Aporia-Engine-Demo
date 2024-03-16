@@ -22,17 +22,17 @@ import { WorldStats } from './WorldStats'
 
 import './style.scss'
 
-type InspectorUIProps = {
+type InspectorProps = {
     children: ReactNode
-    passthroughOff?: boolean
+    startOpen?: boolean
 }
 
-export const InspectorUI = ({ children, passthroughOff }: InspectorUIProps) => {
+export const Inspector = ({ children, startOpen }: InspectorProps) => {
     const dispatch = useDispatch()
     const debugMode = useSelector(getDebugMode)
     const world = useWorld()
 
-    const [isPassthroughMode, setIsPassthroughMode] = useState(!passthroughOff)
+    const [isPassthroughMode, setIsPassthroughMode] = useState(!startOpen)
     const [isGameViewVisible, setIsGameViewVisible] = useState(true)
     const [isDebugViewVisible, setIsDebugViewVisible] = useState(false)
 

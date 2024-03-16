@@ -13,6 +13,8 @@ export { basicGeometryComponent } from './BasicGeometryComponent'
 export { colliderComponent, type Collider } from './ColliderComponent'
 export { damagingComponent } from './DamagingComponent'
 
+export * from './physics'
+
 export const ambientLightComponent = createComponent(
     'ambientLightComponent',
     ({ color, intensity }: { color: number; intensity: number }) => ({
@@ -135,7 +137,7 @@ export const spriteComponent = createComponent('spriteComponent', ({ url }: { ur
 }))
 
 export const velocityComponent = createComponent('velocityComponent', ({ velocity }: { velocity?: Array3 }) => ({
-    velocity: velocity ?? ([0, 0, 0] as Array3),
+    velocity: velocity ? [...velocity] as Array3 : ([0, 0, 0] as Array3),
 }))
 
 type Geometry2DPlane = {
@@ -149,7 +151,7 @@ type Geometry2DCircle = {
     radius: number
 }
 
-export const mesh2D = createComponent('geometry2D', (props: Geometry2DPlane | Geometry2DCircle) => props)
+export const mesh2D = createComponent('geometry2D', (props: Geometry2DPlane | Geometry2DCircle) => ({ ...props }))
 
 type MaterialBasic = {
     material: 'basic'
@@ -166,4 +168,4 @@ type MaterialStandard = {
     repeatY?: number
 }
 
-export const material = createComponent('material', (props: MaterialBasic | MaterialStandard) => props)
+export const material = createComponent('material', (props: MaterialBasic | MaterialStandard) => ({ ...props }))

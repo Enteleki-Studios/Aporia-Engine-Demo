@@ -1,17 +1,24 @@
 import * as cannon from 'cannon-es'
 
-import { ECSFilter, Entity, EntityId, createPlugin } from '@gengine/core'
-import { transform3D, velocityComponent } from '@gengine/core'
+import { Entity, EntityId, collider3D, createPlugin, rigidBody3D } from '@gengine/core'
+import { transform3D, velocityComponent, Shape, characterBody3D } from '@gengine/core'
 
 import { physicsSystem } from 'systems'
-import { Shape, physicsBody } from 'components'
 
 export { physicsBody } from 'components'
 
 const extControlMaterial = new cannon.Material()
 
-export const physicsFilter = ECSFilter.of([transform3D, physicsBody])
-export const physicsExtVelocityFilter = ECSFilter.of([transform3D, velocityComponent, physicsBody])
+export const physicsBodyQuery = {
+    match(entity: Entity) {
+        return entity.has(transform3D) && entity.hasSome([rigidBody3D, characterBody3D])
+    }
+}
+export const physicsExtVelocityFilter = {
+    match(entity: Entity) {
+        return physicsBodyQuery.match(entity) && entity.has(velocityComponent)
+    }
+}
 
 export const cannonPhysicsPlugin = createPlugin('Cannon Physics 3D Plugin', () => {
     const physicsWorld = new cannon.World({
@@ -38,7 +45,7 @@ export const cannonPhysicsPlugin = createPlugin('Cannon Physics 3D Plugin', () =
         init(world) {
             world.registerSystem(physicsSystem())
 
-            world.ecs.addFilterListener(physicsFilter, receiver)
+            world.ecs.addFilterListener(physicsBodyQuery, receiver)
         },
         resources: {
             physicsWorld,
@@ -47,23 +54,23 @@ export const cannonPhysicsPlugin = createPlugin('Cannon Physics 3D Plugin', () =
     }
 })
 
-export const components = {
-    physicsBody,
-}
-
 const physicsBodyReceiver =
     (physicsWorld: cannon.World, physicsBodyByEntityId: Map<EntityId, cannon.Body>) => (entity: Entity) => {
-        const settings = entity.get(physicsBody)
+        const isCharacter = entity.has(characterBody3D)
+
+        const bodySettings = entity.get(isCharacter ? characterBody3D : rigidBody3D)
+        const colliderSettings = entity.get(collider3D)
 
         const body = new cannon.Body({
-            mass: settings.mass,
-            fixedRotation: settings.fixedRotation ?? settings.externalControl,
-            shape: makePhysicsShape(settings.shape),
-            material: settings.material
-                ? new cannon.Material(settings.material)
-                : settings.externalControl
-                  ? extControlMaterial
-                  : physicsWorld.defaultMaterial,
+            mass: bodySettings.mass,
+            fixedRotation: bodySettings.fixedRotation ?? isCharacter,
+            shape: makePhysicsShape(colliderSettings.shape),
+            // material: settings.material
+            //     ? new cannon.Material(settings.material)
+            //     : isCharacter
+            //       ? extControlMaterial
+            //       : physicsWorld.defaultMaterial,
+            material: isCharacter ? extControlMaterial : physicsWorld.defaultMaterial
         })
 
         const { position, rotation } = entity.get(transform3D)
@@ -71,8 +78,8 @@ const physicsBodyReceiver =
         body.position.set(...position)
         body.quaternion.setFromEuler(...rotation)
 
-        if (settings.velocity) {
-            body.velocity.set(...settings.velocity)
+        if (bodySettings.velocity) {
+            body.velocity.set(...bodySettings.velocity)
         }
 
         physicsWorld.addBody(body)
@@ -88,8 +95,8 @@ const makePhysicsShape = (shape: Shape): cannon.Shape => {
         case 'sphere':
             return new cannon.Sphere(shape.radius)
         case 'cylinder': {
-            const { radiusTop, radiusBottom, height, numSegments } = shape
-            return new cannon.Cylinder(radiusTop, radiusBottom, height, numSegments)
+            const { radius, height } = shape
+            return new cannon.Cylinder(radius, radius, height)
         }
         default:
             return new cannon.Shape()

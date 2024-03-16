@@ -1,7 +1,7 @@
 import { Vec3 } from 'cannon-es'
 import { World, createSystem } from '@gengine/core'
 
-import { cannonPhysicsPlugin, physicsFilter, physicsExtVelocityFilter } from '.'
+import { cannonPhysicsPlugin, physicsBodyQuery, physicsExtVelocityFilter } from '.'
 import { transform3D, velocityComponent } from '@gengine/core'
 
 export const physicsSystem = createSystem('physics', () => {
@@ -24,7 +24,7 @@ export const physicsSystem = createSystem('physics', () => {
 
         physicsWorld.fixedStep()
 
-        for (const entity of world.ecs.filterBy(physicsFilter)) {
+        for (const entity of world.ecs.filterBy(physicsBodyQuery)) {
             const body = physicsBodyByEntityId.get(entity.id)
 
             if (body) {

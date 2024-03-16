@@ -21,10 +21,8 @@ import {
     Material,
     CircleGeometry,
 } from 'three'
-import { Octree } from 'three/examples/jsm/math/Octree'
-import { OctreeHelper } from 'three/examples/jsm/helpers/OctreeHelper'
 
-import { Entity, ECSFilter } from '@gengine/core'
+import { Entity, Query } from '@gengine/core'
 import { ResourceManager } from '@gengine/core'
 import { DirectionalLight } from 'objects/DirectionalLight'
 import {
@@ -33,7 +31,6 @@ import {
     pointLightComponent,
     basicGeometryComponent,
     ambientLightComponent,
-    colliderComponent,
     transform3D,
     mesh2D,
     material,
@@ -45,7 +42,6 @@ import {
     directionalLightFilter,
     ambientLightFilter,
     boxFilter,
-    collidingFilter,
     mesh2DFilter,
 } from '@gengine/core'
 
@@ -156,17 +152,13 @@ export const entityReceiver =
     ({
         renderer,
         objectManager,
-        octree,
-        octreeHelper,
         animationManager,
     }: {
         renderer: Renderer
         objectManager: ResourceManager<Group, Object3D>
-        octree: Octree
-        octreeHelper: OctreeHelper
         animationManager: ReturnType<typeof makeAnimationManager>
     }) =>
-    (entity: Entity, filter: ECSFilter) => {
+    (entity: Entity, filter: Query) => {
         switch (filter) {
             case modelFilter: {
                 const mc = entity.get(modelComponent)
@@ -217,29 +209,6 @@ export const entityReceiver =
                 )
                 objectManager.addResource(entity.id, 'basicGeometry', mesh)
                 objectManager.getContainer(entity.id)?.position.fromArray(entity.get(transform3D).position)
-                break
-            }
-            case collidingFilter: {
-                const { collider } = entity.get(colliderComponent)
-                const { position } = entity.get(transform3D)
-
-                const collisionHelper = new Mesh(
-                    makeColliderHelper(collider),
-                    new MeshStandardMaterial({
-                        transparent: true,
-                        opacity: 0.3,
-                        color: 0xcc0089,
-                        emissive: 0xff0089,
-                        emissiveIntensity: 1,
-                    }),
-                )
-                collisionHelper.position.fromArray(position)
-
-                renderer.scene.add(collisionHelper)
-                renderer.registerHelper(collisionHelper)
-
-                octree.fromGraphNode(collisionHelper)
-                octreeHelper.update()
                 break
             }
             case mesh2DFilter: {

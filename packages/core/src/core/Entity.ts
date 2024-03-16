@@ -53,6 +53,10 @@ export class Entity {
         return componentCreators.every((c) => this.has(c))
     }
 
+    hasSome(componentCreators: AnyComponentCreator[]) {
+        return componentCreators.some((c) => this.has(c))
+    }
+
     size() {
         return this.components.size
     }

@@ -1,2 +1,2 @@
-export { InspectorUI } from './InspectorUI'
+export { Inspector } from './inspector'
 export { slice } from './slice'

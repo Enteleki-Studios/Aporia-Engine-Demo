@@ -33,8 +33,11 @@ import {
     material,
     transform3D,
     animationComponent,
+    characterBody3D,
+    collider3D,
+    rigidBody3D,
 } from '@gengine/core'
-import { cannonPhysicsPlugin, components as physicsComponents } from '@gengine/plugin-cannon'
+import { cannonPhysicsPlugin } from '@gengine/plugin-cannon'
 import { threejsPlugin } from '@gengine/plugin-threejs'
 
 // import { AppDispatch } from 'dungeon/store'
@@ -49,10 +52,6 @@ export const world = new World()
 
 const threejs = threejsPlugin()
 const { renderer } = threejs.resources
-
-export const updateCanvasContainer = (container: HTMLDivElement) => {
-    world.getPlugin(threejsPlugin).api.setCanvasContainer(container)
-}
 
 const inputManager = new InputManager({
     domElement: renderer.canvas,
@@ -76,10 +75,11 @@ world
                             color: 0xff0099,
                         }),
                         transform3D({}),
-                        // velocityComponent({ velocity: [-2, 0, 0] }),
-                        physicsComponents.physicsBody({
+                        rigidBody3D({
                             velocity: [-6, 0, Math.random() - 0.5],
                             mass: 1,
+                        }),
+                        collider3D({
                             shape: {
                                 type: 'sphere',
                                 radius: 0.25,
@@ -88,7 +88,6 @@ world
                     ),
             },
         }),
-        // Systems.collisionSystem({ octree }),
         // applyVelocitySystem(),
         damageSystem(),
         thirdPersonCameraSystem(),
@@ -135,7 +134,8 @@ world.ecs.registerEntity(
             repeatX: 32,
             repeatY: 32,
         }),
-        physicsComponents.physicsBody({ shape: { type: 'plane' } }),
+        rigidBody3D({}),
+        collider3D({ shape: { type: 'plane' } }),
     ),
 )
 
@@ -175,16 +175,16 @@ world.ecs.registerEntity(
                 coolDown: 0.5,
                 damage: 5,
             }),
-            physicsComponents.physicsBody({
+            characterBody3D({
                 mass: 80,
-                externalControl: true,
+            }),
+            collider3D({
                 shape: {
                     type: 'cylinder',
                     height: 2,
-                    radiusTop: 0.5,
-                    radiusBottom: 0.5,
-                },
-            }),
+                    radius: 0.5,
+                }
+            })
             // pointLightComponent({
             //     color: 0xffeeff,
             //     intensity: 3,
@@ -206,11 +206,13 @@ world.ecs.registerEntity(
             directionComponent({}),
             velocityComponent({}),
             hitboxComponent({ radius: 0.25 }),
-            physicsComponents.physicsBody({
+            characterBody3D({
                 mass: 40,
-                externalControl: true,
+            }),
+            collider3D({
                 shape: {
                     type: 'cylinder',
+                    radius: 0.5,
                     height: 0.5,
                 },
             }),
@@ -245,6 +247,50 @@ items.forEach((item, i) => {
         ),
     )
 })
+
+// Stairs
+world.ecs.registerEntity(
+    new Entity({ name: 'stairs' }).addComponents(
+        modelComponent({ modelName: 'stairs', data: modelDB['stairs'] }),
+        transform3D({ position: [0, 0, -5] }),
+        rigidBody3D({}),
+        collider3D({
+            shape: {
+                type: 'box',
+                size: [1, 0.25, 1],
+            },
+        }),
+    ),
+)
+
+// Upper floor
+world.ecs.registerEntity(
+    new Entity({ name: 'upper level' }).addComponents(
+        modelComponent({ modelName: 'floor', data: modelDB['floor'] }),
+        transform3D({ position: [-1.5, 0.5, -5] }),
+        rigidBody3D({}),
+        collider3D({
+            shape: {
+                type: 'box',
+                size: [1, 0.5, 1],
+            },
+        }),
+    ),
+)
+world.ecs.registerEntity(
+    new Entity({ name: 'upper level 2' }).addComponents(
+        modelComponent({ modelName: 'floor', data: modelDB['floor'] }),
+        transform3D({ position: [-3.5, 0.5, -5] }),
+        rigidBody3D({}),
+        collider3D({
+            shape: {
+                type: 'box',
+                size: [1, 0.5, 1],
+            },
+        }),
+    ),
+)
+
 
 // Crate
 world.ecs.registerEntity(
@@ -298,8 +344,8 @@ for (let i = 0; i < 32; i += 2) {
         new Entity({ name: `wall (${i})` }).addComponents(
             modelComponent({ modelName: 'stoneWallTop', data: modelDB['stoneWallTop'] }),
             transform3D({ position: [-16, 1, i - 15] }),
-            colliderComponent({ collider: { type: 'box', width: 0.25, height: 2, depth: 2 } }),
-            physicsComponents.physicsBody({
+            rigidBody3D({}),
+            collider3D({
                 shape: {
                     type: 'box',
                     size: [0.25, 2, 2],
