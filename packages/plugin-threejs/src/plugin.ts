@@ -1,4 +1,4 @@
-import { createPlugin, World } from '@gengine/core'
+import type { Plugin, World } from '@gengine/core'
 import { modelFilter, ambientLightFilter, boxFilter, collidingFilter, mesh2DFilter } from '@gengine/core'
 
 import { Renderer } from './Renderer'
@@ -6,34 +6,39 @@ import { makeObject3dManager, makeAnimationManager } from './object3dManager'
 import { entityReceiver } from './entityReceiver'
 import { syncThreeSystem, renderSystem } from './systems'
 
-export const threejsPlugin = createPlugin('Three.js plugin', () => {
-    const renderer = new Renderer()
-    const objectManager = makeObject3dManager(renderer)
-    const animationManager = makeAnimationManager()
+export class ThreejsPlugin implements Plugin {
+    name = 'ThreejsPlugin'
 
-    const threeEntityReceiver = entityReceiver({ renderer, objectManager, animationManager })
+    private threeEntityReceiver: ReturnType<typeof entityReceiver>
 
-    return {
-        init(world: World) {
-            world.registerSystem(renderSystem({ renderer }), 0)
-            world.registerSystem(syncThreeSystem({ renderer, objectManager }))
+    renderer: Renderer
+    objectManager: ReturnType<typeof makeObject3dManager>
+    animationManager: ReturnType<typeof makeAnimationManager>
 
-            // TODO: Very temporary
-            world.ecs.addFilterListener(modelFilter, (e, f) => threeEntityReceiver(e, f))
-            world.ecs.addFilterListener(ambientLightFilter, (e, f) => threeEntityReceiver(e, f))
-            world.ecs.addFilterListener(boxFilter, (e, f) => threeEntityReceiver(e, f))
-            world.ecs.addFilterListener(collidingFilter, (e, f) => threeEntityReceiver(e, f))
-            world.ecs.addFilterListener(mesh2DFilter, (e, f) => threeEntityReceiver(e, f))
-        },
-        resources: {
-            renderer,
-            objectManager,
-            animationManager,
-        },
-        api: {
-            setCanvasContainer(container: HTMLDivElement) {
-                renderer.setCanvasContainer(container)
-            },
-        },
+    constructor() {
+        this.renderer = new Renderer()
+        this.objectManager = makeObject3dManager(this.renderer)
+        this.animationManager = makeAnimationManager()
+
+        this.threeEntityReceiver = entityReceiver({
+            renderer: this.renderer,
+            objectManager: this.objectManager,
+            animationManager: this.animationManager,
+        })
     }
-})
+
+    init(world: World) {
+        world.registerSystem(renderSystem({ renderer: this.renderer }), 0)
+        world.registerSystem(syncThreeSystem({
+            renderer: this.renderer,
+            objectManager: this.objectManager,
+        }))
+
+        // TODO: Very temporary
+        world.ecs.addFilterListener(modelFilter, (e, f) => this.threeEntityReceiver(e, f))
+        world.ecs.addFilterListener(ambientLightFilter, (e, f) => this.threeEntityReceiver(e, f))
+        world.ecs.addFilterListener(boxFilter, (e, f) => this.threeEntityReceiver(e, f))
+        world.ecs.addFilterListener(collidingFilter, (e, f) => this.threeEntityReceiver(e, f))
+        world.ecs.addFilterListener(mesh2DFilter, (e, f) => this.threeEntityReceiver(e, f))
+    }
+}

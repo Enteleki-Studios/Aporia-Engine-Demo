@@ -1,6 +1,6 @@
 import * as cannon from 'cannon-es'
 
-import { Entity, EntityId, collider3D, createPlugin, rigidBody3D } from '@gengine/core'
+import { Entity, EntityId, collider3D, Plugin, rigidBody3D, World } from '@gengine/core'
 import { transform3D, velocityComponent, Shape, characterBody3D } from '@gengine/core'
 
 import { physicsSystem } from 'systems'
@@ -19,40 +19,44 @@ export const physicsExtVelocityFilter = {
         return physicsBodyQuery.match(entity) && entity.has(velocityComponent)
     }
 }
+export class CannonPhysicsPlugin implements Plugin {
+    name = 'Cannon Physics 3D Plugin'
 
-export const cannonPhysicsPlugin = createPlugin('Cannon Physics 3D Plugin', () => {
-    const physicsWorld = new cannon.World({
-        gravity: new cannon.Vec3(0, -9.8, 0),
-    })
-    const physicsBodyByEntityId = new Map<EntityId, cannon.Body>()
+    private receiver: ReturnType<typeof physicsBodyReceiver>
 
-    const receiver = physicsBodyReceiver(physicsWorld, physicsBodyByEntityId)
+    physicsWorld: cannon.World
+    physicsBodyByEntityId: Map<EntityId, cannon.Body>
 
-    physicsWorld.addContactMaterial(
-        new cannon.ContactMaterial(physicsWorld.defaultMaterial, extControlMaterial, {
-            friction: 0,
-            restitution: 0.2,
-        }),
-    )
-    physicsWorld.addContactMaterial(
-        new cannon.ContactMaterial(extControlMaterial, extControlMaterial, {
-            friction: 0,
-            restitution: 0.2,
-        }),
-    )
+    constructor() {
+        this.physicsBodyByEntityId = new Map()
 
-    return {
-        init(world) {
-            world.registerSystem(physicsSystem())
+        this.physicsWorld = new cannon.World({
+            gravity: new cannon.Vec3(0, -9.8, 0),
+        })
 
-            world.ecs.addFilterListener(physicsBodyQuery, receiver)
-        },
-        resources: {
-            physicsWorld,
-            physicsBodyByEntityId,
-        },
+        this.receiver = physicsBodyReceiver(this.physicsWorld, this.physicsBodyByEntityId)
+
+
+        this.physicsWorld.addContactMaterial(
+            new cannon.ContactMaterial(this.physicsWorld.defaultMaterial, extControlMaterial, {
+                friction: 0,
+                restitution: 0.2,
+            }),
+        )
+        this.physicsWorld.addContactMaterial(
+            new cannon.ContactMaterial(extControlMaterial, extControlMaterial, {
+                friction: 0,
+                restitution: 0.2,
+            }),
+        )
     }
-})
+
+    init(world: World) {
+        world.registerSystem(physicsSystem())
+
+        world.ecs.addFilterListener(physicsBodyQuery, this.receiver)
+    }
+}
 
 const physicsBodyReceiver =
     (physicsWorld: cannon.World, physicsBodyByEntityId: Map<EntityId, cannon.Body>) => (entity: Entity) => {

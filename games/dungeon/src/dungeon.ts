@@ -37,8 +37,8 @@ import {
     collider3D,
     rigidBody3D,
 } from '@gengine/core'
-import { cannonPhysicsPlugin } from '@gengine/plugin-cannon'
-import { threejsPlugin } from '@gengine/plugin-threejs'
+import { CannonPhysicsPlugin } from '@gengine/plugin-cannon'
+import { ThreejsPlugin } from '@gengine/plugin-threejs'
 
 // import { AppDispatch } from 'dungeon/store'
 
@@ -50,8 +50,8 @@ import modelDB from 'modelDB'
 
 export const world = new World()
 
-const threejs = threejsPlugin()
-const { renderer } = threejs.resources
+const threejs = new ThreejsPlugin()
+const { renderer } = threejs
 
 const inputManager = new InputManager({
     domElement: renderer.canvas,
@@ -63,7 +63,7 @@ const inputManager = new InputManager({
 world
     .registerSystem(inputSystem({ inputManager }))
     .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])
-    .registerPlugin(cannonPhysicsPlugin())
+    .registerPlugin(new CannonPhysicsPlugin())
     .registerSystems([
         emitterSystem({
             prefabs: {

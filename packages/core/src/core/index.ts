@@ -1,7 +1,7 @@
 export { createComponent, type Component, type AnyComponentCreator } from './createComponent'
-export { createPlugin, type Plugin, type PluginCreator, type PluginFromPluginCreator } from './createPlugin'
 export { createSystem, type System } from './createSystem'
 export { ECSFilter } from './ECSFilter'
 export { Entity, type EntityId } from './Entity'
 export { EntityManager, type ECSStatsType } from './EntityManager'
+export { type Plugin, type PluginConstructor } from './Plugin'
 export { World } from './World'
