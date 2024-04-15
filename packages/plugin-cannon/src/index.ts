@@ -12,12 +12,12 @@ const extControlMaterial = new cannon.Material()
 export const physicsBodyQuery = {
     match(entity: Entity) {
         return entity.has(transform3D) && entity.hasSome([rigidBody3D, characterBody3D])
-    }
+    },
 }
 export const physicsExtVelocityFilter = {
     match(entity: Entity) {
         return physicsBodyQuery.match(entity) && entity.has(velocityComponent)
-    }
+    },
 }
 export class CannonPhysicsPlugin implements Plugin {
     name = 'Cannon Physics 3D Plugin'
@@ -35,7 +35,6 @@ export class CannonPhysicsPlugin implements Plugin {
         })
 
         this.receiver = physicsBodyReceiver(this.physicsWorld, this.physicsBodyByEntityId)
-
 
         this.physicsWorld.addContactMaterial(
             new cannon.ContactMaterial(this.physicsWorld.defaultMaterial, extControlMaterial, {
@@ -74,7 +73,7 @@ const physicsBodyReceiver =
             //     : isCharacter
             //       ? extControlMaterial
             //       : physicsWorld.defaultMaterial,
-            material: isCharacter ? extControlMaterial : physicsWorld.defaultMaterial
+            material: isCharacter ? extControlMaterial : physicsWorld.defaultMaterial,
         })
 
         const { position, rotation } = entity.get(transform3D)

@@ -183,8 +183,8 @@ world.ecs.registerEntity(
                     type: 'cylinder',
                     height: 2,
                     radius: 0.5,
-                }
-            })
+                },
+            }),
             // pointLightComponent({
             //     color: 0xffeeff,
             //     intensity: 3,
@@ -290,7 +290,6 @@ world.ecs.registerEntity(
         }),
     ),
 )
-
 
 // Crate
 world.ecs.registerEntity(

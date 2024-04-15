@@ -137,7 +137,7 @@ export const spriteComponent = createComponent('spriteComponent', ({ url }: { ur
 }))
 
 export const velocityComponent = createComponent('velocityComponent', ({ velocity }: { velocity?: Array3 }) => ({
-    velocity: velocity ? [...velocity] as Array3 : ([0, 0, 0] as Array3),
+    velocity: velocity ? ([...velocity] as Array3) : ([0, 0, 0] as Array3),
 }))
 
 type Geometry2DPlane = {

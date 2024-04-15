@@ -29,10 +29,12 @@ export class ThreejsPlugin implements Plugin {
 
     init(world: World) {
         world.registerSystem(renderSystem({ renderer: this.renderer }), 0)
-        world.registerSystem(syncThreeSystem({
-            renderer: this.renderer,
-            objectManager: this.objectManager,
-        }))
+        world.registerSystem(
+            syncThreeSystem({
+                renderer: this.renderer,
+                objectManager: this.objectManager,
+            }),
+        )
 
         // TODO: Very temporary
         world.ecs.addFilterListener(modelFilter, (e, f) => this.threeEntityReceiver(e, f))

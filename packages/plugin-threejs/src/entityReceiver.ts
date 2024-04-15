@@ -37,13 +37,7 @@ import {
     Collider,
     directionalLightComponent,
 } from '@gengine/core'
-import {
-    modelFilter,
-    directionalLightFilter,
-    ambientLightFilter,
-    boxFilter,
-    mesh2DFilter,
-} from '@gengine/core'
+import { modelFilter, directionalLightFilter, ambientLightFilter, boxFilter, mesh2DFilter } from '@gengine/core'
 
 import type { Renderer } from './Renderer'
 import { loadFBX } from './loadFBX'

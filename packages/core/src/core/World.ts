@@ -1,10 +1,4 @@
-import {
-    EntityManager,
-    type ECSStatsType,
-    type System,
-    type Plugin,
-    type PluginConstructor,
-} from 'core'
+import { EntityManager, type ECSStatsType, type System, type Plugin, type PluginConstructor } from 'core'
 
 import { WorldEvent } from 'definitions'
 import { log } from 'utils/log'

@@ -10,13 +10,13 @@ type RigidBody3DProps = {
 
 export const rigidBody3D = createComponent('rigidBody3D', (props: RigidBody3DProps) => ({
     mass: props.mass ?? 0,
-    velocity: props.velocity ?? [0, 0, 0] as Array3,
+    velocity: props.velocity ?? ([0, 0, 0] as Array3),
     fixedRotation: props.fixedRotation ?? false,
 }))
 
 export const characterBody3D = createComponent('characterBody3D', (props: RigidBody3DProps) => ({
     mass: props.mass ?? 0,
-    velocity: props.velocity ?? [0, 0, 0] as Array3,
+    velocity: props.velocity ?? ([0, 0, 0] as Array3),
     fixedRotation: props.fixedRotation ?? false,
 }))
 
@@ -27,7 +27,7 @@ type Collider3DProps = {
     restitution?: number
 }
 
-export const collider3D = createComponent('collider3D', (props: Collider3DProps) => ({ 
+export const collider3D = createComponent('collider3D', (props: Collider3DProps) => ({
     shape: props.shape,
     isSensor: props.isSensor ?? false,
     friction: props.friction ?? null,
