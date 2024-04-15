@@ -12,12 +12,12 @@ import {
     animationComponent,
 } from '@gengine/core'
 
-import { threejsPlugin } from '@gengine/plugin-threejs'
+import { ThreejsPlugin } from '@gengine/plugin-threejs'
 
 export const animatedFilter = new ECSFilter([animationComponent, modelComponent])
 
 export const animationSystem = createSystem('animations', () => (world: World) => {
-    const { animationManager } = world.getPlugin(threejsPlugin).resources
+    const { animationManager } = world.getPlugin(ThreejsPlugin)
 
     for (const entity of world.ecs.filterBy(animatedFilter)) {
         const animation = entity.get(animationComponent)

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 
 import { useWorld } from '@gengine/core'
-import { threejsPlugin } from '@gengine/plugin-threejs'
+import { ThreejsPlugin } from '@gengine/plugin-threejs'
 
 import './debugView.scss'
 
@@ -10,12 +10,12 @@ export const DebugView = () => {
     const canvasContainerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const three = world?.getPlugin(threejsPlugin)
+        const three = world?.getPlugin(ThreejsPlugin)
         if (three && canvasContainerRef.current) {
-            three.resources.renderer.setDebugCanvasContainer(canvasContainerRef.current)
+            three.renderer.setDebugCanvasContainer(canvasContainerRef.current)
         }
         return () => {
-            three?.resources.renderer.setDebugCanvasContainer(null)
+            three?.renderer.setDebugCanvasContainer(null)
         }
     }, [world])
 

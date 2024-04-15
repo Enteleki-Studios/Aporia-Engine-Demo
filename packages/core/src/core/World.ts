@@ -3,8 +3,7 @@ import {
     type ECSStatsType,
     type System,
     type Plugin,
-    type PluginCreator,
-    type PluginFromPluginCreator,
+    type PluginConstructor,
 } from 'core'
 
 import { WorldEvent } from 'definitions'
@@ -38,7 +37,7 @@ export type StatsType = {
 }
 
 export class World {
-    private plugins = new Map<PluginCreator['label'], Plugin>()
+    private plugins = new Map<Plugin['constructor'], Plugin>()
     private observers: Record<WorldEvent, (() => void)[]> = {
         start: [],
         stop: [],
@@ -173,7 +172,7 @@ export class World {
     }
 
     registerPlugin(plugin: Plugin) {
-        this.plugins.set(plugin.name, plugin)
+        this.plugins.set(plugin.constructor, plugin)
 
         this.stats.plugins = this.plugins.size
 
@@ -182,7 +181,7 @@ export class World {
         return this
     }
 
-    getPlugin<T extends PluginCreator>(pluginCreator: T) {
-        return this.plugins.get(pluginCreator.label) as PluginFromPluginCreator<T>
+    getPlugin<T extends Plugin>(pluginConstructor: PluginConstructor<T>) {
+        return this.plugins.get(pluginConstructor) as T
     }
 }

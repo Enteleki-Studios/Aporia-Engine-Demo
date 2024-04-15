@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 
 import { useWorld } from '@gengine/core'
-import { threejsPlugin } from '@gengine/plugin-threejs'
+import { ThreejsPlugin } from '@gengine/plugin-threejs'
 
 // import Header from 'UI/components/ingame/Header'
 
@@ -12,13 +12,13 @@ const UI = () => {
     const canvasContainerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const three = world?.getPlugin(threejsPlugin)
+        const three = world?.getPlugin(ThreejsPlugin)
         if (three && canvasContainerRef.current) {
-            three.resources.renderer.setCanvasContainer(canvasContainerRef.current)
+            three.renderer.setCanvasContainer(canvasContainerRef.current)
             init()
         }
         return () => {
-            three?.resources.renderer.setCanvasContainer(null)
+            three?.renderer.setCanvasContainer(null)
         }
     }, [world])
 
