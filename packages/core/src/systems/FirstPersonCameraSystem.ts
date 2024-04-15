@@ -1,4 +1,4 @@
-import { Vec3 } from 'gl-matrix/dist/esm'
+import { Vec3 } from 'gl-matrix'
 
 import { cameraComponent, directionComponent, transform3D } from '../components'
 import { cameraFilter, cameraTargetFilter } from 'filters'

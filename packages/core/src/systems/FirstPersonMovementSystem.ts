@@ -1,4 +1,4 @@
-import { Vec3 } from 'gl-matrix/dist/esm'
+import { Vec3 } from 'gl-matrix'
 
 import { createSystem, type World } from 'core'
 // import { roundToZero } from '../utils/vectorUtils'

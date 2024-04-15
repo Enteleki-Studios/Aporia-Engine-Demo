@@ -1,9 +1,9 @@
-import { Vec2, Vec3 } from 'gl-matrix/dist/esm'
+import { Vec3 } from 'gl-matrix'
 import { createSystem, type World } from 'core'
 import { cameraComponent, directionComponent, inputComponent, transform3D, velocityComponent } from 'components'
-import { Array2, Array3, ORIGIN } from 'definitions'
+import { Array3, ORIGIN } from 'definitions'
 import { cameraFilter, movingEntitiesFilter, rotatingEntitiesFilter, inputFilter } from 'filters'
-import { angle2, roundToZero } from 'utils/vectorUtils'
+import { /* angle2, */ roundToZero } from 'utils/vectorUtils'
 
 export const twinStickMovementFilter = inputFilter.and(movingEntitiesFilter).and(rotatingEntitiesFilter)
 
@@ -17,8 +17,8 @@ export const twinStickMovementSystem = createSystem('twin-stick movement', () =>
     const cameraDirection: Array3 = [0, 0, 0]
     const frameDeceleration: Array3 = [0, 0, 0]
     const frameAcceleration: Array3 = [0, 0, 0]
-    const charAngleVector: Array2 = [0, 0]
-    const camAngleVector: Array2 = [0, 0]
+    // const charAngleVector: Array2 = [0, 0]
+    // const camAngleVector: Array2 = [0, 0]
 
     return (world: World) => {
         const delta = world.timeElapsedS

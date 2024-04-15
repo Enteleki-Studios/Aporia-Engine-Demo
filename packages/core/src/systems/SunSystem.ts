@@ -1,4 +1,4 @@
-import { Vec3 } from 'gl-matrix/dist/esm'
+import { Vec3 } from 'gl-matrix'
 
 import { ECSFilter, createSystem, type World } from 'core'
 import { directionalLightComponent, transform3D, tags } from '../components'

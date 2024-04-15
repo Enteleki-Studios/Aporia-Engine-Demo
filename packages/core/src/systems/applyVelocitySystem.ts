@@ -1,4 +1,4 @@
-import { Vec3 } from 'gl-matrix/dist/esm'
+import { Vec3 } from 'gl-matrix'
 
 import { transform3D, velocityComponent } from 'components'
 import { movingEntitiesFilter } from 'filters'

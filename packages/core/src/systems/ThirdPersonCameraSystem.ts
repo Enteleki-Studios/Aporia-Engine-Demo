@@ -1,4 +1,4 @@
-import { Vec3, Vec3Like } from 'gl-matrix/dist/esm'
+import { Vec3, Vec3Like } from 'gl-matrix'
 
 import { transform3D, cameraComponent } from 'components'
 import { createSystem, type World } from 'core'
