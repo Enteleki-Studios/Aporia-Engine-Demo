@@ -39,6 +39,7 @@ import {
 } from '@gengine/core'
 import { CannonPhysicsPlugin } from '@gengine/plugin-cannon'
 import { ThreejsPlugin } from '@gengine/plugin-threejs'
+import { Rapier3DPlugin } from '@gengine/plugin-rapier3D'
 
 // import { AppDispatch } from 'dungeon/store'
 
@@ -64,6 +65,7 @@ world
     .registerSystem(inputSystem({ inputManager }))
     .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])
     .registerPlugin(new CannonPhysicsPlugin())
+    .registerPlugin(new Rapier3DPlugin())
     .registerSystems([
         emitterSystem({
             prefabs: {
