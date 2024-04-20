@@ -37,7 +37,7 @@ import {
     collider3D,
     rigidBody3D,
 } from '@gengine/core'
-import { CannonPhysicsPlugin } from '@gengine/plugin-cannon'
+// import { CannonPhysicsPlugin } from '@gengine/plugin-cannon'
 import { ThreejsPlugin } from '@gengine/plugin-threejs'
 import { Rapier3DPlugin } from '@gengine/plugin-rapier3D'
 
@@ -64,7 +64,7 @@ const inputManager = new InputManager({
 world
     .registerSystem(inputSystem({ inputManager }))
     .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])
-    .registerPlugin(new CannonPhysicsPlugin())
+    // .registerPlugin(new CannonPhysicsPlugin())
     .registerPlugin(new Rapier3DPlugin())
     .registerSystems([
         emitterSystem({
@@ -137,7 +137,7 @@ world.ecs.registerEntity(
             repeatY: 32,
         }),
         rigidBody3D({}),
-        collider3D({ shape: { type: 'plane' } }),
+        collider3D({ shape: { type: 'box', size: [32, 0.01, 32] } }),
     ),
 )
 
@@ -168,7 +168,7 @@ world.ecs.registerEntity(
             healthComponent({ health: 20 }),
             inputComponent({ keymap: DEFAULT_KEYMAP }),
             modelComponent({ modelName: 'wizard', data: modelDB['wizard'], castShadow: true }),
-            transform3D({ position: [0, 1, -1] }),
+            transform3D({ position: [0, 2, -1] }),
             velocityComponent({}),
             damagingComponent({
                 radius: 1,
@@ -182,7 +182,7 @@ world.ecs.registerEntity(
             }),
             collider3D({
                 shape: {
-                    type: 'cylinder',
+                    type: 'capsule',
                     height: 2,
                     radius: 0.5,
                 },
