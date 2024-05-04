@@ -33,9 +33,9 @@ import {
     material,
     transform3D,
     animationComponent,
-    characterBody3D,
     collider3D,
     rigidBody3D,
+    characterController,
 } from '@gengine/core'
 // import { CannonPhysicsPlugin } from '@gengine/plugin-cannon'
 import { ThreejsPlugin } from '@gengine/plugin-threejs'
@@ -43,11 +43,11 @@ import { Rapier3DPlugin } from '@gengine/plugin-rapier3D'
 
 // import { AppDispatch } from 'dungeon/store'
 
-import * as Systems from 'systems'
+import * as Systems from '~/systems'
 // import * as Components from 'components'
 // import tilesGenerator from 'utils/tilesGenerator'
 
-import modelDB from 'modelDB'
+import modelDB from './modelDB'
 
 export const world = new World()
 
@@ -79,7 +79,7 @@ world
                         transform3D({}),
                         rigidBody3D({
                             velocity: [-6, 0, Math.random() - 0.5],
-                            mass: 1,
+                            mass: 0.1,
                         }),
                         collider3D({
                             shape: {
@@ -177,7 +177,8 @@ world.ecs.registerEntity(
                 coolDown: 0.5,
                 damage: 5,
             }),
-            characterBody3D({
+            characterController({}),
+            rigidBody3D({
                 mass: 80,
             }),
             collider3D({
@@ -203,12 +204,13 @@ world.ecs.registerEntity(
         .addComponents(
             animationComponent({ state: 'idle' }),
             modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
-            transform3D({ position: [1, 0, 2] }),
+            transform3D({ position: [1, 0.5, 2] }),
             healthComponent({ health: 20 }),
             directionComponent({}),
             velocityComponent({}),
             hitboxComponent({ radius: 0.25 }),
-            characterBody3D({
+            characterController({}),
+            rigidBody3D({
                 mass: 40,
             }),
             collider3D({

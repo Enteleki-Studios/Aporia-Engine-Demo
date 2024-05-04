@@ -1,4 +1,10 @@
-import type { ColliderDesc, KinematicCharacterController, World as PhysicsWorld, RigidBody } from '@dimforge/rapier3d'
+import type {
+    Collider,
+    ColliderDesc,
+    KinematicCharacterController,
+    World as PhysicsWorld,
+    RigidBody,
+} from '@dimforge/rapier3d'
 
 import {
     type World,
@@ -9,42 +15,57 @@ import {
     log,
     transform3D,
     rigidBody3D,
-    characterBody3D,
+    characterController,
     Shape3D,
     collider3D,
+    ECSFilter,
+    velocityComponent,
 } from '@gengine/core'
 
 import { type Rapier, getRapier } from 'rapier'
 
 type PhysicsBodies = Map<EntityId, RigidBody>
+type PhysicsColliders = Map<EntityId, Collider>
 
 const GRAVITY_3D = { x: 0, y: -9.81, z: 0 }
 
-export const physicsBodyQuery = {
-    match(entity: Entity) {
-        return entity.has(transform3D) && entity.has(collider3D) && entity.hasSome([rigidBody3D, characterBody3D])
-    },
-}
+export const physicsBodyQuery = ECSFilter.of([transform3D, collider3D, rigidBody3D])
+export const physicsCharacterQuery = physicsBodyQuery.with([characterController])
 
 export class Rapier3DPlugin implements Plugin {
     name = 'Rapier 3D Physics Plugin'
 
     physicsBodies: PhysicsBodies
+    physicsColliders: PhysicsColliders
 
     physicsWorld?: PhysicsWorld
     characterController?: KinematicCharacterController
 
     constructor() {
         this.physicsBodies = new Map()
+        this.physicsColliders = new Map()
     }
 
     init(world: World) {
+        world.registerSystem(physicsStepSystem())
+        world.registerSystem(physicsExportSystem())
+
         getRapier()
             .then((rapier) => {
                 const physicsWorld = new rapier.World(GRAVITY_3D)
                 const characterController = physicsWorld.createCharacterController(0.01)
 
-                const receiver = makePhysicsBodyReceiver(rapier, physicsWorld, this.physicsBodies)
+                characterController.enableSnapToGround(0.5)
+                characterController.enableAutostep(0.5, 0.2, true)
+                characterController.setMaxSlopeClimbAngle(45 * Math.PI / 180)
+                characterController.setMinSlopeSlideAngle(30 * Math.PI / 180)
+
+                const receiver = makePhysicsBodyReceiver(
+                    rapier,
+                    physicsWorld,
+                    this.physicsBodies,
+                    this.physicsColliders,
+                )
 
                 world.ecs.addFilterListener(physicsBodyQuery, receiver)
 
@@ -54,16 +75,36 @@ export class Rapier3DPlugin implements Plugin {
             .catch(() => {
                 log.e('Failed to initialize Rapier3D')
             })
-
-        world.registerSystem(physicsStepSystem())
-        world.registerSystem(physicsExportSystem())
     }
 }
 
-const physicsStepSystem = createSystem('physics step', () => (world: World) => {
-    const { physicsWorld } = world.getPlugin(Rapier3DPlugin)
+const physicsStepSystem = createSystem('physics step', () => {
+    const inputVelocityVector = { x: 0, y: 0, z: 0 }
 
-    physicsWorld?.step()
+    return (world: World) => {
+        const { physicsWorld, characterController, physicsColliders, physicsBodies } = world.getPlugin(Rapier3DPlugin)
+
+        physicsWorld?.step()
+
+        if (characterController) {
+            const characterEntities = world.entities.filterBy(physicsCharacterQuery)
+
+            for (const character of characterEntities) {
+                const collider = physicsColliders.get(character.id)
+                const body = physicsBodies.get(character.id)
+                const { velocity } = character.get(velocityComponent)
+
+                if (body && collider && velocity) {
+                    inputVelocityVector.x = velocity[0]
+                    inputVelocityVector.y = velocity[1]
+                    inputVelocityVector.z = velocity[2]
+                    characterController.computeColliderMovement(collider, inputVelocityVector)
+                    const correctedMovement = characterController.computedMovement()
+                    body.setLinvel(correctedMovement, true)
+                }
+            }
+        }
+    }
 })
 
 const physicsExportSystem = createSystem('physics export', () => (world: World) => {
@@ -84,27 +125,41 @@ const physicsExportSystem = createSystem('physics export', () => (world: World) 
     }
 })
 
-const makePhysicsBodyReceiver = (rapier: Rapier, physicsWorld: PhysicsWorld, physicsBodies: PhysicsBodies) => (entity: Entity) => {
-    const { shape } = entity.get(collider3D)
-    const { mass, velocity } = entity.get(rigidBody3D) ?? entity.get(characterBody3D)
-    const { position } = entity.get(transform3D)
+const makePhysicsBodyReceiver =
+    (rapier: Rapier, physicsWorld: PhysicsWorld, physicsBodies: PhysicsBodies, physicsColliders: PhysicsColliders) =>
+    (entity: Entity) => {
+        const { shape, friction, restitution, isSensor } = entity.get(collider3D)
+        const { mass, velocity } = entity.get(rigidBody3D)
+        const { position } = entity.get(transform3D)
 
-    const colliderDesc = makeColliderDescFromShape(rapier, shape).setMass(mass)
-    const rigidBodyDesc = mass ? rapier.RigidBodyDesc.dynamic() : rapier.RigidBodyDesc.fixed()
+        const isCharacter = entity.has(characterController)
 
-    rigidBodyDesc.setTranslation(...position)
-    rigidBodyDesc.setLinvel(...velocity)
+        const colliderDesc = makeColliderDescFromShape(rapier, shape).setMass(mass).setSensor(isSensor)
+        const rigidBodyDesc = isCharacter
+            ? rapier.RigidBodyDesc.kinematicVelocityBased()
+            : mass
+              ? rapier.RigidBodyDesc.dynamic()
+              : rapier.RigidBodyDesc.fixed()
 
-    const rigidBody = physicsWorld.createRigidBody(rigidBodyDesc)
+        if (friction !== null) {
+            colliderDesc.setFriction(friction)
+        }
+        if (restitution !== null) {
+            colliderDesc.setRestitution(restitution)
+        }
 
-    // const collider = physicsWorld.createCollider(colliderDesc, rigidBody)
-    physicsWorld.createCollider(colliderDesc, rigidBody)
+        rigidBodyDesc.setTranslation(...position)
+        rigidBodyDesc.setLinvel(...velocity)
 
-    physicsBodies.set(entity.id, rigidBody)
-}
+        const rigidBody = physicsWorld.createRigidBody(rigidBodyDesc)
+        const collider = physicsWorld.createCollider(colliderDesc, rigidBody)
+
+        physicsBodies.set(entity.id, rigidBody)
+        physicsColliders.set(entity.id, collider)
+    }
 
 const makeColliderDescFromShape = (rapier: Rapier, shape: Shape3D): ColliderDesc => {
-    switch(shape.type) {
+    switch (shape.type) {
         case 'sphere': {
             const { radius } = shape
             return rapier.ColliderDesc.ball(radius)

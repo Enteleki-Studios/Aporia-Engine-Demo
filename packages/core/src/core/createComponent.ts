@@ -1,8 +1,10 @@
 type SerializablePrimitives = string | number | boolean
 
-type InputProps = {
-    [K: string]: undefined | null | SerializablePrimitives | SerializablePrimitives[] | InputProps
-}
+type InputProps =
+    | {
+          [K: string]: undefined | null | SerializablePrimitives | SerializablePrimitives[] | InputProps
+      }
+    | undefined
 
 type ComponentProps = {
     [K: string]: null | SerializablePrimitives | SerializablePrimitives[] | ComponentProps
