@@ -1,5 +1,5 @@
 import { LoopOnce } from 'three'
-import { Vec3 } from 'gl-matrix'
+// import { Vec3 } from 'gl-matrix'
 
 import {
     modelComponent,
@@ -35,7 +35,8 @@ export const animationSystem = createSystem('animations', () => (world: World) =
         } else if (entity.has(velocityComponent)) {
             const { velocity } = entity.get(velocityComponent)
 
-            if (Vec3.squaredLength(velocity) > 0.1) {
+            // if (Vec3.squaredLength(velocity) > 0.1) {
+            if (Math.abs(velocity[0]) > 0.01 && Math.abs(velocity[2]) > 0.01) {
                 nextState = 'walk'
             }
         }
