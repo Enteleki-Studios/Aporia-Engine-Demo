@@ -155,6 +155,20 @@ world.ecs.registerEntity(
     ),
 )
 
+world.ecs.registerEntity(
+    new Entity({ name: 'test step' }).addComponents(
+        basicGeometryComponent({ geometryType: 'box', color: '#ff0000' }),
+        transform3D({ position: [0, -0.25, 0] }),
+        rigidBody3D({}),
+        collider3D({
+            shape: {
+                type: 'box',
+                size: [1, 1, 1],
+            },
+        }),
+    ),
+)
+
 // Camera
 world.ecs.registerEntity(new Entity({ name: 'camera' }).addComponents(cameraComponent({})))
 
@@ -199,30 +213,30 @@ world.ecs.registerEntity(
 )
 
 // Shibs
-world.ecs.registerEntity(
-    new Entity({ name: 'dog' })
-        .addComponents(
-            animationComponent({ state: 'idle' }),
-            modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
-            transform3D({ position: [1, 0.5, 2] }),
-            healthComponent({ health: 20 }),
-            directionComponent({}),
-            velocityComponent({}),
-            hitboxComponent({ radius: 0.25 }),
-            characterController({}),
-            rigidBody3D({
-                mass: 40,
-            }),
-            collider3D({
-                shape: {
-                    type: 'cylinder',
-                    radius: 0.5,
-                    height: 0.5,
-                },
-            }),
-        )
-        .tag(tags.ai),
-)
+// world.ecs.registerEntity(
+//     new Entity({ name: 'dog' })
+//         .addComponents(
+//             animationComponent({ state: 'idle' }),
+//             modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
+//             transform3D({ position: [1, 0.5, 2] }),
+//             healthComponent({ health: 20 }),
+//             directionComponent({}),
+//             velocityComponent({}),
+//             hitboxComponent({ radius: 0.25 }),
+//             characterController({}),
+//             rigidBody3D({
+//                 mass: 40,
+//             }),
+//             collider3D({
+//                 shape: {
+//                     type: 'cylinder',
+//                     radius: 0.5,
+//                     height: 0.5,
+//                 },
+//             }),
+//         )
+//         .tag(tags.ai),
+// )
 
 // // Slime
 // world.ecs.createEntity().addComponents(

@@ -85,7 +85,7 @@ export const twinStickMovementSystem = createSystem('twin-stick movement', () =>
                     Vec3.normalize(direction, direction)
                 }
 
-                velocity[1] = -9.81 // Add gravity
+                velocity[1] = -1 // Add gravity
 
                 // Rotate towards cursor (in progress)
                 // const { x, y } = mouse.position.centerRel
