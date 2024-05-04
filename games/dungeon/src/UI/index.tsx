@@ -5,7 +5,7 @@ import { ThreejsPlugin } from '@gengine/plugin-threejs'
 
 // import Header from 'UI/components/ingame/Header'
 
-import { init } from 'dungeon'
+import { init } from '~/dungeon'
 
 const UI = () => {
     const world = useWorld()

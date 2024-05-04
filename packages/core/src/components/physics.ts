@@ -14,11 +14,7 @@ export const rigidBody3D = createComponent('rigidBody3D', (props: RigidBody3DPro
     fixedRotation: props.fixedRotation ?? false,
 }))
 
-export const characterBody3D = createComponent('characterBody3D', (props: RigidBody3DProps) => ({
-    mass: props.mass ?? 0,
-    velocity: props.velocity ?? ([0, 0, 0] as Array3),
-    fixedRotation: props.fixedRotation ?? false,
-}))
+export const characterController = createComponent('characterController', () => ({}))
 
 type Collider3DProps = {
     shape: Shape3D

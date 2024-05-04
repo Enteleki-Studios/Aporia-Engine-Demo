@@ -33,20 +33,21 @@ import {
     material,
     transform3D,
     animationComponent,
-    characterBody3D,
     collider3D,
     rigidBody3D,
+    characterController,
 } from '@gengine/core'
-import { CannonPhysicsPlugin } from '@gengine/plugin-cannon'
+// import { CannonPhysicsPlugin } from '@gengine/plugin-cannon'
 import { ThreejsPlugin } from '@gengine/plugin-threejs'
+import { Rapier3DPlugin } from '@gengine/plugin-rapier3D'
 
 // import { AppDispatch } from 'dungeon/store'
 
-import * as Systems from 'systems'
+import * as Systems from '~/systems'
 // import * as Components from 'components'
 // import tilesGenerator from 'utils/tilesGenerator'
 
-import modelDB from 'modelDB'
+import modelDB from './modelDB'
 
 export const world = new World()
 
@@ -63,7 +64,8 @@ const inputManager = new InputManager({
 world
     .registerSystem(inputSystem({ inputManager }))
     .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])
-    .registerPlugin(new CannonPhysicsPlugin())
+    // .registerPlugin(new CannonPhysicsPlugin())
+    .registerPlugin(new Rapier3DPlugin())
     .registerSystems([
         emitterSystem({
             prefabs: {
@@ -77,7 +79,7 @@ world
                         transform3D({}),
                         rigidBody3D({
                             velocity: [-6, 0, Math.random() - 0.5],
-                            mass: 1,
+                            mass: 0.1,
                         }),
                         collider3D({
                             shape: {
@@ -135,7 +137,7 @@ world.ecs.registerEntity(
             repeatY: 32,
         }),
         rigidBody3D({}),
-        collider3D({ shape: { type: 'plane' } }),
+        collider3D({ shape: { type: 'box', size: [32, 0.01, 32] } }),
     ),
 )
 
@@ -153,6 +155,20 @@ world.ecs.registerEntity(
     ),
 )
 
+world.ecs.registerEntity(
+    new Entity({ name: 'test step' }).addComponents(
+        basicGeometryComponent({ geometryType: 'box', color: '#ff0000' }),
+        transform3D({ position: [0, -0.25, 0] }),
+        rigidBody3D({}),
+        collider3D({
+            shape: {
+                type: 'box',
+                size: [1, 1, 1],
+            },
+        }),
+    ),
+)
+
 // Camera
 world.ecs.registerEntity(new Entity({ name: 'camera' }).addComponents(cameraComponent({})))
 
@@ -166,7 +182,7 @@ world.ecs.registerEntity(
             healthComponent({ health: 20 }),
             inputComponent({ keymap: DEFAULT_KEYMAP }),
             modelComponent({ modelName: 'wizard', data: modelDB['wizard'], castShadow: true }),
-            transform3D({ position: [0, 1, -1] }),
+            transform3D({ position: [0, 2, -1] }),
             velocityComponent({}),
             damagingComponent({
                 radius: 1,
@@ -175,12 +191,13 @@ world.ecs.registerEntity(
                 coolDown: 0.5,
                 damage: 5,
             }),
-            characterBody3D({
+            characterController({}),
+            rigidBody3D({
                 mass: 80,
             }),
             collider3D({
                 shape: {
-                    type: 'cylinder',
+                    type: 'capsule',
                     height: 2,
                     radius: 0.5,
                 },
@@ -196,29 +213,30 @@ world.ecs.registerEntity(
 )
 
 // Shibs
-world.ecs.registerEntity(
-    new Entity({ name: 'dog' })
-        .addComponents(
-            animationComponent({ state: 'idle' }),
-            modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
-            transform3D({ position: [1, 0, 2] }),
-            healthComponent({ health: 20 }),
-            directionComponent({}),
-            velocityComponent({}),
-            hitboxComponent({ radius: 0.25 }),
-            characterBody3D({
-                mass: 40,
-            }),
-            collider3D({
-                shape: {
-                    type: 'cylinder',
-                    radius: 0.5,
-                    height: 0.5,
-                },
-            }),
-        )
-        .tag(tags.ai),
-)
+// world.ecs.registerEntity(
+//     new Entity({ name: 'dog' })
+//         .addComponents(
+//             animationComponent({ state: 'idle' }),
+//             modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
+//             transform3D({ position: [1, 0.5, 2] }),
+//             healthComponent({ health: 20 }),
+//             directionComponent({}),
+//             velocityComponent({}),
+//             hitboxComponent({ radius: 0.25 }),
+//             characterController({}),
+//             rigidBody3D({
+//                 mass: 40,
+//             }),
+//             collider3D({
+//                 shape: {
+//                     type: 'cylinder',
+//                     radius: 0.5,
+//                     height: 0.5,
+//                 },
+//             }),
+//         )
+//         .tag(tags.ai),
+// )
 
 // // Slime
 // world.ecs.createEntity().addComponents(

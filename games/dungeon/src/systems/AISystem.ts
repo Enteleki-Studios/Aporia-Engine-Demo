@@ -49,7 +49,7 @@ export const aiSystem = createSystem('ai', () => {
             Vec3.scale(velocity, velocity, shouldMove ? 2 : 0)
 
             // TODO allow for 3D, something with snap to floor
-            velocity[1] = 0
+            velocity[1] = -9
         }
     }
 })
