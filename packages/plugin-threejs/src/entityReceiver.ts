@@ -1,43 +1,42 @@
-import {
-    TextureLoader,
-    Group,
-    Object3D,
-    PointLight,
-    BoxGeometry,
-    AmbientLight,
-    PointLightHelper,
-    MeshBasicMaterial,
-    MeshStandardMaterial,
-    PlaneGeometry,
-    RepeatWrapping,
-    Mesh,
-    CylinderGeometry,
-    SphereGeometry,
-    AnimationMixer,
-    AnimationClip,
-    AnimationAction,
-    Box3,
-    BufferGeometry,
-    Material,
-    CircleGeometry,
-} from 'three'
-
 import { Entity, Query } from '@gengine/core'
 import { ResourceManager } from '@gengine/core'
-import { DirectionalLight } from 'objects/DirectionalLight'
 import {
+    Collider,
+    ambientLightComponent,
     animationComponent,
+    basicGeometryComponent,
+    directionalLightComponent,
+    material,
+    mesh2D,
     modelComponent,
     pointLightComponent,
-    basicGeometryComponent,
-    ambientLightComponent,
     transform3D,
-    mesh2D,
-    material,
-    Collider,
-    directionalLightComponent,
 } from '@gengine/core'
-import { modelFilter, directionalLightFilter, ambientLightFilter, boxFilter, mesh2DFilter } from '@gengine/core'
+import { ambientLightFilter, boxFilter, directionalLightFilter, mesh2DFilter, modelFilter } from '@gengine/core'
+import { DirectionalLight } from 'objects/DirectionalLight'
+import {
+    AmbientLight,
+    AnimationAction,
+    AnimationClip,
+    AnimationMixer,
+    Box3,
+    BoxGeometry,
+    BufferGeometry,
+    CircleGeometry,
+    CylinderGeometry,
+    Group,
+    Material,
+    Mesh,
+    MeshBasicMaterial,
+    MeshStandardMaterial,
+    Object3D,
+    PlaneGeometry,
+    PointLight,
+    PointLightHelper,
+    RepeatWrapping,
+    SphereGeometry,
+    TextureLoader,
+} from 'three'
 
 import type { Renderer } from './Renderer'
 import { loadFBX } from './loadFBX'

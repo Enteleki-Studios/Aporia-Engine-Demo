@@ -5,24 +5,23 @@ import type {
     World as PhysicsWorld,
     RigidBody,
 } from '@dimforge/rapier3d'
-
 import {
-    type World,
-    type Plugin,
-    type Entity,
-    createSystem,
-    EntityId,
-    log,
-    transform3D,
-    rigidBody3D,
-    characterController,
-    Shape3D,
-    collider3D,
     ECSFilter,
+    type Entity,
+    EntityId,
+    type Plugin,
+    Shape3D,
+    type World,
+    characterController,
+    collider3D,
+    createSystem,
+    log,
+    rigidBody3D,
+    transform3D,
     velocityComponent,
 } from '@gengine/core'
 
-import { type Rapier, getRapier } from 'rapier'
+import { type Rapier, getRapier } from './rapier'
 
 type PhysicsBodies = Map<EntityId, RigidBody>
 type PhysicsColliders = Map<EntityId, Collider>
@@ -57,8 +56,8 @@ export class Rapier3DPlugin implements Plugin {
 
                 characterController.enableSnapToGround(0.5)
                 characterController.enableAutostep(0.5, 0.2, true)
-                characterController.setMaxSlopeClimbAngle(45 * Math.PI / 180)
-                characterController.setMinSlopeSlideAngle(30 * Math.PI / 180)
+                characterController.setMaxSlopeClimbAngle((45 * Math.PI) / 180)
+                characterController.setMinSlopeSlideAngle((30 * Math.PI) / 180)
 
                 const receiver = makePhysicsBodyReceiver(
                     rapier,

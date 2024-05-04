@@ -1,10 +1,10 @@
 import type { Plugin, World } from '@gengine/core'
-import { modelFilter, ambientLightFilter, boxFilter, collidingFilter, mesh2DFilter } from '@gengine/core'
+import { ambientLightFilter, boxFilter, collidingFilter, mesh2DFilter, modelFilter } from '@gengine/core'
 
 import { Renderer } from './Renderer'
-import { makeObject3dManager, makeAnimationManager } from './object3dManager'
 import { entityReceiver } from './entityReceiver'
-import { syncThreeSystem, renderSystem } from './systems'
+import { makeAnimationManager, makeObject3dManager } from './object3dManager'
+import { renderSystem, syncThreeSystem } from './systems'
 
 export class ThreejsPlugin implements Plugin {
     name = 'ThreejsPlugin'

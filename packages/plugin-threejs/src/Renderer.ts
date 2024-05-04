@@ -1,5 +1,5 @@
-import { DirectionalLight } from 'objects/DirectionalLight'
 import { StandardRenderer } from 'StandardRenderer'
+import { DirectionalLight } from 'objects/DirectionalLight'
 
 export class Renderer extends StandardRenderer {
     directionalLight?: DirectionalLight // TODO: is this the best place for this?

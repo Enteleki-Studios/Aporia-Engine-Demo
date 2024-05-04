@@ -1,6 +1,6 @@
 import { LinearFilter, Mesh, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, Texture } from 'three'
 
-import { CustomGridTexture, CustomGridSettings } from './CustomGridTexture'
+import { CustomGridSettings, CustomGridTexture } from './CustomGridTexture'
 
 type DefaultGridSettings = CustomGridSettings & {
     texture?: Texture

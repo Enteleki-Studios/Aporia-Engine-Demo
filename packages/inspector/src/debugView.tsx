@@ -1,7 +1,6 @@
-import React, { useRef, useEffect } from 'react'
-
 import { useWorld } from '@gengine/core'
 import { ThreejsPlugin } from '@gengine/plugin-threejs'
+import React, { useEffect, useRef } from 'react'
 
 import './debugView.scss'
 

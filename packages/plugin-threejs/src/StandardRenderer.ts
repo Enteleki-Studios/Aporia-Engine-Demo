@@ -1,21 +1,18 @@
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { MapControls } from 'three/examples/jsm/controls/MapControls'
-
+import { AxesHelper } from 'objects/AxesHelper'
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect } from 'postprocessing'
-
 import {
+    CameraHelper,
+    HalfFloatType,
+    Object3D,
     PCFSoftShadowMap,
     PerspectiveCamera,
-    Scene,
-    WebGLRenderer,
-    Object3D,
-    CameraHelper,
-    Vector4,
     ReinhardToneMapping,
-    HalfFloatType,
+    Scene,
+    Vector4,
+    WebGLRenderer,
 } from 'three'
-
-import { AxesHelper } from 'objects/AxesHelper'
+import { MapControls } from 'three/examples/jsm/controls/MapControls'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 const DEBUG_CAMERA_LAYER = 1
 

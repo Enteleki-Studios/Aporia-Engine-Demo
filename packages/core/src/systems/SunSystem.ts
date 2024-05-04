@@ -1,7 +1,8 @@
+import { ECSFilter, type World, createSystem } from 'core'
+
 import { Vec3 } from 'gl-matrix'
 
-import { ECSFilter, createSystem, type World } from 'core'
-import { directionalLightComponent, transform3D, tags } from '../components'
+import { directionalLightComponent, tags, transform3D } from '../components'
 
 export const directionalLightFilter = ECSFilter.of([directionalLightComponent])
 export const sunTargetFilter = ECSFilter.of([transform3D], [tags.sunTarget])

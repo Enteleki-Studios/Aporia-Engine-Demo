@@ -1,5 +1,5 @@
-import { type World, ECSFilter, Entity, createSystem } from 'core'
 import { emitterComponent, transform3D } from 'components'
+import { ECSFilter, Entity, type World, createSystem } from 'core'
 
 export const emitterFilter = new ECSFilter([emitterComponent, transform3D])
 

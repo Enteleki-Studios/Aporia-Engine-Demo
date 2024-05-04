@@ -1,52 +1,44 @@
-import { Middleware } from '@reduxjs/toolkit'
 import {
-    ambientLightComponent,
-    basicGeometryComponent,
-    healthComponent,
-    // DirectionalLightComponent,
-    InputManager,
-    modelComponent,
     DEFAULT_KEYMAP,
-    inputSystem,
-    inputComponent,
-    hitboxComponent,
-    thirdPersonCameraSystem,
-    cameraComponent,
-    velocityComponent,
-    // SunSystem,
+    Entity,
+    InputManager,
     World,
-    twinStickMovementSystem,
-    // applyVelocitySystem,
+    ambientLightComponent,
+    animationComponent,
+    basicGeometryComponent,
+    cameraComponent,
+    characterController,
+    collider3D,
+    colliderComponent,
     damageSystem,
     damagingComponent,
-    pointLightComponent,
-    // firstPersonCameraSystem,
     directionComponent,
-    // firstPersonMovementSystem,
     emitterComponent,
     emitterSystem,
-    colliderComponent,
-    Entity,
-    // firstPersonMovementFilter,
-    tags,
-    mesh2D,
+    healthComponent,
+    hitboxComponent,
+    inputComponent,
+    inputSystem,
     material,
-    transform3D,
-    animationComponent,
-    collider3D,
+    mesh2D,
+    modelComponent,
+    pointLightComponent,
     rigidBody3D,
-    characterController,
+    tags,
+    thirdPersonCameraSystem,
+    transform3D,
+    twinStickMovementSystem,
+    velocityComponent,
 } from '@gengine/core'
-// import { CannonPhysicsPlugin } from '@gengine/plugin-cannon'
-import { ThreejsPlugin } from '@gengine/plugin-threejs'
 import { Rapier3DPlugin } from '@gengine/plugin-rapier3D'
+import { ThreejsPlugin } from '@gengine/plugin-threejs'
+import { Middleware } from '@reduxjs/toolkit'
 
 // import { AppDispatch } from 'dungeon/store'
-
 import * as Systems from '~/systems'
+
 // import * as Components from 'components'
 // import tilesGenerator from 'utils/tilesGenerator'
-
 import modelDB from './modelDB'
 
 export const world = new World()

@@ -1,8 +1,7 @@
-import { EntityManager, type ECSStatsType, type System, type Plugin, type PluginConstructor } from 'core'
-
+import { type ECSStatsType, EntityManager, type Plugin, type PluginConstructor, type System } from 'core'
 import { WorldEvent } from 'definitions'
-import { log } from 'utils/log'
 import { Clock } from 'utils/clock'
+import { log } from 'utils/log'
 
 type SystemStatsType = {
     /** Provided system label */

@@ -1,4 +1,4 @@
-import { CanvasTexture, SpriteMaterial, Sprite } from 'three'
+import { CanvasTexture, Sprite, SpriteMaterial } from 'three'
 
 type Settings = {
     resolution?: number

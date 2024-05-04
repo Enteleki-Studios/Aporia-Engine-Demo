@@ -1,4 +1,4 @@
-import { Mesh, BoxGeometry, MeshStandardMaterial } from 'three'
+import { BoxGeometry, Mesh, MeshStandardMaterial } from 'three'
 
 export class DefaultCube extends Mesh {
     constructor()

@@ -1,18 +1,16 @@
-import { LoopOnce } from 'three'
 // import { Vec3 } from 'gl-matrix'
-
 import {
-    modelComponent,
-    inputComponent,
     ECSFilter,
     World,
-    healthComponent,
-    velocityComponent,
-    createSystem,
     animationComponent,
+    createSystem,
+    healthComponent,
+    inputComponent,
+    modelComponent,
+    velocityComponent,
 } from '@gengine/core'
-
 import { ThreejsPlugin } from '@gengine/plugin-threejs'
+import { LoopOnce } from 'three'
 
 export const animatedFilter = new ECSFilter([animationComponent, modelComponent])
 

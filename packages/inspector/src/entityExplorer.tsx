@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import { Component, Entity, EntityId, useForceUpdate, useWorld } from '@gengine/core'
 import { ArrowClockwise, Eye, EyeSlash } from '@phosphor-icons/react'
-
-import { EntityId, Entity, Component, useWorld, useForceUpdate } from '@gengine/core'
 import { Icon } from 'Icon'
+import React, { useEffect, useState } from 'react'
 
 const ComponentView = ({ component }: { component: Component }) => {
     return (

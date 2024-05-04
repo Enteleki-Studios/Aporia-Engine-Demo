@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
-// import logger from 'redux-logger'
 
+// import logger from 'redux-logger'
 import { rootReducer } from '~/models/reducers'
 
 // import { middleware as dungeonMiddleware } from './dungeon'

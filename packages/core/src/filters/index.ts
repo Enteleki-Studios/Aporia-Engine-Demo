@@ -1,4 +1,3 @@
-import { ECSFilter } from 'core'
 import {
     ambientLightComponent,
     basicGeometryComponent,
@@ -7,13 +6,14 @@ import {
     directionComponent,
     directionalLightComponent,
     inputComponent,
+    mesh2D,
     modelComponent,
     pointLightComponent,
-    velocityComponent,
     tags,
-    mesh2D,
     transform3D,
+    velocityComponent,
 } from 'components'
+import { ECSFilter } from 'core'
 
 export const ambientLightFilter = new ECSFilter([ambientLightComponent])
 export const boxFilter = new ECSFilter([basicGeometryComponent, transform3D])

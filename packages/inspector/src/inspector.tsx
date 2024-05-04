@@ -1,25 +1,24 @@
-import React, { FormEvent, useCallback, useEffect, useState, ReactNode } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { DebugMode, DebugModes, ENGINE_VERSION, useWorld } from '@gengine/core'
 import {
     GameController,
-    Play,
-    SkipForward,
-    Pause,
-    X,
     IconContext,
-    SquareSplitHorizontal,
     NumberSquareOne,
     NumberSquareTwo,
+    Pause,
+    Play,
+    SkipForward,
+    SquareSplitHorizontal,
+    X,
 } from '@phosphor-icons/react'
-
-import { DebugMode, DebugModes, ENGINE_VERSION, useWorld } from '@gengine/core'
+import { DebugView } from 'debugView'
+import React, { FormEvent, ReactNode, useCallback, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { EntityExplorer } from 'entityExplorer'
-import { DebugView } from 'debugView'
-import { setDebugMode, getDebugMode } from './slice'
+
 import { Icon } from './Icon'
 import { WorldStats } from './WorldStats'
-
+import { getDebugMode, setDebugMode } from './slice'
 import './style.scss'
 
 type InspectorProps = {

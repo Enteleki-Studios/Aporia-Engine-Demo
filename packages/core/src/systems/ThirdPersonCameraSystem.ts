@@ -1,8 +1,8 @@
-import { Vec3, Vec3Like } from 'gl-matrix'
-
-import { transform3D, cameraComponent } from 'components'
-import { createSystem, type World } from 'core'
+import { cameraComponent, transform3D } from 'components'
+import { type World, createSystem } from 'core'
 import { cameraFilter, cameraTargetFilter } from 'filters'
+
+import { Vec3, Vec3Like } from 'gl-matrix'
 
 const camPosition: Vec3Like = [0, 0, 0]
 

@@ -1,6 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
 import type { DebugMode } from '@gengine/core'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 type InspectorState = {
     debugMode: DebugMode

@@ -1,7 +1,7 @@
-import { Vec3 } from 'gl-matrix'
-
-import { ECSFilter, createSystem, type World } from 'core'
 import { damagingComponent, healthComponent, hitboxComponent, transform3D } from 'components'
+import { ECSFilter, type World, createSystem } from 'core'
+
+import { Vec3 } from 'gl-matrix'
 
 export const damagingFilter = new ECSFilter([transform3D, damagingComponent])
 export const damagableFilter = new ECSFilter([transform3D, healthComponent, hitboxComponent])

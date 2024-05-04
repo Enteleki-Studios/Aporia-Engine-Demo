@@ -1,4 +1,4 @@
-import { DirectionalLight as ThreeDL, CameraHelper, DirectionalLightHelper } from 'three'
+import { CameraHelper, DirectionalLightHelper, DirectionalLight as ThreeDL } from 'three'
 
 export class DirectionalLight extends ThreeDL {
     helper: DirectionalLightHelper

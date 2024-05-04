@@ -1,4 +1,4 @@
-import { AxesHelper as ThreeAxesHelper, LineBasicMaterial } from 'three'
+import { LineBasicMaterial, AxesHelper as ThreeAxesHelper } from 'three'
 
 export class AxesHelper extends ThreeAxesHelper {
     constructor(size = 1) {
