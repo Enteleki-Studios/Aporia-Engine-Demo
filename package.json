@@ -38,7 +38,7 @@
         "typedoc": "^0.25.1",
         "typedoc-plugin-missing-exports": "^2.0.0",
         "typescript": "^5.4.2",
-        "vite": "^5.0.2",
+        "vite": "^5.2.11",
         "vite-plugin-dts": "^3.2.0",
         "vite-plugin-static-copy": "^1.0.0",
         "vite-plugin-wasm": "^3.3.0",
