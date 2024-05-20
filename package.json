@@ -51,7 +51,7 @@
         "@gengine/plugin-cannon": "*",
         "@gengine/plugin-threejs": "*",
         "@phosphor-icons/react": "^2.0.15",
-        "@reduxjs/toolkit": "^2.0.1",
+        "@reduxjs/toolkit": "^2.2.5",
         "cannon-es": "^0.20.0",
         "gl-matrix": "beta",
         "postprocessing": "^6.30.2",
