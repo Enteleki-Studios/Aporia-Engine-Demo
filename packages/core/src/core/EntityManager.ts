@@ -17,7 +17,7 @@ export type ECSStatsType = {
 export class EntityManager {
     // Internal state
     private entitiesById = new Map<EntityId, Entity>()
-    private queryResults = new Map<Query, QueryResult>() 
+    private queryResults = new Map<Query, QueryResult>()
     private queryMatchObservers = new Map<Query, Set<QueryObserver>>()
     private queryUnMatchObservers = new Map<Query, Set<QueryObserver>>()
 
@@ -98,7 +98,6 @@ export class EntityManager {
         this.query(query).forEach((entity) => {
             cb(entity, query)
         })
-
     }
 
     onQueryUnMatch(query: Query, cb: QueryObserver) {
