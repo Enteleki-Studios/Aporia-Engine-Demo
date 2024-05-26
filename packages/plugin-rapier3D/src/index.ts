@@ -83,7 +83,10 @@ const physicsStepSystem = createSystem('physics step', () => {
     return (world: World) => {
         const { physicsWorld, characterController, physicsColliders, physicsBodies } = world.getPlugin(Rapier3DPlugin)
 
-        physicsWorld?.step()
+        if (physicsWorld) {
+            physicsWorld.timestep = world.time.delta
+            physicsWorld.step()
+        }
 
         if (characterController) {
             const characterEntities = world.entities.filterBy(physicsCharacterQuery)

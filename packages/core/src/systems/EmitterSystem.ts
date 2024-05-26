@@ -19,7 +19,7 @@ export const emitterSystem = createSystem<{ prefabs: Record<string, undefined | 
                     if (newEntity) {
                         // TODO can't assume that this entity has or wants a position
                         newEntity.get(transform3D).position = [...position]
-                        world.ecs.registerEntity(newEntity)
+                        world.ecs.addEntity(newEntity)
                     }
                 } else {
                     emitter.elapsed += world.timeElapsedS

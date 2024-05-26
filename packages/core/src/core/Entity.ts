@@ -12,7 +12,6 @@ export class Entity {
     readonly id: EntityId
     readonly name?: string
 
-    private onAddComponents: ((components: Component[]) => void) | undefined
     private components = new Map<string, Component>()
     private tags = new Set<string>()
 
@@ -21,22 +20,22 @@ export class Entity {
         this.name = options?.name
     }
 
-    addComponents(...components: Component[]) {
-        components.forEach((component) => {
-            this.components.set(component.type, component)
-        })
-        this.onAddComponents?.(components)
+    addComponent(component: Component) {
+        this.components.set(component.type, component)
 
         return this
     }
 
-    getComponents() {
-        return Array.from(this.components.values())
+    addComponents(...components: Component[]) {
+        components.forEach((component) => {
+            this.addComponent(component)
+        })
+
+        return this
     }
 
-    /** @internal */
-    removeComponent_Unsafe(componentCreator: AnyComponentCreator) {
-        this.components.delete(componentCreator.type)
+    removeComponent(componentCreator: AnyComponentCreator) {
+        return this.components.delete(componentCreator.type)
     }
 
     get<T extends AnyComponentCreator>(componentCreator: T) {
@@ -74,7 +73,8 @@ export class Entity {
         return tags.every((t) => this.hasTag(t))
     }
 
-    registerAddComponentCallback(cb: (components: Component[]) => void) {
-        this.onAddComponents = cb
+    clear() {
+        this.components.clear()
+        this.tags.clear()
     }
 }

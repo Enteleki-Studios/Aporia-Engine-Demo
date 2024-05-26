@@ -48,7 +48,7 @@
         "@dimforge/rapier3d": "^0.13.0",
         "@gengine/core": "*",
         "@gengine/inspector": "*",
-        "@gengine/plugin-cannon": "*",
+        "@gengine/plugin-rapier3D": "*",
         "@gengine/plugin-threejs": "*",
         "@phosphor-icons/react": "^2.0.15",
         "@reduxjs/toolkit": "^2.2.5",

@@ -87,6 +87,8 @@ export class World {
             this.stats.systemsStats[systemWrapper.key].runtime = Math.ceil(Clock.now() - systemStart)
         }
 
+        this.entities.flush()
+
         this.updateListeners('endframe')
 
         this.time.endFrame()

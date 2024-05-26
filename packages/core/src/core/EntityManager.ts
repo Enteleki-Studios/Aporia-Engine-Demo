@@ -1,139 +1,205 @@
-import { Component, Entity, EntityId } from 'core'
+import { AnyComponentCreator, Component, Entity, EntityId } from 'core'
 import { Query } from 'definitions'
 
-type FilterListenerCallback = (entity: Entity, filter: Query) => void
+type QueryObserver = (entity: Entity, query: Query) => void
+
+type QueryResult = Set<Entity>
 
 export type ECSStatsType = {
     /** Number of entities */
     entities: number
     /** Number of components */
-    components: number
-    /** Number of registered filters */
-    filters: number
+    // components: number
+    /** Number of registered queries */
+    queries: number
 }
 
 export class EntityManager {
+    // Internal state
     private entitiesById = new Map<EntityId, Entity>()
-    private entitiesByFilter = new Map<Query, Set<Entity>>()
-    private listenersByFilter = new Map<Query, Set<FilterListenerCallback>>()
+    private queryResults = new Map<Query, QueryResult>() 
+    private queryMatchObservers = new Map<Query, Set<QueryObserver>>()
+    private queryUnMatchObservers = new Map<Query, Set<QueryObserver>>()
+
+    // Queues waiting for flush
+    private dirtyEntities = new Set<Entity>()
+    private removedEntities = new Set<Entity>()
+    private queuedComponents = new Map<Entity, Component[]>()
+    private removedComponents = new Map<Entity, AnyComponentCreator[]>()
 
     stats: ECSStatsType = {
         entities: 0,
-        components: 0,
-        filters: 0,
+        queries: 0,
     }
 
-    private updateFiltersForEntity(entity: Entity) {
-        this.entitiesByFilter.forEach((entities, filter) => {
-            if (filter.match(entity)) {
-                if (!entities.has(entity)) {
-                    entities.add(entity)
+    // TODO: DEPRECATE {{{
+    filterBy(filter: Query): QueryResult {
+        return this.query(filter)
+    }
 
-                    this.listenersByFilter.get(filter)?.forEach((cb) => cb(entity, filter))
+    addFilterListener(filter: Query, cb: QueryObserver) {
+        return this.onQueryMatch(filter, cb)
+    }
+    // }}}
+
+    private updateQueryResultsForEntity(entity: Entity) {
+        this.queryResults.forEach((queryResult, query) => {
+            if (query.match(entity)) {
+                if (!queryResult.has(entity)) {
+                    queryResult.add(entity)
+                    this.queryMatchObservers.get(query)?.forEach((cb) => cb(entity, query))
                 }
             } else {
-                // TODO tell systems that entity was removed
-                entities.delete(entity)
+                if (queryResult.has(entity)) {
+                    queryResult.delete(entity)
+                    this.queryUnMatchObservers.get(query)?.forEach((cb) => cb(entity, query))
+                }
             }
         })
     }
 
-    private trackNewComponents(entityId: EntityId, components: Component[]) {
-        const entity = this.entitiesById.get(entityId)
+    query(query: Query): QueryResult {
+        const existingResult = this.queryResults.get(query)
 
-        if (entity) {
-            this.updateFiltersForEntity(entity)
-            this.stats.components += components.length
+        if (existingResult) {
+            return existingResult
         }
+
+        // Setup new entity set for the query
+        const queryResult = new Set<Entity>()
+
+        // TODO replace with an iter.filter() when browsers support
+        // Go through all entities and add matching ones to the new set
+        for (const [, entity] of this.entitiesById) {
+            if (query.match(entity)) {
+                queryResult.add(entity)
+            }
+        }
+
+        // Update query map
+        this.queryResults.set(query, queryResult)
+
+        this.stats.queries = this.queryResults.size
+
+        return queryResult
     }
 
-    filterBy(filter: Query): Set<Entity> {
-        const entities = this.entitiesByFilter.get(filter)
-        if (entities) {
-            return entities
+    onQueryMatch(query: Query, cb: QueryObserver) {
+        const existingObservers = this.queryMatchObservers.get(query)
+        if (existingObservers) {
+            existingObservers.add(cb)
         } else {
-            return this.registerFilter(filter)
+            this.queryMatchObservers.set(query, new Set([cb]))
         }
+
+        // TODO: Should this be how it works? Or should plugins
+        // do this manually with a query?
+        // Trigger the callback for all existing entities
+        this.query(query).forEach((entity) => {
+            cb(entity, query)
+        })
+
     }
 
-    addFilterListener(filter: Query, cb: FilterListenerCallback) {
-        if (!this.listenersByFilter.has(filter)) {
-            this.listenersByFilter.set(filter, new Set())
-        }
-        this.listenersByFilter.get(filter)?.add(cb)
-
-        const existingEntities = this.entitiesByFilter.get(filter)
-        if (existingEntities) {
-            // Trigger the callback for all existing entities
-            existingEntities.forEach((entity) => {
-                cb(entity, filter)
-            })
+    onQueryUnMatch(query: Query, cb: QueryObserver) {
+        const existingObservers = this.queryUnMatchObservers.get(query)
+        if (existingObservers) {
+            existingObservers.add(cb)
         } else {
-            // Otherwise, register the filter to pick up on future entities
-            this.registerFilter(filter)
+            this.queryUnMatchObservers.set(query, new Set([cb]))
         }
     }
 
-    removeFilterListener(filter: Query, cb: FilterListenerCallback) {
-        this.listenersByFilter.get(filter)?.delete(cb)
-    }
-
-    // removeEntity(entityId: EntityId) {
-    //     // TODO queue and remove after tick
-    //     // remove from filters
-    // }
-
-    registerEntity(entity: Entity) {
-        // Add component handler to entity
-        entity.registerAddComponentCallback((components) => this.trackNewComponents(entity.id, components))
-
+    addEntity(entity: Entity) {
         this.entitiesById.set(entity.id, entity)
 
-        if (entity.size()) {
-            this.trackNewComponents(entity.id, entity.getComponents())
-        }
+        this.dirty(entity)
 
         this.stats.entities += 1
     }
 
-    registerFilter(filter: Query) {
-        const existingEntities = this.entitiesByFilter.get(filter)
-
-        if (existingEntities) {
-            return existingEntities
-        }
-
-        // Setup new entity set for the filter
-        const entitySet = new Set<Entity>()
-
-        // TODO replace with an iter.filter() when browsers support
-        // Go through all entities and add matching ones to the new set
-        for (const entity of this.entitiesById.values()) {
-            if (filter.match(entity)) {
-                entitySet.add(entity)
-            }
-        }
-
-        // Update filter map
-        this.entitiesByFilter.set(filter, entitySet)
-
-        // Trigger existing listeners that their filters were updated
-        if (this.listenersByFilter.has(filter)) {
-            entitySet.forEach((entity) => {
-                this.listenersByFilter.get(filter)?.forEach((cb) => cb(entity, filter))
-            })
-        }
-
-        this.stats.filters = this.entitiesByFilter.size
-
-        return entitySet
-    }
-
-    registerFilters(filters: Query[]) {
-        filters.forEach((f) => this.registerFilter(f))
-    }
-
     getEntity(entityId: EntityId) {
         return this.entitiesById.get(entityId)
+    }
+
+    removeEntity(entity: Entity) {
+        this.entitiesById.delete(entity.id)
+
+        // Account for components being added, but then
+        // the entity is deleted
+        this.queuedComponents.delete(entity)
+        this.removedComponents.delete(entity)
+
+        this.removedEntities.add(entity)
+
+        this.stats.entities -= 1
+    }
+
+    addComponent(entity: Entity, component: Component) {
+        if (this.entitiesById.has(entity.id)) {
+            const componentQueue = this.queuedComponents.get(entity)
+            if (componentQueue) {
+                componentQueue.push(component)
+            } else {
+                this.queuedComponents.set(entity, [component])
+            }
+            return true
+        }
+
+        return false
+    }
+
+    removeComponent(entity: Entity, componentCreator: AnyComponentCreator) {
+        if (this.entitiesById.has(entity.id)) {
+            const componentQueue = this.removedComponents.get(entity)
+            if (componentQueue) {
+                componentQueue.push(componentCreator)
+            } else {
+                this.removedComponents.set(entity, [componentCreator])
+            }
+
+            return true
+        }
+
+        return false
+    }
+
+    dirty(entity: Entity) {
+        this.dirtyEntities.add(entity)
+    }
+
+    flush() {
+        if (this.removedEntities.size) {
+            // TODO: technically a query that always returns true
+            // would cause entities to be retained
+            for (const entity of this.removedEntities) {
+                entity.clear()
+                this.dirty(entity)
+            }
+            this.removedEntities.clear()
+        }
+
+        if (this.queuedComponents.size) {
+            for (const [entity, components] of this.queuedComponents) {
+                entity.addComponents(...components)
+                this.dirty(entity)
+            }
+            this.queuedComponents.clear()
+        }
+
+        if (this.removedComponents.size) {
+            for (const [entity, componentCreators] of this.removedComponents) {
+                entity.removeComponents(...componentCreators)
+                this.dirty(entity)
+            }
+            this.removedComponents.clear()
+        }
+
+        if (this.dirtyEntities.size) {
+            for (const entity of this.dirtyEntities) {
+                this.updateQueryResultsForEntity(entity)
+            }
+            this.dirtyEntities.clear()
+        }
     }
 }

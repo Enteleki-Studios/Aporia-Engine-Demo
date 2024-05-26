@@ -84,17 +84,14 @@ export const WorldStats = ({ world }: WorldStatsProps) => {
                 <span>entities:</span>
                 <span>{stats.ecs.entities}</span>
 
-                <span>components:</span>
-                <span>{stats.ecs.components}</span>
-
                 <span>plugins:</span>
                 <span>{stats.plugins}</span>
 
                 <span>systems:</span>
                 <span>{stats.systems}</span>
 
-                <span>filters:</span>
-                <span>{stats.ecs.filters}</span>
+                <span>queries:</span>
+                <span>{stats.ecs.queries}</span>
             </div>
             <h4>
                 <Icon icon={<Timer weight="duotone" />} />

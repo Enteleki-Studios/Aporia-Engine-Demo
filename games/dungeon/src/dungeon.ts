@@ -53,10 +53,11 @@ const inputManager = new InputManager({
     pointerLock: false,
 })
 
+// world.frameSync = false
+
 world
     .registerSystem(inputSystem({ inputManager }))
     .registerSystems([twinStickMovementSystem(), Systems.aiSystem()])
-    // .registerPlugin(new CannonPhysicsPlugin())
     .registerPlugin(new Rapier3DPlugin())
     .registerSystems([
         emitterSystem({
@@ -82,7 +83,6 @@ world
                     ),
             },
         }),
-        // applyVelocitySystem(),
         damageSystem(),
         thirdPersonCameraSystem(),
         Systems.animationSystem(),
@@ -98,7 +98,7 @@ export const middleware: Middleware = () => (next) => (action: unknown) => {
 }
 
 // Lighting
-world.ecs.registerEntity(
+world.ecs.addEntity(
     new Entity({ name: 'lighting' }).addComponents(
         ambientLightComponent({
             color: 0xf4e99b,
@@ -114,7 +114,7 @@ world.ecs.registerEntity(
 )
 
 // Floor
-world.ecs.registerEntity(
+world.ecs.addEntity(
     new Entity({ name: 'floor' }).addComponents(
         mesh2D({ shape: 'plane', width: 32, height: 32 }),
         transform3D({
@@ -139,7 +139,7 @@ world.ecs.registerEntity(
 // )
 
 // Test stuff
-world.ecs.registerEntity(
+world.ecs.addEntity(
     new Entity({ name: 'test box' }).addComponents(
         basicGeometryComponent({ geometryType: 'box' }),
         transform3D({ position: [0, 1, 5] }),
@@ -147,9 +147,9 @@ world.ecs.registerEntity(
     ),
 )
 
-world.ecs.registerEntity(
+world.ecs.addEntity(
     new Entity({ name: 'test step' }).addComponents(
-        basicGeometryComponent({ geometryType: 'box', color: '#ff0000' }),
+        basicGeometryComponent({ geometryType: 'box', color: 0xff0000 }),
         transform3D({ position: [0, -0.25, 0] }),
         rigidBody3D({}),
         collider3D({
@@ -162,10 +162,10 @@ world.ecs.registerEntity(
 )
 
 // Camera
-world.ecs.registerEntity(new Entity({ name: 'camera' }).addComponents(cameraComponent({})))
+world.ecs.addEntity(new Entity({ name: 'camera' }).addComponents(cameraComponent({})))
 
 // Player
-world.ecs.registerEntity(
+world.ecs.addEntity(
     new Entity({ name: 'hero' })
         .addComponents(
             animationComponent({ state: 'idle' }),
@@ -205,7 +205,7 @@ world.ecs.registerEntity(
 )
 
 // Shibs
-// world.ecs.registerEntity(
+// world.ecs.addEntity(
 //     new Entity({ name: 'dog' })
 //         .addComponents(
 //             animationComponent({ state: 'idle' }),
@@ -242,7 +242,7 @@ world.ecs.registerEntity(
 // Items
 const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart']
 items.forEach((item, i) => {
-    world.ecs.registerEntity(
+    world.ecs.addEntity(
         new Entity({ name: item }).addComponents(
             modelComponent({ modelName: item, castShadow: true, data: modelDB[item] }),
             transform3D({ position: [i * 3 - 12, 0, 8] }),
@@ -259,7 +259,7 @@ items.forEach((item, i) => {
 })
 
 // Stairs
-world.ecs.registerEntity(
+world.ecs.addEntity(
     new Entity({ name: 'stairs' }).addComponents(
         modelComponent({ modelName: 'stairs', data: modelDB['stairs'] }),
         transform3D({ position: [0, 0, -5] }),
@@ -274,7 +274,7 @@ world.ecs.registerEntity(
 )
 
 // Upper floor
-world.ecs.registerEntity(
+world.ecs.addEntity(
     new Entity({ name: 'upper level' }).addComponents(
         modelComponent({ modelName: 'floor', data: modelDB['floor'] }),
         transform3D({ position: [-1.5, 0.5, -5] }),
@@ -287,7 +287,7 @@ world.ecs.registerEntity(
         }),
     ),
 )
-world.ecs.registerEntity(
+world.ecs.addEntity(
     new Entity({ name: 'upper level 2' }).addComponents(
         modelComponent({ modelName: 'floor', data: modelDB['floor'] }),
         transform3D({ position: [-3.5, 0.5, -5] }),
@@ -302,7 +302,7 @@ world.ecs.registerEntity(
 )
 
 // Crate
-world.ecs.registerEntity(
+world.ecs.addEntity(
     new Entity({ name: 'crate' }).addComponents(
         modelComponent({ modelName: 'crate', data: modelDB['crate'] }),
         transform3D({ position: [5, 0, 5] }),
@@ -320,7 +320,7 @@ world.ecs.registerEntity(
 // Wall torches
 const torches = [9.75, 3.25, -3.25]
 torches.forEach((posZ, i) => {
-    world.ecs.registerEntity(
+    world.ecs.addEntity(
         new Entity({ name: `torch (${i})` }).addComponents(
             modelComponent({ modelName: 'torchWall', data: modelDB['torchWall'] }),
             transform3D({ position: [-16, 1.5, posZ] }),
@@ -334,7 +334,7 @@ torches.forEach((posZ, i) => {
 })
 
 // Gold chest
-world.ecs.registerEntity(
+world.ecs.addEntity(
     new Entity({ name: 'chest' }).addComponents(
         modelComponent({ modelName: 'chest_gold', data: modelDB['chest_gold'] }),
         transform3D({ position: [-6, 0, -6] }),
@@ -349,7 +349,7 @@ world.ecs.registerEntity(
 
 // Walls
 for (let i = 0; i < 32; i += 2) {
-    world.ecs.registerEntity(
+    world.ecs.addEntity(
         new Entity({ name: `wall (${i})` }).addComponents(
             modelComponent({ modelName: 'stoneWallTop', data: modelDB['stoneWallTop'] }),
             transform3D({ position: [-16, 1, i - 15] }),
@@ -367,7 +367,7 @@ for (let i = 0; i < 32; i += 2) {
 // Grass
 const makePos = (): [number, number, number] => [Math.random() * 30 - 15, 0, Math.random() * 30 - 15]
 for (let i = 0; i < 200; i += 1) {
-    world.ecs.registerEntity(
+    world.ecs.addEntity(
         new Entity().addComponents(
             modelComponent({ modelName: 'grass', data: modelDB['grass'] }),
             transform3D({ position: makePos() }),
