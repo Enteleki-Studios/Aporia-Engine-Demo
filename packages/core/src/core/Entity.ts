@@ -50,6 +50,13 @@ export class Entity {
         return this.components.delete(componentCreator.type)
     }
 
+    removeComponents(...componentCreators: AnyComponentCreator[]) {
+        componentCreators.forEach((componentCreator) => {
+            this.removeComponent(componentCreator)
+        })
+        return this
+    }
+
     get<T extends AnyComponentCreator>(componentCreator: T) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return this.components.get(componentCreator.type) as ReturnType<T>
