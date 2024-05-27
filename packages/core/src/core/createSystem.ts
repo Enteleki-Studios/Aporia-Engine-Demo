@@ -1,6 +1,5 @@
-import type { World } from 'core'
-
-import type { Optional } from '../definitions'
+import type { World } from '~/core'
+import type { Optional } from '~/definitions'
 
 export type System = {
     (world: World): void

@@ -1,6 +1,6 @@
-import { createComponent } from 'core'
-import { Array3 } from 'definitions'
-import { Shape3D } from 'shapes'
+import { createComponent } from '~/core'
+import { Array3 } from '~/definitions'
+import { Shape3D } from '~/shapes'
 
 type RigidBody3DProps = {
     mass?: number

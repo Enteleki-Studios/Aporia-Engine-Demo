@@ -1,4 +1,4 @@
-import { Array2, Array3 } from 'definitions'
+import { Array2, Array3 } from '~/definitions'
 
 // 2D
 type Circle = {

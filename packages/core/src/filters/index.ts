@@ -12,8 +12,8 @@ import {
     tags,
     transform3D,
     velocityComponent,
-} from 'components'
-import { ECSFilter } from 'core'
+} from '~/components'
+import { ECSFilter } from '~/core'
 
 export const ambientLightFilter = new ECSFilter([ambientLightComponent])
 export const boxFilter = new ECSFilter([basicGeometryComponent, transform3D])

@@ -1,4 +1,4 @@
-import { createComponent } from 'core'
+import { createComponent } from '~/core'
 
 type PointLightSettings = {
     color: number

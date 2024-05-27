@@ -1,5 +1,6 @@
 import { useRef } from 'react'
-import { average } from 'utils/arrayUtils'
+
+import { average } from '~/utils/arrayUtils'
 
 export const useSmoothNumber = (value: number, history: number = 10) => {
     const numbersRef = useRef<number[]>([])

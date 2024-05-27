@@ -1,10 +1,10 @@
 // import { roundToZero } from '../utils/vectorUtils'
-import { directionComponent, inputComponent, velocityComponent } from 'components'
-import { type World, createSystem } from 'core'
-import { ORIGIN } from 'definitions'
-import { inputFilter, movingEntitiesFilter, rotatingEntitiesFilter } from 'filters'
-
 import { Vec3 } from 'gl-matrix'
+
+import { directionComponent, inputComponent, velocityComponent } from '~/components'
+import { type World, createSystem } from '~/core'
+import { ORIGIN } from '~/definitions'
+import { inputFilter, movingEntitiesFilter, rotatingEntitiesFilter } from '~/filters'
 
 const DECELERATION = -5
 

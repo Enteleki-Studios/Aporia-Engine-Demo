@@ -1,7 +1,7 @@
-import { type ECSStatsType, EntityManager, type Plugin, type PluginConstructor, type System } from 'core'
-import { WorldEvent } from 'definitions'
-import { Clock } from 'utils/clock'
-import { log } from 'utils/log'
+import { type ECSStatsType, EntityManager, type Plugin, type PluginConstructor, type System } from '~/core'
+import { WorldEvent } from '~/definitions'
+import { Clock } from '~/utils/clock'
+import { log } from '~/utils/log'
 
 type SystemStatsType = {
     /** Provided system label */

@@ -1,4 +1,4 @@
-import type { Keymap } from 'definitions'
+import type { Keymap } from '~/definitions'
 
 type Callback = () => void
 type KeyCode = string

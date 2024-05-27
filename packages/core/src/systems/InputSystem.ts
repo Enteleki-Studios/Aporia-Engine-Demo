@@ -1,8 +1,7 @@
-import { inputComponent } from 'components'
-import { type World, createSystem } from 'core'
-import { inputFilter } from 'filters'
-
-import type { InputManager } from '../managers/InputManager'
+import { inputComponent } from '~/components'
+import { type World, createSystem } from '~/core'
+import { inputFilter } from '~/filters'
+import type { InputManager } from '~/managers/InputManager'
 
 export const inputSystem = createSystem<{ inputManager: InputManager }>(
     'input',

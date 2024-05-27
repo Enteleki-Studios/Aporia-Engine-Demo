@@ -1,15 +1,12 @@
-import { AnyComponentCreator, Component, Entity, EntityId } from 'core'
-import { Query } from 'definitions'
-
-type QueryObserver = (entity: Entity, query: Query) => void
+import { AnyComponentCreator, Component, Entity, EntityId } from '~/core'
+import { Query } from '~/definitions'
 
 type QueryResult = Set<Entity>
+type QueryObserver = (entity: Entity, query: Query) => void
 
 export type ECSStatsType = {
     /** Number of entities */
     entities: number
-    /** Number of components */
-    // components: number
     /** Number of registered queries */
     queries: number
 }
@@ -114,7 +111,7 @@ export class EntityManager {
 
         this.dirty(entity)
 
-        this.stats.entities += 1
+        this.stats.entities = this.entitiesById.size
     }
 
     getEntity(entityId: EntityId) {
@@ -131,7 +128,7 @@ export class EntityManager {
 
         this.removedEntities.add(entity)
 
-        this.stats.entities -= 1
+        this.stats.entities = this.entitiesById.size
     }
 
     addComponent(entity: Entity, component: Component) {

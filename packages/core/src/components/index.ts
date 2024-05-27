@@ -1,5 +1,5 @@
-import { createComponent } from 'core'
-import type { Array3, Keymap } from 'definitions'
+import { createComponent } from '~/core'
+import type { Array3, Keymap } from '~/definitions'
 
 export const tags = {
     hero: 'hero',

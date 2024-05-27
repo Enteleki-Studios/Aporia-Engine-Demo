@@ -1,4 +1,4 @@
-import { Array2, Array3 } from 'definitions'
+import { Array2, Array3 } from '~/definitions'
 
 export const roundToZero = (out: Array3, a: Readonly<Array3>, threshold = 0.0001) => {
     out[0] = Math.abs(a[0]) <= threshold ? 0 : a[0]

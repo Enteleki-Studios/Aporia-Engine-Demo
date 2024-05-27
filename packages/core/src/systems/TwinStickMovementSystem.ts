@@ -1,13 +1,13 @@
-import { cameraComponent, directionComponent, inputComponent, transform3D, velocityComponent } from 'components'
-import { type World, createSystem } from 'core'
-import { Array3, ORIGIN } from 'definitions'
-import { cameraFilter, inputFilter, movingEntitiesFilter, rotatingEntitiesFilter } from 'filters'
+import { Vec3 } from 'gl-matrix'
+
+import { cameraComponent, directionComponent, inputComponent, transform3D, velocityComponent } from '~/components'
+import { type World, createSystem } from '~/core'
+import { Array3, ORIGIN } from '~/definitions'
+import { cameraFilter, inputFilter, movingEntitiesFilter, rotatingEntitiesFilter } from '~/filters'
 import {
     /* angle2, */
     roundToZero,
-} from 'utils/vectorUtils'
-
-import { Vec3 } from 'gl-matrix'
+} from '~/utils/vectorUtils'
 
 export const twinStickMovementFilter = inputFilter.and(movingEntitiesFilter).and(rotatingEntitiesFilter)
 
