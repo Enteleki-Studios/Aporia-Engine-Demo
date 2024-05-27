@@ -9,7 +9,6 @@ import {
     transform3D,
     velocityComponent,
 } from '@gengine/core'
-
 import { Vec3 } from 'gl-matrix'
 
 export const aiSystemFilter = new ECSFilter([directionComponent, transform3D, velocityComponent], [tags.ai])

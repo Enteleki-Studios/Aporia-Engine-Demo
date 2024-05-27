@@ -1,9 +1,10 @@
-import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import tsconfigPaths from 'vite-tsconfig-paths'
+
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
     build: {

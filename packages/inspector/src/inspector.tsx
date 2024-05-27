@@ -1,3 +1,7 @@
+import { DebugView } from 'debugView'
+import React, { FormEvent, ReactNode, useCallback, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
 import { DebugMode, DebugModes, ENGINE_VERSION, useWorld } from '@gengine/core'
 import {
     GameController,
@@ -10,10 +14,6 @@ import {
     SquareSplitHorizontal,
     X,
 } from '@phosphor-icons/react'
-import { DebugView } from 'debugView'
-import React, { FormEvent, ReactNode, useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-
 import { EntityExplorer } from 'entityExplorer'
 
 import { Icon } from './Icon'

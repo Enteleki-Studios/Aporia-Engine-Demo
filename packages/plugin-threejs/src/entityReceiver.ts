@@ -1,18 +1,3 @@
-import { Entity, Query } from '@gengine/core'
-import { ResourceManager } from '@gengine/core'
-import {
-    Collider,
-    ambientLightComponent,
-    animationComponent,
-    basicGeometryComponent,
-    directionalLightComponent,
-    material,
-    mesh2D,
-    modelComponent,
-    pointLightComponent,
-    transform3D,
-} from '@gengine/core'
-import { ambientLightFilter, boxFilter, directionalLightFilter, mesh2DFilter, modelFilter } from '@gengine/core'
 import { DirectionalLight } from 'objects/DirectionalLight'
 import {
     AmbientLight,
@@ -37,6 +22,22 @@ import {
     SphereGeometry,
     TextureLoader,
 } from 'three'
+
+import { Entity, Query } from '@gengine/core'
+import { ResourceManager } from '@gengine/core'
+import {
+    Collider,
+    ambientLightComponent,
+    animationComponent,
+    basicGeometryComponent,
+    directionalLightComponent,
+    material,
+    mesh2D,
+    modelComponent,
+    pointLightComponent,
+    transform3D,
+} from '@gengine/core'
+import { ambientLightFilter, boxFilter, directionalLightFilter, mesh2DFilter, modelFilter } from '@gengine/core'
 
 import type { Renderer } from './Renderer'
 import { loadFBX } from './loadFBX'
