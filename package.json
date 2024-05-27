@@ -5,7 +5,7 @@
     "repository": "https://github.com/mikeymaxdb/GameDev",
     "main": "index.js",
     "author": "mikeymaxdb",
-    "license": "ISC",
+    "license": "No license",
     "scripts": {
         "prettier": "prettier --write ."
     },
