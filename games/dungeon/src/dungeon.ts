@@ -63,7 +63,7 @@ world
         emitterSystem({
             prefabs: {
                 ball: () =>
-                    new Entity().addComponents(
+                    Entity.of(
                         basicGeometryComponent({
                             geometryType: 'sphere',
                             radius: 0.25,
@@ -98,8 +98,9 @@ export const middleware: Middleware = () => (next) => (action: unknown) => {
 }
 
 // Lighting
-world.ecs.addEntity(
-    new Entity({ name: 'lighting' }).addComponents(
+world.entities.addEntity(
+    Entity.of(
+        { name: 'lighting' },
         ambientLightComponent({
             color: 0xf4e99b,
             intensity: 0.2,
@@ -114,8 +115,9 @@ world.ecs.addEntity(
 )
 
 // Floor
-world.ecs.addEntity(
-    new Entity({ name: 'floor' }).addComponents(
+world.entities.addEntity(
+    Entity.of(
+        { name: 'floor' },
         mesh2D({ shape: 'plane', width: 32, height: 32 }),
         transform3D({
             rotation: [-Math.PI / 2, 0, 0],
@@ -133,22 +135,19 @@ world.ecs.addEntity(
     ),
 )
 
-// Sun
-// world.ecs.createEntity().addComponents(
-//     new DirectionalLightComponent([5, 15, 5], 0.5),
-// )
-
-// Test stuff
-world.ecs.addEntity(
-    new Entity({ name: 'test box' }).addComponents(
+// Test box
+world.entities.addEntity(
+    Entity.of(
+        { name: 'test box' },
         basicGeometryComponent({ geometryType: 'box' }),
         transform3D({ position: [0, 1, 5] }),
         emitterComponent({ prefabId: 'ball', delay: 2 }),
     ),
 )
 
-world.ecs.addEntity(
-    new Entity({ name: 'test step' }).addComponents(
+world.entities.addEntity(
+    Entity.of(
+        { name: 'test step' },
         basicGeometryComponent({ geometryType: 'box', color: 0xff0000 }),
         transform3D({ position: [0, -0.25, 0] }),
         rigidBody3D({}),
@@ -162,88 +161,78 @@ world.ecs.addEntity(
 )
 
 // Camera
-world.ecs.addEntity(new Entity({ name: 'camera' }).addComponents(cameraComponent({})))
+world.entities.addEntity(Entity.of({ name: 'camera' }, cameraComponent({})))
 
 // Player
-world.ecs.addEntity(
-    new Entity({ name: 'hero' })
-        .addComponents(
-            animationComponent({ state: 'idle' }),
-            directionComponent({}),
-            hitboxComponent({ radius: 1 }),
-            healthComponent({ health: 20 }),
-            inputComponent({ keymap: DEFAULT_KEYMAP }),
-            modelComponent({ modelName: 'wizard', data: modelDB['wizard'], castShadow: true }),
-            transform3D({ position: [0, 2, -1] }),
-            velocityComponent({}),
-            damagingComponent({
-                radius: 1,
-                theta: 2,
-                spoolUp: 0.25,
-                coolDown: 0.5,
-                damage: 5,
-            }),
-            characterController({}),
-            rigidBody3D({
-                mass: 80,
-            }),
-            collider3D({
-                shape: {
-                    type: 'capsule',
-                    height: 2,
-                    radius: 0.5,
-                },
-            }),
-            // pointLightComponent({
-            //     color: 0xffeeff,
-            //     intensity: 3,
-            //     offset: [0, 2, 0],
-            //     castShadow: true,
-            // }),
-        )
-        .tag(tags.hero, tags.cameraTarget, tags.sunTarget),
+world.entities.addEntity(
+    Entity.of(
+        { name: 'hero' },
+        animationComponent({ state: 'idle' }),
+        directionComponent({}),
+        hitboxComponent({ radius: 1 }),
+        healthComponent({ health: 20 }),
+        inputComponent({ keymap: DEFAULT_KEYMAP }),
+        modelComponent({ modelName: 'wizard', data: modelDB['wizard'], castShadow: true }),
+        transform3D({ position: [0, 2, -1] }),
+        velocityComponent({}),
+        damagingComponent({
+            radius: 1,
+            theta: 2,
+            spoolUp: 0.25,
+            coolDown: 0.5,
+            damage: 5,
+        }),
+        characterController({}),
+        rigidBody3D({
+            mass: 80,
+        }),
+        collider3D({
+            shape: {
+                type: 'capsule',
+                height: 2,
+                radius: 0.5,
+            },
+        }),
+        // pointLightComponent({
+        //     color: 0xffeeff,
+        //     intensity: 3,
+        //     offset: [0, 2, 0],
+        //     castShadow: true,
+        // }),
+    ).tag(tags.hero, tags.cameraTarget, tags.sunTarget),
 )
 
 // Shibs
-// world.ecs.addEntity(
-//     new Entity({ name: 'dog' })
-//         .addComponents(
-//             animationComponent({ state: 'idle' }),
-//             modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
-//             transform3D({ position: [1, 0.5, 2] }),
-//             healthComponent({ health: 20 }),
-//             directionComponent({}),
-//             velocityComponent({}),
-//             hitboxComponent({ radius: 0.25 }),
-//             characterController({}),
-//             rigidBody3D({
-//                 mass: 40,
-//             }),
-//             collider3D({
-//                 shape: {
-//                     type: 'cylinder',
-//                     radius: 0.5,
-//                     height: 0.5,
-//                 },
-//             }),
-//         )
-//         .tag(tags.ai),
-// )
-
-// // Slime
-// world.ecs.createEntity().addComponents(
-//     new Components.AnimationComponent('idle'),
-//     new ModelComponent({ modelName: 'slime' }),
-//     new PositionComponent({ position: [4, 0, 2] }),
-//     new HealthComponent(20),
-//     new HitboxComponent(0.25),
-// )
+world.entities.addEntity(
+    Entity.of(
+        { name: 'dog' },
+        animationComponent({ state: 'idle' }),
+        modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
+        transform3D({ position: [1, 0.5, 2] }),
+        healthComponent({ health: 20 }),
+        directionComponent({}),
+        velocityComponent({}),
+        hitboxComponent({ radius: 0.25 }),
+        characterController({}),
+        rigidBody3D({
+            mass: 40,
+        }),
+        collider3D({
+            shape: {
+                type: 'cylinder',
+                radius: 0.5,
+                height: 0.5,
+            },
+        }),
+    ).tag(tags.ai),
+)
 
 // Items
 const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart']
 items.forEach((item, i) => {
-    world.ecs.addEntity(
-        new Entity({ name: item }).addComponents(
+    world.entities.addEntity(
+        Entity.of(
+            { name: item },
             modelComponent({ modelName: item, castShadow: true, data: modelDB[item] }),
             transform3D({ position: [i * 3 - 12, 0, 8] }),
             colliderComponent({
@@ -259,8 +248,9 @@ items.forEach((item, i) => {
 })
 
 // Stairs
-world.ecs.addEntity(
-    new Entity({ name: 'stairs' }).addComponents(
+world.entities.addEntity(
+    Entity.of(
+        { name: 'stairs' },
         modelComponent({ modelName: 'stairs', data: modelDB['stairs'] }),
         transform3D({ position: [0, 0, -5] }),
         rigidBody3D({}),
@@ -274,8 +264,9 @@ world.ecs.addEntity(
 )
 
 // Upper floor
-world.ecs.addEntity(
-    new Entity({ name: 'upper level' }).addComponents(
+world.entities.addEntity(
+    Entity.of(
+        { name: 'upper level' },
         modelComponent({ modelName: 'floor', data: modelDB['floor'] }),
         transform3D({ position: [-1.5, 0.5, -5] }),
         rigidBody3D({}),
@@ -287,8 +278,9 @@ world.ecs.addEntity(
         }),
     ),
 )
-world.ecs.addEntity(
-    new Entity({ name: 'upper level 2' }).addComponents(
+world.entities.addEntity(
+    Entity.of(
+        { name: 'upper level 2' },
         modelComponent({ modelName: 'floor', data: modelDB['floor'] }),
         transform3D({ position: [-3.5, 0.5, -5] }),
         rigidBody3D({}),
@@ -302,8 +294,9 @@ world.ecs.addEntity(
 )
 
 // Crate
-world.ecs.addEntity(
-    new Entity({ name: 'crate' }).addComponents(
+world.entities.addEntity(
+    Entity.of(
+        { name: 'crate' },
         modelComponent({ modelName: 'crate', data: modelDB['crate'] }),
         transform3D({ position: [5, 0, 5] }),
         colliderComponent({
@@ -320,8 +313,9 @@ world.ecs.addEntity(
 // Wall torches
 const torches = [9.75, 3.25, -3.25]
 torches.forEach((posZ, i) => {
-    world.ecs.addEntity(
-        new Entity({ name: `torch (${i})` }).addComponents(
+    world.entities.addEntity(
+        Entity.of(
+            { name: `torch (${i})` },
             modelComponent({ modelName: 'torchWall', data: modelDB['torchWall'] }),
             transform3D({ position: [-16, 1.5, posZ] }),
             pointLightComponent({
@@ -334,8 +328,9 @@ torches.forEach((posZ, i) => {
 })
 
 // Gold chest
-world.ecs.addEntity(
-    new Entity({ name: 'chest' }).addComponents(
+world.entities.addEntity(
+    Entity.of(
+        { name: 'chest' },
         modelComponent({ modelName: 'chest_gold', data: modelDB['chest_gold'] }),
         transform3D({ position: [-6, 0, -6] }),
         pointLightComponent({
@@ -349,8 +344,9 @@ world.ecs.addEntity(
 
 // Walls
 for (let i = 0; i < 32; i += 2) {
-    world.ecs.addEntity(
-        new Entity({ name: `wall (${i})` }).addComponents(
+    world.entities.addEntity(
+        Entity.of(
+            { name: `wall (${i})` },
             modelComponent({ modelName: 'stoneWallTop', data: modelDB['stoneWallTop'] }),
             transform3D({ position: [-16, 1, i - 15] }),
             rigidBody3D({}),
@@ -367,41 +363,11 @@ for (let i = 0; i < 32; i += 2) {
 // Grass
 const makePos = (): [number, number, number] => [Math.random() * 30 - 15, 0, Math.random() * 30 - 15]
 for (let i = 0; i < 200; i += 1) {
-    world.ecs.addEntity(
-        new Entity().addComponents(
-            modelComponent({ modelName: 'grass', data: modelDB['grass'] }),
-            transform3D({ position: makePos() }),
-        ),
+    world.entities.addEntity(
+        Entity.of(modelComponent({ modelName: 'grass', data: modelDB['grass'] }), transform3D({ position: makePos() })),
     )
 }
 
 export const init = () => {
     world.start()
 }
-
-// store.dispatch({ type: 'TEST' })
-
-// const slimeEntity = createEntity()
-// DungeonECS.addComponents([
-//     new AnimationComponent(slimeEntity, 'idle'),
-//     new InputComponent(slimeEntity),
-//     new CollisionComponent(slimeEntity),
-//     new HealthComponent(slimeEntity, { health: 20 }),
-//     new ModelComponent(slimeEntity, { modelId: 2 }),
-//     new PositionComponent(slimeEntity, new THREE.Vector3(64, 0, 66)),
-// ])
-
-// const batEntity = createEntity()
-// DungeonECS.addComponents([
-//     new AnimationComponent(batEntity, 'idle'),
-//     new InputComponent(batEntity),
-//     new CollisionComponent(batEntity),
-//     new ModelComponent(batEntity, { modelId: 3 }),
-//     new PositionComponent(batEntity, new THREE.Vector3(60, 1, 66)),
-// ])
-
-// const sprigEntity = createEntity()
-// DungeonECS.addComponents([
-//     new ModelComponent(sprigEntity, { modelId: 5 }),
-//     new PositionComponent(sprigEntity, new THREE.Vector3(62, 0, 64)),
-// ])

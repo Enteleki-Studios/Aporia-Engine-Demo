@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid'
 
-import type { AnyComponentCreator, Component } from '~/core'
+import { type AnyComponentCreator, type Component } from '~/core'
 
 export type EntityId = string
 
@@ -15,6 +15,17 @@ export class Entity {
 
     private components = new Map<string, Component>()
     private tags = new Set<string>()
+
+    static of(componentOrOptions?: EntityOptions | Component, ...components: Component[]): Entity {
+        const options = componentOrOptions && 'type' in componentOrOptions ? undefined : componentOrOptions
+        const entity = new Entity(options)
+
+        if (componentOrOptions && 'type' in componentOrOptions) {
+            entity.addComponent(componentOrOptions)
+        }
+
+        return entity.addComponents(...components)
+    }
 
     constructor(options?: EntityOptions) {
         this.id = options?.id ?? uuid()
