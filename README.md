@@ -26,6 +26,9 @@ The `core` package provides all the building blocks to start building your game 
 
 ## Engine
 
+### Architecture
+...
+
 ### World
 
 The `World` instance manages the gameloop and provides easy access to entities, plugins, timing, and apis for managing your game's runtime.
