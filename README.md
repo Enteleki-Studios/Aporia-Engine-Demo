@@ -54,6 +54,17 @@ const player = Entity.of(
 
 world.entities.addEntity(player)
 ```
+A component creator can be used to check if any given component is of the same type as the what would be created by the component creator (inspired by [redux toolkit](https://redux-toolkit.js.org/api/createAction#actioncreatormatch)). This is done by comparing type keys so do be aware of the risk of type name collisions or other rare pitfalls.
+```typescript
+import { health } from './myComponents'
+
+const unknownComponent = loadComponent()
+
+if (health.match(unknownComponent)) {
+    // Type is narrowed
+    console.log(unknownComponent.health)
+}
+```
 
 ### System
 ...
