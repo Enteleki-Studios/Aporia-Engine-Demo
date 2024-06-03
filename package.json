@@ -16,7 +16,7 @@
         "@types/react-dom": "^18.0.10",
         "@types/react-redux": "^7.1.24",
         "@types/redux-logger": "^3.0.9",
-        "@types/three": "^0.164.1",
+        "@types/three": "^0.165.0",
         "@types/uuid": "^9.0.0",
         "@typescript-eslint/eslint-plugin": "^7.8.0",
         "@typescript-eslint/parser": "^7.9.0",
@@ -58,7 +58,7 @@
         "react-dom": "^18.2.0",
         "react-redux": "^9.0.3",
         "redux-logger": "^3.0.6",
-        "three": "^0.164.1",
+        "three": "^0.165.0",
         "uuid": "^9.0.0"
     },
     "workspaces": [
