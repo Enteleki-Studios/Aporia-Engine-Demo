@@ -9,7 +9,6 @@
         "build:docs:watch": "typedoc --watch",
         "test": "jest",
         "typecheck": "tsc --noEmit",
-        "lint": "eslint src",
-        "lint:fix": "eslint src --fix"
+        "lint": "eslint src"
     }
 }
