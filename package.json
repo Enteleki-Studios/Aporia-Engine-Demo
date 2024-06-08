@@ -80,6 +80,15 @@
             "^[./]"
         ],
         "importOrderSeparation": true,
-        "importOrderSortSpecifiers": true
+        "importOrderSortSpecifiers": true,
+        "overrides": [
+            {
+                "files": "*.md",
+                "options": {
+                    "printWidth": 80,
+                    "proseWrap": "always"
+                }
+            }
+        ]
     }
 }
