@@ -1,4 +1,5 @@
-import { test, describe, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
+
 import { secondsToClockString } from '../utils'
 
 describe('secondsToClockString', () => {
@@ -13,8 +14,8 @@ describe('secondsToClockString', () => {
             [60 * 60, '01:00:00'],
             [60 * 60 + 60 * 32 + 7, '01:32:07'],
         ])('%d seconds -> %s', (seconds, expected) => {
-                expect(secondsToClockString(seconds)).toBe(expected)
-            })
+            expect(secondsToClockString(seconds)).toBe(expected)
+        })
     })
 
     describe('with decimal places', () => {
@@ -39,7 +40,7 @@ describe('secondsToClockString', () => {
             [60 * 60, 0, '01:00:00'],
             [60 * 60 + 60 * 32 + 7, 0, '01:32:07'],
         ])('%d seconds, %i decimal places -> %s', (seconds, decimalPlaces, expected) => {
-                expect(secondsToClockString(seconds, decimalPlaces)).toBe(expected)
-            })
+            expect(secondsToClockString(seconds, decimalPlaces)).toBe(expected)
+        })
     })
 })

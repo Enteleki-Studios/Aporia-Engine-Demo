@@ -5,6 +5,7 @@ import type {
     World as PhysicsWorld,
     RigidBody,
 } from '@dimforge/rapier3d'
+
 import {
     ECSFilter,
     type Entity,

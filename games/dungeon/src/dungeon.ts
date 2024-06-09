@@ -1,3 +1,5 @@
+import { Middleware } from '@reduxjs/toolkit'
+
 import {
     DEFAULT_KEYMAP,
     Entity,
@@ -32,7 +34,6 @@ import {
 } from '@gengine/core'
 import { Rapier3DPlugin } from '@gengine/plugin-rapier3D'
 import { ThreejsPlugin } from '@gengine/plugin-threejs'
-import { Middleware } from '@reduxjs/toolkit'
 
 // import { AppDispatch } from 'dungeon/store'
 import * as Systems from '~/systems'

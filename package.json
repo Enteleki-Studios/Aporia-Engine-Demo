@@ -67,7 +67,7 @@
         ],
         "importOrder": [
             "<THIRD_PARTY_MODULES>",
-            "^[@gengine/]",
+            "^@gengine/(.*)$",
             "^[~/]",
             "^[./]"
         ],

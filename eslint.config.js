@@ -10,7 +10,7 @@ export default tseslint.config(
             parserOptions: {
                 project: ['./tsconfig.json', './games/*/tsconfig.json', './packages/*/tsconfig.json'],
                 tsconfigRootDir: '.',
-                "EXPERIMENTAL_useProjectService": true
+                EXPERIMENTAL_useProjectService: true,
             },
         },
         rules: {
