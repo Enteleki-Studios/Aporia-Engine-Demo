@@ -1,8 +1,9 @@
+import { test, describe, expect } from 'vitest'
 import { secondsToClockString } from '../utils'
 
 describe('secondsToClockString', () => {
     describe('with no decimal places', () => {
-        describe.each([
+        test.each([
             [0, '00:00:00'],
             [5, '00:00:05'],
             [55, '00:00:55'],
@@ -11,16 +12,13 @@ describe('secondsToClockString', () => {
             [60 * 10, '00:10:00'],
             [60 * 60, '01:00:00'],
             [60 * 60 + 60 * 32 + 7, '01:32:07'],
-        ])('%d seconds', (seconds, expected) => {
-            it(`returns ${expected}`, () => {
-                expect.assertions(1)
+        ])('%d seconds -> %s', (seconds, expected) => {
                 expect(secondsToClockString(seconds)).toBe(expected)
             })
-        })
     })
 
     describe('with decimal places', () => {
-        describe.each([
+        test.each([
             [0, 0, '00:00:00'],
             [0, 1, '00:00:00.0'],
             [0, 2, '00:00:00.00'],
@@ -40,11 +38,8 @@ describe('secondsToClockString', () => {
             [60 * 10, 0, '00:10:00'],
             [60 * 60, 0, '01:00:00'],
             [60 * 60 + 60 * 32 + 7, 0, '01:32:07'],
-        ])('%d seconds, %i decimal places', (seconds, decimalPlaces, expected) => {
-            it(`returns ${expected}`, () => {
-                expect.assertions(1)
+        ])('%d seconds, %i decimal places -> %s', (seconds, decimalPlaces, expected) => {
                 expect(secondsToClockString(seconds, decimalPlaces)).toBe(expected)
             })
-        })
     })
 })
