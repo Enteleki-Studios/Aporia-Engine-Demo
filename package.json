@@ -51,7 +51,7 @@
         "react-redux": "^9.0.3",
         "redux-logger": "^3.0.6",
         "three": "^0.165.0",
-        "uuid": "^9.0.0"
+        "uuid": "^10.0.0"
     },
     "workspaces": [
         "./games/*",
