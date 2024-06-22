@@ -220,7 +220,7 @@ world.entities.addEntity(
         }),
         collider3D({
             shape: {
-                type: 'cylinder',
+                type: 'capsule',
                 radius: 0.5,
                 height: 0.5,
             },

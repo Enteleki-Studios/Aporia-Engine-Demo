@@ -59,6 +59,7 @@ export class Rapier3DPlugin implements Plugin {
                 characterController.enableAutostep(0.5, 0.2, true)
                 characterController.setMaxSlopeClimbAngle((45 * Math.PI) / 180)
                 characterController.setMinSlopeSlideAngle((30 * Math.PI) / 180)
+                characterController.setApplyImpulsesToDynamicBodies(true)
 
                 const receiver = makePhysicsBodyReceiver(
                     rapier,
@@ -80,6 +81,7 @@ export class Rapier3DPlugin implements Plugin {
 
 const physicsStepSystem = createSystem('physics step', () => {
     const inputVelocityVector = { x: 0, y: 0, z: 0 }
+    const outputPosition = { x: 0, y: 0, z: 0 }
 
     return (world: World) => {
         const { physicsWorld, characterController, physicsColliders, physicsBodies } = world.getPlugin(Rapier3DPlugin)
@@ -98,12 +100,16 @@ const physicsStepSystem = createSystem('physics step', () => {
                 const { velocity } = character.get(velocityComponent)
 
                 if (body && collider && velocity) {
-                    inputVelocityVector.x = velocity[0]
-                    inputVelocityVector.y = velocity[1]
-                    inputVelocityVector.z = velocity[2]
+                    inputVelocityVector.x = velocity[0] * world.time.delta
+                    inputVelocityVector.y = (velocity[1] - 5) * world.time.delta // TODO configurable gravity
+                    inputVelocityVector.z = velocity[2] * world.time.delta
                     characterController.computeColliderMovement(collider, inputVelocityVector)
                     const correctedMovement = characterController.computedMovement()
-                    body.setLinvel(correctedMovement, true)
+                    outputPosition.x = body.translation().x + correctedMovement.x
+                    outputPosition.y = body.translation().y + correctedMovement.y
+                    outputPosition.z = body.translation().z + correctedMovement.z
+                    body.setNextKinematicTranslation(outputPosition)
+                    console.debug(correctedMovement)
                 }
             }
         }
@@ -139,7 +145,7 @@ const makePhysicsBodyReceiver =
 
         const colliderDesc = makeColliderDescFromShape(rapier, shape).setMass(mass).setSensor(isSensor)
         const rigidBodyDesc = isCharacter
-            ? rapier.RigidBodyDesc.kinematicVelocityBased()
+            ? rapier.RigidBodyDesc.kinematicPositionBased()
             : mass
               ? rapier.RigidBodyDesc.dynamic()
               : rapier.RigidBodyDesc.fixed()

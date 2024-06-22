@@ -38,6 +38,7 @@ export class World {
     }
 
     readonly stats: StatsType
+    /** @deprecated */
     readonly ecs: EntityManager // TODO deprecate
     readonly entities: EntityManager
     readonly time: Clock
@@ -66,6 +67,7 @@ export class World {
     }
 
     /** Time elapsed since last frame in seconds */
+    /** @deprecated */
     get timeElapsedS() {
         return this.time.delta
     }
