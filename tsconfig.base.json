@@ -16,6 +16,7 @@
         "target": "esnext",
         "resolveJsonModule": true,
         "noImplicitAny": true,
-        "allowJs": true
+        "allowJs": true,
+        "exactOptionalPropertyTypes": true
     }
 }

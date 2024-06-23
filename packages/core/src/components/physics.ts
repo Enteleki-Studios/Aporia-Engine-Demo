@@ -3,18 +3,21 @@ import { Array3 } from '~/definitions'
 import { Shape3D } from '~/shapes'
 
 type RigidBody3DProps = {
-    mass?: number
-    velocity?: Array3
-    fixedRotation?: boolean
+    mass: number
+    velocity: Array3
+    fixedRotation: boolean
 }
 
-export const rigidBody3D = createComponent('rigidBody3D', (props: RigidBody3DProps) => ({
-    mass: props.mass ?? 0,
-    velocity: props.velocity ?? ([0, 0, 0] as Array3),
-    fixedRotation: props.fixedRotation ?? false,
-}))
+export const rigidBody3D = createComponent(
+    'rigidBody3D',
+    (props: Partial<RigidBody3DProps>): RigidBody3DProps => ({
+        mass: props.mass ?? 0,
+        velocity: props.velocity ?? [0, 0, 0],
+        fixedRotation: props.fixedRotation ?? false,
+    }),
+)
 
-export const characterController = createComponent('characterController', () => ({}))
+export const character = createComponent('character', () => ({}))
 
 type Collider3DProps = {
     shape: Shape3D

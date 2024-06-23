@@ -109,6 +109,7 @@ const modelDB: Record<string, Model> = {
             death: 'AnimalArmature|Death',
         },
         scale: 0.003,
+        translate: [0, -0.75, 0],
     },
     barrel: {
         modelPath: `${MF}/items/Barrel.fbx`,

@@ -13,7 +13,7 @@ import {
     type Plugin,
     Shape3D,
     type World,
-    characterController,
+    character,
     collider3D,
     createSystem,
     log,
@@ -30,7 +30,7 @@ type PhysicsColliders = Map<EntityId, Collider>
 const GRAVITY_3D = { x: 0, y: -9.81, z: 0 }
 
 export const physicsBodyQuery = ECSFilter.of([transform3D, collider3D, rigidBody3D])
-export const physicsCharacterQuery = physicsBodyQuery.with([characterController])
+export const physicsCharacterQuery = physicsBodyQuery.with([character])
 
 export class Rapier3DPlugin implements Plugin {
     name = 'Rapier 3D Physics Plugin'
@@ -94,12 +94,12 @@ const physicsStepSystem = createSystem('physics step', () => {
         if (characterController) {
             const characterEntities = world.entities.filterBy(physicsCharacterQuery)
 
-            for (const character of characterEntities) {
-                const collider = physicsColliders.get(character.id)
-                const body = physicsBodies.get(character.id)
-                const { velocity } = character.get(velocityComponent)
+            for (const entity of characterEntities) {
+                const collider = physicsColliders.get(entity.id)
+                const body = physicsBodies.get(entity.id)
+                const { velocity } = entity.get(velocityComponent)
 
-                if (body && collider && velocity) {
+                if (body && collider) {
                     inputVelocityVector.x = velocity[0] * world.time.delta
                     inputVelocityVector.y = (velocity[1] - 5) * world.time.delta // TODO configurable gravity
                     inputVelocityVector.z = velocity[2] * world.time.delta
@@ -109,7 +109,6 @@ const physicsStepSystem = createSystem('physics step', () => {
                     outputPosition.y = body.translation().y + correctedMovement.y
                     outputPosition.z = body.translation().z + correctedMovement.z
                     body.setNextKinematicTranslation(outputPosition)
-                    console.debug(correctedMovement)
                 }
             }
         }
@@ -141,7 +140,7 @@ const makePhysicsBodyReceiver =
         const { mass, velocity } = entity.get(rigidBody3D)
         const { position } = entity.get(transform3D)
 
-        const isCharacter = entity.has(characterController)
+        const isCharacter = entity.has(character)
 
         const colliderDesc = makeColliderDescFromShape(rapier, shape).setMass(mass).setSensor(isSensor)
         const rigidBodyDesc = isCharacter

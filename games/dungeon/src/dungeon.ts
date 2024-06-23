@@ -9,7 +9,7 @@ import {
     animationComponent,
     basicGeometryComponent,
     cameraComponent,
-    characterController,
+    character,
     collider3D,
     colliderComponent,
     damageSystem,
@@ -169,7 +169,7 @@ world.entities.addEntity(
     Entity.of(
         { name: 'hero' },
         animationComponent({ state: 'idle' }),
-        directionComponent({}),
+        directionComponent(undefined),
         hitboxComponent({ radius: 1 }),
         healthComponent({ health: 20 }),
         inputComponent({ keymap: DEFAULT_KEYMAP }),
@@ -183,7 +183,7 @@ world.entities.addEntity(
             coolDown: 0.5,
             damage: 5,
         }),
-        characterController({}),
+        character(undefined),
         rigidBody3D({
             mass: 80,
         }),
@@ -214,7 +214,7 @@ world.entities.addEntity(
         directionComponent({}),
         velocityComponent({}),
         hitboxComponent({ radius: 0.25 }),
-        characterController({}),
+        character({}),
         rigidBody3D({
             mass: 40,
         }),

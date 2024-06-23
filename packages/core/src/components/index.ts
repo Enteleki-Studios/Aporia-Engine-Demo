@@ -41,8 +41,12 @@ export const directionalLightComponent = createComponent(
     }),
 )
 
-export const directionComponent = createComponent('directionComponent', ({ direction }: { direction?: Array3 }) => ({
-    direction: direction ?? ([0, 0, 1] as Array3),
+type DirectionProps = {
+    direction: Array3
+}
+
+export const directionComponent = createComponent('directionComponent', (props?: Partial<DirectionProps>) => ({
+    direction: props?.direction ?? [0, 0, 1],
 }))
 
 export const emitterComponent = createComponent(
@@ -136,9 +140,12 @@ export const spriteComponent = createComponent('spriteComponent', ({ url }: { ur
     isLoading: false,
 }))
 
-export const velocityComponent = createComponent('velocityComponent', ({ velocity }: { velocity?: Array3 }) => ({
-    velocity: velocity ? ([...velocity] as Array3) : ([0, 0, 0] as Array3),
-}))
+export const velocityComponent = createComponent(
+    'velocityComponent',
+    ({ velocity }: { velocity?: Array3 }): { velocity: Array3 } => ({
+        velocity: velocity ? [...velocity] : [0, 0, 0],
+    }),
+)
 
 type Geometry2DPlane = {
     shape: 'plane'
