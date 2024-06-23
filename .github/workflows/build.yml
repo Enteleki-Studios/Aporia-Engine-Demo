@@ -25,11 +25,11 @@ jobs:
             - name: Install
               run: npm install
 
-            - name: Lint
-              run: npm run lint
+            - name: Build
+              run: npm run build -w dungeon
 
             - name: Test
               run: npm run test
 
-            - name: Build Dungeon
-              run: npm run build -w dungeon
+            - name: Lint
+              run: npm run lint
