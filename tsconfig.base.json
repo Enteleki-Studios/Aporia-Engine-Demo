@@ -18,6 +18,7 @@
         "noImplicitAny": true,
         "allowJs": true,
         "exactOptionalPropertyTypes": true,
-        "noEmit": true
+        "noEmit": true,
+        "outDir": "${configDir}/dist"
     }
 }
