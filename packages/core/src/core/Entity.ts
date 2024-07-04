@@ -9,7 +9,7 @@ type EntityOptions = {
     name?: string
 }
 
-export class Entity {
+export class Entity<K extends AnyComponentCreator> {
     readonly id: EntityId
     readonly name: string | undefined
 
@@ -57,12 +57,12 @@ export class Entity {
         return this
     }
 
-    get<T extends AnyComponentCreator>(componentCreator: T) {
+    get<T extends AnyComponentCreator>(componentCreator: T): T extends K ? ReturnType<T> : ReturnType<T> | undefined {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return this.components.get(componentCreator.type) as ReturnType<T>
+        return this.components.get(componentCreator.type)
     }
 
-    has(componentCreator: AnyComponentCreator) {
+    has<T extends AnyComponentCreator>(componentCreator: T): this is Entity<T> {
         return this.components.has(componentCreator.type)
     }
 

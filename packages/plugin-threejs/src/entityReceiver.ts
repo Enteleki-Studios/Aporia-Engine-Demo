@@ -245,7 +245,7 @@ export const entityReceiver =
                                 if (wrapT) {
                                     texture.wrapT = RepeatWrapping
                                 }
-                                if (repeatX || repeatY) {
+                                if (repeatX ?? repeatY) {
                                     texture.repeat.set(repeatX ?? 1, repeatY ?? 1)
                                 }
                             }
