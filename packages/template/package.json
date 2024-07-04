@@ -4,7 +4,7 @@
     "main": "./src/index.ts",
     "scripts": {
         "lint": "eslint src",
-        "typecheck": "tsc --noEmit",
+        "typecheck": "tsc",
         "test": "vitest"
     }
 }

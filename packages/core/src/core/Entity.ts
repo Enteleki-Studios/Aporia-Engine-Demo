@@ -11,7 +11,7 @@ type EntityOptions = {
 
 export class Entity {
     readonly id: EntityId
-    readonly name?: string
+    readonly name: string | undefined
 
     private components = new Map<string, Component>()
     private tags = new Set<string>()

@@ -7,7 +7,7 @@
         "build": "vite build",
         "build:docs": "typedoc",
         "build:docs:watch": "typedoc --watch",
-        "typecheck": "tsc --noEmit",
+        "typecheck": "tsc",
         "lint": "eslint src"
     }
 }
