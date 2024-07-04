@@ -9,7 +9,7 @@ type EntityOptions = {
     name?: string
 }
 
-export class Entity<K extends AnyComponentCreator> {
+export class Entity<K extends AnyComponentCreator | void = void> {
     readonly id: EntityId
     readonly name: string | undefined
 
@@ -66,7 +66,7 @@ export class Entity<K extends AnyComponentCreator> {
         return this.components.has(componentCreator.type)
     }
 
-    hasAll(componentCreators: AnyComponentCreator[]) {
+    hasAll<T extends AnyComponentCreator[]>(componentCreators: T): this is Entity<T[number]> {
         return componentCreators.every((c) => this.has(c))
     }
 
