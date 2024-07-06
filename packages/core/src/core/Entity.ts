@@ -9,20 +9,15 @@ type EntityOptions = {
     name?: string
 }
 
-export class Entity<K extends AnyComponentCreator | void = void> {
+export class Entity<K extends string = string> {
     readonly id: EntityId
     readonly name: string | undefined
 
-    private components = new Map<string, Component>()
+    private components = new Map<K, Component>()
     private tags = new Set<string>()
 
-    static of(componentOrOptions?: EntityOptions | Component, ...components: Component[]): Entity {
-        const options = componentOrOptions && 'type' in componentOrOptions ? undefined : componentOrOptions
-        const entity = new Entity(options)
-
-        if (componentOrOptions && 'type' in componentOrOptions) {
-            entity.addComponent(componentOrOptions)
-        }
+    static of<T extends Component[]>(...components: T): Entity<T[number]['type']> {
+        const entity = new Entity()
 
         return entity.addComponents(...components)
     }
@@ -57,16 +52,16 @@ export class Entity<K extends AnyComponentCreator | void = void> {
         return this
     }
 
-    get<T extends AnyComponentCreator>(componentCreator: T): T extends K ? ReturnType<T> : ReturnType<T> | undefined {
+    get<T extends AnyComponentCreator, N extends T['type']>(componentCreator: T): N extends K ? ReturnType<T> : ReturnType<T> | undefined {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return this.components.get(componentCreator.type)
+        return this.components.get(componentCreator.type as K)
     }
 
-    has<T extends AnyComponentCreator>(componentCreator: T): this is Entity<T> {
-        return this.components.has(componentCreator.type)
+    has<T extends AnyComponentCreator, N extends T['type']>(componentCreator: T): this is Entity<N | K> {
+        return this.components.has(componentCreator.type as K)
     }
 
-    hasAll<T extends AnyComponentCreator[]>(componentCreators: T): this is Entity<T[number]> {
+    hasAll<T extends AnyComponentCreator[]>(componentCreators: T): this is Entity<T[number]['type']> {
         return componentCreators.every((c) => this.has(c))
     }
 
