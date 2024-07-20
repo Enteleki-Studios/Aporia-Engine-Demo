@@ -28,7 +28,7 @@ export class Entity<K extends string = string> {
     }
 
     addComponent(component: Component) {
-        this.components.set(component.type, component)
+        this.components.set(component.type as K, component)
 
         return this
     }
@@ -42,7 +42,7 @@ export class Entity<K extends string = string> {
     }
 
     removeComponent(componentCreator: AnyComponentCreator) {
-        return this.components.delete(componentCreator.type)
+        return this.components.delete(componentCreator.type as K)
     }
 
     removeComponents(...componentCreators: AnyComponentCreator[]) {
