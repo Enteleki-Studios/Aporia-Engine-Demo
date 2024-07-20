@@ -34,7 +34,7 @@
         "vite": "^5.2.11",
         "vite-plugin-wasm": "^3.3.0",
         "vite-tsconfig-paths": "^4.3.1",
-        "vitest": "^1.6.0"
+        "vitest": "^2.0.3"
     },
     "dependencies": {
         "@dimforge/rapier3d": "^0.13.0",
