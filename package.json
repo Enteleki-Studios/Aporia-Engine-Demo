@@ -37,7 +37,7 @@
         "vitest": "^2.0.3"
     },
     "dependencies": {
-        "@dimforge/rapier3d": "^0.13.0",
+        "@dimforge/rapier3d": "^0.14.0",
         "@gengine/core": "*",
         "@gengine/inspector": "*",
         "@gengine/plugin-rapier3D": "*",
