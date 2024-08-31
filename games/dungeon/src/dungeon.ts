@@ -377,9 +377,11 @@ export const init = () => {
 
 // Type testing
 const testEntity = Entity.of(velocityComponent({}), directionComponent({}))
+const { velocity: velo } = testEntity.get(velocityComponent)
+console.log(velo)
 testEntity.addComponent(transform3D({}))
 if (testEntity.has(transform3D)) {
     const { velocity } = testEntity.get(velocityComponent)
     const { position } = testEntity.get(transform3D)
-    console.log(velocity)
+    console.log(velocity, position)
 }
