@@ -101,7 +101,7 @@ export const middleware: Middleware = () => (next) => (action: unknown) => {
 // Lighting
 world.entities.addEntity(
     Entity.of(
-        { name: 'lighting' },
+        // { name: 'lighting' },
         ambientLightComponent({
             color: 0xf4e99b,
             intensity: 0.2,
@@ -118,7 +118,7 @@ world.entities.addEntity(
 // Floor
 world.entities.addEntity(
     Entity.of(
-        { name: 'floor' },
+        // { name: 'floor' },
         mesh2D({ shape: 'plane', width: 32, height: 32 }),
         transform3D({
             rotation: [-Math.PI / 2, 0, 0],
@@ -139,7 +139,7 @@ world.entities.addEntity(
 // Test box
 world.entities.addEntity(
     Entity.of(
-        { name: 'test box' },
+        // { name: 'test box' },
         basicGeometryComponent({ geometryType: 'box' }),
         transform3D({ position: [0, 1, 5] }),
         emitterComponent({ prefabId: 'ball', delay: 2 }),
@@ -148,7 +148,7 @@ world.entities.addEntity(
 
 world.entities.addEntity(
     Entity.of(
-        { name: 'test step' },
+        // { name: 'test step' },
         basicGeometryComponent({ geometryType: 'box', color: 0xff0000 }),
         transform3D({ position: [0, -0.25, 0] }),
         rigidBody3D({}),
@@ -162,12 +162,14 @@ world.entities.addEntity(
 )
 
 // Camera
-world.entities.addEntity(Entity.of({ name: 'camera' }, cameraComponent({})))
+world.entities.addEntity(Entity.of(
+    // { name: 'camera' },
+    cameraComponent({})))
 
 // Player
 world.entities.addEntity(
     Entity.of(
-        { name: 'hero' },
+        // { name: 'hero' },
         animationComponent({ state: 'idle' }),
         directionComponent(undefined),
         hitboxComponent({ radius: 1 }),
@@ -206,7 +208,7 @@ world.entities.addEntity(
 // Shibs
 world.entities.addEntity(
     Entity.of(
-        { name: 'dog' },
+        // { name: 'dog' },
         animationComponent({ state: 'idle' }),
         modelComponent({ modelName: 'shiba', castShadow: true, data: modelDB['shiba'] }),
         transform3D({ position: [1, 0.5, 2] }),
@@ -233,7 +235,7 @@ const items = ['barrel', 'column', 'entrance', 'rock_1', 'cart']
 items.forEach((item, i) => {
     world.entities.addEntity(
         Entity.of(
-            { name: item },
+            // { name: item },
             modelComponent({ modelName: item, castShadow: true, data: modelDB[item] }),
             transform3D({ position: [i * 3 - 12, 0, 8] }),
             colliderComponent({
@@ -251,7 +253,7 @@ items.forEach((item, i) => {
 // Stairs
 world.entities.addEntity(
     Entity.of(
-        { name: 'stairs' },
+        // { name: 'stairs' },
         modelComponent({ modelName: 'stairs', data: modelDB['stairs'] }),
         transform3D({ position: [0, 0, -5] }),
         rigidBody3D({}),
@@ -267,7 +269,7 @@ world.entities.addEntity(
 // Upper floor
 world.entities.addEntity(
     Entity.of(
-        { name: 'upper level' },
+        // { name: 'upper level' },
         modelComponent({ modelName: 'floor', data: modelDB['floor'] }),
         transform3D({ position: [-1.5, 0.5, -5] }),
         rigidBody3D({}),
@@ -281,7 +283,7 @@ world.entities.addEntity(
 )
 world.entities.addEntity(
     Entity.of(
-        { name: 'upper level 2' },
+        // { name: 'upper level 2' },
         modelComponent({ modelName: 'floor', data: modelDB['floor'] }),
         transform3D({ position: [-3.5, 0.5, -5] }),
         rigidBody3D({}),
@@ -297,7 +299,7 @@ world.entities.addEntity(
 // Crate
 world.entities.addEntity(
     Entity.of(
-        { name: 'crate' },
+        // { name: 'crate' },
         modelComponent({ modelName: 'crate', data: modelDB['crate'] }),
         transform3D({ position: [5, 0, 5] }),
         colliderComponent({
@@ -316,7 +318,7 @@ const torches = [9.75, 3.25, -3.25]
 torches.forEach((posZ, i) => {
     world.entities.addEntity(
         Entity.of(
-            { name: `torch (${i})` },
+            // { name: `torch (${i})` },
             modelComponent({ modelName: 'torchWall', data: modelDB['torchWall'] }),
             transform3D({ position: [-16, 1.5, posZ] }),
             pointLightComponent({
@@ -331,7 +333,7 @@ torches.forEach((posZ, i) => {
 // Gold chest
 world.entities.addEntity(
     Entity.of(
-        { name: 'chest' },
+        // { name: 'chest' },
         modelComponent({ modelName: 'chest_gold', data: modelDB['chest_gold'] }),
         transform3D({ position: [-6, 0, -6] }),
         pointLightComponent({
@@ -347,7 +349,7 @@ world.entities.addEntity(
 for (let i = 0; i < 32; i += 2) {
     world.entities.addEntity(
         Entity.of(
-            { name: `wall (${i})` },
+            // { name: `wall (${i})` },
             modelComponent({ modelName: 'stoneWallTop', data: modelDB['stoneWallTop'] }),
             transform3D({ position: [-16, 1, i - 15] }),
             rigidBody3D({}),

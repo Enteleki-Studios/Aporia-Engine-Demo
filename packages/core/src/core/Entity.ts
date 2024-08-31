@@ -9,20 +9,15 @@ type EntityOptions = {
     name?: string
 }
 
-export class Entity {
+export class Entity<K extends string = string> {
     readonly id: EntityId
     readonly name: string | undefined
 
     private components = new Map<string, Component>()
     private tags = new Set<string>()
 
-    static of(componentOrOptions?: EntityOptions | Component, ...components: Component[]): Entity {
-        const options = componentOrOptions && 'type' in componentOrOptions ? undefined : componentOrOptions
-        const entity = new Entity(options)
-
-        if (componentOrOptions && 'type' in componentOrOptions) {
-            entity.addComponent(componentOrOptions)
-        }
+    static of<T extends Component[]>(...components: T): Entity<T[number]['type']> {
+        const entity = new Entity()
 
         return entity.addComponents(...components)
     }
@@ -57,9 +52,9 @@ export class Entity {
         return this
     }
 
-    get<T extends AnyComponentCreator>(componentCreator: T) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return this.components.get(componentCreator.type) as ReturnType<T>
+    get<T extends AnyComponentCreator, N extends T['type']>(componentCreator: T): N extends K ? ReturnType<T> : (ReturnType<T> | undefined) {
+        // @ts-expect-error will need to fix this error later
+        return this.components.get(componentCreator.type)
     }
 
     has(componentCreator: AnyComponentCreator) {
