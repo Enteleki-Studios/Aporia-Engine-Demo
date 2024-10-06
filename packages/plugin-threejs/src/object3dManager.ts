@@ -1,4 +1,4 @@
-import { StandardRenderer } from 'StandardRenderer'
+import { StandardRenderer } from './StandardRenderer'
 import { AnimationAction, AnimationClip, AnimationMixer, Group, Object3D } from 'three'
 
 import { ResourceManager } from '@gengine/core'
@@ -31,7 +31,7 @@ type AnimationsContainer = {
 
 export const makeAnimationManager = () =>
     new ResourceManager<AnimationsContainer, AnimationWrapper>({
-        init: (mixer?: AnimationMixer) => ({ mixer, animations: {} }),
+        init: (mixer: AnimationMixer) => ({ mixer, animations: {} }),
         add: (container, name, wrapper) => {
             container.animations[name] = wrapper
         },

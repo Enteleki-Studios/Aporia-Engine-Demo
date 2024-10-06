@@ -6,7 +6,7 @@ type IconProps = {
     icon: React.ReactNode
     onClick?: () => void
     title?: string
-    disabled?: boolean
+    disabled?: boolean | undefined
 }
 
 export const Icon = ({ icon, onClick, title, disabled }: IconProps) => {

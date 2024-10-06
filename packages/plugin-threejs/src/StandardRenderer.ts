@@ -1,4 +1,4 @@
-import { AxesHelper } from 'objects/AxesHelper'
+import { AxesHelper } from './objects/AxesHelper'
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect } from 'postprocessing'
 import {
     CameraHelper,
@@ -11,8 +11,8 @@ import {
     Vector4,
     WebGLRenderer,
 } from 'three'
-import { MapControls } from 'three/examples/jsm/controls/MapControls'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { MapControls } from 'three/examples/jsm/controls/MapControls.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 const DEBUG_CAMERA_LAYER = 1
 

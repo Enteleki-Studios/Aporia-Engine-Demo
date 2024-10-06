@@ -46,7 +46,7 @@ type DirectionProps = {
 }
 
 export const directionComponent = createComponent('directionComponent', (props?: Partial<DirectionProps>) => ({
-    direction: props?.direction ?? [0, 0, 1],
+    direction: props?.direction ?? [0, 0, 1] as Array3,
 }))
 
 export const emitterComponent = createComponent(

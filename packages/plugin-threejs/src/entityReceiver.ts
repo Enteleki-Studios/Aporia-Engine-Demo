@@ -1,4 +1,4 @@
-import { DirectionalLight } from 'objects/DirectionalLight'
+import { DirectionalLight } from './objects/DirectionalLight'
 import {
     AmbientLight,
     AnimationAction,

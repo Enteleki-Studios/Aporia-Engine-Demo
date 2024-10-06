@@ -19,6 +19,7 @@
         "allowJs": true,
         "exactOptionalPropertyTypes": true,
         "noEmit": false,
-        "outDir": "${configDir}/dist"
+        "outDir": "${configDir}/dist",
+        "skipLibCheck": true
     }
 }
