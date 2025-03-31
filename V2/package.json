@@ -1,6 +1,6 @@
 {
     "name": "gamedev-monorepo",
-    "version": "0.1.0",
+    "version": "2.0.0",
     "description": "game dev monorepo",
     "repository": "https://github.com/mikeymaxdb/GameDev",
     "main": "index.js",
