@@ -1,1 +1,2 @@
-export { createWorld } from './createWorld'
+export { pipe } from 'remeda'
+export { createWorld, createPlugin } from './createWorld'
