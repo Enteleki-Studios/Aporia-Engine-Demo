@@ -27,7 +27,8 @@
         "strict": true,
         "target": "esnext",
         "paths": {
-            "@core": ["./src/core/"]
+            "@core": ["./src/core/"],
+            "@core/components": ["./src/core/components/"]
         }
     },
     "include": ["."]
