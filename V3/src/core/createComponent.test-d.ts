@@ -36,10 +36,13 @@ test('can create component with no args', () => {
 })
 
 test('can create component with optional args', () => {
-    const Position2DComponent = createComponent('position2D', (x?: number, y?: number) => ({
-        x: x ?? 0,
-        y: y ?? 0,
-    }))
+    const Position2DComponent = createComponent(
+        'position2D',
+        (x?: number, y?: number) => ({
+            x: x ?? 0,
+            y: y ?? 0,
+        }),
+    )
 
     expectTypeOf(Position2DComponent).toBeFunction()
     expectTypeOf(Position2DComponent.__key__).toEqualTypeOf('position2D' as const)
@@ -55,10 +58,13 @@ test('can create component with optional args', () => {
     // @ts-expect-error Wrong param types
     assertType(Position2DComponent(1, 'er2'))
 
-    const CircleComponent = createComponent('circle', (color: string, radius?: number) => ({
-        color,
-        radius: radius ?? 1,
-    }))
+    const CircleComponent = createComponent(
+        'circle',
+        (color: string, radius?: number) => ({
+            color,
+            radius: radius ?? 1,
+        }),
+    )
 
     assertType(CircleComponent('red'))
     assertType(CircleComponent('blue', 3))
@@ -76,9 +82,12 @@ test('can create component with required args', () => {
         type: string
     }
 
-    const RigidBodyComponent = createComponent('rigidBody', ({ type }: RigidBodyProps) => ({
-        type,
-    }))
+    const RigidBodyComponent = createComponent(
+        'rigidBody',
+        ({ type }: RigidBodyProps) => ({
+            type,
+        }),
+    )
 
     expectTypeOf(RigidBodyComponent).toBeFunction()
     expectTypeOf(RigidBodyComponent.__key__).toEqualTypeOf('rigidBody' as const)
@@ -117,10 +126,13 @@ test('component creators can be stringified', () => {
 })
 
 test('component creators can be used to identify components', () => {
-    const Position2DComponent = createComponent('position2D', (x?: number, y?: number) => ({
-        x: x ?? 0,
-        y: y ?? 0,
-    }))
+    const Position2DComponent = createComponent(
+        'position2D',
+        (x?: number, y?: number) => ({
+            x: x ?? 0,
+            y: y ?? 0,
+        }),
+    )
 
     const unknownComponent = {
         __key__: 'position2D',

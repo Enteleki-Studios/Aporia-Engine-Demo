@@ -8,4 +8,9 @@ export {
     EnemyComponent,
 } from './tags'
 
-export { Transform3DComponent, BasicGeometryComponent } from './3D'
+export {
+    Transform3DComponent,
+    BasicGeometryComponent,
+    MeshComponent,
+    GltfComponent,
+} from './3D'

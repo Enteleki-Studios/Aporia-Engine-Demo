@@ -43,7 +43,9 @@ export type RuntimeOutput<W> = {
     runtime: Runtime<W>
 }
 
-export const pluginRuntime = <W>({ initialSystems }: Props): Plugin<object, RuntimeOutput<W>> => ({
+export const pluginRuntime = <W>({
+    initialSystems,
+}: Props): Plugin<object, RuntimeOutput<W>> => ({
     setup: (engine) => ({
         runtime: new Runtime(engine, initialSystems),
     }),

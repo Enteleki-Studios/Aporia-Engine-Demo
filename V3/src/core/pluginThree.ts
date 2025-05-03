@@ -1,6 +1,10 @@
 import {
     AmbientLight,
+    // AxesHelper,
     BoxGeometry,
+    DirectionalLight,
+    GridHelper,
+    Group,
     Mesh,
     MeshStandardMaterial,
     PCFSoftShadowMap,
@@ -10,8 +14,18 @@ import {
     Vector3,
     WebGLRenderer,
 } from 'three'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 
-import { Plugin } from '@core'
+import { DefaultEngine, Plugin } from '@core'
+
+import {
+    BasicGeometryComponent,
+    GltfComponent,
+    MeshComponent,
+    Transform3DComponent,
+} from './components'
+import { ObjectStore } from './objectStore'
+import { createQuery } from './pluginEntities'
 
 class Renderer {
     renderer
@@ -43,9 +57,8 @@ class Renderer {
         this.camera.position.set(10, 10, 10)
         this.camera.lookAt(new Vector3())
 
-        this.scene.add(new AmbientLight())
-
-        this.scene.add(new Mesh(new BoxGeometry(), new MeshStandardMaterial({ color: '#ffffff' })))
+        // this.scene.add(new AxesHelper(3))
+        this.scene.add(new GridHelper(50, 50, 0x0089cc, 0x444444))
     }
 
     render() {
@@ -65,6 +78,7 @@ class Renderer {
 
     setCanvasContainer(element: HTMLElement | null) {
         if (element) {
+            element.replaceChildren()
             element.appendChild(this.canvas)
             this.shouldRender = true
         } else {
@@ -74,24 +88,123 @@ class Renderer {
 }
 
 type ThreeOutput = {
-    render: Renderer
+    renderer: {
+        render: Renderer['render']
+        setCanvasContainer: Renderer['setCanvasContainer']
+    }
+    three: {
+        renderer: Renderer
+        objectStore: ObjectStore<string, Group>
+    }
 }
 
-export const pluginThree = (): Plugin<object, ThreeOutput> => ({
-    setup: () => {
+const positionedRenderableQuery = createQuery(
+    (entity) =>
+        entity.has(Transform3DComponent) &&
+        (entity.has(MeshComponent) || entity.has(GltfComponent)),
+)
+
+const meshQuery = createQuery((entity) => entity.has(MeshComponent))
+
+const gltfQuery = createQuery((entity) => entity.has(GltfComponent))
+
+export const pluginThree = (): Plugin<DefaultEngine, ThreeOutput> => ({
+    setup: (engine) => {
         const renderer = new Renderer()
-        renderer.setCanvasContainer(window.document.body)
+
+        const store = new ObjectStore((id: string) => {
+            const group = new Group()
+            group.name = id
+            return group
+        })
+
         renderer.setSize(1280, 720)
 
-        renderer.renderer.setClearColor('#003333')
+        renderer.renderer.setClearColor('#121212')
+
+        renderer.scene.add(new AmbientLight())
+        renderer.scene.add(new DirectionalLight())
+
+        const loader = new GLTFLoader()
+
+        engine.entities.addQueryObserver(meshQuery, (entity) => {
+            const basicGeometryComponent = entity.get(BasicGeometryComponent)
+
+            let geometry
+
+            if (basicGeometryComponent) {
+                switch (basicGeometryComponent.type) {
+                    case 'box':
+                        geometry = new BoxGeometry()
+                        break
+                    case 'sphere':
+                        break
+                }
+            }
+
+            if (geometry) {
+                const mesh = new Mesh(
+                    geometry,
+                    new MeshStandardMaterial({ color: '#ffffff' }),
+                )
+                mesh.name = 'mesh'
+
+                const [group, isCreated] = store.getOrCreate(entity.id)
+                group.add(mesh)
+
+                if (isCreated) {
+                    renderer.scene.add(group)
+                }
+            }
+        })
+
+        engine.entities.addQueryObserver(gltfQuery, (entity) => {
+            const gltfComponent = entity.get(GltfComponent)
+            const transform = entity.get(Transform3DComponent)
+
+            if (gltfComponent && transform) {
+                const [group, isCreated] = store.getOrCreate(entity.id)
+
+                if (isCreated) {
+                    renderer.scene.add(group)
+                }
+
+                loader.load(gltfComponent.path, (gltf) => {
+                    group.add(gltf.scene)
+                })
+            }
+        })
 
         return {
-            render: renderer,
+            renderer: {
+                render() {
+                    renderer.render()
+                },
+                setCanvasContainer(element) {
+                    renderer.setCanvasContainer(element)
+                },
+            },
+            three: {
+                renderer,
+                objectStore: store,
+            },
         }
     },
     systems: [
         (engine) => {
-            engine.render.render()
+            engine.entities.query(positionedRenderableQuery).forEach((entity) => {
+                const group = engine.three.objectStore.get(entity.id)
+                const transform = entity.get(Transform3DComponent)
+
+                if (group && transform) {
+                    group.position.fromArray(transform.position)
+                    group.scale.fromArray(transform.scale)
+                    group.quaternion.fromArray(transform.rotation)
+                }
+            })
+        },
+        (engine) => {
+            engine.renderer.render()
         },
     ],
 })

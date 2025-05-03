@@ -15,15 +15,17 @@ export const Transform3DComponent = createComponent(
     }),
 )
 
-type BasicGeometry = {
-    type: 'box'
-    width: number
-    length: number
-    height: number
-} | {
-    type: 'sphere'
-    radius: number
-}
+type BasicGeometry =
+    | {
+          type: 'box'
+          width: number
+          length: number
+          height: number
+      }
+    | {
+          type: 'sphere'
+          radius: number
+      }
 
 export const BasicGeometryComponent = createComponent(
     'basicGeometry',
@@ -31,3 +33,9 @@ export const BasicGeometryComponent = createComponent(
         ...props,
     }),
 )
+
+export const MeshComponent = createComponent('mesh')
+
+export const GltfComponent = createComponent('gltf', ({ path }: { path: string }) => ({
+    path,
+}))

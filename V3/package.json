@@ -35,7 +35,7 @@
         "vitest": "^3.0.9"
     },
     "prettier": {
-        "printWidth": 100,
+        "printWidth": 90,
         "tabWidth": 4,
         "semi": false,
         "singleQuote": true,

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export { createEngine, createDefaultEngine } from './engine'
+export { createEngine, createDefaultEngine, type DefaultEngine } from './engine'
 export { createComponent } from './createComponent'
 export { pluginRuntime } from './pluginRuntime'
 export { pluginClock } from './pluginClock'
 export { pluginThree } from './pluginThree'
-export { pluginEntities } from './pluginEntities'
+export { pluginEntities, createQuery } from './pluginEntities'
 
 export type System<T> = (engine: T) => void
 export type AnySystem = System<any>

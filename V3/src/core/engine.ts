@@ -1,6 +1,14 @@
 import { Simplify } from 'type-fest'
 
-import { type AnySystem, type Plugin, pluginClock, pluginEntities, pluginRuntime } from '@core'
+import {
+    type AnySystem,
+    type Plugin,
+    pluginClock,
+    pluginEntities,
+    pluginRuntime,
+} from '@core'
+
+import { pluginInput } from './pluginInput'
 
 class EngineBuilder<T extends object> {
     private systems: AnySystem[] = []
@@ -35,4 +43,12 @@ class EngineBuilder<T extends object> {
 export const createEngine = () => new EngineBuilder({}, [])
 
 export const createDefaultEngine = () =>
-    createEngine().addPlugin(pluginClock()).addPlugin(pluginEntities())
+    createEngine()
+        .addPlugin(pluginClock())
+        .addPlugin(pluginEntities())
+        .addPlugin(pluginInput())
+
+export type DefaultEngine = Omit<
+    ReturnType<ReturnType<typeof createDefaultEngine>['build']>,
+    'runtime'
+>

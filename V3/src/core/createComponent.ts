@@ -3,8 +3,14 @@ import { Simplify } from 'type-fest'
 
 export type ComponentKey = string
 export type AnyComponent = { __key__: string } & object
+export type AnyComponentCreator = {
+    (...args: any[]): AnyComponent
+    readonly __key__: string
+}
 
-export type Component<K, P> = P extends void ? { __key__: K } : Simplify<{ __key__: K } & P>
+export type Component<K, P> = P extends void
+    ? { __key__: K }
+    : Simplify<{ __key__: K } & P>
 
 type ComponentCreator<K extends ComponentKey, I extends any[], P> = {
     (...args: I): Component<K, P>
@@ -13,15 +19,19 @@ type ComponentCreator<K extends ComponentKey, I extends any[], P> = {
     toString: () => K
 }
 
-export function createComponent<K extends ComponentKey>(key: K): ComponentCreator<K, void[], void>
-export function createComponent<K extends ComponentKey, P extends object, I extends any[]>(
+export function createComponent<K extends ComponentKey>(
     key: K,
-    prepareComponent: (...args: I) => P,
-): ComponentCreator<K, I, P>
-export function createComponent<K extends ComponentKey, P extends object, I extends any[]>(
-    key: K,
-    prepareComponent?: (...args: I) => P,
-): ComponentCreator<K, I, P> {
+): ComponentCreator<K, void[], void>
+export function createComponent<
+    K extends ComponentKey,
+    P extends object,
+    I extends any[],
+>(key: K, prepareComponent: (...args: I) => P): ComponentCreator<K, I, P>
+export function createComponent<
+    K extends ComponentKey,
+    P extends object,
+    I extends any[],
+>(key: K, prepareComponent?: (...args: I) => P): ComponentCreator<K, I, P> {
     const componentCreator = (...args: I) => ({
         __key__: key,
         ...prepareComponent?.(...args),

@@ -1,0 +1,120 @@
+@use 'sass:color';
+@use 'sass:map';
+
+$white: #fefefe;
+$black: #121212;
+$darkBlue: #282a36;
+$lighterBlue: #3d3f4a;
+$darkGrey: #43454f;
+$grey: #5e5f68;
+
+$colors: (
+    default: (
+        background: $black,
+        backgroundLighter: color.scale($black, $lightness: 5%),
+        foreground: $white,
+        disabled: $grey,
+        caption: color.scale($grey, $lightness: 20%),
+    ),
+    panel: (
+        background: $darkBlue,
+        backgroundFaded: $lighterBlue,
+        foreground: $white,
+        border: $darkGrey,
+        hover: $lighterBlue,
+        toolbar: $black,
+    ),
+    card: (
+        border: color.scale($darkBlue, $lightness: 30%),
+    ),
+    log: (
+        background: $black,
+        foreground: $white,
+        timestamp: $darkGrey,
+        lineNumber: $darkBlue,
+    ),
+);
+
+@function color($context, $key) {
+    @if map.has-key($colors, $context) {
+        @if map.has-key(map.get($colors, $context), $key) {
+            @return map.get(map.get($colors, $context), $key);
+        }
+        @warn "Missing `#{key}` in context `#{$context}`";
+        @return null;
+    }
+    @warn "Missing context`#{context}`";
+    @return null;
+}
+
+.Inspector {
+    display: grid;
+    grid-template-columns: 17rem 1fr;
+    grid-template-rows: auto 1fr 30rem auto;
+    grid-template-areas:
+        'header header'
+        'sidepanel views'
+        'sidepanel explorer'
+        'footer footer';
+    width: 100vw;
+    height: 100vh;
+    font-size: 0.75rem;
+    font-family: monospace, sans-serif;
+    background: color(panel, background);
+    color: color(default, foreground);
+
+    ul,
+    li,
+    p {
+        margin: 0;
+        padding: 0;
+    }
+
+    .header {
+        grid-area: header;
+        border-bottom: 2px solid color(panel, border);
+        padding: 0.25rem 0.5rem;
+        background-color: color(default, background);
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+    }
+    .views {
+        grid-area: views;
+        display: flex;
+        overflow: hidden;
+
+        .game,
+        .gameDebug {
+            background: repeating-conic-gradient(
+                    color(default, background) 0% 25%,
+                    color(default, backgroundLighter) 0% 50%
+                )
+                50% / 20px 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        .gameDebug {
+            border-left: 1px solid color(panel, border);
+        }
+    }
+    .sidepanel {
+        grid-area: sidepanel;
+        border-right: 2px solid color(panel, border);
+    }
+    .explorer {
+        grid-area: explorer;
+        border-top: 2px solid color(panel, border);
+    }
+    footer {
+        grid-area: footer;
+        border-top: 2px solid color(panel, border);
+        padding: 0.25rem;
+        color: color(default, caption);
+        text-align: center;
+        font-size: 0.6rem;
+    }
+}

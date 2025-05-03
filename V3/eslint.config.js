@@ -16,7 +16,10 @@ export default tseslint.config(
             // Use type instead of interface
             '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
             // No type assertions
-            '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
+            '@typescript-eslint/consistent-type-assertions': [
+                'error',
+                { assertionStyle: 'never' },
+            ],
             // Disallow variable declarations from shadowing variables declared in the outer scope
             'no-shadow': 'off',
             '@typescript-eslint/no-shadow': 'error',
