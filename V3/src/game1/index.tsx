@@ -13,7 +13,7 @@ export const Invaders = () => {
     }, [])
 
     return (
-        <Inspector>
+        <Inspector passthrough>
             <div className="Invaders">
                 <div className="hud">Score: 420</div>
                 <div className="canvasContainer" ref={canvasContainerRef} />

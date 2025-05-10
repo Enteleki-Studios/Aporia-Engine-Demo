@@ -11,6 +11,7 @@ import {
     PerspectiveCamera,
     ReinhardToneMapping,
     Scene,
+    SphereGeometry,
     Vector3,
     WebGLRenderer,
 } from 'three'
@@ -138,6 +139,7 @@ export const pluginThree = (): Plugin<DefaultEngine, ThreeOutput> => ({
                         geometry = new BoxGeometry()
                         break
                     case 'sphere':
+                        geometry = new SphereGeometry()
                         break
                 }
             }

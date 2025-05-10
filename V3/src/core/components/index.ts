@@ -13,4 +13,5 @@ export {
     BasicGeometryComponent,
     MeshComponent,
     GltfComponent,
+    Velocity3DComponent,
 } from './3D'

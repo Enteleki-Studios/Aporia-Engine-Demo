@@ -3,6 +3,7 @@ export const pluginInput = () => ({
         const input = {
             left: false,
             right: false,
+            space: false,
         }
 
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -10,6 +11,8 @@ export const pluginInput = () => ({
                 input.left = true
             } else if (e.code === 'KeyD') {
                 input.right = true
+            } else if (e.code === 'Enter') {
+                input.space = true
             }
         }
 
@@ -18,6 +21,8 @@ export const pluginInput = () => ({
                 input.left = false
             } else if (e.code === 'KeyD') {
                 input.right = false
+            } else if (e.code === 'Enter') {
+                input.space = false
             }
         }
 
