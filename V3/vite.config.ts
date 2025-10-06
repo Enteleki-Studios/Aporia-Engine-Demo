@@ -11,11 +11,4 @@ export default defineConfig({
     server: {
         port: 2080,
     },
-    css: {
-        preprocessorOptions: {
-            scss: {
-                api: 'modern',
-            },
-        },
-    },
 })
