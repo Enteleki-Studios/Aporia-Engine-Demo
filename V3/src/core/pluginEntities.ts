@@ -1,5 +1,3 @@
-import { v4 as uuid } from 'uuid'
-
 import type { AnyComponent, AnyComponentCreator, ComponentKey } from './createComponent'
 import { ObjectStore } from './objectStore'
 
@@ -106,7 +104,7 @@ class Entity {
     private components = new Map<ComponentKey, AnyComponent>()
 
     constructor(id?: EntityId) {
-        this.id = id ?? uuid()
+        this.id = id ?? window.crypto.randomUUID()
     }
 
     set(component: AnyComponent) {
