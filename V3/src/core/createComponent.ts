@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Required */
 import { Simplify } from 'type-fest'
 
 export type ComponentKey = string
@@ -46,3 +46,4 @@ export function createComponent<
     // @ts-expect-error TODO: Not sure how to fix this yet
     return componentCreator
 }
+/* eslint-enable @typescript-eslint/no-explicit-any -- Required */

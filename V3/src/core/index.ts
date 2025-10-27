@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export { createEngine, createDefaultEngine, type DefaultEngine } from './engine'
 export { createComponent } from './createComponent'
@@ -8,6 +7,7 @@ export { pluginThree } from './pluginThree'
 export { pluginEntities, createQuery } from './pluginEntities'
 
 export type System<T> = (engine: T) => void
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
 export type AnySystem = System<any>
 
 export type Plugin<TInput, TOutput> = {
