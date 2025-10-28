@@ -1,6 +1,6 @@
 import { Euler, Quaternion, Vector3 } from 'three'
 
-import { createDefaultEngine, createQuery, pluginThree } from '@core'
+import { createDefaultComposer, createQuery, pluginThree } from '@core'
 
 import {
     BasicGeometryComponent,
@@ -11,25 +11,26 @@ import {
     Velocity3DComponent,
 } from '@core/components'
 
-const createEngine = () => createDefaultEngine().addPlugin(pluginThree()).build()
-type Engine = Omit<ReturnType<typeof createEngine>, 'runtime'>
+const createEngine = () => createDefaultComposer().addPlugin(pluginThree()).build()
+type Engine = ReturnType<typeof createEngine>
 
 const transformQuery = createQuery((entity) => entity.has(PlayerComponent))
 
 const moveSystem = (engine: Engine) => {
-    const entities = engine.entities.query(transformQuery)
+    const { input } = engine.resources
+    const entities = engine.resources.entities.query(transformQuery)
 
     entities.forEach((entity) => {
         const transform = entity.get(Transform3DComponent)
 
         if (transform) {
-            const dir = engine.input.left ? -1 : engine.input.right ? 1 : 0
+            const dir = input.left ? -1 : input.right ? 1 : 0
             const scale = 9
-            transform.position[0] += dir * scale * engine.clock.delta
+            transform.position[0] += dir * scale * engine.resources.clock.delta
 
-            if (engine.input.space) {
-                engine.entities.addComponents(
-                    engine.entities.createEntity(),
+            if (input.space) {
+                engine.resources.entities.addComponents(
+                    engine.resources.entities.createEntity(),
                     ...createMissileBundle({
                         transformArgs: [structuredClone(transform)],
                         velocityArgs: [[0, 0, -5]],
@@ -40,10 +41,12 @@ const moveSystem = (engine: Engine) => {
     })
 }
 
-const velocitousQuery = createQuery((entity) => entity.has(Transform3DComponent) && entity.has(Velocity3DComponent))
+const velocitousQuery = createQuery(
+    (entity) => entity.has(Transform3DComponent) && entity.has(Velocity3DComponent),
+)
 
-const applyVelocity = (engine: Engine) => {
-    const entities = engine.entities.query(velocitousQuery)
+const applyVelocitySystem = (engine: Engine) => {
+    const entities = engine.resources.entities.query(velocitousQuery)
 
     entities.forEach((entity) => {
         const velocityComponent = entity.get(Velocity3DComponent)
@@ -53,11 +56,10 @@ const applyVelocity = (engine: Engine) => {
             const { velocity } = velocityComponent
             const { position } = transformComponent
 
-            position[0] = position[0] + velocity[0] * engine.clock.delta
-            position[1] = position[1] + velocity[1] * engine.clock.delta
-            position[2] = position[2] + velocity[2] * engine.clock.delta
+            position[0] = position[0] + velocity[0] * engine.resources.clock.delta
+            position[1] = position[1] + velocity[1] * engine.resources.clock.delta
+            position[2] = position[2] + velocity[2] * engine.resources.clock.delta
         }
-
     })
 }
 
@@ -66,41 +68,33 @@ type BundleProps = {
     velocityArgs?: Parameters<typeof Velocity3DComponent>
 }
 
-const createAsteroidBundle = (props?: BundleProps) => {
-    const args = props ?? {}
+const createAsteroidBundle = (props?: BundleProps) => [
+    Transform3DComponent(...(props?.transformArgs ?? [])),
+    Velocity3DComponent(...(props?.velocityArgs ?? [])),
+    GltfComponent({
+        path: '/invaders/models/planet-11.gltf',
+    }),
+]
 
-    return [
-        Transform3DComponent(...(args.transformArgs ?? [])),
-        Velocity3DComponent(...(args.velocityArgs ?? [])),
-        GltfComponent({
-            path: '/invaders/models/planet-11.gltf',
-        }),
-    ] as const
-}
-
-const createMissileBundle = (props?: BundleProps) => {
-    const args = props ?? {}
-
-    return [
-        Transform3DComponent(...(args.transformArgs ?? [])),
-        Velocity3DComponent(...(args.velocityArgs ?? [])),
-        MeshComponent(),
-        BasicGeometryComponent({
-            type: 'sphere',
-            radius: 0.3,
-        }),
-    ] as const
-}
+const createMissileBundle = (props?: BundleProps) => [
+    Transform3DComponent(...(props?.transformArgs ?? [])),
+    Velocity3DComponent(...(props?.velocityArgs ?? [])),
+    MeshComponent(),
+    BasicGeometryComponent({
+        type: 'sphere',
+        radius: 0.3,
+    }),
+]
 
 export const game1 = () => {
     const engine = createEngine()
 
-    // engine.runtime.addSystem((eng) => {
+    // engine.addSystem((world) => {
     //     console.debug({
     //         // frame: eng.clock.frame,
     //         // delta: eng.clock.delta,
-    //         fps: eng.clock.fps,
-    //         entities: eng.entities.entities.size,
+    //         fps: world.resources.clock.fps,
+    //         entities: world.resources.entities.entities.size,
     //     })
     // })
 
@@ -110,11 +104,11 @@ export const game1 = () => {
     //     }
     // })
 
-    engine.runtime.addSystem(moveSystem)
-    engine.runtime.addSystem(applyVelocity)
+    engine.addSystem(moveSystem)
+    engine.addSystem(applyVelocitySystem)
 
-    const asteroidId = engine.entities.createEntity()
-    engine.entities.addComponents(
+    const asteroidId = engine.resources.entities.createEntity()
+    engine.resources.entities.addComponents(
         asteroidId,
         ...createAsteroidBundle({
             transformArgs: [
@@ -130,11 +124,10 @@ export const game1 = () => {
     const quat = new Quaternion()
     quat.setFromEuler(new Euler(0, Math.PI, 0))
 
-    engine.entities.addComponents(
-        engine.entities.createEntity(),
+    engine.resources.entities.addComponents(
+        engine.resources.entities.createEntity(),
         PlayerComponent(),
         Transform3DComponent({
-            // position: [-5, 0, 0],
             rotation: quat.toArray(),
             scale: [0.3, 0.3, 0.3],
         }),
@@ -143,9 +136,8 @@ export const game1 = () => {
         }),
     )
 
-    engine.three.renderer.camera.position.set(0, 7, 7)
-    engine.three.renderer.camera.lookAt(new Vector3(0, 3, 0))
-    engine.runtime.start()
+    engine.resources.three.renderer.camera.position.set(0, 7, 7)
+    engine.resources.three.renderer.camera.lookAt(new Vector3(0, 3, 0))
 
     return engine
 }

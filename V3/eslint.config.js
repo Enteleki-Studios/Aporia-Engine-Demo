@@ -1,9 +1,9 @@
 import eslint from '@eslint/js'
 import eslintComments from 'eslint-plugin-eslint-comments'
-import { defineConfig } from 'eslint/config'
-import tseslint from 'typescript-eslint'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
+import { defineConfig } from 'eslint/config'
+import tseslint from 'typescript-eslint'
 
 export default defineConfig(
     eslint.configs.recommended,

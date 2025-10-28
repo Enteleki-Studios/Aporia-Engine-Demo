@@ -1,10 +1,25 @@
-export const pluginInput = () => ({
-    setup: () => {
+import type { Plugin } from '@core'
+
+type Input = {
+    left: boolean
+    right: boolean
+    space: boolean
+}
+
+export const pluginInput = (): Plugin<{ input: Input }> => ({
+    createResources: () => {
         const input = {
             left: false,
             right: false,
             space: false,
         }
+
+        return {
+            input,
+        }
+    },
+    init(runtime) {
+        const { input } = runtime.resources
 
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.code === 'KeyA') {
@@ -28,9 +43,5 @@ export const pluginInput = () => ({
 
         document.addEventListener('keydown', handleKeyDown)
         document.addEventListener('keyup', handleKeyUp)
-
-        return {
-            input,
-        }
     },
 })

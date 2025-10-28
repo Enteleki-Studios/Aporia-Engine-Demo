@@ -128,7 +128,9 @@ class Entity {
 export const createQuery = (query: Query) => query
 
 export const pluginEntities = () => ({
-    setup: () => ({
-        entities: new Entities(),
-    }),
+    createResources() {
+        return {
+            entities: new Entities(),
+        }
+    },
 })
