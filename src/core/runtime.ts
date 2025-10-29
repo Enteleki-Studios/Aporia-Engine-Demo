@@ -41,9 +41,11 @@ export class Runtime<R extends Resources = Resources> {
 
     stop() {
         if (this.loopId) {
-            this.syncFrames
-                ? cancelAnimationFrame(this.loopId)
-                : clearTimeout(this.loopId)
+            if (this.syncFrames) {
+                cancelAnimationFrame(this.loopId)
+            } else {
+                clearTimeout(this.loopId)
+            }
             this.loopId = null
         }
     }

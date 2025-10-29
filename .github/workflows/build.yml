@@ -12,7 +12,7 @@ jobs:
 
         strategy:
             matrix:
-                node-version: [20.x]
+                node-version: [24.x]
 
         steps:
             - uses: actions/checkout@v4
@@ -26,10 +26,13 @@ jobs:
               run: npm ci
 
             - name: Build
-              run: npm run build -w dungeon
+              run: npm run build
 
             - name: Test
               run: npm run test
 
             - name: Lint
               run: npm run lint
+
+            - name: Prettier
+              run: npm run prettier-check

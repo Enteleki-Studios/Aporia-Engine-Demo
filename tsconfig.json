@@ -45,5 +45,6 @@
             "@pluginThree": ["./src/pluginThree/"]
         }
     },
-    "include": ["."]
+    "include": ["."],
+    "exclude": ["./V2/"]
 }
