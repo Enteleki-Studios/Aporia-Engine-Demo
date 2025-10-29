@@ -6,14 +6,14 @@ export class Runtime<R extends Resources = Resources> {
     resources: R
 
     private systems: AnySystem[] = []
-    private animationRequestId = 0
+    private animationRequestId: number | null = null
 
-    constructor(engine: R) {
-        this.resources = engine
+    constructor(resources: R) {
+        this.resources = resources
     }
 
-    private tick = () => {
-        this.animationRequestId = requestAnimationFrame(this.tick)
+    private loop = () => {
+        this.animationRequestId = requestAnimationFrame(this.loop)
         this.step()
     }
 
@@ -30,16 +30,23 @@ export class Runtime<R extends Resources = Resources> {
     }
 
     start() {
-        this.tick()
+        this.loop()
     }
 
     stop() {
-        cancelAnimationFrame(this.animationRequestId)
+        if (this.animationRequestId) {
+            cancelAnimationFrame(this.animationRequestId)
+        }
+        this.animationRequestId = null
     }
 
     step() {
         for (const system of this.systems) {
             system(this)
         }
+    }
+
+    get isRunning() {
+        return Boolean(this.animationRequestId)
     }
 }

@@ -96,6 +96,10 @@ class Entities {
             cacheEntry.onUnMatchObservers.add(onUnMatch)
         }
     }
+
+    get length() {
+        return this.entities.size
+    }
 }
 
 class Entity {

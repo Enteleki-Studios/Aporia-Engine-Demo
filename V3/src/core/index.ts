@@ -10,7 +10,7 @@ export { pluginEntities, createQuery } from './pluginEntities'
 
 export type System<T> = (engine: T) => void
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
-export type AnySystem = System<any>
+export type AnySystem = System<Runtime<any>>
 
 export type Plugin<ProvidesResources, RequiresResources extends object = object> = {
     createResources(): ProvidesResources
