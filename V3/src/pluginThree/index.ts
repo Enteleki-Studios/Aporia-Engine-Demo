@@ -17,16 +17,16 @@ import {
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 
-import type { DefaultResources, Plugin } from '@core'
+import { type DefaultResources, ObjectStore, type Plugin } from '@core'
 
 import {
     BasicGeometryComponent,
     GltfComponent,
     MeshComponent,
     Transform3DComponent,
-} from './components'
-import { ObjectStore } from './objectStore'
-import { createQuery } from './pluginEntities'
+} from '@core/components'
+
+import { createQuery } from '@pluginEntities'
 
 class Renderer {
     renderer

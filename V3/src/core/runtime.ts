@@ -1,19 +1,25 @@
-import type { AnySystem, System } from '.'
+import { type AnySystem, Clock, type System } from '.'
 
 type Resources = object
 
 export class Runtime<R extends Resources = Resources> {
+    clock: Clock
     resources: R
 
+    syncFrames = true
+
     private systems: AnySystem[] = []
-    private animationRequestId: number | null = null
+    private loopId: number | null = null
 
     constructor(resources: R) {
+        this.clock = new Clock()
         this.resources = resources
     }
 
     private loop = () => {
-        this.animationRequestId = requestAnimationFrame(this.loop)
+        this.loopId = this.syncFrames
+            ? requestAnimationFrame(this.loop)
+            : setTimeout(this.loop)
         this.step()
     }
 
@@ -34,19 +40,25 @@ export class Runtime<R extends Resources = Resources> {
     }
 
     stop() {
-        if (this.animationRequestId) {
-            cancelAnimationFrame(this.animationRequestId)
+        if (this.loopId) {
+            this.syncFrames
+                ? cancelAnimationFrame(this.loopId)
+                : clearTimeout(this.loopId)
+            this.loopId = null
         }
-        this.animationRequestId = null
     }
 
     step() {
+        this.clock.startFrame()
+
         for (const system of this.systems) {
             system(this)
         }
+
+        this.clock.endFrame()
     }
 
     get isRunning() {
-        return Boolean(this.animationRequestId)
+        return Boolean(this.loopId)
     }
 }

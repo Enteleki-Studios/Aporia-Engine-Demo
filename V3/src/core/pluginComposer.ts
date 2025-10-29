@@ -1,6 +1,9 @@
 import { Simplify } from 'type-fest'
 
-import { type Plugin, Runtime, pluginClock, pluginEntities, pluginInput } from '@core'
+import { type Plugin, Runtime } from '@core'
+
+import { pluginEntities } from '@pluginEntities'
+import { pluginInput } from '@pluginInput'
 
 type Initializer<R extends object> = (engine: Runtime<R>) => void
 
@@ -38,9 +41,6 @@ class PluginComposer<R extends object> {
 }
 
 export const createDefaultComposer = () =>
-    new PluginComposer({})
-        .addPlugin(pluginClock())
-        .addPlugin(pluginEntities())
-        .addPlugin(pluginInput())
+    new PluginComposer({}).addPlugin(pluginEntities()).addPlugin(pluginInput())
 
 export type DefaultResources = ReturnType<typeof createDefaultComposer>['resources']

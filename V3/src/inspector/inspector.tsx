@@ -1,8 +1,10 @@
 import { ReactNode, useEffect, useState } from 'react'
 
-import './inspector.scss'
-import { useWorld } from '@core/react'
 import { AnySystem } from '@core'
+
+import { useWorld } from '@core/react'
+
+import './inspector.scss'
 
 type InspectorProps = {
     children: ReactNode
@@ -15,7 +17,7 @@ export const Inspector = ({ children, passthrough }: InspectorProps) => {
 
     useEffect(() => {
         const onFrame: AnySystem = (w) => {
-            setFrame(w.resources.clock.frame)
+            setFrame(w.clock.frames)
         }
 
         world.addSystem(onFrame)
@@ -34,13 +36,15 @@ export const Inspector = ({ children, passthrough }: InspectorProps) => {
             <div className="header">Inspector</div>
             <div className="sidepanel">
                 <h3>Sidepanel</h3>
-                <pre>FPS: {world.resources.clock.fps}</pre>
+                <pre>FPS: {world.clock.fps}</pre>
                 <pre>Frame: {frame}</pre>
                 <pre>Entities: {world.resources.entities.length}</pre>
             </div>
             <div className="explorer">
                 <h3>Resources</h3>
-                <pre>{JSON.stringify(world.resources, Object.keys(world.resources), 2)}</pre>
+                <pre>
+                    {JSON.stringify(world.resources, Object.keys(world.resources), 2)}
+                </pre>
             </div>
             <div className="views">
                 <div className="game">{children}</div>

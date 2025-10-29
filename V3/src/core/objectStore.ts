@@ -1,3 +1,4 @@
+// TODO: Should this extend a WeakMap?
 export class ObjectStore<K, V> extends Map<K, V> {
     private initNew: (key: K) => V
 

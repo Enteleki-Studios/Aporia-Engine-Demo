@@ -34,11 +34,15 @@
         "target": "esnext",
         "useDefineForClassFields": true,
         "useUnknownInCatchVariables": true,
+
         "paths": {
             "@core": ["./src/core/"],
             "@core/components": ["./src/core/components/"],
             "@core/react": ["./src/core/react/"],
-            "@inspector": ["./src/inspector/"]
+            "@inspector": ["./src/inspector/"],
+            "@pluginEntities": ["./src/pluginEntities/"],
+            "@pluginInput": ["./src/pluginInput/"],
+            "@pluginThree": ["./src/pluginThree/"]
         }
     },
     "include": ["."]

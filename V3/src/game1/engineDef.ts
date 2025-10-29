@@ -1,7 +1,5 @@
 import { Euler, Quaternion, Vector3 } from 'three'
 
-import { createDefaultComposer, createQuery, pluginThree } from '@core'
-
 import {
     BasicGeometryComponent,
     GltfComponent,
@@ -11,12 +9,13 @@ import {
     Velocity3DComponent,
 } from '@core/components'
 
-const createEngine = () => createDefaultComposer().addPlugin(pluginThree()).build()
-type Engine = ReturnType<typeof createEngine>
+import { createQuery } from '@pluginEntities'
+
+import { type World, createWorld } from './createWorld'
 
 const transformQuery = createQuery((entity) => entity.has(PlayerComponent))
 
-const moveSystem = (engine: Engine) => {
+const moveSystem = (engine: World) => {
     const { input } = engine.resources
     const entities = engine.resources.entities.query(transformQuery)
 
@@ -26,7 +25,7 @@ const moveSystem = (engine: Engine) => {
         if (transform) {
             const dir = input.left ? -1 : input.right ? 1 : 0
             const scale = 9
-            transform.position[0] += dir * scale * engine.resources.clock.delta
+            transform.position[0] += dir * scale * engine.clock.delta
 
             if (input.space) {
                 engine.resources.entities.addComponents(
@@ -45,7 +44,7 @@ const velocitousQuery = createQuery(
     (entity) => entity.has(Transform3DComponent) && entity.has(Velocity3DComponent),
 )
 
-const applyVelocitySystem = (engine: Engine) => {
+const applyVelocitySystem = (engine: World) => {
     const entities = engine.resources.entities.query(velocitousQuery)
 
     entities.forEach((entity) => {
@@ -56,9 +55,9 @@ const applyVelocitySystem = (engine: Engine) => {
             const { velocity } = velocityComponent
             const { position } = transformComponent
 
-            position[0] = position[0] + velocity[0] * engine.resources.clock.delta
-            position[1] = position[1] + velocity[1] * engine.resources.clock.delta
-            position[2] = position[2] + velocity[2] * engine.resources.clock.delta
+            position[0] = position[0] + velocity[0] * engine.clock.delta
+            position[1] = position[1] + velocity[1] * engine.clock.delta
+            position[2] = position[2] + velocity[2] * engine.clock.delta
         }
     })
 }
@@ -87,28 +86,19 @@ const createMissileBundle = (props?: BundleProps) => [
 ]
 
 export const game1 = () => {
-    const engine = createEngine()
+    const world = createWorld()
 
-    // engine.addSystem((world) => {
-    //     console.debug({
-    //         // frame: eng.clock.frame,
-    //         // delta: eng.clock.delta,
-    //         fps: world.resources.clock.fps,
-    //         entities: world.resources.entities.entities.size,
-    //     })
-    // })
-
-    // engine.runtime.addSystem((eng) => {
+    // world.runtime.addSystem((w) => {
     //     if (eng.clock.frame === 500) {
-    //         engine.runtime.stop()
+    //         w.stop()
     //     }
     // })
 
-    engine.addSystem(moveSystem)
-    engine.addSystem(applyVelocitySystem)
+    world.addSystem(moveSystem)
+    world.addSystem(applyVelocitySystem)
 
-    const asteroidId = engine.resources.entities.createEntity()
-    engine.resources.entities.addComponents(
+    const asteroidId = world.resources.entities.createEntity()
+    world.resources.entities.addComponents(
         asteroidId,
         ...createAsteroidBundle({
             transformArgs: [
@@ -124,8 +114,8 @@ export const game1 = () => {
     const quat = new Quaternion()
     quat.setFromEuler(new Euler(0, Math.PI, 0))
 
-    engine.resources.entities.addComponents(
-        engine.resources.entities.createEntity(),
+    world.resources.entities.addComponents(
+        world.resources.entities.createEntity(),
         PlayerComponent(),
         Transform3DComponent({
             rotation: quat.toArray(),
@@ -136,8 +126,8 @@ export const game1 = () => {
         }),
     )
 
-    engine.resources.three.renderer.camera.position.set(0, 7, 7)
-    engine.resources.three.renderer.camera.lookAt(new Vector3(0, 3, 0))
+    world.resources.three.renderer.camera.position.set(0, 7, 7)
+    world.resources.three.renderer.camera.lookAt(new Vector3(0, 3, 0))
 
-    return engine
+    return world
 }

@@ -2,15 +2,18 @@ import type { Runtime } from './runtime'
 
 export { createDefaultComposer, type DefaultResources } from './pluginComposer'
 export { Runtime } from './runtime'
-export { createComponent } from './createComponent'
-export { pluginClock } from './pluginClock'
-export { pluginThree } from './pluginThree'
-export { pluginInput } from './pluginInput'
-export { pluginEntities, createQuery } from './pluginEntities'
+export {
+    createComponent,
+    type AnyComponent,
+    type AnyComponentCreator,
+    type ComponentKey,
+} from './components/createComponent'
+export { ObjectStore } from './objectStore'
+export { Clock } from './clock'
 
 export type System<T> = (engine: T) => void
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
-export type AnySystem = System<Runtime<any>>
+export type AnySystem = System<any>
 
 export type Plugin<ProvidesResources, RequiresResources extends object = object> = {
     createResources(): ProvidesResources

@@ -1,5 +1,9 @@
-import type { AnyComponent, AnyComponentCreator, ComponentKey } from './createComponent'
-import { ObjectStore } from './objectStore'
+import {
+    type AnyComponent,
+    type AnyComponentCreator,
+    type ComponentKey,
+    ObjectStore,
+} from '@core'
 
 type Query = (entity: Entity) => boolean
 type QueryObserver = (entity: Entity) => void

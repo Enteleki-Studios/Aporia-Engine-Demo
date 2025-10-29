@@ -1,44 +1,16 @@
-import { Inspector } from '@inspector'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { WorldContext } from '@core/react'
 
+import { Inspector } from '@inspector'
+
 import { game1 } from './engineDef'
-import { useGameWorld } from './hooks'
+import { Game } from './game'
 import './index.scss'
 
-const engine = game1()
-export type World = typeof engine
+const world = game1()
 
-const Game = () => {
-    const canvasContainerRef = useRef(null)
-    const world = useGameWorld()
-
-    useEffect(() => {
-        world.start()
-
-        return () => {
-            world.stop()
-        }
-    }, [world])
-
-    useEffect(() => {
-        world.resources.three.renderer.setCanvasContainer(canvasContainerRef.current)
-
-        return () => {
-            world.resources.three.renderer.setCanvasContainer(null)
-        }
-    }, [world])
-
-    return (
-        <div className="Invaders">
-            <div className="hud">Score: 420</div>
-            <div className="canvasContainer" ref={canvasContainerRef} />
-        </div>
-    )
-}
-
-export const Invaders = () => {
+export const Root = () => {
     const [isPassthrough, setIsPassthrough] = useState(false)
 
     useEffect(() => {
@@ -56,7 +28,7 @@ export const Invaders = () => {
     }, [])
 
     return (
-        <WorldContext value={engine}>
+        <WorldContext value={world}>
             <Inspector passthrough={isPassthrough}>
                 <Game />
             </Inspector>
