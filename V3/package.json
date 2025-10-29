@@ -10,7 +10,7 @@
     "scripts": {
         "build": "vite build",
         "lint": "eslint src",
-        "prettier": "prettier --write .",
+        "prettier": "prettier -l --write .",
         "start": "vite",
         "test": "vitest --typecheck",
         "typecheck": "tsc"
@@ -55,6 +55,7 @@
             "<THIRD_PARTY_MODULES>",
             "^@core$",
             "^@core/(.*)$",
+            "^@(.*)$",
             "^[~/]",
             "^[./]"
         ],

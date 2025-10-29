@@ -1,10 +1,10 @@
 import { createRoot } from 'react-dom/client'
 
-import { Invaders } from './game1'
+import { Root } from './game1'
 import './root.scss'
 
 const root = document.getElementById('root')
 
 if (root) {
-    createRoot(root).render(<Invaders />)
+    createRoot(root).render(<Root />)
 }

@@ -1,23 +1,37 @@
+import { useEffect, useState } from 'react'
+
+import { WorldContext } from '@core/react'
+
 import { Inspector } from '@inspector'
-import { useEffect, useRef } from 'react'
 
 import { game1 } from './engineDef'
+import { Game } from './game'
 import './index.scss'
 
-export const Invaders = () => {
-    const canvasContainerRef = useRef(null)
+const world = game1()
+
+export const Root = () => {
+    const [isPassthrough, setIsPassthrough] = useState(false)
 
     useEffect(() => {
-        const engine = game1()
-        engine.renderer.setCanvasContainer(canvasContainerRef.current)
+        const togglePassthroughMode = (event: KeyboardEvent) => {
+            if (event.code === 'Backquote') {
+                setIsPassthrough((prev) => !prev)
+            }
+        }
+
+        document.addEventListener('keydown', togglePassthroughMode)
+
+        return () => {
+            document.removeEventListener('keydown', togglePassthroughMode)
+        }
     }, [])
 
     return (
-        <Inspector passthrough>
-            <div className="Invaders">
-                <div className="hud">Score: 420</div>
-                <div className="canvasContainer" ref={canvasContainerRef} />
-            </div>
-        </Inspector>
+        <WorldContext value={world}>
+            <Inspector passthrough={isPassthrough}>
+                <Game />
+            </Inspector>
+        </WorldContext>
     )
 }

@@ -49,6 +49,7 @@ $colors: (
 
 .Inspector {
     display: grid;
+    grid-gap: 2px;
     grid-template-columns: 17rem 1fr;
     grid-template-rows: auto 1fr 30rem auto;
     grid-template-areas:
@@ -60,19 +61,23 @@ $colors: (
     height: 100vh;
     font-size: 0.75rem;
     font-family: monospace, sans-serif;
-    background: color(panel, background);
+    background: color(panel, border);
     color: color(default, foreground);
+
+    & > * {
+        background: color(panel, background);
+    }
 
     ul,
     li,
-    p {
+    p,
+    h3 {
         margin: 0;
         padding: 0;
     }
 
     .header {
         grid-area: header;
-        border-bottom: 2px solid color(panel, border);
         padding: 0.25rem 0.5rem;
         background-color: color(default, background);
         display: flex;
@@ -97,21 +102,17 @@ $colors: (
             justify-content: center;
             flex: 1;
         }
-        .gameDebug {
-            border-left: 1px solid color(panel, border);
-        }
     }
     .sidepanel {
         grid-area: sidepanel;
-        border-right: 2px solid color(panel, border);
+        padding: 0.5rem;
     }
     .explorer {
         grid-area: explorer;
-        border-top: 2px solid color(panel, border);
+        padding: 0.5rem;
     }
     footer {
         grid-area: footer;
-        border-top: 2px solid color(panel, border);
         padding: 0.25rem;
         color: color(default, caption);
         text-align: center;
