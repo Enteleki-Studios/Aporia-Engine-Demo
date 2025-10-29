@@ -1,4 +1,3 @@
-import { DirectionalLight } from './objects/DirectionalLight'
 import {
     AmbientLight,
     AnimationAction,
@@ -42,6 +41,7 @@ import { ambientLightFilter, boxFilter, directionalLightFilter, mesh2DFilter, mo
 import type { Renderer } from './Renderer'
 import { loadFBX } from './loadFBX'
 import { makeAnimationManager } from './object3dManager'
+import { DirectionalLight } from './objects/DirectionalLight'
 
 async function loadModel(modelC: ReturnType<typeof modelComponent>) {
     const { castShadow } = modelC

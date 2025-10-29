@@ -162,9 +162,12 @@ world.entities.addEntity(
 )
 
 // Camera
-world.entities.addEntity(Entity.of(
-    // { name: 'camera' },
-    cameraComponent({})))
+world.entities.addEntity(
+    Entity.of(
+        // { name: 'camera' },
+        cameraComponent({}),
+    ),
+)
 
 // Player
 world.entities.addEntity(

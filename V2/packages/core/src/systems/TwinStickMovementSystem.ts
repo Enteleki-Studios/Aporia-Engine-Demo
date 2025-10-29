@@ -4,10 +4,7 @@ import { cameraComponent, directionComponent, inputComponent, transform3D, veloc
 import { type World, createSystem } from '~/core'
 import { Array3, ORIGIN } from '~/definitions'
 import { cameraFilter, inputFilter, movingEntitiesFilter, rotatingEntitiesFilter } from '~/filters'
-import {
-    /* angle2, */
-    roundToZero,
-} from '~/utils/vectorUtils'
+import { /* angle2, */ roundToZero } from '~/utils/vectorUtils'
 
 export const twinStickMovementFilter = inputFilter.and(movingEntitiesFilter).and(rotatingEntitiesFilter)
 

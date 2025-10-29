@@ -52,7 +52,9 @@ export class Entity<K extends string = string> {
         return this
     }
 
-    get<T extends AnyComponentCreator, N extends T['type']>(componentCreator: T): N extends K ? ReturnType<T> : (ReturnType<T> | undefined) {
+    get<T extends AnyComponentCreator, N extends T['type']>(
+        componentCreator: T,
+    ): N extends K ? ReturnType<T> : ReturnType<T> | undefined {
         // @ts-expect-error will need to fix this error later
         return this.components.get(componentCreator.type)
     }

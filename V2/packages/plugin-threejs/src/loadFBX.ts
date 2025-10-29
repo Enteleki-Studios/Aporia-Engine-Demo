@@ -1,5 +1,6 @@
 import { Group, Texture, TextureLoader } from 'three'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
+
 import { isThreeMesh } from './utils'
 
 // TODO don't create stuff in this scope
