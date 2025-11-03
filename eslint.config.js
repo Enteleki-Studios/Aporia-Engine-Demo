@@ -41,6 +41,10 @@ export default defineConfig(
                 'error',
                 { assertionStyle: 'never' },
             ],
+            '@typescript-eslint/restrict-template-expressions': [
+                'error',
+                { allowNumber: true },
+            ],
             // Disallow variable declarations from shadowing variables declared in the outer scope
             'no-shadow': 'off',
             '@typescript-eslint/no-shadow': 'error',

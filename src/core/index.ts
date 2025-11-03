@@ -1,3 +1,5 @@
+import type { Simplify } from 'type-fest'
+
 import type { Runtime } from './runtime'
 
 export { createDefaultComposer, type DefaultResources } from './pluginComposer'
@@ -13,11 +15,16 @@ export { Clock } from './clock'
 
 export type System<T> = (engine: T) => void
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
-export type AnySystem = System<any>
+export type AnySystem = System<Runtime<any>>
 
-export type Plugin<ProvidesResources, RequiresResources extends object = object> = {
+export type Plugin<
+    ProvidesResources extends object,
+    RequiresResources extends object = object,
+> = {
     createResources(): ProvidesResources
-    init?(world: Runtime<RequiresResources & ProvidesResources>): void
+    init?<R extends Simplify<RequiresResources & ProvidesResources>>(
+        world: Runtime<R>,
+    ): void
 }
 
 export type Array2 = [number, number]

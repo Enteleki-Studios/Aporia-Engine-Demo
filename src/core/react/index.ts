@@ -17,4 +17,4 @@ export const useWorld = () => {
     return context
 }
 
-export type TypedUseWorld<E extends Runtime> = () => E
+export type TypedUseWorld<E> = () => E

@@ -1,14 +1,12 @@
 import { type AnySystem, Clock, type System } from '.'
 
-type Resources = object
-
-export class Runtime<R extends Resources = Resources> {
+export class Runtime<R extends object> {
     clock: Clock
     resources: R
 
     syncFrames = true
 
-    private systems: AnySystem[] = []
+    private systems: System<this>[] = []
     private loopId: number | null = null
 
     constructor(resources: R) {

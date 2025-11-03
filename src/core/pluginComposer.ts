@@ -16,20 +16,21 @@ class PluginComposer<R extends object> {
         this.initializers = initializers ?? []
     }
 
-    // RP: Resources Provided
-    // R: Resources Required
-    addPlugin<RP>(plugin: Plugin<RP, R>): PluginComposer<Simplify<RP & R>> {
+    addPlugin<RP extends object>(
+        plugin: Plugin<RP, R>,
+    ): PluginComposer<Simplify<R & RP>> {
         const result = plugin.createResources()
         const nextResources = { ...this.resources, ...result }
         const nextInitializers = [
-            ...this.initializers,
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Not sure how to fix this yet
+            ...(this.initializers as unknown as Initializer<R & RP>[]),
             ...(plugin.init ? [plugin.init] : []),
         ]
 
         return new PluginComposer(nextResources, nextInitializers)
     }
 
-    build() {
+    build(): Runtime<R> {
         const runtime = new Runtime(this.resources)
 
         this.initializers.forEach((init) => {
@@ -40,7 +41,8 @@ class PluginComposer<R extends object> {
     }
 }
 
-export const createDefaultComposer = () =>
-    new PluginComposer({}).addPlugin(pluginEntities()).addPlugin(pluginInput())
+export const createDefaultComposer = () => {
+    return new PluginComposer({}).addPlugin(pluginEntities()).addPlugin(pluginInput())
+}
 
 export type DefaultResources = ReturnType<typeof createDefaultComposer>['resources']
