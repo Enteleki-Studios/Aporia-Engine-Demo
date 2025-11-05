@@ -85,8 +85,8 @@ const createMissileBundle = (props?: BundleProps) => [
     }),
 ]
 
-export const game1 = () => {
-    const world = createWorld()
+export const game1 = async () => {
+    const world = await createWorld()
 
     // world.runtime.addSystem((w) => {
     //     if (eng.clock.frame === 500) {

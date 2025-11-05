@@ -13,19 +13,21 @@ export {
 export { ObjectStore } from './objectStore'
 export { Clock } from './clock'
 
-export type System<T> = (engine: T) => void
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
-export type AnySystem = System<Runtime<any>>
-
 export type Plugin<
     ProvidesResources extends object,
     RequiresResources extends object = object,
 > = {
-    createResources(): ProvidesResources
+    createResources(): ProvidesResources | Promise<ProvidesResources>
     init?<R extends Simplify<RequiresResources & ProvidesResources>>(
         world: Runtime<R>,
     ): void
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
+export type AnyPlugin = Plugin<any>
+
+export type System<T> = (engine: T) => void
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
+export type AnySystem = System<Runtime<any>>
 
 export type Array2 = [number, number]
 export type Array3 = [number, number, number]

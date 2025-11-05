@@ -1,48 +1,64 @@
-import { Simplify } from 'type-fest'
+import type { Simplify, UnionToIntersection } from 'type-fest'
 
-import { type Plugin, Runtime } from '@core'
+import { type AnyPlugin, type Plugin, Runtime } from '@core'
 
 import { pluginEntities } from '@pluginEntities'
 import { pluginInput } from '@pluginInput'
 
-type Initializer<R extends object> = (engine: Runtime<R>) => void
+type PluginsToResources<P extends AnyPlugin[]> = Simplify<
+    UnionToIntersection<Awaited<ReturnType<P[number]['createResources']>>>
+>
 
-class PluginComposer<R extends object> {
-    private resources: R
-    private initializers: Initializer<R>[] = []
+type CheckDependencies<Current extends object, Required extends object> = [
+    keyof Required,
+] extends [never]
+    ? true
+    : Required extends Current
+      ? true
+      : false
 
-    constructor(resources: R, initializers?: Initializer<R>[]) {
-        this.resources = resources
-        this.initializers = initializers ?? []
+export class PluginComposer<P extends AnyPlugin[]> {
+    private plugins: P
+
+    constructor(plugins: P) {
+        this.plugins = plugins
     }
 
-    addPlugin<RP extends object>(
-        plugin: Plugin<RP, R>,
-    ): PluginComposer<Simplify<R & RP>> {
-        const result = plugin.createResources()
-        const nextResources = { ...this.resources, ...result }
-        const nextInitializers = [
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Not sure how to fix this yet
-            ...(this.initializers as unknown as Initializer<R & RP>[]),
-            ...(plugin.init ? [plugin.init] : []),
-        ]
-
-        return new PluginComposer(nextResources, nextInitializers)
+    addPlugin<RP extends object, RR extends object>(
+        plugin: CheckDependencies<PluginsToResources<P>, RR> extends true
+            ? Plugin<RP, RR>
+            : never,
+    ): PluginComposer<[...P, Plugin<RP, RR>]> {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Dependency checking covers us here
+        return new PluginComposer([...this.plugins, plugin]) as PluginComposer<
+            [...P, Plugin<RP, RR>]
+        >
     }
 
-    build(): Runtime<R> {
-        const runtime = new Runtime(this.resources)
+    async build() {
+        type Resources = PluginsToResources<P>
 
-        this.initializers.forEach((init) => {
-            init(runtime)
-        })
+        const resources = {}
+
+        for (const plugin of this.plugins) {
+            Object.assign(resources, await plugin.createResources())
+        }
+
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- We know better here
+        const runtime = new Runtime(resources as Resources)
+
+        for (const plugin of this.plugins) {
+            plugin.init?.(runtime)
+        }
 
         return runtime
     }
 }
 
 export const createDefaultComposer = () => {
-    return new PluginComposer({}).addPlugin(pluginEntities()).addPlugin(pluginInput())
+    return new PluginComposer([]).addPlugin(pluginEntities()).addPlugin(pluginInput())
 }
 
-export type DefaultResources = ReturnType<typeof createDefaultComposer>['resources']
+export type DefaultResources = Awaited<
+    ReturnType<ReturnType<typeof createDefaultComposer>['build']>
+>['resources']
