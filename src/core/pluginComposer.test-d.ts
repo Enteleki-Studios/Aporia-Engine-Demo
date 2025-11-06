@@ -5,7 +5,6 @@ import { type Plugin } from '@core'
 import { PluginComposer } from './pluginComposer'
 
 /* TODO
- * Add helper types to pull resource types out of plugins
  * Pass depended-upon resources to createResources()
  */
 
@@ -52,4 +51,28 @@ test('can add plugins with dependencies', async () => {
 test('type error when dependencies are unmet', async () => {
     // @ts-expect-error plugC depends on resB
     assertType(await new PluginComposer([]).addPlugin(plugC).build())
+})
+
+test('can add plugin with no resources', async () => {
+    const plugInitOnly: Plugin<object> = {
+        init(w) {
+            console.log(w.resources)
+        },
+    }
+
+    assertType(await new PluginComposer([]).addPlugin(plugInitOnly).build())
+})
+
+test('can add plugin with dependencies and no resources', async () => {
+    const plugInitOnly: Plugin<object, { resB: string }> = {
+        init(w) {
+            console.log(w.resources.resB)
+        },
+    }
+
+    // @ts-expect-error Missing dependency
+    assertType(await new PluginComposer([]).addPlugin(plugInitOnly).build())
+    assertType(
+        await new PluginComposer([]).addPlugin(plugB).addPlugin(plugInitOnly).build(),
+    )
 })

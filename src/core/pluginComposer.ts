@@ -1,13 +1,7 @@
-import type { Simplify, UnionToIntersection } from 'type-fest'
-
-import { type AnyPlugin, type Plugin, Runtime } from '@core'
+import { type AnyPlugin, type Plugin, type PluginsToResources, Runtime } from '@core'
 
 import { pluginEntities } from '@pluginEntities'
 import { pluginInput } from '@pluginInput'
-
-type PluginsToResources<P extends AnyPlugin[]> = Simplify<
-    UnionToIntersection<Awaited<ReturnType<P[number]['createResources']>>>
->
 
 type CheckDependencies<Current extends object, Required extends object> = [
     keyof Required,
@@ -24,14 +18,14 @@ export class PluginComposer<P extends AnyPlugin[]> {
         this.plugins = plugins
     }
 
-    addPlugin<RP extends object, RR extends object>(
-        plugin: CheckDependencies<PluginsToResources<P>, RR> extends true
-            ? Plugin<RP, RR>
+    addPlugin<RP extends object, RD extends object>(
+        plugin: CheckDependencies<PluginsToResources<P>, RD> extends true
+            ? Plugin<RP, RD>
             : never,
-    ): PluginComposer<[...P, Plugin<RP, RR>]> {
+    ): PluginComposer<[...P, Plugin<RP, RD>]> {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Dependency checking covers us here
         return new PluginComposer([...this.plugins, plugin]) as PluginComposer<
-            [...P, Plugin<RP, RR>]
+            [...P, Plugin<RP, RD>]
         >
     }
 
@@ -41,7 +35,9 @@ export class PluginComposer<P extends AnyPlugin[]> {
         const resources = {}
 
         for (const plugin of this.plugins) {
-            Object.assign(resources, await plugin.createResources())
+            if (plugin.createResources) {
+                Object.assign(resources, await plugin.createResources())
+            }
         }
 
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- We know better here

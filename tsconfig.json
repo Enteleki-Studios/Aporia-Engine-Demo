@@ -46,5 +46,5 @@
         }
     },
     "include": ["."],
-    "exclude": ["./V2/", "./src/core/staging.ts"]
+    "exclude": ["./V2/"]
 }

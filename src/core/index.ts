@@ -1,4 +1,4 @@
-import type { Simplify } from 'type-fest'
+import type { Simplify, UnionToIntersection } from 'type-fest'
 
 import type { Runtime } from './runtime'
 
@@ -17,13 +17,22 @@ export type Plugin<
     ProvidesResources extends object,
     RequiresResources extends object = object,
 > = {
-    createResources(): ProvidesResources | Promise<ProvidesResources>
+    createResources?(): ProvidesResources | Promise<ProvidesResources>
     init?<R extends Simplify<RequiresResources & ProvidesResources>>(
         world: Runtime<R>,
     ): void
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
 export type AnyPlugin = Plugin<any>
+export type PluginToResources<P extends AnyPlugin> = Awaited<
+    ReturnType<NonNullable<P['createResources']>>
+>
+export type PluginCreatorToResources<PC extends () => AnyPlugin> = PluginToResources<
+    ReturnType<PC>
+>
+export type PluginsToResources<PA extends AnyPlugin[]> = Simplify<
+    UnionToIntersection<Awaited<ReturnType<NonNullable<PA[number]['createResources']>>>>
+>
 
 export type System<T> = (engine: T) => void
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code

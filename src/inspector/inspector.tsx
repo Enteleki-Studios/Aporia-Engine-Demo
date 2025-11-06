@@ -1,6 +1,6 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 
-import { AnySystem } from '@core'
+import { type AnySystem } from '@core'
 
 import { useWorld } from '@core/react'
 
@@ -8,10 +8,10 @@ import './inspector.scss'
 
 type InspectorProps = {
     children: ReactNode
-    passthrough?: boolean
 }
 
-export const Inspector = ({ children, passthrough }: InspectorProps) => {
+export const Inspector = ({ children }: InspectorProps) => {
+    const [isPassthrough, setIsPassthrough] = useState(false)
     const world = useWorld()
     const [frame, setFrame] = useState(0)
 
@@ -27,7 +27,21 @@ export const Inspector = ({ children, passthrough }: InspectorProps) => {
         }
     }, [world])
 
-    if (passthrough) {
+    useEffect(() => {
+        const togglePassthroughMode = (event: KeyboardEvent) => {
+            if (event.code === 'Backquote') {
+                setIsPassthrough((prev) => !prev)
+            }
+        }
+
+        document.addEventListener('keydown', togglePassthroughMode)
+
+        return () => {
+            document.removeEventListener('keydown', togglePassthroughMode)
+        }
+    }, [])
+
+    if (isPassthrough) {
         return children
     }
 
