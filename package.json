@@ -17,6 +17,7 @@
         "typecheck": "tsc"
     },
     "dependencies": {
+        "@dimforge/rapier3d": "^0.19.3",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "remeda": "^2.21.2",

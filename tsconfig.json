@@ -42,6 +42,7 @@
             "@inspector": ["./src/inspector/"],
             "@pluginEntities": ["./src/pluginEntities/"],
             "@pluginInput": ["./src/pluginInput/"],
+            "@pluginRapier3D": ["./src/pluginRapier3D/"],
             "@pluginThree": ["./src/pluginThree/"]
         }
     },

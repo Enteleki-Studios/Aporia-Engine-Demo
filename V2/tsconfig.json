@@ -1,9 +1,0 @@
-{
-    "files": [],
-    "references": [
-        { "path": "packages/core" },
-        { "path": "packages/inspector" },
-        { "path": "packages/plugin-threejs" },
-        { "path": "packages/plugin-rapier3D" }
-    ]
-}

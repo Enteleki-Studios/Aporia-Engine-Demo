@@ -3,7 +3,7 @@ import {
     // AxesHelper,
     BoxGeometry,
     DirectionalLight,
-    GridHelper,
+    // GridHelper,
     Group,
     Mesh,
     MeshStandardMaterial,
@@ -59,7 +59,7 @@ class Renderer {
         this.camera.lookAt(new Vector3())
 
         // this.scene.add(new AxesHelper(3))
-        this.scene.add(new GridHelper(50, 50, 0x0089cc, 0x444444))
+        // this.scene.add(new GridHelper(50, 50, 0x0089cc, 0x444444))
     }
 
     render() {
