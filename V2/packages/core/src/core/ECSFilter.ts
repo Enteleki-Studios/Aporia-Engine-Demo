@@ -22,7 +22,10 @@ export class ECSFilter {
     }
 
     and(filter: ECSFilter) {
-        return ECSFilter.of([...this.components, ...filter.components], [...this.tags, ...filter.tags])
+        return ECSFilter.of(
+            [...this.components, ...filter.components],
+            [...this.tags, ...filter.tags],
+        )
     }
 
     toString() {

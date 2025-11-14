@@ -87,7 +87,11 @@ export class TextSprite extends Sprite {
             ctx.strokeText(text, left, resolution)
             ctx.fillText(text, left, resolution)
 
-            this.scale.set((canvas.width / resolution) * scale, (canvas.height / resolution) * scale, 1)
+            this.scale.set(
+                (canvas.width / resolution) * scale,
+                (canvas.height / resolution) * scale,
+                1,
+            )
 
             this.texture.needsUpdate = true
         }

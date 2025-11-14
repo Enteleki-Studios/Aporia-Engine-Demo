@@ -12,7 +12,10 @@ import {
     velocityComponent,
 } from '@gengine/core'
 
-export const aiSystemFilter = new ECSFilter([directionComponent, transform3D, velocityComponent], [tags.ai])
+export const aiSystemFilter = new ECSFilter(
+    [directionComponent, transform3D, velocityComponent],
+    [tags.ai],
+)
 
 export const aiSystem = createSystem('ai', () => {
     const targetLocation: Array3 = [0, 0, 0]

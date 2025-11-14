@@ -1,10 +1,19 @@
 import { Vec3 } from 'gl-matrix'
 
-import { damagingComponent, healthComponent, hitboxComponent, transform3D } from '~/components'
+import {
+    damagingComponent,
+    healthComponent,
+    hitboxComponent,
+    transform3D,
+} from '~/components'
 import { ECSFilter, type World, createSystem } from '~/core'
 
 export const damagingFilter = new ECSFilter([transform3D, damagingComponent])
-export const damagableFilter = new ECSFilter([transform3D, healthComponent, hitboxComponent])
+export const damagableFilter = new ECSFilter([
+    transform3D,
+    healthComponent,
+    hitboxComponent,
+])
 
 export const damageSystem = createSystem('damage', () => (world: World) => {
     for (const damagingEntity of world.ecs.filterBy(damagingFilter)) {
@@ -13,7 +22,10 @@ export const damageSystem = createSystem('damage', () => (world: World) => {
 
         damageComponent.delta += world.timeElapsedS
 
-        if (damageComponent.stage === 'spooling' && damageComponent.delta > damageComponent.spoolUp) {
+        if (
+            damageComponent.stage === 'spooling' &&
+            damageComponent.delta > damageComponent.spoolUp
+        ) {
             damageComponent.stage = 'cooling'
 
             for (const targetEntity of world.ecs.filterBy(damagableFilter)) {
@@ -25,14 +37,23 @@ export const damageSystem = createSystem('damage', () => (world: World) => {
                 const targetHitbox = targetEntity.get(hitboxComponent)
 
                 const maxDistance = damageComponent.radius + targetHitbox.radius
-                if (Vec3.distance(damagingPosition.position, targetPosition.position) < maxDistance) {
+                if (
+                    Vec3.distance(damagingPosition.position, targetPosition.position) <
+                    maxDistance
+                ) {
                     const targetHealth = targetEntity.get(healthComponent)
                     if (targetHealth.health) {
-                        targetHealth.health -= Math.min(damageComponent.damage, targetHealth.health)
+                        targetHealth.health -= Math.min(
+                            damageComponent.damage,
+                            targetHealth.health,
+                        )
                     }
                 }
             }
-        } else if (damageComponent.stage === 'cooling' && damageComponent.delta > damageComponent.coolDown) {
+        } else if (
+            damageComponent.stage === 'cooling' &&
+            damageComponent.delta > damageComponent.coolDown
+        ) {
             damageComponent.stage = 'spooling'
             damageComponent.delta = 0
 

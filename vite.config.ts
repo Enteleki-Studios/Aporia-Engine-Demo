@@ -1,3 +1,4 @@
+/// <reference types='vitest/config' />
 import { defineConfig } from 'vite'
 import wasm from 'vite-plugin-wasm'
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -11,5 +12,11 @@ export default defineConfig({
     plugins: [tsconfigPaths(), wasm(), react()],
     server: {
         port: 2080,
+    },
+    test: {
+        include: ['src'],
+        typecheck: {
+            ignoreSourceErrors: true,
+        },
     },
 })

@@ -11,7 +11,11 @@ type LoadFBXConfig = {
     castShadow?: boolean
 }
 
-export function loadFBX(modelPath: string, texturePath?: string, config?: LoadFBXConfig): Promise<Group> {
+export function loadFBX(
+    modelPath: string,
+    texturePath?: string,
+    config?: LoadFBXConfig,
+): Promise<Group> {
     return new Promise((resolve) => {
         loader.load(modelPath, (model: Group) => {
             let texture: Texture | null = null
@@ -26,7 +30,12 @@ export function loadFBX(modelPath: string, texturePath?: string, config?: LoadFB
                     c.castShadow = config?.castShadow ?? false
                     c.receiveShadow = true
 
-                    if (texturePath && 'material' in c && !Array.isArray(c.material) && 'map' in c.material) {
+                    if (
+                        texturePath &&
+                        'material' in c &&
+                        !Array.isArray(c.material) &&
+                        'map' in c.material
+                    ) {
                         c.material.map = texture
                     }
                 }

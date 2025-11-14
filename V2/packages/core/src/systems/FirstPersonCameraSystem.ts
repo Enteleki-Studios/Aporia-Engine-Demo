@@ -4,17 +4,20 @@ import { cameraComponent, directionComponent, transform3D } from '~/components'
 import { type World, createSystem } from '~/core'
 import { cameraFilter, cameraTargetFilter } from '~/filters'
 
-export const firstPersonCameraSystem = createSystem('first-person camera', () => (world: World) => {
-    const [cameraTarget] = world.ecs.filterBy(cameraTargetFilter)
+export const firstPersonCameraSystem = createSystem(
+    'first-person camera',
+    () => (world: World) => {
+        const [cameraTarget] = world.ecs.filterBy(cameraTargetFilter)
 
-    world.ecs.filterBy(cameraFilter).forEach((cameraEntity) => {
-        const { position, lookAt } = cameraEntity.get(cameraComponent)
-        const { position: targetPosition } = cameraTarget.get(transform3D)
-        const { direction } = cameraTarget.get(directionComponent)
+        world.ecs.filterBy(cameraFilter).forEach((cameraEntity) => {
+            const { position, lookAt } = cameraEntity.get(cameraComponent)
+            const { position: targetPosition } = cameraTarget.get(transform3D)
+            const { direction } = cameraTarget.get(directionComponent)
 
-        Vec3.set(position, targetPosition[0], 2, targetPosition[2])
+            Vec3.set(position, targetPosition[0], 2, targetPosition[2])
 
-        Vec3.copy(lookAt, position)
-        Vec3.add(lookAt, lookAt, direction)
-    })
-})
+            Vec3.copy(lookAt, position)
+            Vec3.add(lookAt, lookAt, direction)
+        })
+    },
+)

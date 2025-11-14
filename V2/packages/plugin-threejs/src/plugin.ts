@@ -1,5 +1,11 @@
 import type { Plugin, World } from '@gengine/core'
-import { ambientLightFilter, boxFilter, collidingFilter, mesh2DFilter, modelFilter } from '@gengine/core'
+import {
+    ambientLightFilter,
+    boxFilter,
+    collidingFilter,
+    mesh2DFilter,
+    modelFilter,
+} from '@gengine/core'
 
 import { Renderer } from './Renderer'
 import { entityReceiver } from './entityReceiver'
@@ -38,9 +44,15 @@ export class ThreejsPlugin implements Plugin {
 
         // TODO: Very temporary
         world.ecs.addFilterListener(modelFilter, (e, f) => this.threeEntityReceiver(e, f))
-        world.ecs.addFilterListener(ambientLightFilter, (e, f) => this.threeEntityReceiver(e, f))
+        world.ecs.addFilterListener(ambientLightFilter, (e, f) =>
+            this.threeEntityReceiver(e, f),
+        )
         world.ecs.addFilterListener(boxFilter, (e, f) => this.threeEntityReceiver(e, f))
-        world.ecs.addFilterListener(collidingFilter, (e, f) => this.threeEntityReceiver(e, f))
-        world.ecs.addFilterListener(mesh2DFilter, (e, f) => this.threeEntityReceiver(e, f))
+        world.ecs.addFilterListener(collidingFilter, (e, f) =>
+            this.threeEntityReceiver(e, f),
+        )
+        world.ecs.addFilterListener(mesh2DFilter, (e, f) =>
+            this.threeEntityReceiver(e, f),
+        )
     }
 }

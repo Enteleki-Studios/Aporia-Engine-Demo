@@ -1,12 +1,25 @@
 import { Vec3 } from 'gl-matrix'
 
-import { cameraComponent, directionComponent, inputComponent, transform3D, velocityComponent } from '~/components'
+import {
+    cameraComponent,
+    directionComponent,
+    inputComponent,
+    transform3D,
+    velocityComponent,
+} from '~/components'
 import { type World, createSystem } from '~/core'
 import { Array3, ORIGIN } from '~/definitions'
-import { cameraFilter, inputFilter, movingEntitiesFilter, rotatingEntitiesFilter } from '~/filters'
+import {
+    cameraFilter,
+    inputFilter,
+    movingEntitiesFilter,
+    rotatingEntitiesFilter,
+} from '~/filters'
 import { /* angle2, */ roundToZero } from '~/utils/vectorUtils'
 
-export const twinStickMovementFilter = inputFilter.and(movingEntitiesFilter).and(rotatingEntitiesFilter)
+export const twinStickMovementFilter = inputFilter
+    .and(movingEntitiesFilter)
+    .and(rotatingEntitiesFilter)
 
 export const twinStickMovementSystem = createSystem('twin-stick movement', () => {
     // Constants
@@ -71,7 +84,11 @@ export const twinStickMovementSystem = createSystem('twin-stick movement', () =>
 
                 // Set acceleration magnitude
                 const boost = input.run.hold ? RUN_BOOST : 1
-                Vec3.scale(frameAcceleration, frameAcceleration, BASE_SPEED * boost * delta)
+                Vec3.scale(
+                    frameAcceleration,
+                    frameAcceleration,
+                    BASE_SPEED * boost * delta,
+                )
 
                 Vec3.add(velocity, velocity, frameDeceleration)
                 Vec3.add(velocity, velocity, frameAcceleration)

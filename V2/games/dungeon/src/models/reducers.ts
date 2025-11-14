@@ -1,6 +1,5 @@
-import { combineReducers, createSlice } from '@reduxjs/toolkit'
-
 import { slice as inspectorSlice } from '@gengine/inspector'
+import { combineReducers, createSlice } from '@reduxjs/toolkit'
 
 const health = createSlice({
     name: 'health',

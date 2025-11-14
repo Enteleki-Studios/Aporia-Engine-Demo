@@ -72,11 +72,16 @@ export const animationSystem = createSystem('animations', () => (world: World) =
                     action.setEffectiveWeight(1.0)
 
                     if (animation.prevState) {
-                        const prevAnimation = animationManager.getResource(entity.id, animation.prevState)
+                        const prevAnimation = animationManager.getResource(
+                            entity.id,
+                            animation.prevState,
+                        )
                         if (prevAnimation) {
                             const { action: prevAction } = prevAnimation
                             if (animation.state !== 'attack') {
-                                const ratio = action.getClip().duration / prevAction.getClip().duration
+                                const ratio =
+                                    action.getClip().duration /
+                                    prevAction.getClip().duration
                                 action.time = prevAction.time * ratio
                             }
                             if (animation.state === 'death') {

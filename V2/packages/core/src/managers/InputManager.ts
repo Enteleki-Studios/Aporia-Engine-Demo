@@ -112,8 +112,10 @@ export class InputManager {
         } else {
             const offsetX = this.domElement.offsetLeft
             const offsetY = this.domElement.offsetTop
-            this.mouseInput.centerRelX = ((e.clientX - offsetX) / this.domElement.clientWidth) * 2 - 1
-            this.mouseInput.centerRelY = ((e.clientY - offsetY) / this.domElement.clientHeight) * -2 + 1
+            this.mouseInput.centerRelX =
+                ((e.clientX - offsetX) / this.domElement.clientWidth) * 2 - 1
+            this.mouseInput.centerRelY =
+                ((e.clientY - offsetY) / this.domElement.clientHeight) * -2 + 1
         }
     }
 

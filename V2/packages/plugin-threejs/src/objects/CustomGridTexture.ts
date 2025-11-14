@@ -45,16 +45,31 @@ export class CustomGridTexture extends Texture {
             const mgWidth = size / minorGridSegments
             for (let i = 1; i < minorGridSegments; i += 1) {
                 // Vertical line
-                gridCtx.fillRect(mgWidth * i - minorGridWidth / 2, 0, minorGridWidth, size)
+                gridCtx.fillRect(
+                    mgWidth * i - minorGridWidth / 2,
+                    0,
+                    minorGridWidth,
+                    size,
+                )
                 // Horizontal line
-                gridCtx.fillRect(0, mgWidth * i - minorGridWidth / 2, size, minorGridWidth)
+                gridCtx.fillRect(
+                    0,
+                    mgWidth * i - minorGridWidth / 2,
+                    size,
+                    minorGridWidth,
+                )
             }
 
             // Border
             gridCtx.fillStyle = `#${new Color(borderColor).getHexString()}`
             gridCtx.lineWidth = borderWidth
             gridCtx.strokeStyle = `#${new Color(borderColor).getHexString()}`
-            gridCtx.strokeRect(borderWidth / 2, borderWidth / 2, size - borderWidth, size - borderWidth)
+            gridCtx.strokeRect(
+                borderWidth / 2,
+                borderWidth / 2,
+                size - borderWidth,
+                size - borderWidth,
+            )
 
             // Text
             gridCtx.font = font

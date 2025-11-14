@@ -36,7 +36,13 @@ import {
     pointLightComponent,
     transform3D,
 } from '@gengine/core'
-import { ambientLightFilter, boxFilter, directionalLightFilter, mesh2DFilter, modelFilter } from '@gengine/core'
+import {
+    ambientLightFilter,
+    boxFilter,
+    directionalLightFilter,
+    mesh2DFilter,
+    modelFilter,
+} from '@gengine/core'
 
 import type { Renderer } from './Renderer'
 import { loadFBX } from './loadFBX'
@@ -118,7 +124,8 @@ function loadAnimations(
 
     // console.debug(model.animations)
 
-    const animations: { name: string; clip: AnimationClip; action: AnimationAction }[] = []
+    const animations: { name: string; clip: AnimationClip; action: AnimationAction }[] =
+        []
 
     if (model.animations.length && animationIndex) {
         // TODO refactor to map
@@ -160,7 +167,10 @@ export const entityReceiver =
                     .then((resource) => {
                         objectManager.addResource(entity.id, 'model', resource)
 
-                        const healthSprite = objectManager.getResource(entity.id, 'health')
+                        const healthSprite = objectManager.getResource(
+                            entity.id,
+                            'health',
+                        )
                         if (healthSprite) {
                             const box = new Box3().setFromObject(resource)
                             healthSprite.position.y = box.max.y + 0.15
@@ -171,7 +181,11 @@ export const entityReceiver =
 
                             animationManager.newContainer(entity.id, mixer)
                             animations.forEach((animation) => {
-                                animationManager.addResource(entity.id, animation.name, animation)
+                                animationManager.addResource(
+                                    entity.id,
+                                    animation.name,
+                                    animation,
+                                )
                             })
                         }
                     })
@@ -184,14 +198,25 @@ export const entityReceiver =
                 const { intensity } = entity.get(directionalLightComponent)
                 const directionalLight = new DirectionalLight(0xffffff, intensity)
                 objectManager.addResource(entity.id, 'directionalLight', directionalLight)
-                objectManager.addResource(entity.id, 'directionalLightTarget', directionalLight.target)
+                objectManager.addResource(
+                    entity.id,
+                    'directionalLightTarget',
+                    directionalLight.target,
+                )
 
-                renderer.addHelpers(directionalLight.helper, directionalLight.shadowHelper)
+                renderer.addHelpers(
+                    directionalLight.helper,
+                    directionalLight.shadowHelper,
+                )
                 break
             }
             case ambientLightFilter: {
                 const { color, intensity } = entity.get(ambientLightComponent)
-                objectManager.addResource(entity.id, 'ambient', new AmbientLight(color, intensity))
+                objectManager.addResource(
+                    entity.id,
+                    'ambient',
+                    new AmbientLight(color, intensity),
+                )
                 break
             }
             case boxFilter: {
@@ -202,7 +227,9 @@ export const entityReceiver =
                     new MeshStandardMaterial({ color: basicGeometry.color }),
                 )
                 objectManager.addResource(entity.id, 'basicGeometry', mesh)
-                objectManager.getContainer(entity.id)?.position.fromArray(entity.get(transform3D).position)
+                objectManager
+                    .getContainer(entity.id)
+                    ?.position.fromArray(entity.get(transform3D).position)
                 break
             }
             case mesh2DFilter: {
@@ -213,7 +240,10 @@ export const entityReceiver =
 
                 switch (meshComponent.shape) {
                     case 'plane': {
-                        geometry = new PlaneGeometry(meshComponent.width, meshComponent.height)
+                        geometry = new PlaneGeometry(
+                            meshComponent.width,
+                            meshComponent.height,
+                        )
                         break
                     }
                     case 'circle':
@@ -227,11 +257,14 @@ export const entityReceiver =
                     const materialComponent = entity.get(material)
                     switch (materialComponent.material) {
                         case 'basic':
-                            mat = new MeshBasicMaterial({ color: materialComponent.color })
+                            mat = new MeshBasicMaterial({
+                                color: materialComponent.color,
+                            })
                             break
                         case 'standard': {
                             const sMat = new MeshStandardMaterial()
-                            const { color, mapUrl, wrapS, wrapT, repeatX, repeatY } = materialComponent
+                            const { color, mapUrl, wrapS, wrapT, repeatX, repeatY } =
+                                materialComponent
                             if (color) {
                                 sMat.color.set(color)
                             }
@@ -288,7 +321,9 @@ export const entityReceiver =
         }
 
         if (entity.has(transform3D)) {
-            const group = objectManager.getContainer(entity.id) ?? objectManager.newContainer(entity.id)
+            const group =
+                objectManager.getContainer(entity.id) ??
+                objectManager.newContainer(entity.id)
 
             const { position, rotation, scale } = entity.get(transform3D)
 

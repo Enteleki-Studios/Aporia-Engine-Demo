@@ -13,13 +13,13 @@ import { createQuery } from '@pluginEntities'
 
 import { type World, createWorld } from './createWorld'
 
-const transformQuery = createQuery((entity) => entity.has(PlayerComponent))
+const transformQuery = createQuery([PlayerComponent])
 
 const moveSystem = (engine: World) => {
     const { input } = engine.resources
     const entities = engine.resources.entities.query(transformQuery)
 
-    entities.forEach((entity) => {
+    entities.forEach(([_, entity]) => {
         const transform = entity.get(Transform3DComponent)
 
         if (transform) {
@@ -40,25 +40,19 @@ const moveSystem = (engine: World) => {
     })
 }
 
-const velocitousQuery = createQuery(
-    (entity) => entity.has(Transform3DComponent) && entity.has(Velocity3DComponent),
-)
+const velocitousQuery = createQuery([Transform3DComponent, Velocity3DComponent])
 
 const applyVelocitySystem = (engine: World) => {
     const entities = engine.resources.entities.query(velocitousQuery)
 
-    entities.forEach((entity) => {
-        const velocityComponent = entity.get(Velocity3DComponent)
-        const transformComponent = entity.get(Transform3DComponent)
+    entities.forEach(([[transformComponent, velocityComponent]]) => {
+        const { velocity } = velocityComponent
+        const { position } = transformComponent
+        const { delta } = engine.clock
 
-        if (velocityComponent && transformComponent) {
-            const { velocity } = velocityComponent
-            const { position } = transformComponent
-
-            position[0] = position[0] + velocity[0] * engine.clock.delta
-            position[1] = position[1] + velocity[1] * engine.clock.delta
-            position[2] = position[2] + velocity[2] * engine.clock.delta
-        }
+        position[0] = position[0] + velocity[0] * delta
+        position[1] = position[1] + velocity[1] * delta
+        position[2] = position[2] + velocity[2] * delta
     })
 }
 

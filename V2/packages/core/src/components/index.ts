@@ -45,9 +45,12 @@ type DirectionProps = {
     direction: Array3
 }
 
-export const directionComponent = createComponent('directionComponent', (props?: Partial<DirectionProps>) => ({
-    direction: props?.direction ?? ([0, 0, 1] as Array3),
-}))
+export const directionComponent = createComponent(
+    'directionComponent',
+    (props?: Partial<DirectionProps>) => ({
+        direction: props?.direction ?? ([0, 0, 1] as Array3),
+    }),
+)
 
 export const emitterComponent = createComponent(
     'emitterComponent',
@@ -59,9 +62,12 @@ export const emitterComponent = createComponent(
     }),
 )
 
-export const healthComponent = createComponent('healthComponent', ({ health }: { health: number }) => ({
-    health,
-}))
+export const healthComponent = createComponent(
+    'healthComponent',
+    ({ health }: { health: number }) => ({
+        health,
+    }),
+)
 
 export const hitboxComponent = createComponent(
     'hitboxComponent',
@@ -71,37 +77,40 @@ export const hitboxComponent = createComponent(
     }),
 )
 
-export const inputComponent = createComponent('inputComponent', ({ keymap }: { keymap: Keymap }) => {
-    const mouse: {
-        pan: { x: number; y: number }
-        position: { centerRel: { x: number; y: number } }
-    } = {
-        pan: {
-            x: 0,
-            y: 0,
-        },
-        position: {
-            centerRel: {
+export const inputComponent = createComponent(
+    'inputComponent',
+    ({ keymap }: { keymap: Keymap }) => {
+        const mouse: {
+            pan: { x: number; y: number }
+            position: { centerRel: { x: number; y: number } }
+        } = {
+            pan: {
                 x: 0,
                 y: 0,
             },
-        },
-    }
-
-    const input: Record<string, { press: boolean; hold: boolean }> = {}
-
-    Object.keys(keymap).forEach((action) => {
-        input[action] = {
-            press: false,
-            hold: false,
+            position: {
+                centerRel: {
+                    x: 0,
+                    y: 0,
+                },
+            },
         }
-    })
 
-    return {
-        mouse,
-        input,
-    }
-})
+        const input: Record<string, { press: boolean; hold: boolean }> = {}
+
+        Object.keys(keymap).forEach((action) => {
+            input[action] = {
+                press: false,
+                hold: false,
+            }
+        })
+
+        return {
+            mouse,
+            input,
+        }
+    },
+)
 
 type Model = {
     modelPath: string
@@ -113,32 +122,54 @@ type Model = {
 }
 export const modelComponent = createComponent(
     'modelComponent',
-    ({ modelName, castShadow, data }: { modelName: string; castShadow?: boolean; data: Model }) => ({
+    ({
+        modelName,
+        castShadow,
+        data,
+    }: {
+        modelName: string
+        castShadow?: boolean
+        data: Model
+    }) => ({
         modelName,
         castShadow: castShadow ?? false,
         data,
     }),
 )
 
-export const animationComponent = createComponent('animationComponent', ({ state }: { state?: string }) => ({
-    state: state ?? null,
-    prevState: null as string | null,
-}))
+export const animationComponent = createComponent(
+    'animationComponent',
+    ({ state }: { state?: string }) => ({
+        state: state ?? null,
+        prevState: null as string | null,
+    }),
+)
 
 export const transform3D = createComponent(
     'transform3D',
-    ({ position, rotation, scale }: { position?: Array3; rotation?: Array3; scale?: Array3 }) => ({
+    ({
+        position,
+        rotation,
+        scale,
+    }: {
+        position?: Array3
+        rotation?: Array3
+        scale?: Array3
+    }) => ({
         position: position ?? ([0, 0, 0] as Array3),
         rotation: rotation ?? ([0, 0, 0] as Array3),
         scale: scale ?? ([1, 1, 1] as Array3),
     }),
 )
 
-export const spriteComponent = createComponent('spriteComponent', ({ url }: { url: string }) => ({
-    url,
-    isLoaded: false,
-    isLoading: false,
-}))
+export const spriteComponent = createComponent(
+    'spriteComponent',
+    ({ url }: { url: string }) => ({
+        url,
+        isLoaded: false,
+        isLoading: false,
+    }),
+)
 
 export const velocityComponent = createComponent(
     'velocityComponent',
@@ -158,7 +189,10 @@ type Geometry2DCircle = {
     radius: number
 }
 
-export const mesh2D = createComponent('geometry2D', (props: Geometry2DPlane | Geometry2DCircle) => ({ ...props }))
+export const mesh2D = createComponent(
+    'geometry2D',
+    (props: Geometry2DPlane | Geometry2DCircle) => ({ ...props }),
+)
 
 type MaterialBasic = {
     material: 'basic'
@@ -175,4 +209,7 @@ type MaterialStandard = {
     repeatY?: number
 }
 
-export const material = createComponent('material', (props: MaterialBasic | MaterialStandard) => ({ ...props }))
+export const material = createComponent(
+    'material',
+    (props: MaterialBasic | MaterialStandard) => ({ ...props }),
+)

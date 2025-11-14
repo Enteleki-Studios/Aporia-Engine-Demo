@@ -1,7 +1,7 @@
-import { Engine, Graph as GraphIcon, Timer } from '@phosphor-icons/react'
 import React, { Fragment, useEffect, useRef } from 'react'
 
 import { Graph, type World, useForceUpdate, useSmoothNumber } from '@gengine/core'
+import { Engine, Graph as GraphIcon, Timer } from '@phosphor-icons/react'
 
 import { Icon } from './Icon'
 import { secondsToClockString } from './utils'

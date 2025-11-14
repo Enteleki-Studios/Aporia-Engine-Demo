@@ -2,7 +2,12 @@ type SerializablePrimitives = string | number | boolean
 
 type InputProps =
     | {
-          [K: string]: undefined | null | SerializablePrimitives | SerializablePrimitives[] | InputProps
+          [K: string]:
+              | undefined
+              | null
+              | SerializablePrimitives
+              | SerializablePrimitives[]
+              | InputProps
       }
     | undefined
 
@@ -10,7 +15,9 @@ type ComponentProps = {
     [K: string]: null | SerializablePrimitives | SerializablePrimitives[] | ComponentProps
 }
 
-export type Component<T extends string = string, P = ComponentProps> = { readonly type: T } & P
+export type Component<T extends string = string, P = ComponentProps> = {
+    readonly type: T
+} & P
 
 export type ComponentCreator<T extends string, I, P> = {
     (input: I): Component<T, P>
@@ -19,7 +26,11 @@ export type ComponentCreator<T extends string, I, P> = {
     toString(): string
 }
 
-export const createComponent = <T extends string, I extends InputProps, P extends ComponentProps>(
+export const createComponent = <
+    T extends string,
+    I extends InputProps,
+    P extends ComponentProps,
+>(
     type: T,
     prepareComponent: (input: I) => P,
 ): ComponentCreator<T, I, P> => {
@@ -29,8 +40,9 @@ export const createComponent = <T extends string, I extends InputProps, P extend
     })
 
     componentCreator.type = type
-    componentCreator.match = (component: Component<string, unknown>): component is Component<T, P> =>
-        component.type === type
+    componentCreator.match = (
+        component: Component<string, unknown>,
+    ): component is Component<T, P> => component.type === type
     componentCreator.toString = () => type
 
     return componentCreator

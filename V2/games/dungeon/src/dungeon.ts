@@ -1,5 +1,3 @@
-import { Middleware } from '@reduxjs/toolkit'
-
 import {
     DEFAULT_KEYMAP,
     Entity,
@@ -34,6 +32,7 @@ import {
 } from '@gengine/core'
 import { Rapier3DPlugin } from '@gengine/plugin-rapier3D'
 import { ThreejsPlugin } from '@gengine/plugin-threejs'
+import { Middleware } from '@reduxjs/toolkit'
 
 // import { AppDispatch } from 'dungeon/store'
 import * as Systems from '~/systems'
@@ -178,7 +177,11 @@ world.entities.addEntity(
         hitboxComponent({ radius: 1 }),
         healthComponent({ health: 20 }),
         inputComponent({ keymap: DEFAULT_KEYMAP }),
-        modelComponent({ modelName: 'wizard', data: modelDB['wizard'], castShadow: true }),
+        modelComponent({
+            modelName: 'wizard',
+            data: modelDB['wizard'],
+            castShadow: true,
+        }),
         transform3D({ position: [0, 2, -1] }),
         velocityComponent({}),
         damagingComponent({
@@ -367,10 +370,17 @@ for (let i = 0; i < 32; i += 2) {
 }
 
 // Grass
-const makePos = (): [number, number, number] => [Math.random() * 30 - 15, 0, Math.random() * 30 - 15]
+const makePos = (): [number, number, number] => [
+    Math.random() * 30 - 15,
+    0,
+    Math.random() * 30 - 15,
+]
 for (let i = 0; i < 200; i += 1) {
     world.entities.addEntity(
-        Entity.of(modelComponent({ modelName: 'grass', data: modelDB['grass'] }), transform3D({ position: makePos() })),
+        Entity.of(
+            modelComponent({ modelName: 'grass', data: modelDB['grass'] }),
+            transform3D({ position: makePos() }),
+        ),
     )
 }
 

@@ -1,4 +1,11 @@
-import { LinearFilter, Mesh, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, Texture } from 'three'
+import {
+    LinearFilter,
+    Mesh,
+    MeshStandardMaterial,
+    PlaneGeometry,
+    RepeatWrapping,
+    Texture,
+} from 'three'
 
 import { CustomGridSettings, CustomGridTexture } from './CustomGridTexture'
 

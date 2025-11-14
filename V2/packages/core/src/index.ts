@@ -12,9 +12,15 @@ export { applyVelocitySystem } from './systems/applyVelocitySystem'
 export { damageSystem, damagingFilter, damagableFilter } from './systems/DamageSystem'
 export { emitterSystem, emitterFilter } from './systems/EmitterSystem'
 export { firstPersonCameraSystem } from './systems/FirstPersonCameraSystem'
-export { firstPersonMovementSystem, firstPersonMovementFilter } from './systems/FirstPersonMovementSystem'
+export {
+    firstPersonMovementSystem,
+    firstPersonMovementFilter,
+} from './systems/FirstPersonMovementSystem'
 export { inputSystem } from './systems/InputSystem'
-export { twinStickMovementSystem, twinStickMovementFilter } from './systems/TwinStickMovementSystem'
+export {
+    twinStickMovementSystem,
+    twinStickMovementFilter,
+} from './systems/TwinStickMovementSystem'
 export { thirdPersonCameraSystem } from './systems/ThirdPersonCameraSystem'
 export { sunSystem, sunTargetFilter, directionalLightFilter } from './systems/SunSystem'
 

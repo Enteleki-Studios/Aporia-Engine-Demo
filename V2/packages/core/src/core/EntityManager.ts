@@ -44,12 +44,16 @@ export class EntityManager {
             if (query.match(entity)) {
                 if (!queryResult.has(entity)) {
                     queryResult.add(entity)
-                    this.queryMatchObservers.get(query)?.forEach((cb) => cb(entity, query))
+                    this.queryMatchObservers
+                        .get(query)
+                        ?.forEach((cb) => cb(entity, query))
                 }
             } else {
                 if (queryResult.has(entity)) {
                     queryResult.delete(entity)
-                    this.queryUnMatchObservers.get(query)?.forEach((cb) => cb(entity, query))
+                    this.queryUnMatchObservers
+                        .get(query)
+                        ?.forEach((cb) => cb(entity, query))
                 }
             }
         })

@@ -1,4 +1,10 @@
-import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect } from 'postprocessing'
+import {
+    BloomEffect,
+    EffectComposer,
+    EffectPass,
+    RenderPass,
+    SMAAEffect,
+} from 'postprocessing'
 import {
     CameraHelper,
     HalfFloatType,
@@ -45,7 +51,13 @@ export class StandardRenderer {
     debugCanvas: HTMLCanvasElement
     debugContext: CanvasRenderingContext2D | null
 
-    constructor({ canvas, fov = 60, aspect = 1, near = 0.1, far = 100 }: StandardRendererParams) {
+    constructor({
+        canvas,
+        fov = 60,
+        aspect = 1,
+        near = 0.1,
+        far = 100,
+    }: StandardRendererParams) {
         this.renderer = new WebGLRenderer({
             canvas,
             powerPreference: 'high-performance',

@@ -17,7 +17,12 @@ export const sunSystem = createSystem('sun', () => (world: World) => {
                 target: sunTarget,
             } = sunEntity.get(directionalLightComponent)
 
-            Vec3.set(sunPosition, targetPosition[0] + sunOffset[0], sunOffset[1], targetPosition[2] + sunOffset[2])
+            Vec3.set(
+                sunPosition,
+                targetPosition[0] + sunOffset[0],
+                sunOffset[1],
+                targetPosition[2] + sunOffset[2],
+            )
 
             Vec3.copy(sunTarget, targetPosition)
         })

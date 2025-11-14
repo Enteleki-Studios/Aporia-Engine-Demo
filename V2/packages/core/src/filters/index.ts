@@ -18,7 +18,10 @@ import { ECSFilter } from '~/core'
 export const ambientLightFilter = new ECSFilter([ambientLightComponent])
 export const boxFilter = new ECSFilter([basicGeometryComponent, transform3D])
 export const cameraFilter = new ECSFilter([cameraComponent])
-export const cameraTargetFilter = new ECSFilter([transform3D, directionComponent], [tags.cameraTarget])
+export const cameraTargetFilter = new ECSFilter(
+    [transform3D, directionComponent],
+    [tags.cameraTarget],
+)
 export const collidingFilter = new ECSFilter([colliderComponent, transform3D])
 export const directionalLightFilter = new ECSFilter([directionalLightComponent])
 export const heroFilter = new ECSFilter([], [tags.hero])

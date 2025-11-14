@@ -99,10 +99,27 @@ export class Graph {
         }
 
         if (this.context) {
-            const { foreground, foregroundNegative, background, width, height, colWidth } = this.settings
+            const {
+                foreground,
+                foregroundNegative,
+                background,
+                width,
+                height,
+                colWidth,
+            } = this.settings
             const { scale, yAxisHeight } = this.renderSettings
 
-            this.context.drawImage(this.canvas, 0, 0, width, height, -colWidth, 0, width, height)
+            this.context.drawImage(
+                this.canvas,
+                0,
+                0,
+                width,
+                height,
+                -colWidth,
+                0,
+                width,
+                height,
+            )
 
             this.context.fillStyle = background
             this.context.fillRect(width - colWidth, 0, colWidth, height)

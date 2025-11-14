@@ -97,14 +97,13 @@ type ThreeOutput = {
 }
 
 const positionedRenderableQuery = createQuery(
-    (entity) =>
-        entity.has(Transform3DComponent) &&
-        (entity.has(MeshComponent) || entity.has(GltfComponent)),
+    [Transform3DComponent],
+    (entity) => entity.has(MeshComponent) || entity.has(GltfComponent),
 )
 
-const meshQuery = createQuery((entity) => entity.has(MeshComponent))
+const meshQuery = createQuery([MeshComponent])
 
-const gltfQuery = createQuery((entity) => entity.has(GltfComponent))
+const gltfQuery = createQuery([GltfComponent])
 
 export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
     createResources: () => {
@@ -134,7 +133,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         }
     },
     init: (runtime) => {
-        runtime.resources.entities.addQueryObserver(meshQuery, (entity) => {
+        runtime.resources.entities.addQueryObserver(meshQuery, ([_, entity]) => {
             const { objectStore, renderer } = runtime.resources.three
             const basicGeometryComponent = entity.get(BasicGeometryComponent)
 
@@ -167,32 +166,34 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             }
         })
 
-        runtime.resources.entities.addQueryObserver(gltfQuery, (entity) => {
-            const { objectStore, renderer, gltfLoader } = runtime.resources.three
-            const gltfComponent = entity.get(GltfComponent)
-            const transform = entity.get(Transform3DComponent)
+        runtime.resources.entities.addQueryObserver(
+            gltfQuery,
+            ([[gltfComponent], entity]) => {
+                const { objectStore, renderer, gltfLoader } = runtime.resources.three
+                // TODO: require transform and apply transform when group is added to scene
+                const transform = entity.get(Transform3DComponent)
 
-            if (gltfComponent && transform) {
-                const [group, isCreated] = objectStore.getOrCreate(entity.id)
+                if (transform) {
+                    const [group, isCreated] = objectStore.getOrCreate(entity.id)
 
-                if (isCreated) {
-                    renderer.scene.add(group)
+                    if (isCreated) {
+                        renderer.scene.add(group)
+                    }
+
+                    gltfLoader.load(gltfComponent.path, (gltf) => {
+                        group.add(gltf.scene)
+                    })
                 }
-
-                gltfLoader.load(gltfComponent.path, (gltf) => {
-                    group.add(gltf.scene)
-                })
-            }
-        })
+            },
+        )
 
         runtime.addSystem((world) => {
             world.resources.entities
                 .query(positionedRenderableQuery)
-                .forEach((entity) => {
+                .forEach(([[transform], entity]) => {
                     const group = world.resources.three.objectStore.get(entity.id)
-                    const transform = entity.get(Transform3DComponent)
 
-                    if (group && transform) {
+                    if (group) {
                         group.position.fromArray(transform.position)
                         group.scale.fromArray(transform.scale)
                         if (

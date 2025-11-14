@@ -1,8 +1,8 @@
-import { ArrowClockwise, Eye, EyeSlash } from '@phosphor-icons/react'
 import { Icon } from 'Icon'
 import React, { useEffect, useState } from 'react'
 
 import { Component, Entity, EntityId, useForceUpdate, useWorld } from '@gengine/core'
+import { ArrowClockwise, Eye, EyeSlash } from '@phosphor-icons/react'
 
 const ComponentView = ({ component }: { component: Component }) => {
     return (
@@ -49,7 +49,11 @@ const EntityView = ({ entity }: { entity: Entity }) => {
             <div className="toolbar">
                 <div>Entity</div>
                 <div className="tools">
-                    <Icon icon={<ArrowClockwise />} onClick={forceUpdate} title="Refresh" />
+                    <Icon
+                        icon={<ArrowClockwise />}
+                        onClick={forceUpdate}
+                        title="Refresh"
+                    />
                     <Icon
                         icon={autoUpdate ? <Eye /> : <EyeSlash />}
                         onClick={() => setAutoUpdate(!autoUpdate)}
@@ -71,7 +75,15 @@ const EntityView = ({ entity }: { entity: Entity }) => {
     )
 }
 
-const EntityRow = ({ entity, onClick, isSelected }: { entity: Entity; onClick: () => void; isSelected?: boolean }) => (
+const EntityRow = ({
+    entity,
+    onClick,
+    isSelected,
+}: {
+    entity: Entity
+    onClick: () => void
+    isSelected?: boolean
+}) => (
     <div className={`EntityRow ${isSelected && 'isSelected'}`} onClick={onClick}>
         <div>{entity.id.substring(0, 8)}</div>
         <div>{entity.name}</div>
@@ -108,11 +120,21 @@ export const EntityExplorer = () => {
             <section className="entities">
                 <div className="toolbar">
                     <div>Entities ({entities.length})</div>
-                    <Icon icon={<ArrowClockwise />} onClick={forceUpdate} title="Refresh" />
+                    <Icon
+                        icon={<ArrowClockwise />}
+                        onClick={forceUpdate}
+                        title="Refresh"
+                    />
                 </div>
                 <div className="entitiesTable">{entities}</div>
             </section>
-            <section>{selectedEntity ? <EntityView entity={selectedEntity} /> : 'Select entity'}</section>
+            <section>
+                {selectedEntity ? (
+                    <EntityView entity={selectedEntity} />
+                ) : (
+                    'Select entity'
+                )}
+            </section>
         </div>
     )
 }

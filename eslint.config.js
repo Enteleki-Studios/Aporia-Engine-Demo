@@ -31,6 +31,7 @@ export default defineConfig(
         languageOptions: {
             parserOptions: {
                 project: './tsconfig.json',
+                tsconfigRootDir: import.meta.dirname,
             },
         },
         rules: {
@@ -44,6 +45,18 @@ export default defineConfig(
             '@typescript-eslint/restrict-template-expressions': [
                 'error',
                 { allowNumber: true },
+            ],
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                {
+                    args: 'all',
+                    argsIgnorePattern: '^_',
+                    caughtErrors: 'all',
+                    caughtErrorsIgnorePattern: '^_',
+                    destructuredArrayIgnorePattern: '^_',
+                    varsIgnorePattern: '^_',
+                    ignoreRestSiblings: true,
+                },
             ],
             // Disallow variable declarations from shadowing variables declared in the outer scope
             'no-shadow': 'off',

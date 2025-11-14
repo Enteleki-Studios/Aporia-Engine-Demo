@@ -1,4 +1,8 @@
-export { createComponent, type Component, type AnyComponentCreator } from './createComponent'
+export {
+    createComponent,
+    type Component,
+    type AnyComponentCreator,
+} from './createComponent'
 export { createSystem, type System } from './createSystem'
 export { ECSFilter } from './ECSFilter'
 export { Entity, type EntityId } from './Entity'

@@ -39,6 +39,7 @@
             "@core": ["./src/core/"],
             "@core/components": ["./src/core/components/"],
             "@core/react": ["./src/core/react/"],
+            "@core/utils": ["./src/core/utils/"],
             "@inspector": ["./src/inspector/"],
             "@pluginEntities": ["./src/pluginEntities/"],
             "@pluginInput": ["./src/pluginInput/"],

@@ -5,22 +5,57 @@ import {
     ObjectStore,
 } from '@core'
 
-type Query = (entity: Entity) => boolean
-type QueryObserver = (entity: Entity) => void
-type QueryCacheEntry = {
-    results: Set<Entity>
-    onMatchObservers: Set<QueryObserver>
-    onUnMatchObservers: Set<QueryObserver>
-}
-type QueryCache = ObjectStore<Query, QueryCacheEntry>
+import { newUUID } from '@core/utils'
 
 type EntityId = string
 type EntityMap = Map<EntityId, Entity>
 
-class Entities {
+type FilterPredicate = (entity: Entity) => boolean
+
+type Query<T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[]> = {
+    requires: T
+    filter?: FilterPredicate | undefined
+}
+
+type ComponentsFromCreators<T extends readonly AnyComponentCreator[]> = {
+    [K in keyof T]: T[K] extends AnyComponentCreator ? ReturnType<T[K]> : never
+}
+
+type QueryResult<
+    T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
+> = [ComponentsFromCreators<T>, Entity]
+
+type QueryObserver<
+    T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
+> = (result: QueryResult<T>) => void
+
+type QueryCacheEntry<
+    T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
+> = {
+    results: QueryResult<T>[]
+    onMatchObservers: Set<QueryObserver<T>>
+    onUnMatchObservers: Set<QueryObserver<T>>
+}
+type QueryCache = ObjectStore<Query<any>, QueryCacheEntry>
+
+const entityMatchesQuery = (entity: Entity, query: Query) =>
+    entity.hasEvery(query.requires) && (query.filter?.(entity) ?? true)
+
+const getComponentsAsTuple = <T extends readonly AnyComponentCreator[]>(
+    entity: Entity,
+    requires: T,
+): ComponentsFromCreators<T> =>
+    requires.map((r) => entity.get(r)!) as any as ComponentsFromCreators<T>
+
+const entityToQueryResult = <T extends readonly AnyComponentCreator[]>(
+    entity: Entity,
+    query: Query<T>,
+): QueryResult<T> => [getComponentsAsTuple(entity, query.requires), entity]
+
+export class Entities {
     private entities: EntityMap = new Map()
     private queryCache: QueryCache = new ObjectStore(() => ({
-        results: new Set(),
+        results: [],
         onMatchObservers: new Set(),
         onUnMatchObservers: new Set(),
     }))
@@ -28,20 +63,25 @@ class Entities {
     private updateQueryResultsForEntity(entity: Entity) {
         this.queryCache.forEach((cacheEntry, query) => {
             const { results, onMatchObservers, onUnMatchObservers } = cacheEntry
+            const resultIndex = results.findIndex((res) => res[1] === entity)
 
-            if (query(entity)) {
-                if (!results.has(entity)) {
-                    results.add(entity)
+            if (entityMatchesQuery(entity, query)) {
+                if (resultIndex < 0) {
+                    const newResult = entityToQueryResult(entity, query)
+                    results.push(newResult)
                     onMatchObservers.forEach((cb) => {
-                        cb(entity)
+                        cb(newResult)
                     })
                 }
             } else {
-                if (results.has(entity)) {
-                    results.delete(entity)
-                    onUnMatchObservers.forEach((cb) => {
-                        cb(entity)
-                    })
+                if (resultIndex >= 0) {
+                    // TODO: Don't love the mutation + indexed access
+                    const deletedResult = results.splice(resultIndex, 1)[0]
+                    if (deletedResult) {
+                        onUnMatchObservers.forEach((cb) => {
+                            cb(deletedResult)
+                        })
+                    }
                 }
             }
         })
@@ -60,7 +100,7 @@ class Entities {
         const entity = this.entities.get(entityId)
         if (entity) {
             components.forEach((c) => {
-                entity.set(c)
+                entity.add(c)
             })
             this.updateQueryResultsForEntity(entity)
         }
@@ -76,28 +116,36 @@ class Entities {
         }
     }
 
-    query(query: Query): Set<Entity> {
+    query<T extends readonly AnyComponentCreator[]>(query: Query<T>): QueryResult<T>[] {
         const cacheEntry = this.queryCache.get(query)
 
         if (cacheEntry) {
-            return cacheEntry.results
+            return cacheEntry.results as QueryResult<T>[]
         }
 
-        const results = new Set(this.entities.values().filter(query))
+        const results = this.entities
+            .values()
+            .filter((entity) => entityMatchesQuery(entity, query))
+            .map((entity) => entityToQueryResult(entity, query))
+            .toArray()
 
-        this.queryCache.create(query).results = results
+        this.queryCache.create(query).results = results as QueryResult<any>[]
 
         return results
     }
 
-    addQueryObserver(query: Query, onMatch?: QueryObserver, onUnMatch?: QueryObserver) {
+    addQueryObserver<T extends readonly AnyComponentCreator[]>(
+        query: Query<T>,
+        onMatch?: QueryObserver<T>,
+        onUnMatch?: QueryObserver<T>,
+    ) {
         const [cacheEntry] = this.queryCache.getOrCreate(query)
 
         if (onMatch) {
-            cacheEntry.onMatchObservers.add(onMatch)
+            (cacheEntry as QueryCacheEntry<T>).onMatchObservers.add(onMatch)
         }
         if (onUnMatch) {
-            cacheEntry.onUnMatchObservers.add(onUnMatch)
+            (cacheEntry as QueryCacheEntry<T>).onUnMatchObservers.add(onUnMatch)
         }
     }
 
@@ -106,21 +154,29 @@ class Entities {
     }
 }
 
-class Entity {
+export class Entity {
     id: EntityId
 
     private components = new Map<ComponentKey, AnyComponent>()
 
     constructor(id?: EntityId) {
-        this.id = id ?? window.crypto.randomUUID()
+        this.id = id ?? newUUID()
     }
 
-    set(component: AnyComponent) {
+    add(component: AnyComponent) {
         this.components.set(component.__key__, component)
     }
 
     has(componentCreator: AnyComponentCreator) {
         return this.components.has(componentCreator.__key__)
+    }
+
+    hasEvery(componentCreators: readonly AnyComponentCreator[]) {
+        return componentCreators.every((cc) => this.components.has(cc.__key__))
+    }
+
+    hasSome(componentCreators: AnyComponentCreator[]) {
+        return componentCreators.some((cc) => this.components.has(cc.__key__))
     }
 
     delete(componentCreator: AnyComponentCreator) {
@@ -133,7 +189,13 @@ class Entity {
     }
 }
 
-export const createQuery = (query: Query) => query
+export const createQuery = <const T extends readonly AnyComponentCreator[]>(
+    requires: T,
+    filter?: FilterPredicate,
+): Query<T> => ({
+    requires,
+    filter,
+})
 
 export const pluginEntities = () => ({
     createResources() {

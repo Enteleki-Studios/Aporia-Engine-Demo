@@ -12,7 +12,13 @@ type IconProps = {
 export const Icon = ({ icon, onClick, title, disabled }: IconProps) => {
     if (onClick) {
         return (
-            <button disabled={disabled} className="Icon" onClick={onClick} type="button" title={title}>
+            <button
+                disabled={disabled}
+                className="Icon"
+                onClick={onClick}
+                type="button"
+                title={title}
+            >
                 {icon}
             </button>
         )
