@@ -2,6 +2,8 @@ import { createContext, useContext } from 'react'
 
 import { Runtime } from '@core'
 
+export { useSmoothNumber } from './useSmoothNumber'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
 export const WorldContext = createContext<Runtime<any> | undefined>(undefined)
 

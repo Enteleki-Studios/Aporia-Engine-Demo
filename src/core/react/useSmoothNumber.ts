@@ -1,15 +1,20 @@
-import { useRef } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 import { average } from '@core/utils'
 
-export const useSmoothNumber = (value: number, history: number = 10) => {
+export const useSmoothNumber = (value: number, history = 10) => {
     const numbersRef = useRef<number[]>([])
+    const [avg, setAvg] = useState(0)
 
-    numbersRef.current.push(value)
+    useLayoutEffect(() => {
+        numbersRef.current.push(value)
 
-    if (numbersRef.current.length > history) {
-        numbersRef.current.shift()
-    }
+        if (numbersRef.current.length > history) {
+            numbersRef.current.shift()
+        }
 
-    return average(numbersRef.current)
+        setAvg(average(numbersRef.current))
+    }, [value, history])
+
+    return avg
 }

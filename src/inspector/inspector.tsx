@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useState } from 'react'
 
 import { type AnySystem } from '@core'
 
-import { useWorld } from '@core/react'
+import { useWorld, useSmoothNumber } from '@core/react'
 
 import './inspector.scss'
 
@@ -14,6 +14,7 @@ export const Inspector = ({ children }: InspectorProps) => {
     const [isPassthrough, setIsPassthrough] = useState(false)
     const world = useWorld()
     const [frame, setFrame] = useState(0)
+    const smoothFps = useSmoothNumber(world.clock.fps, 20)
 
     useEffect(() => {
         const onFrame: AnySystem = (w) => {
@@ -50,7 +51,7 @@ export const Inspector = ({ children }: InspectorProps) => {
             <div className="header">Inspector</div>
             <div className="sidepanel">
                 <h3>Sidepanel</h3>
-                <pre>FPS: {world.clock.fps}</pre>
+                <pre>FPS: {Math.floor(smoothFps)}</pre>
                 <pre>Frame: {frame}</pre>
                 <pre>Entities: {world.resources.entities.length}</pre>
             </div>
