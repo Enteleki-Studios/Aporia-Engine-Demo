@@ -61,14 +61,6 @@ type BundleProps = {
     velocityArgs?: Parameters<typeof Velocity3DComponent>
 }
 
-const createAsteroidBundle = (props?: BundleProps) => [
-    Transform3DComponent(...(props?.transformArgs ?? [])),
-    Velocity3DComponent(...(props?.velocityArgs ?? [])),
-    GltfComponent({
-        path: '/invaders/models/planet-11.gltf',
-    }),
-]
-
 const createMissileBundle = (props?: BundleProps) => [
     Transform3DComponent(...(props?.transformArgs ?? [])),
     Velocity3DComponent(...(props?.velocityArgs ?? [])),
@@ -82,28 +74,8 @@ const createMissileBundle = (props?: BundleProps) => [
 export const game1 = async () => {
     const world = await createWorld()
 
-    // world.runtime.addSystem((w) => {
-    //     if (eng.clock.frame === 500) {
-    //         w.stop()
-    //     }
-    // })
-
     world.addSystem(moveSystem)
     world.addSystem(applyVelocitySystem)
-
-    const asteroidId = world.resources.entities.createEntity()
-    world.resources.entities.addComponents(
-        asteroidId,
-        ...createAsteroidBundle({
-            transformArgs: [
-                {
-                    position: [0, 0, -15],
-                    scale: [0.5, 0.5, 0.5],
-                },
-            ],
-            velocityArgs: [[0, 0, 1]],
-        }),
-    )
 
     const quat = new Quaternion()
     quat.setFromEuler(new Euler(0, Math.PI, 0))
@@ -111,17 +83,14 @@ export const game1 = async () => {
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
         PlayerComponent(),
-        Transform3DComponent({
-            rotation: quat.toArray(),
-            scale: [0.3, 0.3, 0.3],
-        }),
+        Transform3DComponent(),
         GltfComponent({
-            path: '/invaders/models/ship-player.gltf',
+            path: '/humanoid/animated_robo.glb',
         }),
     )
 
-    world.resources.three.renderer.camera.position.set(0, 7, 7)
-    world.resources.three.renderer.camera.lookAt(new Vector3(0, 3, 0))
+    world.resources.three.renderer.camera.position.set(2, 4, 7)
+    world.resources.three.renderer.camera.lookAt(new Vector3(0, 1, 0))
 
     return world
 }

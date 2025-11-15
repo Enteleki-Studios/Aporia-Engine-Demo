@@ -142,10 +142,10 @@ export class Entities {
         const [cacheEntry] = this.queryCache.getOrCreate(query)
 
         if (onMatch) {
-            (cacheEntry as QueryCacheEntry<T>).onMatchObservers.add(onMatch)
+            ;(cacheEntry as QueryCacheEntry<T>).onMatchObservers.add(onMatch)
         }
         if (onUnMatch) {
-            (cacheEntry as QueryCacheEntry<T>).onUnMatchObservers.add(onUnMatch)
+            ;(cacheEntry as QueryCacheEntry<T>).onUnMatchObservers.add(onUnMatch)
         }
     }
 

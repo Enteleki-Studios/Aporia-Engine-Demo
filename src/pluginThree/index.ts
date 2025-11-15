@@ -1,19 +1,12 @@
 import {
     AmbientLight,
-    // AxesHelper,
     BoxGeometry,
     DirectionalLight,
-    // GridHelper,
     Group,
     Mesh,
     MeshStandardMaterial,
-    PCFSoftShadowMap,
-    PerspectiveCamera,
-    ReinhardToneMapping,
-    Scene,
+    // MeshBasicMaterial,
     SphereGeometry,
-    Vector3,
-    WebGLRenderer,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 
@@ -28,65 +21,15 @@ import {
 
 import { createQuery } from '@pluginEntities'
 
-class Renderer {
-    renderer
-    canvas
-    scene
-    camera
+import { DefaultCube } from './defaultCube'
+import { DefaultGrid } from './defaultGrid'
+import { Renderer } from './renderer'
+import { AxesHelper } from './axesHelper'
 
-    shouldRender = false
-
-    constructor() {
-        this.renderer = new WebGLRenderer({
-            powerPreference: 'high-performance',
-            antialias: true,
-        })
-
-        this.renderer.toneMapping = ReinhardToneMapping
-        this.renderer.toneMappingExposure = 2
-        this.renderer.shadowMap.enabled = true
-        this.renderer.shadowMap.type = PCFSoftShadowMap
-        this.renderer.setPixelRatio(1 /* window.devicePixelRatio */)
-        this.renderer.debug.checkShaderErrors = true
-        // this.renderer.autoClear = false
-        // this.renderer.info.autoReset = false
-        this.canvas = this.renderer.domElement
-
-        this.scene = new Scene()
-        this.camera = new PerspectiveCamera(60, 1, 0.1, 100)
-
-        this.camera.position.set(10, 10, 10)
-        this.camera.lookAt(new Vector3())
-
-        // this.scene.add(new AxesHelper(3))
-        // this.scene.add(new GridHelper(50, 50, 0x0089cc, 0x444444))
-    }
-
-    render() {
-        if (this.shouldRender) {
-            this.renderer.render(this.scene, this.camera)
-        }
-    }
-
-    setSize(width: number, height: number) {
-        const aspect = width / height
-
-        this.camera.aspect = aspect
-        this.camera.updateProjectionMatrix()
-
-        this.renderer.setSize(width, height, false)
-    }
-
-    setCanvasContainer(element: HTMLElement | null) {
-        if (element) {
-            element.replaceChildren()
-            element.appendChild(this.canvas)
-            this.shouldRender = true
-        } else {
-            this.shouldRender = false
-        }
-    }
-}
+export { DefaultCube } from './defaultCube'
+export { AxesHelper } from './axesHelper'
+export { CustomGridTexture } from './customGridTexture'
+export { DefaultGrid } from './defaultGrid'
 
 type ThreeOutput = {
     three: {
@@ -115,12 +58,20 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             return group
         })
 
-        renderer.setSize(1280, 720)
+        // renderer.setSize(1280, 720)
+        renderer.setSize(1920, 1080)
 
         renderer.renderer.setClearColor('#121212')
 
         renderer.scene.add(new AmbientLight())
         renderer.scene.add(new DirectionalLight())
+
+        renderer.scene.add(new AxesHelper())
+        renderer.scene.add(new DefaultCube())
+        renderer.scene.add(new DefaultGrid(10))
+        // renderer.scene.add(new GridHelper(50, 50, 0x0089cc, 0x444444))
+
+        // renderer.scene.overrideMaterial = new MeshBasicMaterial({ wireframe: true, color: '#0089cc' })
 
         const gltfLoader = new GLTFLoader()
 

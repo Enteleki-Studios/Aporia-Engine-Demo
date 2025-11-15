@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useState } from 'react'
 
 import { type AnySystem } from '@core'
 
-import { useWorld, useSmoothNumber } from '@core/react'
+import { useSmoothNumber, useWorld } from '@core/react'
 
 import './inspector.scss'
 
