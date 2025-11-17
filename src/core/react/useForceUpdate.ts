@@ -3,8 +3,7 @@ import { useReducer } from 'react'
 const forceUpdateReducer = (x: number) => x + 1
 
 /**
- * Force update function for react function components
- * Should be used very sparingly
+ * Forces a component re-render
  */
 export const useForceUpdate = () => {
     const [, forceUpdate] = useReducer(forceUpdateReducer, 0)
