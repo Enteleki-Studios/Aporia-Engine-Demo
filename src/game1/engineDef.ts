@@ -13,29 +13,29 @@ import { GltfComponent } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
 
-const transformQuery = createQuery([PlayerComponent])
+const playerQuery = createQuery([PlayerComponent, Transform3DComponent])
 
-const moveSystem = (engine: World) => {
+const playerMovementSystem = (engine: World) => {
     const { input } = engine.resources
-    const entities = engine.resources.entities.query(transformQuery)
+    const entities = engine.resources.entities.query(playerQuery)
 
-    entities.forEach(([_, entity]) => {
-        const transform = entity.get(Transform3DComponent)
+    entities.forEach(([[_, transform]]) => {
+        const dirX = input.left ? -1 : input.right ? 1 : 0
+        const dirZ = input.up ? -1 : input.down ? 1 : 0
 
-        if (transform) {
-            const dir = input.left ? -1 : input.right ? 1 : 0
-            const scale = 9
-            transform.position[0] += dir * scale * engine.clock.delta
+        const scale = 9
 
-            if (input.space) {
-                engine.resources.entities.addComponents(
-                    engine.resources.entities.createEntity(),
-                    ...createMissileBundle({
-                        transformArgs: [structuredClone(transform)],
-                        velocityArgs: [[0, 0, -5]],
-                    }),
-                )
-            }
+        transform.position[0] += dirX * scale * engine.clock.delta
+        transform.position[2] += dirZ * scale * engine.clock.delta
+
+        if (input.space) {
+            engine.resources.entities.addComponents(
+                engine.resources.entities.createEntity(),
+                ...createMissileBundle({
+                    transformArgs: [structuredClone(transform)],
+                    velocityArgs: [[0, 0, -5]],
+                }),
+            )
         }
     })
 }
@@ -74,7 +74,7 @@ const createMissileBundle = (props?: BundleProps) => [
 export const game1 = async () => {
     const world = await createWorld()
 
-    world.addSystem(moveSystem)
+    world.addSystem(playerMovementSystem)
     world.addSystem(applyVelocitySystem)
 
     const quat = new Quaternion()
