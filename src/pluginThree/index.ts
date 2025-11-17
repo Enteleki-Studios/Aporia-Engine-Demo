@@ -5,8 +5,6 @@ import {
     Group,
     Mesh,
     MeshStandardMaterial,
-    PlaneGeometry,
-    // MeshBasicMaterial,
     SphereGeometry,
     Vector3,
 } from 'three'
@@ -26,8 +24,9 @@ import { createQuery } from '@pluginEntities'
 import { AxesHelper } from './axesHelper'
 import { GltfComponent } from './components'
 import { DefaultCube } from './defaultCube'
-import { DefaultGrid } from './defaultGrid'
+import { InfiniteGrid } from './infiniteGrid'
 import { Renderer } from './renderer'
+
 // import { SkySphere } from './skySphere'
 
 export { DefaultCube } from './defaultCube'
@@ -72,7 +71,8 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         renderer.scene.add(new AxesHelper())
         renderer.scene.add(new DefaultCube())
-        renderer.scene.add(new DefaultGrid(10))
+        // renderer.scene.add(new DefaultGrid(10))
+        renderer.scene.add(new InfiniteGrid())
         // renderer.scene.add(new GridHelper(50, 50, 0x0089cc, 0x444444))
         // renderer.scene.add(new SkySphere())
         const sky = new Sky()
