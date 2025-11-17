@@ -14,22 +14,22 @@ import { type DefaultResources, ObjectStore, type Plugin } from '@core'
 
 import {
     BasicGeometryComponent,
-    GltfComponent,
     MeshComponent,
     Transform3DComponent,
 } from '@core/components'
 
 import { createQuery } from '@pluginEntities'
 
-import { DefaultCube } from './defaultCube'
+import { AxesHelper } from './axesHelper'
+import { GltfComponent } from './components'
 import { DefaultGrid } from './defaultGrid'
 import { Renderer } from './renderer'
-import { AxesHelper } from './axesHelper'
 
 export { DefaultCube } from './defaultCube'
 export { AxesHelper } from './axesHelper'
 export { CustomGridTexture } from './customGridTexture'
 export { DefaultGrid } from './defaultGrid'
+export * from './components'
 
 type ThreeOutput = {
     three: {
@@ -67,7 +67,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         renderer.scene.add(new DirectionalLight())
 
         renderer.scene.add(new AxesHelper())
-        renderer.scene.add(new DefaultCube())
+        // renderer.scene.add(new DefaultCube())
         renderer.scene.add(new DefaultGrid(10))
         // renderer.scene.add(new GridHelper(50, 50, 0x0089cc, 0x444444))
 

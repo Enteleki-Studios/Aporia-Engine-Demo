@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- library code */
+/* eslint-disable @typescript-eslint/consistent-type-assertions -- library code */
 import {
     type AnyComponent,
     type AnyComponentCreator,
@@ -6,6 +8,8 @@ import {
 } from '@core'
 
 import { newUUID } from '@core/utils'
+
+export * from './entitiesPanel'
 
 type EntityId = string
 type EntityMap = Map<EntityId, Entity>
@@ -45,6 +49,7 @@ const getComponentsAsTuple = <T extends readonly AnyComponentCreator[]>(
     entity: Entity,
     requires: T,
 ): ComponentsFromCreators<T> =>
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- TODO: Refactor to remove this
     requires.map((r) => entity.get(r)!) as any as ComponentsFromCreators<T>
 
 const entityToQueryResult = <T extends readonly AnyComponentCreator[]>(
@@ -184,7 +189,6 @@ export class Entity {
     }
 
     get<C extends AnyComponentCreator>(component: C) {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Required assertion
         return this.components.get(component.__key__) as ReturnType<C> | undefined
     }
 }
@@ -204,3 +208,6 @@ export const pluginEntities = () => ({
         }
     },
 })
+
+/* eslint-enable @typescript-eslint/no-explicit-any -- library code */
+/* eslint-enable @typescript-eslint/consistent-type-assertions -- library code */

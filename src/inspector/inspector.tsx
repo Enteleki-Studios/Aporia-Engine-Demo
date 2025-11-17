@@ -1,8 +1,8 @@
 import { type ReactNode, useEffect, useState } from 'react'
 
-import { type AnySystem } from '@core'
+import { ResourcesPanel, RuntimePanel } from '@core/react'
 
-import { useSmoothNumber, useWorld } from '@core/react'
+import { EntitiesPanel } from '@pluginEntities'
 
 import './inspector.scss'
 
@@ -12,33 +12,18 @@ type InspectorProps = {
 
 export const Inspector = ({ children }: InspectorProps) => {
     const [isPassthrough, setIsPassthrough] = useState(false)
-    const world = useWorld()
-    const [frame, setFrame] = useState(0)
-    const smoothFps = useSmoothNumber(world.clock.fps, 20)
 
     useEffect(() => {
-        const onFrame: AnySystem = (w) => {
-            setFrame(w.clock.frames)
-        }
-
-        world.addSystem(onFrame)
-
-        return () => {
-            world.removeSystem(onFrame)
-        }
-    }, [world])
-
-    useEffect(() => {
-        const togglePassthroughMode = (event: KeyboardEvent) => {
+        const handleKeyDown = (event: KeyboardEvent) => {
             if (event.code === 'Backquote') {
                 setIsPassthrough((prev) => !prev)
             }
         }
 
-        document.addEventListener('keydown', togglePassthroughMode)
+        document.addEventListener('keydown', handleKeyDown)
 
         return () => {
-            document.removeEventListener('keydown', togglePassthroughMode)
+            document.removeEventListener('keydown', handleKeyDown)
         }
     }, [])
 
@@ -50,16 +35,11 @@ export const Inspector = ({ children }: InspectorProps) => {
         <div className="Inspector">
             <div className="header">Inspector</div>
             <div className="sidepanel">
-                <h3>Sidepanel</h3>
-                <pre>FPS: {Math.floor(smoothFps)}</pre>
-                <pre>Frame: {frame}</pre>
-                <pre>Entities: {world.resources.entities.length}</pre>
+                <RuntimePanel />
+                <EntitiesPanel />
             </div>
             <div className="explorer">
-                <h3>Resources</h3>
-                <pre>
-                    {JSON.stringify(world.resources, Object.keys(world.resources), 2)}
-                </pre>
+                <ResourcesPanel />
             </div>
             <div className="views">
                 <div className="game">{children}</div>

@@ -2,7 +2,6 @@ import { Euler, Quaternion, Vector3 } from 'three'
 
 import {
     BasicGeometryComponent,
-    GltfComponent,
     MeshComponent,
     PlayerComponent,
     Transform3DComponent,
@@ -10,6 +9,7 @@ import {
 } from '@core/components'
 
 import { createQuery } from '@pluginEntities'
+import { GltfComponent } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
 

@@ -36,10 +36,6 @@ export const BasicGeometryComponent = createComponent(
 
 export const MeshComponent = createComponent('mesh')
 
-export const GltfComponent = createComponent('gltf', ({ path }: { path: string }) => ({
-    path,
-}))
-
 export const Velocity3DComponent = createComponent('velocity', (velocity?: Array3) => ({
     velocity: velocity ?? [0, 0, 0],
 }))

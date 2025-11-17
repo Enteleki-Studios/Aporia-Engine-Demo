@@ -56,8 +56,8 @@ export class Rapier3DPlugin implements Plugin {
 
                 characterController.enableSnapToGround(0.5)
                 characterController.enableAutostep(0.5, 0.2, true)
-                characterController.setMaxSlopeClimbAngle((45 * Math.PI) / 180)
-                characterController.setMinSlopeSlideAngle((30 * Math.PI) / 180)
+                characterController.setMaxSlopeClimbAngle(45 * (Math.PI / 180))
+                characterController.setMinSlopeSlideAngle(30 * (Math.PI / 180))
                 characterController.setApplyImpulsesToDynamicBodies(true)
 
                 const receiver = makePhysicsBodyReceiver(

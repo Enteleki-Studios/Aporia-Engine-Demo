@@ -5,6 +5,7 @@ import {
     Scene,
     WebGLRenderer,
 } from 'three'
+import { OrbitControls } from 'three/examples/jsm/Addons.js'
 
 export class Renderer {
     renderer
@@ -32,6 +33,8 @@ export class Renderer {
 
         this.scene = new Scene()
         this.camera = new PerspectiveCamera(60, 1, 0.1, 100)
+
+        new OrbitControls(this.camera, this.canvas)
     }
 
     render() {

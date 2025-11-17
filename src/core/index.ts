@@ -34,6 +34,8 @@ export type PluginsToResources<PA extends AnyPlugin[]> = Simplify<
     UnionToIntersection<Awaited<ReturnType<NonNullable<PA[number]['createResources']>>>>
 >
 
+export type WorldWithPlugins<PA extends AnyPlugin[]> = Runtime<PluginsToResources<PA>>
+
 export type System<T> = (engine: T) => void
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
 export type AnySystem = System<Runtime<any>>
