@@ -7,9 +7,11 @@ type CheckDependencies<Current extends object, Required extends object> = [
     keyof Required,
 ] extends [never]
     ? true
-    : Required extends Current
-      ? true
-      : false
+    : [Current] extends [never]
+      ? false
+      : Current extends Required
+        ? true
+        : false
 
 export class PluginComposer<P extends AnyPlugin[]> {
     private plugins: P

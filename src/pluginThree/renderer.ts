@@ -32,7 +32,7 @@ export class Renderer {
         this.canvas = this.renderer.domElement
 
         this.scene = new Scene()
-        this.camera = new PerspectiveCamera(60, 1, 0.1, 100)
+        this.camera = new PerspectiveCamera(60, 1, 0.1, 1000)
 
         new OrbitControls(this.camera, this.canvas)
     }

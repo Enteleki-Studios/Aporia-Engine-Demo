@@ -44,6 +44,7 @@
             "@pluginEntities": ["./src/pluginEntities/"],
             "@pluginInput": ["./src/pluginInput/"],
             "@pluginRapier3D": ["./src/pluginRapier3D/"],
+            "@pluginRapierThreeViz": ["./src/pluginRapierThreeViz/"],
             "@pluginThree": ["./src/pluginThree/"]
         }
     },

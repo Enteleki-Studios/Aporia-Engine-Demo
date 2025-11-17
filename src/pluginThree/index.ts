@@ -5,10 +5,13 @@ import {
     Group,
     Mesh,
     MeshStandardMaterial,
+    PlaneGeometry,
     // MeshBasicMaterial,
     SphereGeometry,
+    Vector3,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { Sky } from 'three/addons/objects/Sky.js'
 
 import { type DefaultResources, ObjectStore, type Plugin } from '@core'
 
@@ -22,9 +25,10 @@ import { createQuery } from '@pluginEntities'
 
 import { AxesHelper } from './axesHelper'
 import { GltfComponent } from './components'
+import { DefaultCube } from './defaultCube'
 import { DefaultGrid } from './defaultGrid'
 import { Renderer } from './renderer'
-import { SkySphere } from './skySphere'
+// import { SkySphere } from './skySphere'
 
 export { DefaultCube } from './defaultCube'
 export { AxesHelper } from './axesHelper'
@@ -64,14 +68,50 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         renderer.renderer.setClearColor('#888888')
 
-        renderer.scene.add(new AmbientLight())
-        renderer.scene.add(new DirectionalLight())
+        renderer.scene.add(new AmbientLight(0xffffff, 0.2))
 
         renderer.scene.add(new AxesHelper())
-        // renderer.scene.add(new DefaultCube())
+        renderer.scene.add(new DefaultCube())
         renderer.scene.add(new DefaultGrid(10))
         // renderer.scene.add(new GridHelper(50, 50, 0x0089cc, 0x444444))
-        renderer.scene.add(new SkySphere())
+        // renderer.scene.add(new SkySphere())
+        const sky = new Sky()
+        sky.scale.setScalar(1000)
+        renderer.scene.add(sky)
+
+        // sun position
+        const sun = new Vector3()
+        const inclination = 0.9 // elevation (0–1)
+        const azimuth = 0.2 // east/west (0–1)
+
+        const theta = Math.PI * (inclination - 0.5)
+        const phi = 2 * Math.PI * (azimuth - 0.5)
+
+        sun.x = Math.cos(phi)
+        sun.y = Math.sin(theta)
+        sun.z = Math.sin(phi)
+
+        // Sky shader uniforms
+        type SkyShaderUniforms = {
+            turbidity: { value: number }
+            rayleigh: { value: number }
+            mieCoefficient: { value: number }
+            mieDirectionalG: { value: number }
+            sunPosition: { value: Vector3 }
+            up: { value: Vector3 }
+        }
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Three.js doesn't provide the type
+        const skyUniforms = sky.material.uniforms as SkyShaderUniforms
+        skyUniforms.turbidity.value = 5 // Higher = hazier
+        skyUniforms.rayleigh.value = 0.5 // Lower = bluer
+        skyUniforms.mieCoefficient.value = 0.003 // White haze
+        skyUniforms.mieDirectionalG.value = 0.6 // Sun glow sharpness
+        skyUniforms.sunPosition.value.copy(sun)
+
+        const light = new DirectionalLight(0xffffff, 1.0)
+        light.position.copy(sun.clone().multiplyScalar(100))
+        light.castShadow = true
+        renderer.scene.add(light)
 
         // renderer.scene.overrideMaterial = new MeshBasicMaterial({ wireframe: true, color: '#0089cc' })
 

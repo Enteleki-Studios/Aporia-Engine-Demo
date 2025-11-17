@@ -83,7 +83,7 @@ export const game1 = async () => {
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
         PlayerComponent(),
-        Transform3DComponent(),
+        Transform3DComponent({ position: [-3, 0, 0] }),
         GltfComponent({
             path: '/humanoid/animated_robo.glb',
         }),
