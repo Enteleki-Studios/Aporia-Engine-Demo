@@ -43,7 +43,7 @@
         "vite": "^7.1.4",
         "vite-plugin-wasm": "^3.4.1",
         "vite-tsconfig-paths": "^5.1.4",
-        "vitest": "^4.0.3"
+        "vitest": "^4.0.10"
     },
     "prettier": {
         "printWidth": 90,
