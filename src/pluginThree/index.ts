@@ -24,6 +24,7 @@ import { AxesHelper } from './axesHelper'
 import { GltfComponent } from './components'
 import { DefaultGrid } from './defaultGrid'
 import { Renderer } from './renderer'
+import { SkySphere } from './skySphere'
 
 export { DefaultCube } from './defaultCube'
 export { AxesHelper } from './axesHelper'
@@ -61,7 +62,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         // renderer.setSize(1280, 720)
         renderer.setSize(1920, 1080)
 
-        renderer.renderer.setClearColor('#121212')
+        renderer.renderer.setClearColor('#888888')
 
         renderer.scene.add(new AmbientLight())
         renderer.scene.add(new DirectionalLight())
@@ -70,6 +71,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         // renderer.scene.add(new DefaultCube())
         renderer.scene.add(new DefaultGrid(10))
         // renderer.scene.add(new GridHelper(50, 50, 0x0089cc, 0x444444))
+        renderer.scene.add(new SkySphere())
 
         // renderer.scene.overrideMaterial = new MeshBasicMaterial({ wireframe: true, color: '#0089cc' })
 

@@ -39,7 +39,7 @@ type SkySphereConfig = {
 export class SkySphere extends Mesh {
     constructor({
         topColor = 0x71bce1,
-        bottomColor = 0x333333,
+        bottomColor = 0x888888,
         offset = 0,
         blend = 0.6,
         radius = 60,
