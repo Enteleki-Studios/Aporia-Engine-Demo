@@ -2,6 +2,8 @@ import { type Plugin } from '@core'
 
 import type { KinematicCharacterController, World } from '@dimforge/rapier3d'
 
+export * from './components'
+
 type Rapier = typeof import('@dimforge/rapier3d')
 
 const GRAVITY_3D = { x: 0, y: -9.81, z: 0 }
@@ -44,24 +46,24 @@ export const pluginRapier3D = (): Plugin<Provides> => ({
             world.resources.physics.world.step()
         })
 
-        const generateHeightfield = (nsubdivs: number) => {
+        const generateHeightfield = (ncols: number, nrows: number = ncols) => {
             const heights = []
 
-            for (let i = 0; i <= nsubdivs; ++i) {
-                for (let j = 0; j <= nsubdivs; ++j) {
-                    heights.push(Math.floor(Math.random() * 5))
+            for (let i = 0; i <= ncols; ++i) {
+                for (let j = 0; j <= nrows; ++j) {
+                    heights.push(Math.random())
                 }
             }
 
-            return new Float32Array(heights)
+            return heights
         }
         const subdivs = 10
         const scaleInt = 70
-        const scale = { x: scaleInt, y: 1, z: scaleInt }
+        const scale = { x: scaleInt, y: 5, z: scaleInt }
         const colliderDesc = rapier.ColliderDesc.heightfield(
             subdivs,
             subdivs,
-            generateHeightfield(subdivs),
+            new Float32Array(generateHeightfield(subdivs)),
             scale,
         )
         const rigidBody = physicsWorld.createRigidBody(rapier.RigidBodyDesc.fixed())
