@@ -1,9 +1,6 @@
 import { Vector3 } from 'three'
 
-import {
-    PlayerComponent,
-    Transform3DComponent,
-} from '@core/components'
+import { PlayerComponent, Transform3DComponent } from '@core/components'
 
 import { createQuery } from '@pluginEntities'
 import { GltfComponent } from '@pluginThree'

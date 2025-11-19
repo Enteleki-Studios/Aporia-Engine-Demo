@@ -1,4 +1,4 @@
-import type { Array3 } from "@core"
+import type { Array3 } from '@core'
 
 export const SHAPE_TYPES = {
     BALL: 'ball',

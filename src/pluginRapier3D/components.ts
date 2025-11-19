@@ -1,4 +1,4 @@
-import { createComponent } from "@core";
+import { createComponent } from '@core'
 
 export const RigidBodyDynamic = createComponent('RigidBodyDynamic')
 export const RigidBodyFixed = createComponent('RigidBodyFixed')
