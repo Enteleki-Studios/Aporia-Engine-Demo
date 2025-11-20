@@ -12,6 +12,7 @@ export {
 } from './components/createComponent'
 export { ObjectStore } from './objectStore'
 export { Clock } from './clock'
+export * from './shapes'
 
 export type Plugin<
     ProvidesResources extends object,

@@ -11,7 +11,7 @@ import { newUUID } from '@core/utils'
 
 export * from './entitiesPanel'
 
-type EntityId = string
+export type EntityId = string
 type EntityMap = Map<EntityId, Entity>
 
 type FilterPredicate = (entity: Entity) => boolean
@@ -208,6 +208,8 @@ export const pluginEntities = () => ({
         }
     },
 })
+
+export type PluginEntities = ReturnType<typeof pluginEntities>
 
 /* eslint-enable @typescript-eslint/no-explicit-any -- library code */
 /* eslint-enable @typescript-eslint/consistent-type-assertions -- library code */

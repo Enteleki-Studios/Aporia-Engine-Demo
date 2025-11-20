@@ -26,6 +26,9 @@ export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
             }),
         )
 
+        lines.material.depthTest = false
+        lines.renderOrder = 999
+
         const toggleViz = (value?: boolean) => {
             lines.visible = value ?? !lines.visible
         }

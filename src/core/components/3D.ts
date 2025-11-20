@@ -1,4 +1,4 @@
-import { type Array3, type Quat, createComponent } from '@core'
+import { type Array3, type Quat, type Shape3D, createComponent } from '@core'
 
 type Transform3D = {
     position: Array3
@@ -15,26 +15,12 @@ export const Transform3DComponent = createComponent(
     }),
 )
 
-type BasicGeometry =
-    | {
-          type: 'box'
-          width: number
-          length: number
-          height: number
-      }
-    | {
-          type: 'sphere'
-          radius: number
-      }
-
-export const BasicGeometryComponent = createComponent(
-    'basicGeometry',
-    (props: BasicGeometry): BasicGeometry => ({
+export const Geometry3DComponent = createComponent(
+    'Geometry',
+    (props: Shape3D): Shape3D => ({
         ...props,
     }),
 )
-
-export const MeshComponent = createComponent('mesh')
 
 export const Velocity3DComponent = createComponent('velocity', (velocity?: Array3) => ({
     velocity: velocity ?? [0, 0, 0],

@@ -1,6 +1,11 @@
-import { type Plugin } from '@core'
+import { type Plugin, type PluginsToResources } from '@core'
 
-import type { KinematicCharacterController, World } from '@dimforge/rapier3d'
+import { Transform3DComponent } from '@core/components'
+
+import type { KinematicCharacterController, RigidBody, World } from '@dimforge/rapier3d'
+import { type PluginEntities, createQuery, EntityId } from '@pluginEntities'
+
+import { RigidBodyDynamic } from './components'
 
 export * from './components'
 
@@ -13,14 +18,20 @@ type Provides = {
         rapier: Rapier
         world: World
         characterController: KinematicCharacterController
+        dynamicBodies: Map<EntityId, RigidBody>
     }
 }
 
-export const pluginRapier3D = (): Plugin<Provides> => ({
+type Dependencies = PluginsToResources<[PluginEntities]>
+
+const dynamicBodiesQuery = createQuery([Transform3DComponent, RigidBodyDynamic])
+
+export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
     createResources: async () => {
         const rapier = await import('@dimforge/rapier3d')
 
         const world = new rapier.World(GRAVITY_3D)
+        const dynamicBodies = new Map<EntityId, RigidBody>
 
         // TODO: Add support for multiple character controllers
         const characterController = world.createCharacterController(0.01)
@@ -35,6 +46,7 @@ export const pluginRapier3D = (): Plugin<Provides> => ({
                 rapier,
                 world,
                 characterController,
+                dynamicBodies,
             },
         }
     },
@@ -45,6 +57,38 @@ export const pluginRapier3D = (): Plugin<Provides> => ({
             world.resources.physics.world.timestep = world.clock.delta
             world.resources.physics.world.step()
         })
+
+        runtime.addSystem((world) => {
+            world.resources.entities.query(dynamicBodiesQuery).forEach(([[transform], entity]) => {
+                const body = world.resources.physics.dynamicBodies.get(entity.id)
+
+                if (body) {
+                    const position = body.translation()
+                    const rotation = body.rotation()
+
+                    transform.position[0] = position.x
+                    transform.position[1] = position.y
+                    transform.position[2] = position.z
+
+                    transform.rotation[0] = rotation.x
+                    transform.rotation[1] = rotation.y
+                    transform.rotation[2] = rotation.z
+                    transform.rotation[3] = rotation.w
+                }
+            })
+        })
+
+        runtime.resources.entities.addQueryObserver(
+            dynamicBodiesQuery,
+            ([[transform], entity]) => {
+                const colliderDesc = rapier.ColliderDesc.ball(0.5)
+                const rigidBody = physicsWorld.createRigidBody(
+                    rapier.RigidBodyDesc.dynamic().setTranslation(...transform.position),
+                )
+                physicsWorld.createCollider(colliderDesc, rigidBody)
+                runtime.resources.physics.dynamicBodies.set(entity.id, rigidBody)
+            },
+        )
 
         const generateHeightfield = (ncols: number, nrows: number = ncols) => {
             const heights = []
@@ -68,11 +112,5 @@ export const pluginRapier3D = (): Plugin<Provides> => ({
         )
         const rigidBody = physicsWorld.createRigidBody(rapier.RigidBodyDesc.fixed())
         physicsWorld.createCollider(colliderDesc, rigidBody)
-
-        const ballDesc = rapier.ColliderDesc.ball(0.5)
-        const ballBody = physicsWorld.createRigidBody(
-            rapier.RigidBodyDesc.dynamic().setTranslation(0.0, 10.0, 0.0),
-        )
-        physicsWorld.createCollider(ballDesc, ballBody)
     },
 })

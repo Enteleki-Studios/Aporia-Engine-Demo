@@ -1,9 +1,10 @@
 import { Vector3 } from 'three'
 
-import { PlayerComponent, Transform3DComponent } from '@core/components'
+import { Geometry3DComponent, PlayerComponent, Transform3DComponent } from '@core/components'
 
 import { createQuery } from '@pluginEntities'
-import { GltfComponent } from '@pluginThree'
+import { RigidBodyDynamic } from '@pluginRapier3D'
+import { GltfComponent, RenderableDynamic } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
 
@@ -52,6 +53,21 @@ export const game1 = async () => {
             path: '/humanoid/animated_robo.glb',
         }),
     )
+
+    for (let i = 0; i < 10; i++) {
+        world.resources.entities.addComponents(
+            world.resources.entities.createEntity(),
+            Transform3DComponent({ position: [i * 2, 10, -i * 2] }),
+            RigidBodyDynamic(),
+            Geometry3DComponent({ type: 'ball', radius: 0.5 }),
+            // Geometry3DComponent({ type: 'box',
+            //     halfWidth: 0.5,
+            //     halfHeight: 0.5,
+            //     halfDepth: 0.5,
+            // }),
+            RenderableDynamic(),
+        )
+    }
 
     world.resources.three.renderer.camera.position.set(2, 4, 7)
     world.resources.three.renderer.camera.lookAt(new Vector3(0, 1, 0))

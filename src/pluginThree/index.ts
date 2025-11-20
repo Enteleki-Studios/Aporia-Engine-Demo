@@ -7,22 +7,19 @@ import {
     MeshStandardMaterial,
     SphereGeometry,
     Vector3,
+    TextureLoader,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
 
 import { type DefaultResources, ObjectStore, type Plugin } from '@core'
 
-import {
-    BasicGeometryComponent,
-    MeshComponent,
-    Transform3DComponent,
-} from '@core/components'
+import { Geometry3DComponent, Transform3DComponent } from '@core/components'
 
 import { createQuery } from '@pluginEntities'
 
 import { AxesHelper } from './axesHelper'
-import { GltfComponent } from './components'
+import { GltfComponent, RenderableDynamic } from './components'
 import { DefaultCube } from './defaultCube'
 import { InfiniteGrid } from './infiniteGrid'
 import { Renderer } from './renderer'
@@ -42,15 +39,14 @@ type ThreeOutput = {
         gltfLoader: GLTFLoader
     }
 }
+// TODO: Move loader to resources
+const loader = new TextureLoader();
 
-const positionedRenderableQuery = createQuery(
-    [Transform3DComponent],
-    (entity) => entity.has(MeshComponent) || entity.has(GltfComponent),
-)
+const dynamicRenderables = createQuery([Transform3DComponent, RenderableDynamic])
 
-const meshQuery = createQuery([MeshComponent])
-
-const gltfQuery = createQuery([GltfComponent])
+// TODO: Add renderable component checks to these queries
+const geometryQuery = createQuery([Geometry3DComponent, Transform3DComponent])
+const gltfQuery = createQuery([GltfComponent, Transform3DComponent])
 
 export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
     createResources: () => {
@@ -126,63 +122,68 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         }
     },
     init: (runtime) => {
-        runtime.resources.entities.addQueryObserver(meshQuery, ([_, entity]) => {
-            const { objectStore, renderer } = runtime.resources.three
-            const basicGeometryComponent = entity.get(BasicGeometryComponent)
+        runtime.resources.entities.addQueryObserver(
+            geometryQuery,
+            ([[geometryDef, transform], entity]) => {
+                const { objectStore, renderer } = runtime.resources.three
 
-            let geometry
-
-            if (basicGeometryComponent) {
-                switch (basicGeometryComponent.type) {
+                // TODO: Use a function instead of mutation
+                let geometry
+                switch (geometryDef.type) {
                     case 'box':
-                        geometry = new BoxGeometry()
+                        geometry = new BoxGeometry(
+                            geometryDef.halfWidth * 2,
+                            geometryDef.halfHeight * 2,
+                            geometryDef.halfDepth * 2,
+                        )
                         break
-                    case 'sphere':
-                        geometry = new SphereGeometry()
+                    case 'ball':
+                        geometry = new SphereGeometry(geometryDef.radius)
                         break
                 }
-            }
 
-            if (geometry) {
-                const mesh = new Mesh(
-                    geometry,
-                    new MeshStandardMaterial({ color: '#ffffff' }),
-                )
-                mesh.name = 'mesh'
+                const map = loader.load( '/textures/checkered.jpg' );
 
-                const [group, isCreated] = objectStore.getOrCreate(entity.id)
-                group.add(mesh)
+                // TODO: Exhaustive switch rule should remove need for check
+                if (geometry) {
+                    const mesh = new Mesh(
+                        geometry,
+                        new MeshStandardMaterial({ color: '#ffffff', map }),
+                    )
 
-                if (isCreated) {
-                    renderer.scene.add(group)
+                    const [group, isCreated] = objectStore.getOrCreate(entity.id)
+                    group.add(mesh)
+
+                    if (isCreated) {
+                        // TODO: Apply full transform
+                        group.position.fromArray(transform.position)
+                        renderer.scene.add(group)
+                    }
                 }
-            }
-        })
+            },
+        )
 
         runtime.resources.entities.addQueryObserver(
             gltfQuery,
-            ([[gltfComponent], entity]) => {
+            ([[gltfComponent, transform], entity]) => {
                 const { objectStore, renderer, gltfLoader } = runtime.resources.three
-                // TODO: require transform and apply transform when group is added to scene
-                const transform = entity.get(Transform3DComponent)
+                const [group, isCreated] = objectStore.getOrCreate(entity.id)
 
-                if (transform) {
-                    const [group, isCreated] = objectStore.getOrCreate(entity.id)
-
-                    if (isCreated) {
-                        renderer.scene.add(group)
-                    }
-
-                    gltfLoader.load(gltfComponent.path, (gltf) => {
-                        group.add(gltf.scene)
-                    })
+                if (isCreated) {
+                    // TODO: Apply full transform when group is added to scene
+                    group.position.fromArray(transform.position)
+                    renderer.scene.add(group)
                 }
+
+                gltfLoader.load(gltfComponent.path, (gltf) => {
+                    group.add(gltf.scene)
+                })
             },
         )
 
         runtime.addSystem((world) => {
             world.resources.entities
-                .query(positionedRenderableQuery)
+                .query(dynamicRenderables)
                 .forEach(([[transform], entity]) => {
                     const group = world.resources.three.objectStore.get(entity.id)
 
