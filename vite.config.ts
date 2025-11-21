@@ -14,8 +14,8 @@ export default defineConfig({
         port: 2080,
     },
     test: {
-        include: ['src'],
         typecheck: {
+            enabled: true,
             ignoreSourceErrors: true,
         },
     },

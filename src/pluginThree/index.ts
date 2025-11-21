@@ -5,9 +5,10 @@ import {
     Group,
     Mesh,
     MeshStandardMaterial,
+    PlaneGeometry,
     SphereGeometry,
-    Vector3,
     TextureLoader,
+    Vector3,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
@@ -15,6 +16,7 @@ import { Sky } from 'three/addons/objects/Sky.js'
 import { type DefaultResources, ObjectStore, type Plugin } from '@core'
 
 import { Geometry3DComponent, Transform3DComponent } from '@core/components'
+import { transpose1D } from '@core/utils'
 
 import { createQuery } from '@pluginEntities'
 
@@ -40,7 +42,7 @@ type ThreeOutput = {
     }
 }
 // TODO: Move loader to resources
-const loader = new TextureLoader();
+const loader = new TextureLoader()
 
 const dynamicRenderables = createQuery([Transform3DComponent, RenderableDynamic])
 
@@ -96,6 +98,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             sunPosition: { value: Vector3 }
             up: { value: Vector3 }
         }
+
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Three.js doesn't provide the type
         const skyUniforms = sky.material.uniforms as SkyShaderUniforms
         skyUniforms.turbidity.value = 5 // Higher = hazier
@@ -140,25 +143,48 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                     case 'ball':
                         geometry = new SphereGeometry(geometryDef.radius)
                         break
+                    case 'heightfield': {
+                        const { ncols, nrows, heights, scale } = geometryDef
+                        geometry = new PlaneGeometry(scale[0], scale[2], ncols, nrows)
+
+                        geometry.rotateX(-Math.PI / 2)
+
+                        const positions = geometry.getAttribute('position')
+
+                        // Need +1 here because the heightfield ncols and nrows
+                        // are the segments and not the vertices
+                        const tHeights = transpose1D(heights, ncols + 1, nrows + 1)
+                        tHeights.forEach((height, i) => {
+                            positions.setY(i, height * scale[1])
+                        })
+
+                        positions.needsUpdate = true
+                        geometry.computeVertexNormals()
+                        break
+                    }
                 }
 
-                const map = loader.load( '/textures/checkered.jpg' );
+                const map = loader.load('/textures/checkered.jpg')
 
-                // TODO: Exhaustive switch rule should remove need for check
-                if (geometry) {
-                    const mesh = new Mesh(
-                        geometry,
-                        new MeshStandardMaterial({ color: '#ffffff', map }),
-                    )
+                const material = new MeshStandardMaterial({
+                    color: '#ffffff',
+                    // side: 2,
+                    map,
+                })
+                // material.flatShading = true
 
-                    const [group, isCreated] = objectStore.getOrCreate(entity.id)
-                    group.add(mesh)
+                const mesh = new Mesh(geometry, material)
 
-                    if (isCreated) {
-                        // TODO: Apply full transform
-                        group.position.fromArray(transform.position)
-                        renderer.scene.add(group)
-                    }
+                mesh.castShadow = true
+                mesh.receiveShadow = true
+
+                const [group, isCreated] = objectStore.getOrCreate(entity.id)
+                group.add(mesh)
+
+                if (isCreated) {
+                    // TODO: Apply full transform
+                    group.position.fromArray(transform.position)
+                    renderer.scene.add(group)
                 }
             },
         )

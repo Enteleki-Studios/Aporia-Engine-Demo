@@ -1,9 +1,13 @@
 import { Vector3 } from 'three'
 
-import { Geometry3DComponent, PlayerComponent, Transform3DComponent } from '@core/components'
+import {
+    Geometry3DComponent,
+    PlayerComponent,
+    Transform3DComponent,
+} from '@core/components'
 
 import { createQuery } from '@pluginEntities'
-import { RigidBodyDynamic } from '@pluginRapier3D'
+import { RigidBodyDynamic, RigidBodyFixed } from '@pluginRapier3D'
 import { GltfComponent, RenderableDynamic } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
@@ -68,6 +72,40 @@ export const game1 = async () => {
             RenderableDynamic(),
         )
     }
+
+    const generateHeightfield = (ncols: number, nrows: number = ncols) => {
+        const heights = []
+
+        for (let i = 0; i <= ncols; i++) {
+            for (let j = 0; j <= nrows; j++) {
+                heights.push(Math.random())
+                // heights.push(i / ncols)
+                // heights.push(i / ncols + j / nrows)
+            }
+        }
+
+        return heights
+    }
+
+    world.resources.entities.addComponents(
+        world.resources.entities.createEntity(),
+        RigidBodyFixed(),
+        Transform3DComponent(),
+        // Geometry3DComponent({
+        //     type: 'heightfield',
+        //     ncols: 15,
+        //     nrows: 10,
+        //     heights: generateHeightfield(15, 10),
+        //     scale: [15 * 7, 7, 10 * 7],
+        // }),
+        Geometry3DComponent({
+            type: 'heightfield',
+            ncols: 15,
+            nrows: 10,
+            heights: generateHeightfield(15, 10),
+            scale: [15 * 7, 7, 10 * 7],
+        }),
+    )
 
     world.resources.three.renderer.camera.position.set(2, 4, 7)
     world.resources.three.renderer.camera.lookAt(new Vector3(0, 1, 0))

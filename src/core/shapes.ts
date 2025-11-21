@@ -25,8 +25,8 @@ export type Box = {
 
 export type HeightField = {
     type: typeof SHAPE_TYPES.HEIGHTFIELD
-    nrows: number
     ncols: number
+    nrows: number
     heights: number[]
     scale: Array3
 }

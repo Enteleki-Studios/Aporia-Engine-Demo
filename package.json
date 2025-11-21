@@ -13,7 +13,7 @@
         "prettier": "prettier -l --write .",
         "prettier-check": "prettier --check .",
         "start": "vite",
-        "test": "vitest --typecheck",
+        "test": "vitest",
         "typecheck": "tsc"
     },
     "dependencies": {
