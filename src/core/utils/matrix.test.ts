@@ -19,6 +19,8 @@ test('Can transpose a 1-dimensional array matrix', () => {
     ]
 
     const output = transpose1D(input, 3, 4)
-
     expect(output).toEqual(expectedOutput)
+
+    const output2 = transpose1D(output, 4, 3)
+    expect(output2).toEqual(input)
 })
