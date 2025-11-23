@@ -90,7 +90,9 @@ export const game1 = async () => {
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
         RigidBodyFixed(),
-        Transform3DComponent(),
+        Transform3DComponent({
+            position: [0, -4, 0]
+        }),
         // Geometry3DComponent({
         //     type: 'heightfield',
         //     ncols: 15,
@@ -103,7 +105,7 @@ export const game1 = async () => {
             ncols: 15,
             nrows: 10,
             heights: generateHeightfield(15, 10),
-            scale: [15 * 7, 7, 10 * 7],
+            scale: [15 * 7, 8, 10 * 7],
         }),
     )
 

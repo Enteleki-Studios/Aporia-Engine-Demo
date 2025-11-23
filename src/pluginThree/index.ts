@@ -3,15 +3,18 @@ import {
     BoxGeometry,
     DirectionalLight,
     Group,
+    IUniform,
     Mesh,
     MeshStandardMaterial,
     PlaneGeometry,
+    RepeatWrapping,
     SphereGeometry,
     TextureLoader,
     Vector3,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
+import { Water } from 'three/addons/objects/Water.js'
 
 import { type DefaultResources, ObjectStore, type Plugin } from '@core'
 
@@ -39,6 +42,7 @@ type ThreeOutput = {
         renderer: Renderer
         objectStore: ObjectStore<string, Group>
         gltfLoader: GLTFLoader
+        water: Water
     }
 }
 // TODO: Move loader to resources
@@ -112,6 +116,24 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         light.castShadow = true
         renderer.scene.add(light)
 
+        const waterGeometry = new PlaneGeometry(100, 100)
+        const water = new Water(waterGeometry, {
+            textureWidth: 512,
+            textureHeight: 512,
+            waterNormals: loader.load('textures/waternormals.jpg', (texture) => {
+                texture.wrapS = texture.wrapT = RepeatWrapping
+            }),
+            sunDirection: new Vector3().copy(sun),
+            sunColor: 0xffffff,
+            waterColor: 0x001e0f,
+            distortionScale: 3.7,
+            fog: !!renderer.scene.fog,
+        })
+        water.rotation.x = -Math.PI / 2
+        water.position.y = 0.01
+        water.position.x = -50
+        renderer.scene.add(water)
+
         // renderer.scene.overrideMaterial = new MeshBasicMaterial({ wireframe: true, color: '#0089cc' })
 
         const gltfLoader = new GLTFLoader()
@@ -121,6 +143,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                 renderer,
                 objectStore,
                 gltfLoader,
+                water,
             },
         }
     },
@@ -229,7 +252,15 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         })
 
         runtime.addSystem((world) => {
-            world.resources.three.renderer.render()
+            const { three } = world.resources
+
+            three.renderer.render()
+
+            const waterTime: IUniform<number> | undefined =
+                three.water.material.uniforms['time']
+            if (waterTime) {
+                waterTime.value += world.clock.delta * 0.5
+            }
         })
     },
 })
