@@ -1,6 +1,7 @@
 import {
     AmbientLight,
     BoxGeometry,
+    CapsuleGeometry,
     DirectionalLight,
     DirectionalLightHelper,
     Group,
@@ -26,11 +27,8 @@ import { createQuery } from '@pluginEntities'
 
 import { AxesHelper } from './axesHelper'
 import { GltfComponent, RenderableDynamic } from './components'
-import { DefaultCube } from './defaultCube'
 import { InfiniteGrid } from './infiniteGrid'
 import { Renderer } from './renderer'
-
-// import { SkySphere } from './skySphere'
 
 export { DefaultCube } from './defaultCube'
 export { AxesHelper } from './axesHelper'
@@ -46,6 +44,9 @@ type ThreeOutput = {
         water: Water
     }
 }
+
+export type PluginThree = ReturnType<typeof pluginThree>
+
 // TODO: Move loader to resources
 const loader = new TextureLoader()
 
@@ -72,12 +73,9 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         renderer.scene.add(new AmbientLight(0xffffff, 0.2))
 
-        renderer.scene.add(new AxesHelper())
-        renderer.scene.add(new DefaultCube())
-        // renderer.scene.add(new DefaultGrid(10))
+        renderer.scene.add(new AxesHelper(3))
         renderer.scene.add(new InfiniteGrid())
-        // renderer.scene.add(new GridHelper(50, 50, 0x0089cc, 0x444444))
-        // renderer.scene.add(new SkySphere())
+
         const sky = new Sky()
         sky.scale.setScalar(1000)
         renderer.scene.add(sky)
@@ -160,6 +158,9 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                 // TODO: Use a function instead of mutation
                 let geometry
                 switch (geometryDef.type) {
+                    case 'ball':
+                        geometry = new SphereGeometry(geometryDef.radius)
+                        break
                     case 'box':
                         geometry = new BoxGeometry(
                             geometryDef.halfWidth * 2,
@@ -167,9 +168,13 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                             geometryDef.halfDepth * 2,
                         )
                         break
-                    case 'ball':
-                        geometry = new SphereGeometry(geometryDef.radius)
+                    case 'capsule': {
+                        geometry = new CapsuleGeometry(
+                            geometryDef.radius,
+                            geometryDef.halfHeight * 2,
+                        )
                         break
+                    }
                     case 'heightfield': {
                         const { ncols, nrows, heights, scale } = geometryDef
                         geometry = new PlaneGeometry(scale[0], scale[2], ncols, nrows)

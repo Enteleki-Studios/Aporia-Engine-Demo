@@ -2,8 +2,8 @@ import { BufferAttribute, BufferGeometry, LineBasicMaterial, LineSegments } from
 
 import type { Plugin, PluginsToResources } from '@core'
 
-import { pluginRapier3D } from '@pluginRapier3D'
-import { pluginThree } from '@pluginThree'
+import type { PluginRapier3D } from '@pluginRapier3D'
+import type { PluginThree } from '@pluginThree'
 
 type Provides = {
     rapierViz: {
@@ -12,9 +12,7 @@ type Provides = {
     }
 }
 
-type Dependencies = PluginsToResources<
-    [ReturnType<typeof pluginThree>, ReturnType<typeof pluginRapier3D>]
->
+type Dependencies = PluginsToResources<[PluginThree, PluginRapier3D]>
 
 export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
     createResources() {
@@ -26,7 +24,7 @@ export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
             }),
         )
 
-        // lines.material.depthTest = false
+        lines.material.depthTest = false
         lines.renderOrder = 999
 
         const toggleViz = (value?: boolean) => {

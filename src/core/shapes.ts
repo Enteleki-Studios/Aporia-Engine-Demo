@@ -3,6 +3,7 @@ import type { Array3 } from '@core'
 export const SHAPE_TYPES = {
     BALL: 'ball',
     BOX: 'box',
+    CAPSULE: 'capsule',
     HEIGHTFIELD: 'heightfield',
 } as const
 
@@ -23,6 +24,12 @@ export type Box = {
     halfDepth: number
 }
 
+export type Capsule = {
+    type: typeof SHAPE_TYPES.CAPSULE
+    radius: number
+    halfHeight: number
+}
+
 export type HeightField = {
     type: typeof SHAPE_TYPES.HEIGHTFIELD
     ncols: number
@@ -32,5 +39,5 @@ export type HeightField = {
 }
 
 export type Shape2D = Ball
-export type Shape3D = Ball | Box | HeightField
+export type Shape3D = Ball | Box | Capsule | HeightField
 export type Shape = Shape2D | Shape3D

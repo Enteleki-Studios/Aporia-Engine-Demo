@@ -7,7 +7,7 @@ import {
 } from '@core/components'
 
 import { createQuery } from '@pluginEntities'
-import { RigidBodyDynamic, RigidBodyFixed } from '@pluginRapier3D'
+import { RigidBodyDynamic, RigidBodyFixed, RigidBodyKinematic } from '@pluginRapier3D'
 import { GltfComponent, RenderableDynamic } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
@@ -17,15 +17,44 @@ const playerQuery = createQuery([PlayerComponent, Transform3DComponent])
 const playerMovementSystem = (engine: World) => {
     const { input } = engine.resources
     const entities = engine.resources.entities.query(playerQuery)
+    const { characterController, bodies, colliders } = engine.resources.physics
 
-    entities.forEach(([[_, transform]]) => {
+    entities.forEach(([[_, transform], entity]) => {
         const dirX = input.left ? -1 : input.right ? 1 : 0
         const dirZ = input.up ? -1 : input.down ? 1 : 0
 
-        const scale = 9
+        // const scale = 9
 
-        transform.position[0] += dirX * scale * engine.clock.delta
-        transform.position[2] += dirZ * scale * engine.clock.delta
+        // transform.position[0] += dirX * scale * engine.clock.delta
+        // transform.position[2] += dirZ * scale * engine.clock.delta
+
+        const speed = 5
+        const movementDirection = {
+            x: dirX * speed * engine.clock.delta,
+            y: -0.02,
+            z: dirZ * speed * engine.clock.delta,
+        }
+
+        const character = bodies.get(entity.id)
+        const characterCollider = colliders.get(entity.id)
+
+        if (character && characterCollider) {
+            characterController.computeColliderMovement(
+                characterCollider,
+                movementDirection,
+            )
+
+            const movement = characterController.computedMovement()
+            const newPos = character.translation()
+            newPos.x += movement.x
+            newPos.y += movement.y
+            newPos.z += movement.z
+            character.setNextKinematicTranslation(newPos)
+
+            transform.position[0] = newPos.x
+            transform.position[1] = newPos.y
+            transform.position[2] = newPos.z
+        }
     })
 }
 
@@ -34,10 +63,18 @@ export const game1 = async () => {
 
     world.addSystem(playerMovementSystem)
 
+    // Create player
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
         PlayerComponent(),
-        Transform3DComponent({ position: [-3, 0, 0] }),
+        RigidBodyKinematic(),
+        Geometry3DComponent({
+            type: 'capsule',
+            halfHeight: 1,
+            radius: 0.5,
+        }),
+        Transform3DComponent({ position: [-3, 9, 0] }),
+        RenderableDynamic(),
         GltfComponent({
             path: '/humanoid/animated_robo.glb',
         }),
@@ -64,6 +101,7 @@ export const game1 = async () => {
         for (let i = 0; i <= ncols; i++) {
             for (let j = 0; j <= nrows; j++) {
                 heights.push(Math.random())
+                // heights.push(1)
                 // heights.push(i / ncols)
                 // heights.push(i / ncols + j / nrows)
             }
