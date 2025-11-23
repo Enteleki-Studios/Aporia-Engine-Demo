@@ -2,6 +2,7 @@ import {
     AmbientLight,
     BoxGeometry,
     DirectionalLight,
+    DirectionalLightHelper,
     Group,
     IUniform,
     Mesh,
@@ -112,9 +113,12 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         skyUniforms.sunPosition.value.copy(sun)
 
         const light = new DirectionalLight(0xffffff, 1.0)
-        light.position.copy(sun.clone().multiplyScalar(100))
+        light.position.copy(sun.clone().multiplyScalar(10))
         light.castShadow = true
         renderer.scene.add(light)
+
+        const lightHelper = new DirectionalLightHelper(light)
+        renderer.scene.add(lightHelper)
 
         const waterGeometry = new PlaneGeometry(100, 100)
         const water = new Water(waterGeometry, {
@@ -123,7 +127,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             waterNormals: loader.load('textures/waternormals.jpg', (texture) => {
                 texture.wrapS = texture.wrapT = RepeatWrapping
             }),
-            sunDirection: new Vector3().copy(sun),
+            sunDirection: new Vector3().copy(sun).normalize(),
             sunColor: 0xffffff,
             waterColor: 0x001e0f,
             distortionScale: 3.7,

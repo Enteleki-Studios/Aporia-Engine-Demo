@@ -29,21 +29,6 @@ const playerMovementSystem = (engine: World) => {
     })
 }
 
-// type BundleProps = {
-//     transformArgs?: Parameters<typeof Transform3DComponent>
-//     velocityArgs?: Parameters<typeof Velocity3DComponent>
-// }
-
-// const createMissileBundle = (props?: BundleProps) => [
-//     Transform3DComponent(...(props?.transformArgs ?? [])),
-//     Velocity3DComponent(...(props?.velocityArgs ?? [])),
-//     MeshComponent(),
-//     BasicGeometryComponent({
-//         type: 'sphere',
-//         radius: 0.3,
-//     }),
-// ]
-
 export const game1 = async () => {
     const world = await createWorld()
 
@@ -91,15 +76,8 @@ export const game1 = async () => {
         world.resources.entities.createEntity(),
         RigidBodyFixed(),
         Transform3DComponent({
-            position: [0, -4, 0]
+            position: [0, -4, 0],
         }),
-        // Geometry3DComponent({
-        //     type: 'heightfield',
-        //     ncols: 15,
-        //     nrows: 10,
-        //     heights: generateHeightfield(15, 10),
-        //     scale: [15 * 7, 7, 10 * 7],
-        // }),
         Geometry3DComponent({
             type: 'heightfield',
             ncols: 15,
