@@ -12,14 +12,14 @@ import { Animation, GltfComponent, RenderableDynamic } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
 
-const playerQuery = createQuery([PlayerComponent, Transform3DComponent])
+const playerQuery = createQuery([PlayerComponent, Transform3DComponent, Animation])
 
 const playerMovementSystem = (engine: World) => {
     const { input } = engine.resources
     const entities = engine.resources.entities.query(playerQuery)
     const { characterController, bodies, colliders } = engine.resources.physics
 
-    entities.forEach(([[_, transform], entity]) => {
+    entities.forEach(([[_, transform, animation], entity]) => {
         const dirX = input.left ? -1 : input.right ? 1 : 0
         const dirZ = input.up ? -1 : input.down ? 1 : 0
 
@@ -27,13 +27,17 @@ const playerMovementSystem = (engine: World) => {
         const characterCollider = colliders.get(entity.id)
 
         if (character && characterCollider) {
-            const speed = 5
+            const speed = 2.5
+
+            const isGrounded = characterController.computedGrounded()
 
             const movementDirection = {
                 x: dirX * speed * engine.clock.delta,
-                y: characterController.computedGrounded()
-                    ? -0.01
-                    : -9.81 * engine.clock.delta,
+                y: input.space
+                    ? speed * engine.clock.delta
+                    : isGrounded
+                      ? -0.01
+                      : -9.81 * engine.clock.delta,
                 z: dirZ * speed * engine.clock.delta,
             }
 
@@ -52,6 +56,12 @@ const playerMovementSystem = (engine: World) => {
             transform.position[0] = newPos.x
             transform.position[1] = newPos.y
             transform.position[2] = newPos.z
+
+            if (dirX || dirZ) {
+                animation.actionName = 'Walk_Loop'
+            } else {
+                animation.actionName = 'Idle_Loop'
+            }
         }
     })
 }
@@ -76,7 +86,7 @@ export const game1 = async () => {
         GltfComponent({
             path: '/humanoid/animated_robo.glb',
         }),
-        Animation({ id: 'Idle_Loop' }),
+        Animation({ actionName: 'Idle_Loop' }),
     )
 
     for (let i = 0; i < 10; i++) {

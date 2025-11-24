@@ -7,6 +7,15 @@ export const GltfComponent = createComponent('gltf', ({ path }: { path: string }
     path,
 }))
 
-export const Animation = createComponent('Animation', ({ id }: { id: string }) => ({
-    id,
-}))
+type Animation = {
+    actionName: string | null
+    prevActionName: string | null
+}
+
+export const Animation = createComponent(
+    'Animation',
+    (state: Partial<Animation>): Animation => ({
+        actionName: state.actionName ?? null,
+        prevActionName: state.prevActionName ?? null,
+    }),
+)

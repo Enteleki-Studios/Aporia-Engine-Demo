@@ -1,13 +1,13 @@
 import {
     AmbientLight,
-    AnimationAction,
+    type AnimationAction,
     AnimationMixer,
     BoxGeometry,
-    CapsuleGeometry,
+    // CapsuleGeometry,
     DirectionalLight,
     DirectionalLightHelper,
     Group,
-    IUniform,
+    type IUniform,
     Mesh,
     MeshStandardMaterial,
     PlaneGeometry,
@@ -26,10 +26,10 @@ import { type DefaultResources, ObjectStore, type Plugin } from '@core'
 import { Geometry3DComponent, Transform3DComponent } from '@core/components'
 import { transpose1D } from '@core/utils'
 
-import { createQuery } from '@pluginEntities'
+import { type EntityId, createQuery } from '@pluginEntities'
 
 import { AxesHelper } from './axesHelper'
-import { GltfComponent, RenderableDynamic } from './components'
+import { Animation, GltfComponent, RenderableDynamic } from './components'
 import { InfiniteGrid } from './infiniteGrid'
 import { Renderer } from './renderer'
 import { isThreeMesh } from './utils'
@@ -43,7 +43,14 @@ export * from './components'
 type ThreeOutput = {
     three: {
         renderer: Renderer
-        objectStore: ObjectStore<string, Group>
+        objectStore: ObjectStore<EntityId, Group>
+        animationStore: Map<
+            EntityId,
+            {
+                mixer: AnimationMixer
+                actions: Record<string, AnimationAction | undefined>
+            }
+        >
         gltfLoader: GLTFLoader
         water: Water
     }
@@ -59,6 +66,7 @@ const dynamicRenderables = createQuery([Transform3DComponent, RenderableDynamic]
 // TODO: Add renderable component checks to these queries
 const geometryQuery = createQuery([Geometry3DComponent, Transform3DComponent])
 const gltfQuery = createQuery([GltfComponent, Transform3DComponent])
+const animationQuery = createQuery([Animation])
 
 export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
     createResources: () => {
@@ -148,6 +156,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             three: {
                 renderer,
                 objectStore,
+                animationStore: new Map(),
                 gltfLoader,
                 water,
             },
@@ -228,7 +237,8 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         runtime.resources.entities.addQueryObserver(
             gltfQuery,
             ([[gltfComponent, transform], entity]) => {
-                const { objectStore, renderer, gltfLoader } = runtime.resources.three
+                const { objectStore, renderer, gltfLoader, animationStore } =
+                    runtime.resources.three
                 const [group, isCreated] = objectStore.getOrCreate(entity.id)
 
                 if (isCreated) {
@@ -239,8 +249,6 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
                 gltfLoader.load(gltfComponent.path, (gltf) => {
                     const { animations, scene } = gltf
-
-                    console.debug(animations, scene)
 
                     scene.traverse((child) => {
                         if (isThreeMesh(child)) {
@@ -254,22 +262,20 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                     skeleton.visible = true
                     renderer.scene.add(skeleton)
 
+                    // TODO: This offset must be derived from a collider definition
                     scene.position.y = -0.9
 
-                    const mixer = new AnimationMixer(scene);
-                    const idleAnimation = animations.find((a) => a.name === 'Idle_Loop')
-                    if (idleAnimation) {
-                        const idleAction = mixer.clipAction(idleAnimation)
-                        idleAction.play()
-                    }
-
-                    const actions = animations.reduce<Record<string, AnimationAction | undefined>>((acc, anim) => {
+                    const mixer = new AnimationMixer(scene)
+                    const actions = animations.reduce<
+                        Record<string, AnimationAction | undefined>
+                    >((acc, anim) => {
                         acc[anim.name] = mixer.clipAction(anim)
                         return acc
                     }, {})
 
-                    runtime.addSystem((world) => {
-                        mixer.update(world.clock.delta)
+                    animationStore.set(entity.id, {
+                        mixer,
+                        actions,
                     })
                 })
             },
@@ -286,12 +292,59 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                         group.scale.fromArray(transform.scale)
                         if (
                             group.quaternion.x !== transform.rotation[0] ||
-                                group.quaternion.y !== transform.rotation[1] ||
-                                group.quaternion.z !== transform.rotation[2] ||
-                                group.quaternion.w !== transform.rotation[3]
+                            group.quaternion.y !== transform.rotation[1] ||
+                            group.quaternion.z !== transform.rotation[2] ||
+                            group.quaternion.w !== transform.rotation[3]
                         ) {
                             group.quaternion.fromArray(transform.rotation)
                         }
+                    }
+                })
+        })
+
+        runtime.addSystem((world) => {
+            world.resources.entities
+                .query(animationQuery)
+                .forEach(([[animation], entity]) => {
+                    const { animationStore } = world.resources.three
+                    const store = animationStore.get(entity.id)
+
+                    if (store) {
+                        const { mixer, actions } = store
+                        const { actionName, prevActionName } = animation
+
+                        if (actionName && actionName !== prevActionName) {
+                            const nextAction = actions[actionName] ?? null
+                            const prevAction = prevActionName
+                                ? (actions[prevActionName] ?? null)
+                                : null
+
+                            if (nextAction) {
+                                nextAction.time = 0.0
+                                nextAction.enabled = true
+                                nextAction.setEffectiveTimeScale(1.0)
+                                nextAction.setEffectiveWeight(1.0)
+
+                                if (prevAction) {
+                                    const ratio =
+                                        nextAction.getClip().duration /
+                                        prevAction.getClip().duration
+                                    nextAction.time = prevAction.time * ratio
+
+                                    // For eg death
+                                    // action.loop = LoopOnce
+                                    // action.clampWhenFinished = true
+
+                                    nextAction.crossFadeFrom(prevAction, 0.5, true)
+                                }
+
+                                nextAction.play()
+                            }
+
+                            animation.prevActionName = actionName
+                        }
+
+                        mixer.update(world.clock.delta)
                     }
                 })
         })
