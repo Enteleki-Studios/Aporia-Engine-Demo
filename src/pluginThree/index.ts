@@ -1,5 +1,7 @@
 import {
     AmbientLight,
+    AnimationAction,
+    AnimationMixer,
     BoxGeometry,
     CapsuleGeometry,
     DirectionalLight,
@@ -10,6 +12,7 @@ import {
     MeshStandardMaterial,
     PlaneGeometry,
     RepeatWrapping,
+    SkeletonHelper,
     SphereGeometry,
     TextureLoader,
     Vector3,
@@ -29,6 +32,7 @@ import { AxesHelper } from './axesHelper'
 import { GltfComponent, RenderableDynamic } from './components'
 import { InfiniteGrid } from './infiniteGrid'
 import { Renderer } from './renderer'
+import { isThreeMesh } from './utils'
 
 export { DefaultCube } from './defaultCube'
 export { AxesHelper } from './axesHelper'
@@ -168,13 +172,13 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                             geometryDef.halfDepth * 2,
                         )
                         break
-                    case 'capsule': {
-                        geometry = new CapsuleGeometry(
-                            geometryDef.radius,
-                            geometryDef.halfHeight * 2,
-                        )
-                        break
-                    }
+                    // case 'capsule': {
+                    //     geometry = new CapsuleGeometry(
+                    //         geometryDef.radius,
+                    //         geometryDef.halfHeight * 2,
+                    //     )
+                    //     break
+                    // }
                     case 'heightfield': {
                         const { ncols, nrows, heights, scale } = geometryDef
                         geometry = new PlaneGeometry(scale[0], scale[2], ncols, nrows)
@@ -234,7 +238,39 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                 }
 
                 gltfLoader.load(gltfComponent.path, (gltf) => {
-                    group.add(gltf.scene)
+                    const { animations, scene } = gltf
+
+                    console.debug(animations, scene)
+
+                    scene.traverse((child) => {
+                        if (isThreeMesh(child)) {
+                            child.castShadow = true
+                        }
+                    })
+
+                    group.add(scene)
+
+                    const skeleton = new SkeletonHelper(scene)
+                    skeleton.visible = true
+                    renderer.scene.add(skeleton)
+
+                    scene.position.y = -0.9
+
+                    const mixer = new AnimationMixer(scene);
+                    const idleAnimation = animations.find((a) => a.name === 'Idle_Loop')
+                    if (idleAnimation) {
+                        const idleAction = mixer.clipAction(idleAnimation)
+                        idleAction.play()
+                    }
+
+                    const actions = animations.reduce<Record<string, AnimationAction | undefined>>((acc, anim) => {
+                        acc[anim.name] = mixer.clipAction(anim)
+                        return acc
+                    }, {})
+
+                    runtime.addSystem((world) => {
+                        mixer.update(world.clock.delta)
+                    })
                 })
             },
         )
@@ -250,9 +286,9 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                         group.scale.fromArray(transform.scale)
                         if (
                             group.quaternion.x !== transform.rotation[0] ||
-                            group.quaternion.y !== transform.rotation[1] ||
-                            group.quaternion.z !== transform.rotation[2] ||
-                            group.quaternion.w !== transform.rotation[3]
+                                group.quaternion.y !== transform.rotation[1] ||
+                                group.quaternion.z !== transform.rotation[2] ||
+                                group.quaternion.w !== transform.rotation[3]
                         ) {
                             group.quaternion.fromArray(transform.rotation)
                         }

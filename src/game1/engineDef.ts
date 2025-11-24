@@ -8,7 +8,7 @@ import {
 
 import { createQuery } from '@pluginEntities'
 import { RigidBodyDynamic, RigidBodyFixed, RigidBodyKinematic } from '@pluginRapier3D'
-import { GltfComponent, RenderableDynamic } from '@pluginThree'
+import { Animation, GltfComponent, RenderableDynamic } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
 
@@ -23,22 +23,20 @@ const playerMovementSystem = (engine: World) => {
         const dirX = input.left ? -1 : input.right ? 1 : 0
         const dirZ = input.up ? -1 : input.down ? 1 : 0
 
-        // const scale = 9
-
-        // transform.position[0] += dirX * scale * engine.clock.delta
-        // transform.position[2] += dirZ * scale * engine.clock.delta
-
-        const speed = 5
-        const movementDirection = {
-            x: dirX * speed * engine.clock.delta,
-            y: -0.02,
-            z: dirZ * speed * engine.clock.delta,
-        }
-
         const character = bodies.get(entity.id)
         const characterCollider = colliders.get(entity.id)
 
         if (character && characterCollider) {
+            const speed = 5
+
+            const movementDirection = {
+                x: dirX * speed * engine.clock.delta,
+                y: characterController.computedGrounded()
+                    ? -0.01
+                    : -9.81 * engine.clock.delta,
+                z: dirZ * speed * engine.clock.delta,
+            }
+
             characterController.computeColliderMovement(
                 characterCollider,
                 movementDirection,
@@ -70,14 +68,15 @@ export const game1 = async () => {
         RigidBodyKinematic(),
         Geometry3DComponent({
             type: 'capsule',
-            halfHeight: 1,
-            radius: 0.5,
+            halfHeight: 0.5,
+            radius: 0.4,
         }),
-        Transform3DComponent({ position: [-3, 9, 0] }),
+        Transform3DComponent({ position: [-3, 10, 0] }),
         RenderableDynamic(),
         GltfComponent({
             path: '/humanoid/animated_robo.glb',
         }),
+        Animation({ id: 'Idle_Loop' }),
     )
 
     for (let i = 0; i < 10; i++) {
