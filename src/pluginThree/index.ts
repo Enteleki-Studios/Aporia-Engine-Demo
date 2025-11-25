@@ -21,18 +21,24 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
 import { Water } from 'three/addons/objects/Water.js'
 
-import { type DefaultResources, ObjectStore, type Plugin } from '@core'
+import {
+    type DefaultResources,
+    ObjectStore,
+    type Plugin,
+    type WorldWithPlugin,
+} from '@core'
 
-import { Geometry3DComponent, Transform3DComponent } from '@core/components'
 import { transpose1D } from '@core/utils'
 
-import { type EntityId, createQuery } from '@pluginEntities'
+import { type EntityId } from '@pluginEntities'
 
 import { AxesHelper } from './axesHelper'
-import { Animation, GltfComponent, RenderableDynamic } from './components'
 import { InfiniteGrid } from './infiniteGrid'
+import { geometryQuery, gltfQuery } from './queries'
 import { Renderer } from './renderer'
 import { isThreeMesh } from './utils'
+import { syncTransforms } from './systems/syncTransform'
+import { animationSystem } from './systems/animations'
 
 export { DefaultCube } from './defaultCube'
 export { AxesHelper } from './axesHelper'
@@ -57,16 +63,10 @@ type ThreeOutput = {
 }
 
 export type PluginThree = ReturnType<typeof pluginThree>
+export type ThreeWorld = WorldWithPlugin<PluginThree>
 
 // TODO: Move loader to resources
 const loader = new TextureLoader()
-
-const dynamicRenderables = createQuery([Transform3DComponent, RenderableDynamic])
-
-// TODO: Add renderable component checks to these queries
-const geometryQuery = createQuery([Geometry3DComponent, Transform3DComponent])
-const gltfQuery = createQuery([GltfComponent, Transform3DComponent])
-const animationQuery = createQuery([Animation])
 
 export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
     createResources: () => {
@@ -162,11 +162,11 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             },
         }
     },
-    init: (runtime) => {
-        runtime.resources.entities.addQueryObserver(
+    init: (world) => {
+        world.resources.entities.addQueryObserver(
             geometryQuery,
             ([[geometryDef, transform], entity]) => {
-                const { objectStore, renderer } = runtime.resources.three
+                const { objectStore, renderer } = world.resources.three
 
                 // TODO: Use a function instead of mutation
                 let geometry
@@ -234,11 +234,11 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             },
         )
 
-        runtime.resources.entities.addQueryObserver(
+        world.resources.entities.addQueryObserver(
             gltfQuery,
             ([[gltfComponent, transform], entity]) => {
                 const { objectStore, renderer, gltfLoader, animationStore } =
-                    runtime.resources.three
+                    world.resources.three
                 const [group, isCreated] = objectStore.getOrCreate(entity.id)
 
                 if (isCreated) {
@@ -281,75 +281,11 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             },
         )
 
-        runtime.addSystem((world) => {
-            world.resources.entities
-                .query(dynamicRenderables)
-                .forEach(([[transform], entity]) => {
-                    const group = world.resources.three.objectStore.get(entity.id)
+        world.addSystem(syncTransforms)
+        world.addSystem(animationSystem)
 
-                    if (group) {
-                        group.position.fromArray(transform.position)
-                        group.scale.fromArray(transform.scale)
-                        if (
-                            group.quaternion.x !== transform.rotation[0] ||
-                            group.quaternion.y !== transform.rotation[1] ||
-                            group.quaternion.z !== transform.rotation[2] ||
-                            group.quaternion.w !== transform.rotation[3]
-                        ) {
-                            group.quaternion.fromArray(transform.rotation)
-                        }
-                    }
-                })
-        })
-
-        runtime.addSystem((world) => {
-            world.resources.entities
-                .query(animationQuery)
-                .forEach(([[animation], entity]) => {
-                    const { animationStore } = world.resources.three
-                    const store = animationStore.get(entity.id)
-
-                    if (store) {
-                        const { mixer, actions } = store
-                        const { actionName, prevActionName } = animation
-
-                        if (actionName && actionName !== prevActionName) {
-                            const nextAction = actions[actionName] ?? null
-                            const prevAction = prevActionName
-                                ? (actions[prevActionName] ?? null)
-                                : null
-
-                            if (nextAction) {
-                                nextAction.time = 0.0
-                                nextAction.enabled = true
-                                nextAction.setEffectiveTimeScale(1.0)
-                                nextAction.setEffectiveWeight(1.0)
-
-                                if (prevAction) {
-                                    const ratio =
-                                        nextAction.getClip().duration /
-                                        prevAction.getClip().duration
-                                    nextAction.time = prevAction.time * ratio
-
-                                    // For eg death
-                                    // action.loop = LoopOnce
-                                    // action.clampWhenFinished = true
-
-                                    nextAction.crossFadeFrom(prevAction, 0.5, true)
-                                }
-
-                                nextAction.play()
-                            }
-
-                            animation.prevActionName = actionName
-                        }
-
-                        mixer.update(world.clock.delta)
-                    }
-                })
-        })
-
-        runtime.addSystem((world) => {
+        // TODO: Temp water shader update
+        world.addSystem(() => {
             const { three } = world.resources
 
             three.renderer.render()

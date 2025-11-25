@@ -1,12 +1,10 @@
-import { WorldWithPlugins } from '@core'
+import type { WorldWithPlugin } from '@core'
 
-import { TypedUseWorld, useRenderSync, useWorld } from '@core/react'
+import { type TypedUseWorld, useRenderSync, useWorld } from '@core/react'
 
-import { pluginEntities } from '@pluginEntities'
+import type { PluginEntities } from '@pluginEntities'
 
-const useEntitiesWorld: TypedUseWorld<
-    WorldWithPlugins<[ReturnType<typeof pluginEntities>]>
-> = useWorld
+const useEntitiesWorld: TypedUseWorld<WorldWithPlugin<PluginEntities>> = useWorld
 
 export const EntitiesPanel = () => {
     // TODO: use observers in the entities class instead of

@@ -34,10 +34,20 @@ export type PluginCreatorToResources<PC extends () => AnyPlugin> = PluginToResou
 export type PluginsToResources<PA extends AnyPlugin[]> = Simplify<
     UnionToIntersection<Awaited<ReturnType<NonNullable<PA[number]['createResources']>>>>
 >
+export type PluginToRequiredResources<P extends AnyPlugin> =
+    P extends Plugin<
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
+        any,
+        infer Requires
+    >
+        ? Requires
+        : never
 
-export type WorldWithPlugins<PA extends AnyPlugin[]> = Runtime<PluginsToResources<PA>>
+export type WorldWithPlugin<P extends AnyPlugin> = Runtime<
+    Simplify<PluginToRequiredResources<P> & PluginToResources<P>>
+>
 
-export type System<T> = (engine: T) => void
+export type System<T> = (world: T) => void
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
 export type AnySystem = System<Runtime<any>>
 

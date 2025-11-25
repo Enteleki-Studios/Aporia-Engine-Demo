@@ -38,11 +38,11 @@ export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
             },
         }
     },
-    init(runtime) {
-        const { lines } = runtime.resources.rapierViz
-        runtime.resources.three.renderer.scene.add(lines)
+    init(world) {
+        const { lines } = world.resources.rapierViz
+        world.resources.three.renderer.scene.add(lines)
 
-        runtime.addSystem((world) => {
+        world.addSystem(() => {
             const buffers = world.resources.physics.world.debugRender()
             lines.geometry.setAttribute(
                 'position',

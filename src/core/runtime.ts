@@ -21,8 +21,9 @@ export class Runtime<R extends object> {
         this.step()
     }
 
-    addSystem(system: System<this>) {
-        this.systems.push(system)
+    addSystem(system: AnySystem) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- TODO: Need to restructure to fix this
+        this.systems.push(system as unknown as System<this>)
     }
 
     removeSystem(system: AnySystem) {

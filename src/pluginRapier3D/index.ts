@@ -76,20 +76,20 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
             },
         }
     },
-    init(runtime) {
+    init(world) {
         const {
             world: physicsWorld,
             rapier,
             bodies,
             colliders,
-        } = runtime.resources.physics
+        } = world.resources.physics
 
-        runtime.addSystem((world) => {
+        world.addSystem(() => {
             world.resources.physics.world.timestep = world.clock.delta
             world.resources.physics.world.step()
         })
 
-        runtime.addSystem((world) => {
+        world.addSystem(() => {
             world.resources.entities
                 .query(dynamicBodiesQuery)
                 .forEach(([[_, transform], entity]) => {
@@ -111,7 +111,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
                 })
         })
 
-        runtime.resources.entities.addQueryObserver(
+        world.resources.entities.addQueryObserver(
             dynamicBodiesQuery,
             ([[geometryDef, transform], entity]) => {
                 switch (geometryDef.type) {
@@ -171,7 +171,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
             },
         )
 
-        runtime.resources.entities.addQueryObserver(
+        world.resources.entities.addQueryObserver(
             fixedBodiesQuery,
             ([[geometryDef, transform], entity]) => {
                 if (geometryDef.type === 'heightfield') {
@@ -194,7 +194,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
             },
         )
 
-        runtime.resources.entities.addQueryObserver(
+        world.resources.entities.addQueryObserver(
             kinematixBodiesQuery,
             ([[geometryDef, transform], entity]) => {
                 switch (geometryDef.type) {
