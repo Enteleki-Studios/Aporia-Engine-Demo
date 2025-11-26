@@ -1,4 +1,5 @@
 import { Vector3 } from 'three'
+import { quat, vec3 } from 'gl-matrix'
 
 import {
     Geometry3DComponent,
@@ -11,13 +12,15 @@ import { RigidBodyDynamic, RigidBodyFixed, RigidBodyKinematic } from '@pluginRap
 import { Animation, GltfComponent, RenderableDynamic } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
+import { glMatrix } from 'gl-matrix'
+import { Y_AXIS } from '@core'
 
 const playerQuery = createQuery([PlayerComponent, Transform3DComponent, Animation])
 
-const playerMovementSystem = (engine: World) => {
-    const { input } = engine.resources
-    const entities = engine.resources.entities.query(playerQuery)
-    const { characterController, bodies, colliders } = engine.resources.physics
+const playerMovementSystem = (world: World) => {
+    const { input } = world.resources
+    const entities = world.resources.entities.query(playerQuery)
+    const { characterController, bodies, colliders } = world.resources.physics
 
     entities.forEach(([[_, transform, animation], entity]) => {
         const dirX = input.left ? -1 : input.right ? 1 : 0
@@ -27,23 +30,32 @@ const playerMovementSystem = (engine: World) => {
         const characterCollider = colliders.get(entity.id)
 
         if (character && characterCollider) {
-            const speed = 2.5
+            const speed = input.shift ? 7 : 1.25
 
             const isGrounded = characterController.computedGrounded()
 
-            const movementDirection = {
-                x: dirX * speed * engine.clock.delta,
-                y: input.space
-                    ? speed * engine.clock.delta
+            const velocity: vec3 = [
+                dirX,
+                0,
+                dirZ,
+            ]
+
+            vec3.normalize(velocity, velocity)
+            vec3.scale(velocity, velocity, speed * world.clock.delta)
+
+            velocity[1] = input.space
+                    ? 10 * world.clock.delta
                     : isGrounded
                       ? -0.01
-                      : -9.81 * engine.clock.delta,
-                z: dirZ * speed * engine.clock.delta,
-            }
+                      : -9.81 * world.clock.delta
 
             characterController.computeColliderMovement(
                 characterCollider,
-                movementDirection,
+                {
+                    x: velocity[0],
+                    y: velocity[1],
+                    z: velocity[2],
+                },
             )
 
             const movement = characterController.computedMovement()
@@ -53,20 +65,59 @@ const playerMovementSystem = (engine: World) => {
             newPos.z += movement.z
             character.setNextKinematicTranslation(newPos)
 
-            transform.position[0] = newPos.x
-            transform.position[1] = newPos.y
-            transform.position[2] = newPos.z
+            // transform.position[0] = newPos.x
+            // transform.position[1] = newPos.y
+            // transform.position[2] = newPos.z
 
-            if (dirX || dirZ) {
-                animation.actionName = 'Walk_Loop'
+            if (!isGrounded) {
+                animation.actionName = 'Jump_Loop'
+            } else if (dirX || dirZ) {
+                if (input.shift) {
+                    animation.actionName = 'Jog_Fwd_Loop'
+                } else {
+                    animation.actionName = 'Walk_Loop'
+                }
             } else {
                 animation.actionName = 'Idle_Loop'
+            }
+
+            // TODO: Don't create this every frame...
+            const moveCamera = () => {
+                world.resources.three.renderer.camera.position.set(
+                    transform.position[0],
+                    transform.position[1] + 8,
+                    transform.position[2] + 15,
+                )
+                world.resources.three.renderer.camera.lookAt(new Vector3(
+                    transform.position[0],
+                    transform.position[1] + 2,
+                    transform.position[2],
+                ))
+            }
+
+            if (dirX || dirZ) {
+                const angle = Math.atan2(dirX, dirZ)
+                const t = 10 * world.clock.delta
+                const targetQ = quat.setAxisAngle([0, 0, 0, 1], Y_AXIS, angle)
+                quat.slerp(transform.rotation, transform.rotation, targetQ, t)
+
+                moveCamera()
+            }
+
+            if (transform.position[1] < -30) {
+                character.setNextKinematicTranslation({
+                    x: 0,
+                    y: 10,
+                    z: 0,
+                })
             }
         }
     })
 }
 
 export const game1 = async () => {
+    glMatrix.setMatrixArrayType(Array)
+
     const world = await createWorld()
 
     world.addSystem(playerMovementSystem)
@@ -123,14 +174,14 @@ export const game1 = async () => {
         world.resources.entities.createEntity(),
         RigidBodyFixed(),
         Transform3DComponent({
-            position: [0, -4, 0],
+            position: [0, -1, 0],
         }),
         Geometry3DComponent({
             type: 'heightfield',
             ncols: 15,
             nrows: 10,
             heights: generateHeightfield(15, 10),
-            scale: [15 * 7, 8, 10 * 7],
+            scale: [15 * 7, 3, 10 * 7],
         }),
     )
 

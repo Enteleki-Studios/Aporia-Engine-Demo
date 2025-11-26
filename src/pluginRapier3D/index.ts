@@ -44,7 +44,7 @@ const fixedBodiesQuery = createQuery([
     RigidBodyFixed,
 ])
 
-const kinematixBodiesQuery = createQuery([
+const kinematicBodiesQuery = createQuery([
     Geometry3DComponent,
     Transform3DComponent,
     RigidBodyKinematic,
@@ -107,6 +107,21 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
                         transform.rotation[1] = rotation.y
                         transform.rotation[2] = rotation.z
                         transform.rotation[3] = rotation.w
+                    }
+                })
+
+            // TODO: Move functionality to a function...
+            world.resources.entities
+                .query(kinematicBodiesQuery)
+                .forEach(([[_, transform], entity]) => {
+                    const body = world.resources.physics.bodies.get(entity.id)
+
+                    if (body) {
+                        const position = body.translation()
+
+                        transform.position[0] = position.x
+                        transform.position[1] = position.y
+                        transform.position[2] = position.z
                     }
                 })
         })
@@ -195,7 +210,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
         )
 
         world.resources.entities.addQueryObserver(
-            kinematixBodiesQuery,
+            kinematicBodiesQuery,
             ([[geometryDef, transform], entity]) => {
                 switch (geometryDef.type) {
                     case 'capsule': {

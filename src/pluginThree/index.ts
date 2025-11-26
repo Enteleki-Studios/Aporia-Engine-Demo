@@ -16,6 +16,8 @@ import {
     SphereGeometry,
     TextureLoader,
     Vector3,
+    CameraHelper,
+    WebGLCapabilities,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
@@ -83,10 +85,10 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         renderer.renderer.setClearColor('#888888')
 
-        renderer.scene.add(new AmbientLight(0xffffff, 0.2))
-
         renderer.scene.add(new AxesHelper(3))
         renderer.scene.add(new InfiniteGrid())
+
+        // renderer.scene.add(new CameraHelper(renderer.camera))
 
         const sky = new Sky()
         sky.scale.setScalar(1000)
@@ -94,7 +96,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         // sun position
         const sun = new Vector3()
-        const inclination = 0.9 // elevation (0–1)
+        const inclination = 0.7 // elevation (0–1)
         const azimuth = 0.2 // east/west (0–1)
 
         const theta = Math.PI * (inclination - 0.5)
@@ -122,15 +124,17 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         skyUniforms.mieDirectionalG.value = 0.6 // Sun glow sharpness
         skyUniforms.sunPosition.value.copy(sun)
 
-        const light = new DirectionalLight(0xffffff, 1.0)
+        renderer.scene.add(new AmbientLight(0xffffff, inclination/10))
+        const light = new DirectionalLight(0xffffff, inclination)
         light.position.copy(sun.clone().multiplyScalar(10))
         light.castShadow = true
         renderer.scene.add(light)
 
-        const lightHelper = new DirectionalLightHelper(light)
-        renderer.scene.add(lightHelper)
+        renderer.scene.add(new DirectionalLightHelper(light))
+        renderer.scene.add(new CameraHelper(light.shadow.camera))
 
-        const waterGeometry = new PlaneGeometry(100, 100)
+        // const waterGeometry = new PlaneGeometry(150, 100)
+        const waterGeometry = new PlaneGeometry(1500, 1000)
         const water = new Water(waterGeometry, {
             textureWidth: 512,
             textureHeight: 512,
@@ -144,8 +148,8 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             fog: !!renderer.scene.fog,
         })
         water.rotation.x = -Math.PI / 2
-        water.position.y = 0.01
-        water.position.x = -50
+        water.position.y = -0.1
+        water.position.x = 0
         renderer.scene.add(water)
 
         // renderer.scene.overrideMaterial = new MeshBasicMaterial({ wireframe: true, color: '#0089cc' })
@@ -168,12 +172,30 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             ([[geometryDef, transform], entity]) => {
                 const { objectStore, renderer } = world.resources.three
 
+                const defaultTexture = loader.load('/textures/checkered.jpg')
+
                 // TODO: Use a function instead of mutation
                 let geometry
+                let material = new MeshStandardMaterial({
+                    color: '#ffffff',
+                    // side: 2,
+                    // flatShading: true,
+                    map: defaultTexture,
+                })
                 switch (geometryDef.type) {
-                    case 'ball':
+                    case 'ball': {
                         geometry = new SphereGeometry(geometryDef.radius)
+
+                        const texture = loader.load('/textures/rock.png')
+                        texture.wrapS = RepeatWrapping
+                        texture.wrapT = RepeatWrapping
+                        texture.repeat.set(2, 2)
+
+                        material = new MeshStandardMaterial({
+                            map: texture,
+                        })
                         break
+                    }
                     case 'box':
                         geometry = new BoxGeometry(
                             geometryDef.halfWidth * 2,
@@ -205,18 +227,27 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
                         positions.needsUpdate = true
                         geometry.computeVertexNormals()
+
+                        const texture = loader.load('/textures/grass/Grass_02.png')
+                        texture.wrapS = RepeatWrapping
+                        texture.wrapT = RepeatWrapping
+                        texture.repeat.set(ncols*4, nrows*4)
+
+                        // const maxAnisotropy = renderer.renderer.capabilities.getMaxAnisotropy()
+                        // texture.anisotropy = maxAnisotropy
+
+                        const normalsTexture = loader.load('/textures/grass/Grass_02_Nrm.png')
+                        normalsTexture.wrapS = RepeatWrapping
+                        normalsTexture.wrapT = RepeatWrapping
+                        normalsTexture.repeat.set(ncols*4, nrows*4)
+
+                        material = new MeshStandardMaterial({
+                            map: texture,
+                            normalMap: normalsTexture,
+                        })
                         break
                     }
                 }
-
-                const map = loader.load('/textures/checkered.jpg')
-
-                const material = new MeshStandardMaterial({
-                    color: '#ffffff',
-                    // side: 2,
-                    map,
-                })
-                // material.flatShading = true
 
                 const mesh = new Mesh(geometry, material)
 
@@ -272,6 +303,8 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                         acc[anim.name] = mixer.clipAction(anim)
                         return acc
                     }, {})
+
+                    // console.debug(actions)
 
                     animationStore.set(entity.id, {
                         mixer,

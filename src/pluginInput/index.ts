@@ -6,6 +6,7 @@ type Input = {
     up: boolean
     down: boolean
     space: boolean
+    shift: boolean
 }
 
 export const pluginInput = (): Plugin<{ input: Input }> => ({
@@ -16,6 +17,7 @@ export const pluginInput = (): Plugin<{ input: Input }> => ({
             up: false,
             down: false,
             space: false,
+            shift: false,
         }
 
         return {
@@ -26,6 +28,7 @@ export const pluginInput = (): Plugin<{ input: Input }> => ({
         const { input } = runtime.resources
 
         const handleKeyDown = (e: KeyboardEvent) => {
+            // console.debug(e.code, e)
             if (e.code === 'KeyA') {
                 input.left = true
             } else if (e.code === 'KeyD') {
@@ -34,8 +37,10 @@ export const pluginInput = (): Plugin<{ input: Input }> => ({
                 input.up = true
             } else if (e.code === 'KeyS') {
                 input.down = true
-            } else if (e.code === 'Enter') {
+            } else if (e.code === 'Space') {
                 input.space = true
+            } else if (e.code === 'ShiftLeft') {
+                input.shift = true
             }
         }
 
@@ -48,8 +53,10 @@ export const pluginInput = (): Plugin<{ input: Input }> => ({
                 input.up = false
             } else if (e.code === 'KeyS') {
                 input.down = false
-            } else if (e.code === 'Enter') {
+            } else if (e.code === 'Space') {
                 input.space = false
+            } else if (e.code === 'ShiftLeft') {
+                input.shift = false
             }
         }
 
