@@ -4,8 +4,7 @@ import {
     AnimationMixer,
     BoxGeometry,
     // CapsuleGeometry,
-    DirectionalLight,
-    DirectionalLightHelper,
+    // DirectionalLight,
     Group,
     type IUniform,
     Mesh,
@@ -16,8 +15,6 @@ import {
     SphereGeometry,
     TextureLoader,
     Vector3,
-    CameraHelper,
-    WebGLCapabilities,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
@@ -36,6 +33,7 @@ import { type EntityId } from '@pluginEntities'
 
 import { AxesHelper } from './axesHelper'
 import { InfiniteGrid } from './infiniteGrid'
+import { DirectionalLight } from './directionalLight'
 import { geometryQuery, gltfQuery } from './queries'
 import { Renderer } from './renderer'
 import { isThreeMesh } from './utils'
@@ -91,7 +89,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         // renderer.scene.add(new CameraHelper(renderer.camera))
 
         const sky = new Sky()
-        sky.scale.setScalar(1000)
+        sky.scale.setScalar(2000)
         renderer.scene.add(sky)
 
         // sun position
@@ -126,15 +124,15 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         renderer.scene.add(new AmbientLight(0xffffff, inclination/10))
         const light = new DirectionalLight(0xffffff, inclination)
-        light.position.copy(sun.clone().multiplyScalar(10))
-        light.castShadow = true
+        light.position.copy(sun.clone().multiplyScalar(20))
         renderer.scene.add(light)
 
-        renderer.scene.add(new DirectionalLightHelper(light))
-        renderer.scene.add(new CameraHelper(light.shadow.camera))
+        renderer.scene.add(light.helper)
+        light.helper.update()
+        renderer.scene.add(light.shadowHelper)
 
         // const waterGeometry = new PlaneGeometry(150, 100)
-        const waterGeometry = new PlaneGeometry(1500, 1000)
+        const waterGeometry = new PlaneGeometry(1000, 1000)
         const water = new Water(waterGeometry, {
             textureWidth: 512,
             textureHeight: 512,
