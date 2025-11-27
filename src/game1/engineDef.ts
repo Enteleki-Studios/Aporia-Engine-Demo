@@ -85,8 +85,8 @@ const playerMovementSystem = (world: World) => {
             const moveCamera = () => {
                 world.resources.three.renderer.camera.position.set(
                     transform.position[0],
-                    transform.position[1] + 8,
-                    transform.position[2] + 15,
+                    transform.position[1] + 5,
+                    transform.position[2] + 5,
                 )
                 world.resources.three.renderer.camera.lookAt(new Vector3(
                     transform.position[0],
