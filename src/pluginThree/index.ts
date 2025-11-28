@@ -127,7 +127,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         renderer.scene.add(new AmbientLight(0xffffff, inclination / 10))
         const light = new DirectionalLight(0xffffff, inclination)
-        light.position.copy(sun.clone().multiplyScalar(20))
+        light.position.copy(sun.clone().multiplyScalar(50))
         renderer.scene.add(light)
 
         renderer.scene.add(light.helper)
@@ -254,7 +254,8 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                         break
                     }
                     case 'wedge': {
-                        const { vertices, indices } = generateWedgeMeshData(geometryDef)
+                        const { vertices, indices, uvs } =
+                            generateWedgeMeshData(geometryDef)
 
                         geometry = new BufferGeometry()
                         geometry.setAttribute(
@@ -262,6 +263,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                             new BufferAttribute(vertices, 3),
                         )
                         geometry.setIndex(new BufferAttribute(indices, 1))
+                        geometry.setAttribute('uv', new BufferAttribute(uvs, 2))
                         geometry.computeVertexNormals()
 
                         break

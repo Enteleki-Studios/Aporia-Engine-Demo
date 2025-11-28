@@ -36,5 +36,16 @@ export function generateWedgeMeshData({
         4, 2, 3,
     ]);
 
-    return { vertices, indices }
+    // U maps to Z axis (0 to hz), V maps to X axis (0 to hx)
+    // prettier-ignore
+    const uvs = new Float32Array([
+        0, 0, // v0 (0, 0, 0)
+        1, 0, // v1 (0, 0, hz)
+        0, 1, // v2 (hx, hy, 0)
+        1, 1, // v3 (hx, hy, hz)
+        0, 1, // v4 (hx, 0, 0)
+        1, 1, // v5 (hx, 0, hz)
+    ])
+
+    return { vertices, indices, uvs }
 }
