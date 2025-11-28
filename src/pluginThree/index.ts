@@ -15,6 +15,7 @@ import {
     SphereGeometry,
     TextureLoader,
     Vector3,
+    NearestFilter,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
@@ -171,27 +172,30 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                 const { objectStore, renderer } = world.resources.three
 
                 const defaultTexture = loader.load('/textures/checkered.jpg')
+                // Keep the texture crisp
+                defaultTexture.minFilter = NearestFilter
+                defaultTexture.magFilter = NearestFilter
 
                 // TODO: Use a function instead of mutation
                 let geometry
                 let material = new MeshStandardMaterial({
                     color: '#ffffff',
+                    map: defaultTexture,
                     // side: 2,
                     // flatShading: true,
-                    map: defaultTexture,
                 })
                 switch (geometryDef.type) {
                     case 'ball': {
                         geometry = new SphereGeometry(geometryDef.radius)
 
-                        const texture = loader.load('/textures/rock.png')
-                        texture.wrapS = RepeatWrapping
-                        texture.wrapT = RepeatWrapping
-                        texture.repeat.set(2, 2)
+                        // const texture = loader.load('/textures/rock.png')
+                        // texture.wrapS = RepeatWrapping
+                        // texture.wrapT = RepeatWrapping
+                        // texture.repeat.set(2, 2)
 
-                        material = new MeshStandardMaterial({
-                            map: texture,
-                        })
+                        // material = new MeshStandardMaterial({
+                        //     map: texture,
+                        // })
                         break
                     }
                     case 'box':
@@ -324,7 +328,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             const waterTime: IUniform<number> | undefined =
                 three.water.material.uniforms['time']
             if (waterTime) {
-                waterTime.value += world.clock.delta * 0.5
+                waterTime.value += world.clock.delta * 0.25
             }
         })
     },

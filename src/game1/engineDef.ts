@@ -9,7 +9,7 @@ import {
 
 import { createQuery } from '@pluginEntities'
 import { RigidBodyDynamic, RigidBodyFixed, RigidBodyKinematic } from '@pluginRapier3D'
-import { Animation, GltfComponent, RenderableDynamic } from '@pluginThree'
+import { Animation, GltfComponent, RenderableDynamic, RenderableFixed } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
 import { glMatrix } from 'gl-matrix'
@@ -85,12 +85,12 @@ const playerMovementSystem = (world: World) => {
             const moveCamera = () => {
                 world.resources.three.renderer.camera.position.set(
                     transform.position[0],
-                    transform.position[1] + 5,
+                    transform.position[1] + 3,
                     transform.position[2] + 5,
                 )
                 world.resources.three.renderer.camera.lookAt(new Vector3(
                     transform.position[0],
-                    transform.position[1] + 2,
+                    transform.position[1] + 1,
                     transform.position[2],
                 ))
             }
@@ -146,14 +146,21 @@ export const game1 = async () => {
             Transform3DComponent({ position: [i * 2, 10, -i * 2] }),
             RigidBodyDynamic(),
             Geometry3DComponent({ type: 'ball', radius: 0.5 }),
-            // Geometry3DComponent({ type: 'box',
-            //     halfWidth: 0.5,
-            //     halfHeight: 0.5,
-            //     halfDepth: 0.5,
-            // }),
             RenderableDynamic(),
         )
     }
+
+    world.resources.entities.addComponents(
+        world.resources.entities.createEntity(),
+        Transform3DComponent({ position: [0, 10, -25] }),
+        RigidBodyFixed(),
+        Geometry3DComponent({ type: 'box',
+            halfWidth: 10,
+            halfHeight: 10,
+            halfDepth: 10,
+        }),
+        RenderableFixed(),
+    )
 
     const generateHeightfield = (ncols: number, nrows: number = ncols) => {
         const heights = []

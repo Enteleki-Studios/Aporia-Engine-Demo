@@ -189,22 +189,43 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
         world.resources.entities.addQueryObserver(
             fixedBodiesQuery,
             ([[geometryDef, transform], entity]) => {
-                if (geometryDef.type === 'heightfield') {
-                    const { ncols, nrows, heights, scale } = geometryDef
-                    const colliderDesc = rapier.ColliderDesc.heightfield(
-                        nrows,
-                        ncols,
-                        new Float32Array(heights),
-                        { x: scale[0], y: scale[1], z: scale[2] },
-                    )
-                    const rigidBody = physicsWorld.createRigidBody(
-                        rapier.RigidBodyDesc.fixed().setTranslation(
-                            ...transform.position,
-                        ),
-                    )
-                    const collider = physicsWorld.createCollider(colliderDesc, rigidBody)
-                    bodies.set(entity.id, rigidBody)
-                    colliders.set(entity.id, collider)
+                switch(geometryDef.type) {
+                    case 'box': {
+                        const colliderDesc = rapier.ColliderDesc.cuboid(
+                            geometryDef.halfWidth,
+                            geometryDef.halfHeight,
+                            geometryDef.halfDepth,
+                        )
+                        const rigidBody = physicsWorld.createRigidBody(
+                            rapier.RigidBodyDesc.fixed().setTranslation(
+                                ...transform.position,
+                            ),
+                        )
+                        const collider = physicsWorld.createCollider(
+                            colliderDesc,
+                            rigidBody,
+                        )
+                        bodies.set(entity.id, rigidBody)
+                        colliders.set(entity.id, collider)
+                        break
+                    }
+                    case 'heightfield': {
+                        const { ncols, nrows, heights, scale } = geometryDef
+                        const colliderDesc = rapier.ColliderDesc.heightfield(
+                            nrows,
+                            ncols,
+                            new Float32Array(heights),
+                            { x: scale[0], y: scale[1], z: scale[2] },
+                        )
+                        const rigidBody = physicsWorld.createRigidBody(
+                            rapier.RigidBodyDesc.fixed().setTranslation(
+                                ...transform.position,
+                            ),
+                        )
+                        const collider = physicsWorld.createCollider(colliderDesc, rigidBody)
+                        bodies.set(entity.id, rigidBody)
+                        colliders.set(entity.id, collider)
+                    }
                 }
             },
         )
