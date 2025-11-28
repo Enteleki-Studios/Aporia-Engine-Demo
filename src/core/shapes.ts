@@ -5,6 +5,7 @@ export const SHAPE_TYPES = {
     BOX: 'box',
     CAPSULE: 'capsule',
     HEIGHTFIELD: 'heightfield',
+    WEDGE: 'wedge',
 } as const
 
 // 2D + 3D
@@ -19,8 +20,8 @@ export type Ball = {
 // 3D
 export type Box = {
     type: typeof SHAPE_TYPES.BOX
-    halfHeight: number
     halfWidth: number
+    halfHeight: number
     halfDepth: number
 }
 
@@ -38,6 +39,13 @@ export type HeightField = {
     scale: Array3
 }
 
+export type Wedge = {
+    type: typeof SHAPE_TYPES.WEDGE
+    halfWidth: number
+    halfHeight: number
+    halfDepth: number
+}
+
 export type Shape2D = Ball
-export type Shape3D = Ball | Box | Capsule | HeightField
+export type Shape3D = Ball | Box | Capsule | HeightField | Wedge
 export type Shape = Shape2D | Shape3D

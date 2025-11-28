@@ -1,5 +1,8 @@
-import { Vector3 } from 'three'
 import { quat, vec3 } from 'gl-matrix'
+import { glMatrix } from 'gl-matrix'
+import { Vector3 } from 'three'
+
+import { Y_AXIS } from '@core'
 
 import {
     Geometry3DComponent,
@@ -9,11 +12,14 @@ import {
 
 import { createQuery } from '@pluginEntities'
 import { RigidBodyDynamic, RigidBodyFixed, RigidBodyKinematic } from '@pluginRapier3D'
-import { Animation, GltfComponent, RenderableDynamic, RenderableFixed } from '@pluginThree'
+import {
+    Animation,
+    GltfComponent,
+    RenderableDynamic,
+    RenderableFixed,
+} from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
-import { glMatrix } from 'gl-matrix'
-import { Y_AXIS } from '@core'
 
 const playerQuery = createQuery([PlayerComponent, Transform3DComponent, Animation])
 
@@ -34,29 +40,22 @@ const playerMovementSystem = (world: World) => {
 
             const isGrounded = characterController.computedGrounded()
 
-            const velocity: vec3 = [
-                dirX,
-                0,
-                dirZ,
-            ]
+            const velocity: vec3 = [dirX, 0, dirZ]
 
             vec3.normalize(velocity, velocity)
             vec3.scale(velocity, velocity, speed * world.clock.delta)
 
             velocity[1] = input.space
-                    ? 10 * world.clock.delta
-                    : isGrounded
-                      ? -0.01
-                      : -9.81 * world.clock.delta
+                ? 10 * world.clock.delta
+                : isGrounded
+                  ? -0.01
+                  : -9.81 * world.clock.delta
 
-            characterController.computeColliderMovement(
-                characterCollider,
-                {
-                    x: velocity[0],
-                    y: velocity[1],
-                    z: velocity[2],
-                },
-            )
+            characterController.computeColliderMovement(characterCollider, {
+                x: velocity[0],
+                y: velocity[1],
+                z: velocity[2],
+            })
 
             const movement = characterController.computedMovement()
             const newPos = character.translation()
@@ -88,11 +87,13 @@ const playerMovementSystem = (world: World) => {
                     transform.position[1] + 3,
                     transform.position[2] + 5,
                 )
-                world.resources.three.renderer.camera.lookAt(new Vector3(
-                    transform.position[0],
-                    transform.position[1] + 1,
-                    transform.position[2],
-                ))
+                world.resources.three.renderer.camera.lookAt(
+                    new Vector3(
+                        transform.position[0],
+                        transform.position[1] + 1,
+                        transform.position[2],
+                    ),
+                )
             }
 
             if (dirX || dirZ) {
@@ -154,10 +155,24 @@ export const game1 = async () => {
         world.resources.entities.createEntity(),
         Transform3DComponent({ position: [0, 10, -25] }),
         RigidBodyFixed(),
-        Geometry3DComponent({ type: 'box',
+        Geometry3DComponent({
+            type: 'box',
             halfWidth: 10,
             halfHeight: 10,
             halfDepth: 10,
+        }),
+        RenderableFixed(),
+    )
+
+    world.resources.entities.addComponents(
+        world.resources.entities.createEntity(),
+        Transform3DComponent({ position: [-35, 0, -25] }),
+        RigidBodyFixed(),
+        Geometry3DComponent({
+            type: 'wedge',
+            halfWidth: 15,
+            halfHeight: 5,
+            halfDepth: 5,
         }),
         RenderableFixed(),
     )

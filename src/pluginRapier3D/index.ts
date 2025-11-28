@@ -1,6 +1,7 @@
 import { type Plugin, type PluginsToResources } from '@core'
 
 import { Geometry3DComponent, Transform3DComponent } from '@core/components'
+import { generateWedgeMeshData } from '@core/utils'
 
 import type {
     Collider,
@@ -77,12 +78,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
         }
     },
     init(world) {
-        const {
-            world: physicsWorld,
-            rapier,
-            bodies,
-            colliders,
-        } = world.resources.physics
+        const { world: physicsWorld, rapier, bodies, colliders } = world.resources.physics
 
         world.addSystem(() => {
             world.resources.physics.world.timestep = world.clock.delta
@@ -189,7 +185,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
         world.resources.entities.addQueryObserver(
             fixedBodiesQuery,
             ([[geometryDef, transform], entity]) => {
-                switch(geometryDef.type) {
+                switch (geometryDef.type) {
                     case 'box': {
                         const colliderDesc = rapier.ColliderDesc.cuboid(
                             geometryDef.halfWidth,
@@ -222,9 +218,32 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
                                 ...transform.position,
                             ),
                         )
-                        const collider = physicsWorld.createCollider(colliderDesc, rigidBody)
+                        const collider = physicsWorld.createCollider(
+                            colliderDesc,
+                            rigidBody,
+                        )
                         bodies.set(entity.id, rigidBody)
                         colliders.set(entity.id, collider)
+                        break
+                    }
+                    case 'wedge': {
+                        const { vertices, indices } = generateWedgeMeshData(geometryDef)
+                        const colliderDesc = rapier.ColliderDesc.trimesh(
+                            vertices,
+                            indices,
+                        )
+                        const rigidBody = physicsWorld.createRigidBody(
+                            rapier.RigidBodyDesc.fixed().setTranslation(
+                                ...transform.position,
+                            ),
+                        )
+                        const collider = physicsWorld.createCollider(
+                            colliderDesc,
+                            rigidBody,
+                        )
+                        bodies.set(entity.id, rigidBody)
+                        colliders.set(entity.id, collider)
+                        break
                     }
                 }
             },

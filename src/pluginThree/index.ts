@@ -3,19 +3,21 @@ import {
     type AnimationAction,
     AnimationMixer,
     BoxGeometry,
+    BufferAttribute,
+    BufferGeometry,
     // CapsuleGeometry,
     // DirectionalLight,
     Group,
     type IUniform,
     Mesh,
     MeshStandardMaterial,
+    NearestFilter,
     PlaneGeometry,
     RepeatWrapping,
     SkeletonHelper,
     SphereGeometry,
     TextureLoader,
     Vector3,
-    NearestFilter,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
@@ -28,18 +30,18 @@ import {
     type WorldWithPlugin,
 } from '@core'
 
-import { transpose1D } from '@core/utils'
+import { generateWedgeMeshData, transpose1D } from '@core/utils'
 
 import { type EntityId } from '@pluginEntities'
 
 import { AxesHelper } from './axesHelper'
-import { InfiniteGrid } from './infiniteGrid'
 import { DirectionalLight } from './directionalLight'
+import { InfiniteGrid } from './infiniteGrid'
 import { geometryQuery, gltfQuery } from './queries'
 import { Renderer } from './renderer'
-import { isThreeMesh } from './utils'
-import { syncTransforms } from './systems/syncTransform'
 import { animationSystem } from './systems/animations'
+import { syncTransforms } from './systems/syncTransform'
+import { isThreeMesh } from './utils'
 
 export { DefaultCube } from './defaultCube'
 export { AxesHelper } from './axesHelper'
@@ -123,7 +125,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         skyUniforms.mieDirectionalG.value = 0.6 // Sun glow sharpness
         skyUniforms.sunPosition.value.copy(sun)
 
-        renderer.scene.add(new AmbientLight(0xffffff, inclination/10))
+        renderer.scene.add(new AmbientLight(0xffffff, inclination / 10))
         const light = new DirectionalLight(0xffffff, inclination)
         light.position.copy(sun.clone().multiplyScalar(20))
         renderer.scene.add(light)
@@ -233,20 +235,35 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                         const texture = loader.load('/textures/grass/Grass_02.png')
                         texture.wrapS = RepeatWrapping
                         texture.wrapT = RepeatWrapping
-                        texture.repeat.set(ncols*4, nrows*4)
+                        texture.repeat.set(ncols * 4, nrows * 4)
 
                         // const maxAnisotropy = renderer.renderer.capabilities.getMaxAnisotropy()
                         // texture.anisotropy = maxAnisotropy
 
-                        const normalsTexture = loader.load('/textures/grass/Grass_02_Nrm.png')
+                        const normalsTexture = loader.load(
+                            '/textures/grass/Grass_02_Nrm.png',
+                        )
                         normalsTexture.wrapS = RepeatWrapping
                         normalsTexture.wrapT = RepeatWrapping
-                        normalsTexture.repeat.set(ncols*4, nrows*4)
+                        normalsTexture.repeat.set(ncols * 4, nrows * 4)
 
                         material = new MeshStandardMaterial({
                             map: texture,
                             normalMap: normalsTexture,
                         })
+                        break
+                    }
+                    case 'wedge': {
+                        const { vertices, indices } = generateWedgeMeshData(geometryDef)
+
+                        geometry = new BufferGeometry()
+                        geometry.setAttribute(
+                            'position',
+                            new BufferAttribute(vertices, 3),
+                        )
+                        geometry.setIndex(new BufferAttribute(indices, 1))
+                        geometry.computeVertexNormals()
+
                         break
                     }
                 }
