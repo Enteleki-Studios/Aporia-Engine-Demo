@@ -8,7 +8,10 @@ import type { PluginThree } from '@pluginThree'
 type Provides = {
     rapierViz: {
         lines: LineSegments
-        toggleViz: () => void
+        api: {
+            toggleViz: (val?: boolean) => void
+            toggleDepthTest: (val?: boolean) => void
+        }
     }
 }
 
@@ -26,17 +29,23 @@ export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
             }),
         )
 
-        // lines.material.depthTest = false
         lines.renderOrder = 999
 
         const toggleViz = (value?: boolean) => {
             lines.visible = value ?? !lines.visible
         }
 
+        const toggleDepthTest = (value?: boolean) => {
+            lines.material.depthTest = value ?? !lines.material.depthTest
+        }
+
         return {
             rapierViz: {
                 lines,
-                toggleViz,
+                api: {
+                    toggleViz,
+                    toggleDepthTest,
+                },
             },
         }
     },

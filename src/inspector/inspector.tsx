@@ -1,12 +1,12 @@
 import { type ReactNode, useEffect, useState } from 'react'
+import { RapierThreeVizPanel } from 'src/pluginRapierThreeViz/rapierThreeVizPanel'
+import { ThreePanel } from 'src/pluginThree/threePanel'
 
 import { ResourcesPanel, RuntimePanel } from '@core/react'
 
 import { EntitiesPanel } from '@pluginEntities'
 
 import './inspector.scss'
-import { ThreePanel } from 'src/pluginThree/threePanel'
-import { RapierThreeVizPanel } from 'src/pluginRapierThreeViz/rapierThreeVizPanel'
 
 type InspectorProps = {
     children: ReactNode
