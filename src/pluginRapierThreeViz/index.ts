@@ -14,6 +14,8 @@ type Provides = {
 
 type Dependencies = PluginsToResources<[PluginThree, PluginRapier3D]>
 
+export type RapierThreeVizPlugin = ReturnType<typeof pluginRapierThreeViz>
+
 export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
     createResources() {
         const lines = new LineSegments(

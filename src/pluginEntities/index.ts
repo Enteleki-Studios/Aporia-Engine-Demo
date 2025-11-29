@@ -154,8 +154,12 @@ export class Entities {
         }
     }
 
-    get length() {
+    get size() {
         return this.entities.size
+    }
+
+    get numQueries() {
+        return this.queryCache.size
     }
 }
 
@@ -190,6 +194,10 @@ export class Entity {
 
     get<C extends AnyComponentCreator>(component: C) {
         return this.components.get(component.__key__) as ReturnType<C> | undefined
+    }
+
+    get size() {
+        return this.components.size
     }
 }
 

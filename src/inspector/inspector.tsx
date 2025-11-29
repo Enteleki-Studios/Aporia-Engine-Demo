@@ -5,6 +5,8 @@ import { ResourcesPanel, RuntimePanel } from '@core/react'
 import { EntitiesPanel } from '@pluginEntities'
 
 import './inspector.scss'
+import { ThreePanel } from 'src/pluginThree/threePanel'
+import { RapierThreeVizPanel } from 'src/pluginRapierThreeViz/rapierThreeVizPanel'
 
 type InspectorProps = {
     children: ReactNode
@@ -40,6 +42,8 @@ export const Inspector = ({ children }: InspectorProps) => {
             </div>
             <div className="explorer">
                 <ResourcesPanel />
+                <ThreePanel />
+                <RapierThreeVizPanel />
             </div>
             <div className="views">
                 <div className="game">{children}</div>

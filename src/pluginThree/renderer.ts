@@ -28,7 +28,7 @@ export class Renderer {
         this.renderer.setPixelRatio(1 /* window.devicePixelRatio */)
         this.renderer.debug.checkShaderErrors = true
         // this.renderer.autoClear = false
-        // this.renderer.info.autoReset = false
+        this.renderer.info.autoReset = false
         this.canvas = this.renderer.domElement
 
         this.scene = new Scene()
@@ -39,6 +39,7 @@ export class Renderer {
 
     render() {
         if (this.shouldRender) {
+            this.renderer.info.reset()
             this.renderer.render(this.scene, this.camera)
         }
     }
