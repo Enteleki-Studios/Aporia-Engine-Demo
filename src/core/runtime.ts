@@ -7,6 +7,7 @@ export class Runtime<R extends object> {
     syncFrames = true
 
     private systems: System<this>[] = []
+    private debugSystems: AnySystem[] = []
     private loopId: number | null = null
 
     constructor(resources: R) {
@@ -34,6 +35,18 @@ export class Runtime<R extends object> {
         }
     }
 
+    addDebugSystem(system: AnySystem) {
+        this.debugSystems.push(system)
+    }
+
+    removeDebugSystem(system: AnySystem) {
+        const index = this.debugSystems.indexOf(system)
+
+        if (index > -1) {
+            this.debugSystems.splice(index, 1)
+        }
+    }
+
     start() {
         this.loop()
     }
@@ -57,6 +70,10 @@ export class Runtime<R extends object> {
         }
 
         this.clock.endFrame()
+
+        for (const debugSystem of this.debugSystems) {
+            debugSystem(this)
+        }
     }
 
     get isRunning() {

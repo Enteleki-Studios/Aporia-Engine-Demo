@@ -13,10 +13,10 @@ export const useRenderSync = () => {
             setFrame(w.clock.frames)
         }
 
-        world.addSystem(onFrame)
+        world.addDebugSystem(onFrame)
 
         return () => {
-            world.removeSystem(onFrame)
+            world.removeDebugSystem(onFrame)
         }
     }, [world])
 }

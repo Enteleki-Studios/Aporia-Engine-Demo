@@ -166,7 +166,7 @@ export const game1 = async () => {
 
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
-        Transform3DComponent({ position: [0, 5, 0] }),
+        Transform3DComponent({ position: [0, 1, 0] }),
         RigidBodyFixed(),
         Geometry3DComponent({
             type: 'wedge',

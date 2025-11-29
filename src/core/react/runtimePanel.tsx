@@ -17,6 +17,8 @@ export const RuntimePanel = () => {
             <pre>Frames: {world.clock.frames}</pre>
             {/* @ts-expect-error Accessing a private prop */}
             <pre>Systems: {world.systems.length}</pre>
+            {/* @ts-expect-error Accessing a private prop */}
+            <pre>Systems(debug): {world.debugSystems.length}</pre>
         </div>
     )
 }
