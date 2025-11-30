@@ -64,10 +64,6 @@ const playerMovementSystem = (world: World) => {
             newPos.z += movement.z
             character.setNextKinematicTranslation(newPos)
 
-            // transform.position[0] = newPos.x
-            // transform.position[1] = newPos.y
-            // transform.position[2] = newPos.z
-
             if (!isGrounded) {
                 animation.actionName = 'Jump_Loop'
             } else if (dirX || dirZ) {
