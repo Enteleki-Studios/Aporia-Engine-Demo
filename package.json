@@ -36,7 +36,7 @@
         "eslint-plugin-eslint-comments": "^3.2.0",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^7.0.1",
-        "prettier": "^3.5.3",
+        "prettier": "^3.7.3",
         "sass-embedded": "^1.86.0",
         "type-fest": "^5.1.0",
         "typescript": "^5.8.2",
