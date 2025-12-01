@@ -1,5 +1,4 @@
-import { quat, vec3 } from 'gl-matrix'
-import { glMatrix } from 'gl-matrix'
+import { glMatrix, quat, vec3 } from 'gl-matrix'
 import { Vector3 } from 'three'
 
 import { Y_AXIS } from '@core'
@@ -8,6 +7,7 @@ import {
     Geometry3DComponent,
     PlayerComponent,
     Transform3DComponent,
+    Velocity3DComponent,
 } from '@core/components'
 
 import { createQuery } from '@pluginEntities'
@@ -21,42 +21,59 @@ import {
 
 import { type World, createWorld } from './createWorld'
 
-const playerQuery = createQuery([PlayerComponent, Transform3DComponent, Animation])
+const playerQuery = createQuery([
+    Transform3DComponent,
+    Animation,
+    Velocity3DComponent,
+    PlayerComponent,
+])
 
 const playerMovementSystem = (world: World) => {
+    const { delta } = world.clock
     const { input } = world.resources
     const entities = world.resources.entities.query(playerQuery)
     const { characterController, bodies, colliders } = world.resources.physics
 
-    entities.forEach(([[_, transform, animation], entity]) => {
-        const dirX = input.left ? -1 : input.right ? 1 : 0
-        const dirZ = input.up ? -1 : input.down ? 1 : 0
-
+    entities.forEach(([[transform, animation, { velocity }], entity]) => {
         const character = bodies.get(entity.id)
         const characterCollider = colliders.get(entity.id)
 
         if (character && characterCollider) {
+            const dirX = input.left ? -1 : input.right ? 1 : 0
+            const dirZ = input.up ? -1 : input.down ? 1 : 0
+
+            // Target movement speed
             const speed = input.shift ? 7 : 1.25
+
+            const targetVelocity: vec3 = [dirX, 0, dirZ]
+            vec3.normalize(targetVelocity, targetVelocity)
+            vec3.scale(targetVelocity, targetVelocity, speed)
+
+            // Manually set vertical speed
+            targetVelocity[1] = input.space ? 10 : -9.81
+
+            // TODO: T must depend on transition time + delta
+            vec3.lerp(velocity, velocity, targetVelocity, 0.05)
 
             const isGrounded = characterController.computedGrounded()
 
-            const velocity: vec3 = [dirX, 0, dirZ]
+            // Slightly downward while walking on the ground
+            if (isGrounded && !input.space) {
+                velocity[1] = -0.01
+            }
 
-            vec3.normalize(velocity, velocity)
-            vec3.scale(velocity, velocity, speed * world.clock.delta)
+            const vMag2 = vec3.squaredLength(velocity)
+            const isMoving = vMag2 > 0.01
+            const isRunning = vMag2 > 9
 
-            velocity[1] = input.space
-                ? 10 * world.clock.delta
-                : isGrounded
-                  ? -0.01
-                  : -9.81 * world.clock.delta
+            const desiredTranslation = vec3.scale([], velocity, delta)
 
+            // Compute player movement with physics engine
             characterController.computeColliderMovement(characterCollider, {
-                x: velocity[0],
-                y: velocity[1],
-                z: velocity[2],
+                x: desiredTranslation[0],
+                y: desiredTranslation[1],
+                z: desiredTranslation[2],
             })
-
             const movement = characterController.computedMovement()
             const newPos = character.translation()
             newPos.x += movement.x
@@ -64,10 +81,11 @@ const playerMovementSystem = (world: World) => {
             newPos.z += movement.z
             character.setNextKinematicTranslation(newPos)
 
+            // Update player model animation
             if (!isGrounded) {
                 animation.actionName = 'Jump_Loop'
-            } else if (dirX || dirZ) {
-                if (input.shift) {
+            } else if (isMoving) {
+                if (isRunning) {
                     animation.actionName = 'Jog_Fwd_Loop'
                 } else {
                     animation.actionName = 'Walk_Loop'
@@ -76,8 +94,14 @@ const playerMovementSystem = (world: World) => {
                 animation.actionName = 'Idle_Loop'
             }
 
-            // TODO: Don't create this every frame...
-            const moveCamera = () => {
+            if (isMoving) {
+                // Rotate character to face direction of movement
+                const angle = Math.atan2(velocity[0], velocity[2])
+                const t = 10 * delta
+                const targetQ = quat.setAxisAngle([0, 0, 0, 1], Y_AXIS, angle)
+                quat.slerp(transform.rotation, transform.rotation, targetQ, t)
+
+                // Update camera position and rotation
                 world.resources.three.renderer.camera.position.set(
                     transform.position[0],
                     transform.position[1] + 3,
@@ -92,15 +116,7 @@ const playerMovementSystem = (world: World) => {
                 )
             }
 
-            if (dirX || dirZ) {
-                const angle = Math.atan2(dirX, dirZ)
-                const t = 10 * world.clock.delta
-                const targetQ = quat.setAxisAngle([0, 0, 0, 1], Y_AXIS, angle)
-                quat.slerp(transform.rotation, transform.rotation, targetQ, t)
-
-                moveCamera()
-            }
-
+            // Teleport player if out of bounds
             if (transform.position[1] < -30) {
                 character.setNextKinematicTranslation({
                     x: 0,
@@ -135,6 +151,7 @@ export const game1 = async () => {
             path: '/humanoid/animated_robo.glb',
         }),
         Animation({ actionName: 'Idle_Loop' }),
+        Velocity3DComponent(),
     )
 
     for (let i = 0; i < 10; i++) {

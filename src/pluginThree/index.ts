@@ -14,7 +14,7 @@ import {
     NearestFilter,
     PlaneGeometry,
     RepeatWrapping,
-    SkeletonHelper,
+    // SkeletonHelper,
     SphereGeometry,
     TextureLoader,
     Vector3,
@@ -34,9 +34,9 @@ import { generateWedgeMeshData, transpose1D } from '@core/utils'
 
 import { type EntityId } from '@pluginEntities'
 
-import { AxesHelper } from './axesHelper'
+// import { AxesHelper } from './axesHelper'
 import { DirectionalLight } from './directionalLight'
-import { InfiniteGrid } from './infiniteGrid'
+// import { InfiniteGrid } from './infiniteGrid'
 import { geometryQuery, gltfQuery } from './queries'
 import { Renderer } from './renderer'
 import { animationSystem } from './systems/animations'
@@ -86,8 +86,8 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         renderer.renderer.setClearColor('#888888')
 
-        renderer.scene.add(new AxesHelper(3))
-        renderer.scene.add(new InfiniteGrid())
+        // renderer.scene.add(new AxesHelper(3))
+        // renderer.scene.add(new InfiniteGrid())
 
         // renderer.scene.add(new CameraHelper(renderer.camera))
 
@@ -130,9 +130,9 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         light.position.copy(sun.clone().multiplyScalar(50))
         renderer.scene.add(light)
 
-        renderer.scene.add(light.helper)
-        light.helper.update()
-        renderer.scene.add(light.shadowHelper)
+        // renderer.scene.add(light.helper)
+        // light.helper.update()
+        // renderer.scene.add(light.shadowHelper)
 
         // const waterGeometry = new PlaneGeometry(150, 100)
         const waterGeometry = new PlaneGeometry(1000, 1000)
@@ -310,9 +310,9 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
                     group.add(scene)
 
-                    const skeleton = new SkeletonHelper(scene)
-                    skeleton.visible = true
-                    renderer.scene.add(skeleton)
+                    // const skeleton = new SkeletonHelper(scene)
+                    // skeleton.visible = true
+                    // renderer.scene.add(skeleton)
 
                     // TODO: This offset must be derived from a collider definition
                     scene.position.y = -0.9
