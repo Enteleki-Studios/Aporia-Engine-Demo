@@ -30,6 +30,7 @@ export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
         )
 
         lines.renderOrder = 999
+        lines.frustumCulled = false
 
         const toggleViz = (value?: boolean) => {
             lines.visible = value ?? !lines.visible
@@ -53,13 +54,17 @@ export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
         const { lines } = world.resources.rapierViz
         world.resources.three.renderer.scene.add(lines)
 
+        // TODO: Try removing the system as the toggle instead of
+        // using lines visibility
         world.addSystem(() => {
-            const buffers = world.resources.physics.world.debugRender()
-            lines.geometry.setAttribute(
-                'position',
-                new BufferAttribute(buffers.vertices, 3),
-            )
-            lines.geometry.setAttribute('color', new BufferAttribute(buffers.colors, 4))
+            if (lines.visible) {
+                const buffers = world.resources.physics.world.debugRender()
+                lines.geometry.setAttribute(
+                    'position',
+                    new BufferAttribute(buffers.vertices, 3),
+                )
+                lines.geometry.setAttribute('color', new BufferAttribute(buffers.colors, 4))
+            }
         })
     },
 })

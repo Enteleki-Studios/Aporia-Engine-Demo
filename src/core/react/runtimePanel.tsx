@@ -13,7 +13,7 @@ export const RuntimePanel = () => {
         <div>
             <h3>Runtime</h3>
             <pre>FPS: {Math.floor(smoothFps)}</pre>
-            <pre>Length: {Math.floor(smoothFrameLength)}ms</pre>
+            <pre>Length: {smoothFrameLength.toFixed(1)}ms</pre>
             <pre>Frames: {world.clock.frames}</pre>
             {/* @ts-expect-error Accessing a private prop */}
             <pre>Systems: {world.systems.length}</pre>
