@@ -1,5 +1,6 @@
 export * from './array'
 export * from './matrix'
+export * from './quat'
 export * from './geometry/heightField'
 export * from './geometry/wedge'
 

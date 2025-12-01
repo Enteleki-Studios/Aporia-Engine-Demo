@@ -18,6 +18,8 @@ import {
     SphereGeometry,
     TextureLoader,
     Vector3,
+    PerspectiveCamera,
+    OrthographicCamera,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
@@ -37,7 +39,7 @@ import { type EntityId } from '@pluginEntities'
 // import { AxesHelper } from './axesHelper'
 import { DirectionalLight } from './directionalLight'
 // import { InfiniteGrid } from './infiniteGrid'
-import { geometryQuery, gltfQuery } from './queries'
+import { geometryQuery, gltfQuery, perspectiveCameraQuery } from './queries'
 import { Renderer } from './renderer'
 import { animationSystem } from './systems/animations'
 import { syncTransforms } from './systems/syncTransform'
@@ -48,11 +50,13 @@ export { AxesHelper } from './axesHelper'
 export { CustomGridTexture } from './customGridTexture'
 export { DefaultGrid } from './defaultGrid'
 export * from './components'
+export * from './queries'
 
 type ThreeOutput = {
     three: {
         renderer: Renderer
         objectStore: ObjectStore<EntityId, Group>
+        cameraStore: Map<EntityId, PerspectiveCamera | OrthographicCamera>
         animationStore: Map<
             EntityId,
             {
@@ -163,6 +167,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                 renderer,
                 objectStore,
                 animationStore: new Map(),
+                cameraStore: new Map(),
                 gltfLoader,
                 water,
             },
@@ -280,8 +285,10 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                 group.add(mesh)
 
                 if (isCreated) {
-                    // TODO: Apply full transform
                     group.position.fromArray(transform.position)
+                    group.scale.fromArray(transform.scale)
+                    group.quaternion.fromArray(transform.rotation)
+
                     renderer.scene.add(group)
                 }
             },
@@ -295,8 +302,10 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                 const [group, isCreated] = objectStore.getOrCreate(entity.id)
 
                 if (isCreated) {
-                    // TODO: Apply full transform when group is added to scene
                     group.position.fromArray(transform.position)
+                    group.scale.fromArray(transform.scale)
+                    group.quaternion.fromArray(transform.rotation)
+
                     renderer.scene.add(group)
                 }
 
@@ -334,6 +343,26 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                     })
                 })
             },
+        )
+
+        world.resources.entities.addQueryObserver(
+            perspectiveCameraQuery,
+            ([[cameraDef, transform], entity]) => {
+                const camera = new PerspectiveCamera(
+                    cameraDef.fov,
+                    cameraDef.aspect,
+                    cameraDef.near,
+                    cameraDef.far,
+                )
+
+                camera.position.fromArray(transform.position)
+                camera.quaternion.fromArray(transform.rotation)
+
+                world.resources.three.cameraStore.set(entity.id, camera)
+
+                const { renderer } = world.resources.three
+                renderer.setMainCamera(camera)
+            }
         )
 
         world.addSystem(syncTransforms)

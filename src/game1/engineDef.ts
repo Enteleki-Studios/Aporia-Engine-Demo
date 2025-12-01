@@ -1,5 +1,4 @@
 import { glMatrix, quat, vec3 } from 'gl-matrix'
-import { Vector3 } from 'three'
 
 import { Y_AXIS } from '@core'
 
@@ -15,11 +14,14 @@ import { RigidBodyDynamic, RigidBodyFixed, RigidBodyKinematic } from '@pluginRap
 import {
     Animation,
     GltfComponent,
+    PerspectiveCamera,
+    perspectiveCameraQuery,
     RenderableDynamic,
     RenderableFixed,
 } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
+import { quatLookAt } from '@core/utils'
 
 const playerQuery = createQuery([
     Transform3DComponent,
@@ -32,6 +34,7 @@ const playerMovementSystem = (world: World) => {
     const { delta } = world.clock
     const { input } = world.resources
     const entities = world.resources.entities.query(playerQuery)
+    const cameraResult = world.resources.entities.queryFirst(perspectiveCameraQuery)
     const { characterController, bodies, colliders } = world.resources.physics
 
     entities.forEach(([[transform, animation, { velocity }], entity]) => {
@@ -101,18 +104,17 @@ const playerMovementSystem = (world: World) => {
                 quat.slerp(transform.rotation, transform.rotation, targetQ, t)
 
                 // Update camera position and rotation
-                world.resources.three.renderer.camera.position.set(
-                    transform.position[0],
-                    transform.position[1] + 3,
-                    transform.position[2] + 5,
-                )
-                world.resources.three.renderer.camera.lookAt(
-                    new Vector3(
-                        transform.position[0],
-                        transform.position[1] + 1,
-                        transform.position[2],
-                    ),
-                )
+                if (cameraResult) {
+                    const [[_, camTransform]] = cameraResult
+
+                    camTransform.position[0] = transform.position[0]
+                    camTransform.position[1] = transform.position[1] + 3
+                    camTransform.position[2] = transform.position[2] + 5
+
+                    const rotVec = vec3.subtract([], transform.position, camTransform.position)
+                    rotVec[1] += 1
+                    quatLookAt(camTransform.rotation, rotVec)
+                }
             }
 
             // Teleport player if out of bounds
@@ -133,6 +135,12 @@ export const game1 = async () => {
     const world = await createWorld()
 
     world.addSystem(playerMovementSystem)
+
+    world.resources.entities.addComponents(
+        world.resources.entities.createEntity(),
+        PerspectiveCamera({ far: 5000 }),
+        Transform3DComponent(),
+    )
 
     // Create player
     world.resources.entities.addComponents(
@@ -221,8 +229,8 @@ export const game1 = async () => {
         }),
     )
 
-    world.resources.three.renderer.camera.position.set(2, 4, 7)
-    world.resources.three.renderer.camera.lookAt(new Vector3(0, 1, 0))
+    // world.resources.three.renderer.camera.position.set(2, 4, 7)
+    // world.resources.three.renderer.camera.lookAt(new Vector3(0, 1, 0))
 
     return world
 }

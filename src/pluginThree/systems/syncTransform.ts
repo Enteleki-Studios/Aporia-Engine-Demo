@@ -1,6 +1,6 @@
 import type { ThreeWorld } from '@pluginThree'
 
-import { dynamicRenderables } from '../queries'
+import { dynamicRenderables, perspectiveCameraQuery } from '../queries'
 
 export const syncTransforms = (world: ThreeWorld) => {
     world.resources.entities
@@ -19,6 +19,18 @@ export const syncTransforms = (world: ThreeWorld) => {
                 ) {
                     group.quaternion.fromArray(transform.rotation)
                 }
+            }
+        })
+
+    world.resources.entities
+        .query(perspectiveCameraQuery)
+        .forEach(([[_, transform], entity]) => {
+            const camera = world.resources.three.cameraStore.get(entity.id)
+
+            if (camera) {
+                camera.position.fromArray(transform.position)
+                // TODO: Add check to see if quat needs updating
+                camera.quaternion.fromArray(transform.rotation)
             }
         })
 }

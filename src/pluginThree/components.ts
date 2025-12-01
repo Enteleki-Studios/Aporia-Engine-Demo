@@ -19,3 +19,20 @@ export const Animation = createComponent(
         prevActionName: state.prevActionName ?? null,
     }),
 )
+
+type PerspectiveCamera = {
+    fov: number
+    aspect: number
+    near: number
+    far: number
+}
+
+export const PerspectiveCamera = createComponent(
+    'PerspectiveCamera',
+    (state?: Partial<PerspectiveCamera>): PerspectiveCamera => ({
+        fov: state?.fov ?? 55,
+        aspect: state?.aspect ?? 1,
+        near: state?.near ?? 0.1,
+        far: state?.far ?? 2000,
+    }),
+)
