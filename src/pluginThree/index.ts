@@ -148,6 +148,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             distortionScale: 3.7,
             fog: !!renderer.scene.fog,
         })
+        water.receiveShadow = true
         water.rotation.x = -Math.PI / 2
         water.position.y = -0.1
         water.position.x = 0

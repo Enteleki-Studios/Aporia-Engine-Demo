@@ -52,8 +52,7 @@ const playerMovementSystem = (world: World) => {
             // Manually set vertical speed
             targetVelocity[1] = input.space ? 10 : -9.81
 
-            // TODO: T must depend on transition time + delta
-            vec3.lerp(velocity, velocity, targetVelocity, 0.05)
+            vec3.lerp(velocity, velocity, targetVelocity, 1 - 0.005 ** delta)
 
             const isGrounded = characterController.computedGrounded()
 

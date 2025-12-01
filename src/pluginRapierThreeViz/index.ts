@@ -56,7 +56,7 @@ export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
 
         // TODO: Try removing the system as the toggle instead of
         // using lines visibility
-        world.addSystem(() => {
+        world.addDebugSystem(() => {
             if (lines.visible) {
                 const buffers = world.resources.physics.world.debugRender()
                 lines.geometry.setAttribute(
