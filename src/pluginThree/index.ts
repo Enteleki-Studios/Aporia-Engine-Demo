@@ -12,14 +12,14 @@ import {
     Mesh,
     MeshStandardMaterial,
     NearestFilter,
+    OrthographicCamera,
+    PerspectiveCamera,
     PlaneGeometry,
     RepeatWrapping,
     // SkeletonHelper,
     SphereGeometry,
     TextureLoader,
     Vector3,
-    PerspectiveCamera,
-    OrthographicCamera,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
@@ -362,7 +362,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
                 const { renderer } = world.resources.three
                 renderer.setMainCamera(camera)
-            }
+            },
         )
 
         world.addSystem(syncTransforms)

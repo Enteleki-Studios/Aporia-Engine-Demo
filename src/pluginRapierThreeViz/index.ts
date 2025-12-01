@@ -63,7 +63,10 @@ export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
                     'position',
                     new BufferAttribute(buffers.vertices, 3),
                 )
-                lines.geometry.setAttribute('color', new BufferAttribute(buffers.colors, 4))
+                lines.geometry.setAttribute(
+                    'color',
+                    new BufferAttribute(buffers.colors, 4),
+                )
             }
         })
     },

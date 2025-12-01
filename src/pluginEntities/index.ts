@@ -139,7 +139,9 @@ export class Entities {
         return results
     }
 
-    queryFirst<T extends readonly AnyComponentCreator[]>(query: Query<T>): QueryResult<T> | null {
+    queryFirst<T extends readonly AnyComponentCreator[]>(
+        query: Query<T>,
+    ): QueryResult<T> | null {
         return this.query(query)[0] ?? null
     }
 

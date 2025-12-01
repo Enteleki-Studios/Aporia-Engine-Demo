@@ -6,6 +6,7 @@ import {
     Scene,
     WebGLRenderer,
 } from 'three'
+
 // import { OrbitControls } from 'three/examples/jsm/Addons.js'
 
 export class Renderer {
@@ -33,7 +34,6 @@ export class Renderer {
         this.renderer.setPixelRatio(1)
 
         this.canvas = this.renderer.domElement
-
 
         this.scene = new Scene()
 
@@ -73,7 +73,7 @@ export class Renderer {
 
     updateCameraAspect(aspect?: number) {
         if (this.camera && this.camera instanceof PerspectiveCamera) {
-            const a = aspect ?? (this.width / this.height)
+            const a = aspect ?? this.width / this.height
             this.camera.aspect = a
             this.camera.updateProjectionMatrix()
         }

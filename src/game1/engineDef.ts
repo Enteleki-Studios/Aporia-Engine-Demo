@@ -8,6 +8,7 @@ import {
     Transform3DComponent,
     Velocity3DComponent,
 } from '@core/components'
+import { quatLookAt } from '@core/utils'
 
 import { createQuery } from '@pluginEntities'
 import { RigidBodyDynamic, RigidBodyFixed, RigidBodyKinematic } from '@pluginRapier3D'
@@ -15,13 +16,12 @@ import {
     Animation,
     GltfComponent,
     PerspectiveCamera,
-    perspectiveCameraQuery,
     RenderableDynamic,
     RenderableFixed,
+    perspectiveCameraQuery,
 } from '@pluginThree'
 
 import { type World, createWorld } from './createWorld'
-import { quatLookAt } from '@core/utils'
 
 const playerQuery = createQuery([
     Transform3DComponent,
@@ -111,7 +111,11 @@ const playerMovementSystem = (world: World) => {
                     camTransform.position[1] = transform.position[1] + 3
                     camTransform.position[2] = transform.position[2] + 5
 
-                    const rotVec = vec3.subtract([], transform.position, camTransform.position)
+                    const rotVec = vec3.subtract(
+                        [],
+                        transform.position,
+                        camTransform.position,
+                    )
                     rotVec[1] += 1
                     quatLookAt(camTransform.rotation, rotVec)
                 }
