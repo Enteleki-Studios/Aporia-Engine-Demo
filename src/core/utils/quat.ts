@@ -1,4 +1,4 @@
-import { mat3, quat, vec3 } from 'gl-matrix'
+import { type mat3, quat, vec3 } from 'gl-matrix'
 
 const Y_AXIS = [0, 1, 0]
 

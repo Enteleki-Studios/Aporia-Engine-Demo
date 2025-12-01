@@ -315,6 +315,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                     scene.traverse((child) => {
                         if (isThreeMesh(child)) {
                             child.castShadow = true
+                            child.receiveShadow = true
                         }
                     })
 

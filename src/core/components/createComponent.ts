@@ -2,7 +2,7 @@
 import { Simplify } from 'type-fest'
 
 export type ComponentKey = string
-export type AnyComponent = { __key__: string } & object
+export type AnyComponent = { __key__: string }
 export type AnyComponentCreator = {
     (...args: any[]): AnyComponent
     readonly __key__: string

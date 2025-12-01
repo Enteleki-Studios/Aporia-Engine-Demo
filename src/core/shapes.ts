@@ -48,4 +48,3 @@ export type Wedge = {
 
 export type Shape2D = Ball
 export type Shape3D = Ball | Box | Capsule | HeightField | Wedge
-export type Shape = Shape2D | Shape3D
