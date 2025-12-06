@@ -24,7 +24,12 @@ export const quatLookAt = (out: quat, dir: vec3, up: vec3 = Y_AXIS): quat => {
     vec3.cross(y, z, x)
 
     // Build rotation matrix
-    const m: mat3 = [x[0], x[1], x[2], y[0], y[1], y[2], z[0], z[1], z[2]]
+    // prettier-ignore
+    const m: mat3 = [
+        x[0], x[1], x[2],
+        y[0], y[1], y[2],
+        z[0], z[1], z[2],
+    ]
 
     quat.fromMat3(out, m)
 
