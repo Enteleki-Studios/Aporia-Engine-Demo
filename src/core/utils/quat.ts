@@ -17,7 +17,9 @@ export const quatLookAt = (out: quat, dir: vec3, up: vec3 = Y_AXIS): quat => {
     vec3.negate(z, z)
 
     if (vec3.length(z) < 1e-6) {
-        return quat.identity(out)
+        quat.identity(out)
+
+        return out
     }
 
     vec3.cross(x, up, z)
@@ -34,6 +36,7 @@ export const quatLookAt = (out: quat, dir: vec3, up: vec3 = Y_AXIS): quat => {
     )
 
     quat.fromMat3(out, m)
+    quat.normalize(out, out)
 
-    return quat.normalize(out, out)
+    return out
 }

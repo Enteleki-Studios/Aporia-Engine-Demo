@@ -138,9 +138,9 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         // light.helper.update()
         // renderer.scene.add(light.shadowHelper)
 
-        // const waterGeometry = new PlaneGeometry(150, 100)
         const waterGeometry = new PlaneGeometry(1000, 1000)
         const water = new Water(waterGeometry, {
+            alpha: 0.65,
             textureWidth: 512,
             textureHeight: 512,
             waterNormals: loader.load('textures/waternormals.jpg', (texture) => {
@@ -148,7 +148,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             }),
             sunDirection: new Vector3().copy(sun).normalize(),
             sunColor: 0xffffff,
-            waterColor: 0x001e0f,
+            waterColor: 0x0088cc,
             distortionScale: 3.7,
             fog: !!renderer.scene.fog,
         })
@@ -156,6 +156,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         water.rotation.x = -Math.PI / 2
         water.position.y = -0.1
         water.position.x = 0
+        water.material.transparent = true
         renderer.scene.add(water)
 
         // renderer.scene.overrideMaterial = new MeshBasicMaterial({ wireframe: true, color: '#0089cc' })

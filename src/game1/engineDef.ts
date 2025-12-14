@@ -86,7 +86,7 @@ const playerMovementSystem = (world: World) => {
             // Update player model animation
             if (!isGrounded) {
                 animation.actionName = 'Jump_Loop'
-            } else if (isMoving) {
+            } else if (isMoving && vMag2 > 0.1) {
                 if (isRunning) {
                     animation.actionName = 'Jog_Fwd_Loop'
                 } else {
