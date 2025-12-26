@@ -1,17 +1,23 @@
 import { glMatrix, quat, vec3 } from 'gl-matrix'
 
-import { Y_AXIS } from '@core'
+import { Ball, Box, Capsule, HeightField, Wedge, Y_AXIS } from '@core'
 
 import {
     Geometry3DComponent,
     PlayerComponent,
+    Shape3DComponent,
     Transform3DComponent,
     Velocity3DComponent,
 } from '@core/components'
 import { quatLookAt } from '@core/utils'
 
 import { createQuery } from '@pluginEntities'
-import { RigidBodyDynamic, RigidBodyFixed, RigidBodyKinematic } from '@pluginRapier3D'
+import {
+    ColliderComponent,
+    RigidBodyDynamic,
+    RigidBodyFixed,
+    RigidBodyKinematic,
+} from '@pluginRapier3D'
 import {
     Animation,
     GltfComponent,
@@ -147,58 +153,68 @@ export const game1 = async () => {
     )
 
     // Create player
+    const playerShape: Capsule = {
+        type: 'capsule',
+        halfHeight: 0.5,
+        radius: 0.4,
+    }
+
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
         PlayerComponent(),
-        RigidBodyKinematic(),
-        Geometry3DComponent({
-            type: 'capsule',
-            halfHeight: 0.5,
-            radius: 0.4,
-        }),
         Transform3DComponent({ position: [-3, 10, 0] }),
+        Velocity3DComponent(),
         RenderableDynamic(),
+        Geometry3DComponent(playerShape),
         GltfComponent({
             path: '/humanoid/animated_robo.glb',
         }),
         Animation({ actionName: 'Idle_Loop' }),
-        Velocity3DComponent(),
+        RigidBodyKinematic(),
+        ColliderComponent(Shape3DComponent(playerShape)),
     )
 
+    const ballShape: Ball = { type: 'ball', radius: 0.5 }
     for (let i = 0; i < 10; i++) {
         world.resources.entities.addComponents(
             world.resources.entities.createEntity(),
             Transform3DComponent({ position: [i * 2, 10, -i * 2] }),
             RigidBodyDynamic(),
-            Geometry3DComponent({ type: 'ball', radius: 0.5 }),
+            Geometry3DComponent(ballShape),
             RenderableDynamic(),
+            ColliderComponent(Shape3DComponent(ballShape)),
         )
+    }
+
+    const boxShape: Box = {
+        type: 'box',
+        halfWidth: 10,
+        halfHeight: 10,
+        halfDepth: 10,
     }
 
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
         Transform3DComponent({ position: [0, 10, -25] }),
         RigidBodyFixed(),
-        Geometry3DComponent({
-            type: 'box',
-            halfWidth: 10,
-            halfHeight: 10,
-            halfDepth: 10,
-        }),
+        Geometry3DComponent(boxShape),
         RenderableFixed(),
+        ColliderComponent(Shape3DComponent(boxShape)),
     )
 
+    const wedgeShape: Wedge = {
+        type: 'wedge',
+        halfWidth: 15,
+        halfHeight: 5,
+        halfDepth: 5,
+    }
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
         Transform3DComponent({ position: [0, 1, 0] }),
-        RigidBodyFixed(),
-        Geometry3DComponent({
-            type: 'wedge',
-            halfWidth: 15,
-            halfHeight: 5,
-            halfDepth: 5,
-        }),
         RenderableFixed(),
+        Geometry3DComponent(wedgeShape),
+        RigidBodyFixed(),
+        ColliderComponent(Shape3DComponent(wedgeShape)),
     )
 
     const generateHeightfield = (ncols: number, nrows: number = ncols) => {
@@ -218,23 +234,22 @@ export const game1 = async () => {
 
     const size = 40
     const scale = 20
+    const heightfield: HeightField = {
+        type: 'heightfield',
+        ncols: size,
+        nrows: size,
+        heights: generateHeightfield(size, size),
+        scale: [size * scale, 5, size * scale],
+    }
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
-        RigidBodyFixed(),
         Transform3DComponent({
             position: [0, -1.5, 0],
         }),
-        Geometry3DComponent({
-            type: 'heightfield',
-            ncols: size,
-            nrows: size,
-            heights: generateHeightfield(size, size),
-            scale: [size * scale, 5, size * scale],
-        }),
+        Geometry3DComponent(heightfield),
+        RigidBodyFixed(),
+        ColliderComponent(Shape3DComponent(heightfield)),
     )
-
-    // world.resources.three.renderer.camera.position.set(2, 4, 7)
-    // world.resources.three.renderer.camera.lookAt(new Vector3(0, 1, 0))
 
     return world
 }

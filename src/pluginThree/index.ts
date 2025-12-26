@@ -287,7 +287,6 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
                 if (isCreated) {
                     group.position.fromArray(transform.position)
-                    group.scale.fromArray(transform.scale)
                     group.quaternion.fromArray(transform.rotation)
 
                     renderer.scene.add(group)
@@ -304,7 +303,6 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
                 if (isCreated) {
                     group.position.fromArray(transform.position)
-                    group.scale.fromArray(transform.scale)
                     group.quaternion.fromArray(transform.rotation)
 
                     renderer.scene.add(group)

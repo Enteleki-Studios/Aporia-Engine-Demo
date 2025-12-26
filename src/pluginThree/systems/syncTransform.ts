@@ -10,7 +10,6 @@ export const syncTransforms = (world: ThreeWorld) => {
 
             if (group) {
                 group.position.fromArray(transform.position)
-                group.scale.fromArray(transform.scale)
                 if (
                     group.quaternion.x !== transform.rotation[0] ||
                     group.quaternion.y !== transform.rotation[1] ||
