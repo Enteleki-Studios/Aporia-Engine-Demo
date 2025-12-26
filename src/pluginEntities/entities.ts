@@ -3,9 +3,7 @@
 import { type AnyComponent, type AnyComponentCreator, ObjectStore } from '@core'
 
 import { Entity, type EntityId } from './entity'
-import { type Query } from './query'
-
-type EntityMap = Map<EntityId, Entity>
+import { type Query, entityMatchesQuery } from './query'
 
 type ComponentsFromCreators<T extends readonly AnyComponentCreator[]> = {
     [K in keyof T]: T[K] extends AnyComponentCreator ? ReturnType<T[K]> : never
@@ -28,9 +26,6 @@ type QueryCacheEntry<
 }
 type QueryCache = ObjectStore<Query<any>, QueryCacheEntry>
 
-const entityMatchesQuery = (entity: Entity, query: Query) =>
-    entity.hasEvery(query.requires) && (query.filter?.(entity) ?? true)
-
 const getComponentsAsTuple = <T extends readonly AnyComponentCreator[]>(
     entity: Entity,
     requires: T,
@@ -44,7 +39,7 @@ const entityToQueryResult = <T extends readonly AnyComponentCreator[]>(
 ): QueryResult<T> => [getComponentsAsTuple(entity, query.requires), entity]
 
 export class Entities {
-    private entities: EntityMap = new Map()
+    private entities = new Map<EntityId, Entity>()
     private queryCache: QueryCache = new ObjectStore(() => ({
         results: [],
         onMatchObservers: new Set(),

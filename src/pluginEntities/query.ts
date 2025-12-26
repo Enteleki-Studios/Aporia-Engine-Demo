@@ -18,3 +18,6 @@ export const createQuery = <const T extends readonly AnyComponentCreator[]>(
     requires,
     filter,
 })
+
+export const entityMatchesQuery = (entity: Entity, query: Query) =>
+    entity.hasEvery(query.requires) && (query.filter?.(entity) ?? true)
