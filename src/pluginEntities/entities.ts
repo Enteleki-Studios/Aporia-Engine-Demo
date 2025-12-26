@@ -10,19 +10,21 @@ type ComponentsFromCreators<T extends readonly AnyComponentCreator[]> = {
 }
 
 type QueryResult<
-    T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
+T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
 > = [ComponentsFromCreators<T>, Entity]
 
-type QueryObserver<
-    T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
-> = (result: QueryResult<T>) => void
+type QueryEffectCleanup = () => void
+
+type QueryEffect<
+T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
+> = (result: QueryResult<T>) => void | null | QueryEffectCleanup
 
 type QueryCacheEntry<
-    T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
+T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
 > = {
     results: QueryResult<T>[]
-    onMatchObservers: Set<QueryObserver<T>>
-    onUnMatchObservers: Set<QueryObserver<T>>
+    effects: QueryEffect<T>[]
+    cleanups: (null | (() => void))[]
 }
 type QueryCache = ObjectStore<Query<any>, QueryCacheEntry>
 
@@ -42,33 +44,59 @@ export class Entities {
     private entities = new Map<EntityId, Entity>()
     private queryCache: QueryCache = new ObjectStore(() => ({
         results: [],
-        onMatchObservers: new Set(),
-        onUnMatchObservers: new Set(),
+        effects: [],
+        cleanups: [],
     }))
 
     private updateQueryResultsForEntity(entity: Entity) {
         this.queryCache.forEach((cacheEntry, query) => {
-            const { results, onMatchObservers, onUnMatchObservers } = cacheEntry
-            const resultIndex = results.findIndex((res) => res[1] === entity)
+            const { results, effects, cleanups } = cacheEntry
 
+            const resultIndex = results.findIndex((res) => res[1] === entity)
+            // TODO: Adding an effect after cleanups have been created
+            // will change the value of effects.length and mess up all
+            // of the offsets used to find cleanups. Consider saving cleanups
+            // with effects using tuples instead of as an array sibling
             if (entityMatchesQuery(entity, query)) {
+                // Entity matches for the first time
                 if (resultIndex < 0) {
                     const newResult = entityToQueryResult(entity, query)
                     results.push(newResult)
-                    onMatchObservers.forEach((cb) => {
-                        cb(newResult)
+                    const newResultIndex = results.length
+                    const cleanupOffset = newResultIndex * effects.length
+                    effects.forEach((effect, i) => {
+                        const cleanupIndex = cleanupOffset + i
+                        const cleanup = effect(newResult)
+                        cleanups[cleanupIndex] = cleanup ?? null
                     })
                 }
-            } else {
-                if (resultIndex >= 0) {
-                    // TODO: Don't love the mutation + indexed access
-                    const deletedResult = results.splice(resultIndex, 1)[0]
-                    if (deletedResult) {
-                        onUnMatchObservers.forEach((cb) => {
-                            cb(deletedResult)
+                // Entity already matched
+                else {
+                    const result = results[resultIndex]
+
+                    if (result) { // Always true
+                        const cleanupOffset = resultIndex * effects.length
+                        effects.forEach((effect, i) => {
+                            // Run corresponding cleanup first
+                            const cleanupIndex = cleanupOffset + i
+                            cleanups[cleanupIndex]?.()
+
+                            // Call the effect and save the cleanup function
+                            const cleanup = effect(result)
+                            cleanups[cleanupIndex] = cleanup ?? null
                         })
                     }
                 }
+            } else {
+                // Entity needs to be removed from results
+                if (resultIndex >= 0) {
+                    results.splice(resultIndex, 1)
+                    const removedCleanups = cleanups.splice(resultIndex * effects.length, effects.length)
+                    removedCleanups.forEach((cleanup) => {
+                        cleanup?.()
+                    })
+                }
+                // Ignore Entities that do not and did not match
             }
         })
     }
@@ -110,10 +138,10 @@ export class Entities {
         }
 
         const results = this.entities
-            .values()
-            .filter((entity) => entityMatchesQuery(entity, query))
-            .map((entity) => entityToQueryResult(entity, query))
-            .toArray()
+        .values()
+        .filter((entity) => entityMatchesQuery(entity, query))
+        .map((entity) => entityToQueryResult(entity, query))
+        .toArray()
 
         this.queryCache.create(query).results = results as QueryResult<any>[]
 
@@ -128,17 +156,11 @@ export class Entities {
 
     addQueryObserver<T extends readonly AnyComponentCreator[]>(
         query: Query<T>,
-        onMatch?: QueryObserver<T>,
-        onUnMatch?: QueryObserver<T>,
+        effect: QueryEffect<T>,
     ) {
         const [cacheEntry] = this.queryCache.getOrCreate(query)
 
-        if (onMatch) {
-            ;(cacheEntry as QueryCacheEntry<T>).onMatchObservers.add(onMatch)
-        }
-        if (onUnMatch) {
-            ;(cacheEntry as QueryCacheEntry<T>).onUnMatchObservers.add(onUnMatch)
-        }
+        ;(cacheEntry as QueryCacheEntry<T>).effects.push(effect)
     }
 
     get size() {
