@@ -2,7 +2,9 @@ import { assertType, expectTypeOf, test } from 'vitest'
 
 import { createComponent } from '@core'
 
-import { Entities, Entity, createQuery } from '.'
+import { Entities } from './entities'
+import type { Entity } from './entity'
+import { createQuery } from './query'
 
 const ComponentA = createComponent('componentA')
 
