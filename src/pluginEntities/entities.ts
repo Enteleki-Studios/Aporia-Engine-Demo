@@ -10,17 +10,17 @@ type ComponentsFromCreators<T extends readonly AnyComponentCreator[]> = {
 }
 
 type QueryResult<
-T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
+    T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
 > = [ComponentsFromCreators<T>, Entity]
 
 type QueryEffectCleanup = () => void
 
 type QueryEffect<
-T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
+    T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
 > = (result: QueryResult<T>) => void | null | QueryEffectCleanup
 
 type QueryCacheEntry<
-T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
+    T extends readonly AnyComponentCreator[] = readonly AnyComponentCreator[],
 > = {
     results: QueryResult<T>[]
     effects: QueryEffect<T>[]
@@ -74,7 +74,8 @@ export class Entities {
                 else {
                     const result = results[resultIndex]
 
-                    if (result) { // Always true
+                    if (result) {
+                        // Always true
                         const cleanupOffset = resultIndex * effects.length
                         effects.forEach((effect, i) => {
                             // Run corresponding cleanup first
@@ -91,7 +92,10 @@ export class Entities {
                 // Entity needs to be removed from results
                 if (resultIndex >= 0) {
                     results.splice(resultIndex, 1)
-                    const removedCleanups = cleanups.splice(resultIndex * effects.length, effects.length)
+                    const removedCleanups = cleanups.splice(
+                        resultIndex * effects.length,
+                        effects.length,
+                    )
                     removedCleanups.forEach((cleanup) => {
                         cleanup?.()
                     })
@@ -138,10 +142,10 @@ export class Entities {
         }
 
         const results = this.entities
-        .values()
-        .filter((entity) => entityMatchesQuery(entity, query))
-        .map((entity) => entityToQueryResult(entity, query))
-        .toArray()
+            .values()
+            .filter((entity) => entityMatchesQuery(entity, query))
+            .map((entity) => entityToQueryResult(entity, query))
+            .toArray()
 
         this.queryCache.create(query).results = results as QueryResult<any>[]
 
