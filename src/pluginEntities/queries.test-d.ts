@@ -30,7 +30,7 @@ test('result components are a proper tuple type', () => {
 test('query observers receive properly typed results', () => {
     const entities = new Entities()
 
-    entities.addQueryObserver(queryA, ([components, entity]) => {
+    entities.addQueryEffect(queryA, ([components, entity]) => {
         expectTypeOf(entity).toEqualTypeOf<Entity>()
 
         expectTypeOf(components[0]).toEqualTypeOf<ReturnType<typeof ComponentA>>()

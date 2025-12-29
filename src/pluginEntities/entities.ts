@@ -2,7 +2,7 @@ import { type AnyComponent, type AnyComponentCreator } from '@core'
 
 import { Entity, type EntityId } from './entity'
 import { type Query } from './query'
-import { type QueryResult, type QueryEffect, QueryCache } from './queryCache'
+import { QueryCache, type QueryEffect, type QueryResult } from './queryCache'
 
 export class Entities {
     private entities = new Map<EntityId, Entity>()
@@ -49,7 +49,7 @@ export class Entities {
         return this.query(query)[0] ?? null
     }
 
-    addQueryObserver<T extends readonly AnyComponentCreator[]>(
+    addQueryEffect<T extends readonly AnyComponentCreator[]>(
         query: Query<T>,
         effect: QueryEffect<T>,
     ) {

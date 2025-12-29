@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- library code */
 /* eslint-disable @typescript-eslint/consistent-type-assertions -- library code */
+import { type AnyComponentCreator } from '@core'
+
 import { Entity, EntityId } from './entity'
 import { type Query, entityMatchesQuery } from './query'
-import { type AnyComponentCreator } from '@core'
 
 type ComponentsFromCreators<T extends readonly AnyComponentCreator[]> = {
     [K in keyof T]: T[K] extends AnyComponentCreator ? ReturnType<T[K]> : never
@@ -107,7 +108,6 @@ export class QueryCache {
             }
         })
     }
-
 
     addQueryEffect<T extends readonly AnyComponentCreator[]>(
         query: Query<T>,
