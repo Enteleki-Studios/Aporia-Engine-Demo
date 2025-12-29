@@ -52,11 +52,11 @@ export class QueryCache {
         this.entities = entities
     }
 
-    private getOrCreateCacheEntry(query: Query): QueryCacheEntry {
+    private getOrCreateCacheEntry<T extends readonly AnyComponentCreator[]>(query: Query<T>): QueryCacheEntry<T> {
         const entry = this.cache.get(query)
 
         if (entry) {
-            return entry
+            return entry as QueryCacheEntry<T>
         }
 
         const results = this.entities
@@ -91,14 +91,23 @@ export class QueryCache {
                         cleanups[newResultIndex] = cleanup ?? null
                     })
                 }
-                // TODO: Entity already matched
+                // Entity already matched
+                else {
+                    const result = results[resultIndex] // Should always exist at this point
+
+                    effects.forEach(([effect, cleanups]) => {
+                        cleanups[resultIndex]?.()
+                        const newCleanup = result ? effect(result) ?? null : null
+                        cleanups[resultIndex] = newCleanup
+                    })
+                }
             } else {
                 // Entity needs to be removed from results
                 if (resultIndex >= 0) {
                     results.splice(resultIndex, 1)
                     effects.forEach(([_, cleanups]) => {
                         const removedCleanups = cleanups.splice(resultIndex, 1)
-                        // Should only run once (one cleanup is spliced out)
+                        // Should only run once (one cleanup is spliced out for each effect)
                         removedCleanups.forEach((cleanup) => {
                             cleanup?.()
                         })
@@ -113,13 +122,11 @@ export class QueryCache {
         query: Query<T>,
         effect: QueryEffect<T>,
     ) {
-        const cacheEntry = this.getOrCreateCacheEntry(query)
-
-        ;(cacheEntry as QueryCacheEntry<T>).effects.push([effect, []])
+        this.getOrCreateCacheEntry(query).effects.push([effect, []])
     }
 
     query<T extends readonly AnyComponentCreator[]>(query: Query<T>): QueryResult<T>[] {
-        return this.getOrCreateCacheEntry(query).results as QueryResult<T>[]
+        return this.getOrCreateCacheEntry(query).results
     }
 
     get size() {
