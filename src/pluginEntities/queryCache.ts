@@ -52,7 +52,9 @@ export class QueryCache {
         this.entities = entities
     }
 
-    private getOrCreateCacheEntry<T extends readonly AnyComponentCreator[]>(query: Query<T>): QueryCacheEntry<T> {
+    private getOrCreateCacheEntry<T extends readonly AnyComponentCreator[]>(
+        query: Query<T>,
+    ): QueryCacheEntry<T> {
         const entry = this.cache.get(query)
 
         if (entry) {
@@ -79,34 +81,29 @@ export class QueryCache {
         this.cache.forEach((cacheEntry, query) => {
             const { results, effects } = cacheEntry
 
-            const resultIndex = results.findIndex((res) => res[1] === entity)
+            const foundIndex = results.findIndex((res) => res[1] === entity)
 
             if (entityMatchesQuery(entity, query)) {
-                // Entity matches for the first time
-                if (resultIndex < 0) {
-                    const newResult = entityToQueryResult(entity, query)
-                    const newResultIndex = results.push(newResult)
-                    effects.forEach(([effect, cleanups]) => {
-                        const cleanup = effect(newResult)
-                        cleanups[newResultIndex] = cleanup ?? null
-                    })
-                }
-                // Entity already matched
-                else {
-                    const result = results[resultIndex] // Should always exist at this point
+                // Handle entity that newly maatches or continues to match
 
-                    effects.forEach(([effect, cleanups]) => {
-                        cleanups[resultIndex]?.()
-                        const newCleanup = result ? effect(result) ?? null : null
-                        cleanups[resultIndex] = newCleanup
-                    })
-                }
+                // (Re)create result
+                const result = entityToQueryResult(entity, query)
+
+                // Replace or append result
+                const index = foundIndex < 0 ? results.length : foundIndex
+                results[index] = result
+
+                effects.forEach(([effect, cleanups]) => {
+                    cleanups[index]?.()
+                    const newCleanup = effect(result)
+                    cleanups[index] = newCleanup ?? null
+                })
             } else {
                 // Entity needs to be removed from results
-                if (resultIndex >= 0) {
-                    results.splice(resultIndex, 1)
+                if (foundIndex >= 0) {
+                    results.splice(foundIndex, 1)
                     effects.forEach(([_, cleanups]) => {
-                        const removedCleanups = cleanups.splice(resultIndex, 1)
+                        const removedCleanups = cleanups.splice(foundIndex, 1)
                         // Should only run once (one cleanup is spliced out for each effect)
                         removedCleanups.forEach((cleanup) => {
                             cleanup?.()
