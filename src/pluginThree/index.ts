@@ -175,7 +175,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         }
     },
     init: (world) => {
-        world.resources.entities.addQueryObserver(
+        world.resources.entities.addQueryEffect(
             geometryQuery,
             ([[geometryDef, transform], entity]) => {
                 const { objectStore, renderer } = world.resources.three
@@ -294,7 +294,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             },
         )
 
-        world.resources.entities.addQueryObserver(
+        world.resources.entities.addQueryEffect(
             gltfQuery,
             ([[gltfComponent, transform], entity]) => {
                 const { objectStore, renderer, gltfLoader, animationStore } =
@@ -345,7 +345,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             },
         )
 
-        world.resources.entities.addQueryObserver(
+        world.resources.entities.addQueryEffect(
             perspectiveCameraQuery,
             ([[cameraDef, transform], entity]) => {
                 const camera = new PerspectiveCamera(

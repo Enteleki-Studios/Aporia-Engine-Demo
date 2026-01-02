@@ -125,7 +125,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
                 })
         })
 
-        world.resources.entities.addQueryObserver(
+        world.resources.entities.addQueryEffect(
             dynamicBodiesQuery,
             ([[colliderDef, transform], entity]) => {
                 const { shape } = colliderDef
@@ -142,7 +142,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
             },
         )
 
-        world.resources.entities.addQueryObserver(
+        world.resources.entities.addQueryEffect(
             fixedBodiesQuery,
             ([[colliderDef, transform], entity]) => {
                 const { shape } = colliderDef
@@ -159,7 +159,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
             },
         )
 
-        world.resources.entities.addQueryObserver(
+        world.resources.entities.addQueryEffect(
             kinematicBodiesQuery,
             ([[colliderDef, transform], entity]) => {
                 const { shape } = colliderDef
