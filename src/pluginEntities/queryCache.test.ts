@@ -52,7 +52,6 @@ describe('QueryCache', () => {
         test('re-runs effects when entity already matched and still matches', () => {
             entity.add(Position(10, 20))
             entity.add(Velocity(1, 1))
-            entities.set(entity.id, entity)
 
             const query = createQuery([Position])
             const cleanup = vi.fn()
