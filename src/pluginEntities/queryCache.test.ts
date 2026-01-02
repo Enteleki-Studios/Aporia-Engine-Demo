@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { createComponent } from '@core'
 
@@ -12,13 +12,19 @@ const Health = createComponent('Health', (value: number) => ({ value }))
 
 describe('QueryCache', () => {
     describe('onEntityUpdated', () => {
-        test('adds entity to results when it matches query for the first time', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
+        let entities: Map<string, Entity>
+        let queryCache: QueryCache
+        let entity: Entity
 
-            const entity = new Entity('e1')
+        beforeEach(() => {
+            entities = new Map<string, Entity>()
+            queryCache = new QueryCache(entities)
+            entity = new Entity('e1')
             entities.set(entity.id, entity)
 
+        })
+
+        test('adds entity to results when it matches query for the first time', () => {
             const query = createQuery([Position])
             const results = queryCache.query(query)
 
@@ -33,12 +39,6 @@ describe('QueryCache', () => {
         })
 
         test('runs effects when entity matches query for the first time', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
-            entities.set(entity.id, entity)
-
             const query = createQuery([Position])
             const effect = vi.fn()
             queryCache.addQueryEffect(query, effect)
@@ -51,10 +51,6 @@ describe('QueryCache', () => {
         })
 
         test('re-runs effects when entity already matched and still matches', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
             entity.add(Position(10, 20))
             entity.add(Velocity(1, 1))
             entities.set(entity.id, entity)
@@ -78,12 +74,6 @@ describe('QueryCache', () => {
         })
 
         test('effect is called with new component when component is overwritten', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
-            entities.set(entity.id, entity)
-
             const query = createQuery([Position])
             const effect = vi.fn()
             queryCache.addQueryEffect(query, effect)
@@ -102,12 +92,7 @@ describe('QueryCache', () => {
         })
 
         test('removes entity from results when it no longer matches', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
             entity.add(Position(10, 20))
-            entities.set(entity.id, entity)
 
             const query = createQuery([Position])
             const results = queryCache.query(query)
@@ -121,12 +106,7 @@ describe('QueryCache', () => {
         })
 
         test('calls cleanup when entity no longer matches', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
             entity.add(Position(10, 20))
-            entities.set(entity.id, entity)
 
             const query = createQuery([Position])
             const cleanup = vi.fn()
@@ -145,12 +125,7 @@ describe('QueryCache', () => {
         })
 
         test('does nothing when entity does not and did not match', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
             entity.add(Velocity(1, 1))
-            entities.set(entity.id, entity)
 
             const query = createQuery([Position])
             const effect = vi.fn()
@@ -167,12 +142,6 @@ describe('QueryCache', () => {
         })
 
         test('handles multiple effects correctly when entity matches for first time', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
-            entities.set(entity.id, entity)
-
             const query = createQuery([Position])
             const effect1 = vi.fn()
             const effect2 = vi.fn()
@@ -187,12 +156,7 @@ describe('QueryCache', () => {
         })
 
         test('handles multiple effects correctly when entity is removed', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
             entity.add(Position(10, 20))
-            entities.set(entity.id, entity)
 
             const query = createQuery([Position])
             const cleanup1 = vi.fn()
@@ -212,12 +176,7 @@ describe('QueryCache', () => {
         })
 
         test('handles queries with multiple required components', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
             entity.add(Position(10, 20))
-            entities.set(entity.id, entity)
 
             const query = createQuery([Position, Velocity])
             const effect = vi.fn()
@@ -236,13 +195,8 @@ describe('QueryCache', () => {
         })
 
         test('handles query filter predicate', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
             entity.add(Position(10, 20))
             entity.add(Health(50))
-            entities.set(entity.id, entity)
 
             const query = createQuery([Position, Health], (e) => {
                 const health = e.get(Health)
@@ -265,12 +219,7 @@ describe('QueryCache', () => {
         })
 
         test('handles effects that return null instead of cleanup function', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
             entity.add(Position(10, 20))
-            entities.set(entity.id, entity)
 
             const query = createQuery([Position])
             const effect = vi.fn(() => null)
@@ -285,12 +234,7 @@ describe('QueryCache', () => {
         })
 
         test('handles effects that return undefined instead of cleanup function', () => {
-            const entities = new Map<string, Entity>()
-            const queryCache = new QueryCache(entities)
-
-            const entity = new Entity('e1')
             entity.add(Position(10, 20))
-            entities.set(entity.id, entity)
 
             const query = createQuery([Position])
             const effect = vi.fn()
