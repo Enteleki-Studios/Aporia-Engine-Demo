@@ -21,7 +21,6 @@ describe('QueryCache', () => {
             queryCache = new QueryCache(entities)
             entity = new Entity('e1')
             entities.set(entity.id, entity)
-
         })
 
         test('adds entity to results when it matches query for the first time', () => {
