@@ -16,16 +16,18 @@ export const Game = () => {
 
     useEffect(() => {
         world.resources.three.renderer.setCanvasContainer(canvasContainerRef.current)
+        world.resources.input.setInputElement(canvasContainerRef.current)
 
         return () => {
             world.resources.three.renderer.setCanvasContainer(null)
+            world.resources.input.setInputElement(null)
         }
     }, [world])
 
     return (
         <div className="Invaders">
             <div className="hud">Score: 420</div>
-            <div className="canvasContainer" ref={canvasContainerRef} />
+            <div className="canvasContainer" ref={canvasContainerRef} tabIndex={0} />
         </div>
     )
 }

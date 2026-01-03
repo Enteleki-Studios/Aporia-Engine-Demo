@@ -48,25 +48,25 @@ const playerMovementSystem = (world: World) => {
         const characterCollider = colliders.get(entity.id)
 
         if (character && characterCollider) {
-            const dirX = input.left ? -1 : input.right ? 1 : 0
-            const dirZ = input.up ? -1 : input.down ? 1 : 0
+            const dirX = input.actions.left ? -1 : input.actions.right ? 1 : 0
+            const dirZ = input.actions.up ? -1 : input.actions.down ? 1 : 0
 
             // Target movement speed
-            const speed = input.shift ? 7 : 1.25
+            const speed = input.actions.shift ? 7 : 1.25
 
             const targetVelocity: vec3 = [dirX, 0, dirZ]
             vec3.normalize(targetVelocity, targetVelocity)
             vec3.scale(targetVelocity, targetVelocity, speed)
 
             // Manually set vertical speed
-            targetVelocity[1] = input.space ? 10 : -9.81
+            targetVelocity[1] = input.actions.space ? 10 : -9.81
 
             vec3.lerp(velocity, velocity, targetVelocity, 1 - 0.005 ** delta)
 
             const isGrounded = characterController.computedGrounded()
 
             // Slightly downward while walking on the ground
-            if (isGrounded && !input.space) {
+            if (isGrounded && !input.actions.space) {
                 velocity[1] = -0.01
             }
 

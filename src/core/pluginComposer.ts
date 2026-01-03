@@ -1,7 +1,7 @@
 import { type AnyPlugin, type Plugin, type PluginsToResources, Runtime } from '@core'
 
 import { pluginEntities } from '@pluginEntities'
-import { pluginInput } from '@pluginInput'
+import { DEFAULT_KEYMAP, type Keymap, pluginInput } from '@pluginInput'
 
 type CheckDependencies<Current extends object, Required extends object> = [
     keyof Required,
@@ -53,8 +53,18 @@ export class PluginComposer<P extends AnyPlugin[]> {
     }
 }
 
-export const createDefaultComposer = () => {
-    return new PluginComposer([]).addPlugin(pluginEntities()).addPlugin(pluginInput())
+type Config<K extends Keymap> = {
+    keymap: K
+}
+
+export const DEFAULT_CONFIG = {
+    keymap: DEFAULT_KEYMAP,
+} as const
+
+export const createDefaultComposer = <K extends Keymap>(config: Config<K>) => {
+    return new PluginComposer([])
+        .addPlugin(pluginEntities())
+        .addPlugin(pluginInput(config.keymap))
 }
 
 export type DefaultResources = Awaited<

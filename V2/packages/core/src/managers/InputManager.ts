@@ -1,15 +1,3 @@
-import type { Keymap } from '~/definitions'
-
-type Callback = () => void
-type KeyCode = string
-type Action = string
-
-type InputManagerSettings = {
-    domElement: HTMLElement
-    keymap: Keymap
-    pointerLock?: boolean
-}
-
 type MouseInput = {
     /** Vertical distance moved since last read. Pointer must be locked. */
     panX: number
@@ -42,22 +30,6 @@ export class InputManager {
     constructor({ domElement, keymap, pointerLock = false }: InputManagerSettings) {
         this.domElement = domElement
 
-        if (pointerLock) {
-            this.allowPointerLock()
-        }
-
-        Object.keys(keymap).forEach((action) => {
-            this.actions[action] = false
-            const keyCodes = keymap[action]
-            if (typeof keyCodes === 'string') {
-                this.registerAction(keyCodes, action)
-            } else {
-                keyCodes.forEach((keyCode) => {
-                    this.registerAction(keyCode, action)
-                })
-            }
-        })
-
         this.mouseInput = {
             panX: 0,
             panY: 0,
@@ -66,19 +38,6 @@ export class InputManager {
         }
 
         this.initInputHandlers()
-    }
-
-    private registerAction(keyCode: KeyCode, action: Action) {
-        const currentActions = this.expandedKeymap[keyCode]
-        if (currentActions) {
-            if (Array.isArray(currentActions)) {
-                currentActions.push(action)
-            } else {
-                this.expandedKeymap[keyCode] = [currentActions, action]
-            }
-        } else {
-            this.expandedKeymap[keyCode] = [action]
-        }
     }
 
     private initInputHandlers() {
@@ -119,41 +78,6 @@ export class InputManager {
         }
     }
 
-    private onKeyDown(e: KeyboardEvent) {
-        e.preventDefault()
-        this.handleKey(e.code, true)
-    }
-
-    private onKeyUp(e: KeyboardEvent) {
-        this.handleKey(e.code, false)
-    }
-
-    private handleKey(code: KeyCode, isPress: boolean) {
-        const actions = this.expandedKeymap[code]
-        if (actions) {
-            actions.forEach((action) => {
-                this.actions[action] = isPress
-
-                if (isPress) {
-                    const callbacks = this.actionListeners[action]
-                    if (callbacks?.length) {
-                        callbacks.forEach((c) => {
-                            c()
-                        })
-                    }
-                }
-            })
-        }
-    }
-
-    readInput() {
-        return this.actions
-    }
-
-    readMouse() {
-        return this.mouseInput
-    }
-
     resetMouse() {
         this.mouseInput.panX = 0
         this.mouseInput.panY = 0
@@ -161,36 +85,7 @@ export class InputManager {
         // this.mouseInput.centerRelY = 0
     }
 
-    allowPointerLock() {
-        this.pointerLockEnabled = true
-    }
-
     disablePointerLock() {
-        this.pointerLockEnabled = false
         document.exitPointerLock()
-    }
-
-    addActionListener(action: Action, callback: Callback) {
-        const currentCallbacks = this.actionListeners[action]
-        if (currentCallbacks) {
-            currentCallbacks.push(callback)
-        } else {
-            this.actionListeners[action] = [callback]
-        }
-    }
-
-    removeActionListener(action: Action, callback?: Callback) {
-        const currentCallbacks = this.actionListeners[action]
-        if (currentCallbacks?.length) {
-            if (callback) {
-                for (let i = currentCallbacks.length - 1; i >= 0; i -= 1) {
-                    if (currentCallbacks[i] === callback) {
-                        currentCallbacks.splice(i, 1)
-                    }
-                }
-            } else {
-                this.actionListeners[action] = []
-            }
-        }
     }
 }

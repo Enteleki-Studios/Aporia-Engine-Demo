@@ -2,7 +2,11 @@ import type { Simplify, UnionToIntersection } from 'type-fest'
 
 import type { Runtime } from './runtime'
 
-export { createDefaultComposer, type DefaultResources } from './pluginComposer'
+export {
+    createDefaultComposer,
+    type DefaultResources,
+    DEFAULT_CONFIG,
+} from './pluginComposer'
 export { Runtime } from './runtime'
 export {
     createComponent,
@@ -59,3 +63,5 @@ export const X_AXIS: Readonly<Array3> = Object.freeze([1, 0, 0])
 export const Y_AXIS: Readonly<Array3> = Object.freeze([0, 1, 0])
 export const Z_AXIS: Readonly<Array3> = Object.freeze([0, 0, 1])
 export const ORIGIN: Readonly<Array3> = Object.freeze([0, 0, 0])
+
+export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
