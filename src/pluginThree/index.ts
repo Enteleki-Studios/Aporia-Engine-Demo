@@ -97,6 +97,11 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         const sky = new Sky()
         sky.scale.setScalar(2000)
+        sky.material.toneMapped = false
+        sky.material.fog = false
+        sky.material.depthWrite = false
+        sky.material.depthTest = false
+        sky.renderOrder = -1
         renderer.scene.add(sky)
 
         // sun position
@@ -123,7 +128,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Three.js doesn't provide the type
         const skyUniforms = sky.material.uniforms as SkyShaderUniforms
-        skyUniforms.turbidity.value = 5 // Higher = hazier
+        skyUniforms.turbidity.value = 0.2 // Higher = hazier
         skyUniforms.rayleigh.value = 0.5 // Lower = bluer
         skyUniforms.mieCoefficient.value = 0.003 // White haze
         skyUniforms.mieDirectionalG.value = 0.6 // Sun glow sharpness

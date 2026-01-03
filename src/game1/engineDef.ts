@@ -115,7 +115,7 @@ const playerMovementSystem = (world: World) => {
                 const [[_, camTransform]] = cameraResult
 
                 camTransform.position[0] = transform.position[0]
-                camTransform.position[1] = transform.position[1] + 3
+                camTransform.position[1] = transform.position[1] + 2
                 camTransform.position[2] = transform.position[2] + 5
 
                 const rotVec = vec3.subtract(
