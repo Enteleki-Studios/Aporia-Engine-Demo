@@ -2,20 +2,11 @@ import type { Simplify } from 'type-fest'
 
 import { mapObject } from '@core/utils'
 
+import type { Keymap } from '.'
+
 // TODO:
 // Reset on focus lost
 // requestPointerLock({ unadjustedMovement: true, })
-
-export type Keymap = Record<string, string>
-
-export const DEFAULT_KEYMAP = {
-    left: 'KeyA',
-    right: 'KeyD',
-    up: 'KeyW',
-    down: 'KeyS',
-    space: 'Space',
-    shift: 'ShiftLeft',
-} as const
 
 export class InputManager<K extends Record<string, string>> {
     private element: HTMLElement | null = null
@@ -63,5 +54,9 @@ export class InputManager<K extends Record<string, string>> {
 
             this.element = element
         }
+    }
+
+    flushInputs() {
+        // TODO
     }
 }

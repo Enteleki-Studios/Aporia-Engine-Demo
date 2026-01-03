@@ -10,4 +10,5 @@ export const createWorld = () =>
         .addPlugin(pluginRapier3D())
         .addPlugin(pluginRapierThreeViz())
         .build()
+
 export type World = Awaited<ReturnType<typeof createWorld>>

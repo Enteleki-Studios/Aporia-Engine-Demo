@@ -1,6 +1,7 @@
 import type { Plugin } from '@core'
 
-import { InputManager, Keymap } from './inputManager'
+import type { Keymap } from '.'
+import { InputManager } from './inputManager'
 
 export const pluginInput = <K extends Keymap>(
     keymap: K,
@@ -8,7 +9,9 @@ export const pluginInput = <K extends Keymap>(
     createResources: () => ({
         input: new InputManager(keymap),
     }),
-    init(/*runtime*/) {
-        // const { input } = runtime.resources
+    init(world) {
+        world.addSystem(() => {
+            world.resources.input.flushInputs()
+        })
     },
 })
