@@ -108,23 +108,31 @@ const playerMovementSystem = (world: World) => {
                 const t = 10 * delta
                 const targetQ = quat.setAxisAngle([0, 0, 0, 1], Y_AXIS, angle)
                 quat.slerp(transform.rotation, transform.rotation, targetQ, t)
+            }
 
-                // Update camera position and rotation
-                if (cameraResult) {
-                    const [[_, camTransform]] = cameraResult
+            // Update camera position and rotation
+            if (cameraResult) {
+                const [[_, camTransform]] = cameraResult
 
-                    camTransform.position[0] = transform.position[0]
-                    camTransform.position[1] = transform.position[1] + 3
-                    camTransform.position[2] = transform.position[2] + 5
+                camTransform.position[0] = transform.position[0]
+                camTransform.position[1] = transform.position[1] + 3
+                camTransform.position[2] = transform.position[2] + 5
 
-                    const rotVec = vec3.subtract(
-                        [],
-                        transform.position,
-                        camTransform.position,
-                    )
-                    rotVec[1] += 1
-                    quatLookAt(camTransform.rotation, rotVec)
-                }
+                const rotVec = vec3.subtract(
+                    [],
+                    transform.position,
+                    camTransform.position,
+                )
+                rotVec[1] += 1
+
+                // vec3.rotateY(
+                //     camTransform.position,
+                //     camTransform.position,
+                //     transform.position,
+                //     input.liveInput.mouse.panX * (Math.PI) * delta,
+                // )
+
+                quatLookAt(camTransform.rotation, rotVec)
             }
 
             // Teleport player if out of bounds
