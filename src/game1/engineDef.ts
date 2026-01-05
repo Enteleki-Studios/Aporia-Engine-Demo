@@ -9,7 +9,7 @@ import {
     Transform3DComponent,
     Velocity3DComponent,
 } from '@core/components'
-import { quatLookAt } from '@core/utils'
+import { clamp, wrapAnglePi } from '@core/utils'
 
 import { createQuery } from '@pluginEntities'
 import {
@@ -47,7 +47,26 @@ const playerMovementSystem = (world: World) => {
         const character = bodies.get(entity.id)
         const characterCollider = colliders.get(entity.id)
 
-        if (character && characterCollider) {
+        if (character && characterCollider && cameraResult) {
+            const [[camera, camTransform]] = cameraResult
+
+            // Increment yaw and pitch by input amount
+            camera.yaw += input.mouse.panX * -1 * delta
+            camera.yaw = wrapAnglePi(camera.yaw)
+            camera.pitch += input.mouse.panY * -1 * delta
+            camera.pitch = clamp(camera.pitch, -Math.PI / 3.5, Math.PI / 3.5)
+
+            // Apply yaw and pitch
+            quat.identity(camTransform.rotation)
+            quat.rotateY(camTransform.rotation, camTransform.rotation, camera.yaw)
+            quat.rotateX(camTransform.rotation, camTransform.rotation, camera.pitch)
+
+            // Set camera position to a distance along the camera direction
+            const camDirection = vec3.transformQuat([], [0, 0, -7], camTransform.rotation)
+            camTransform.position[0] = transform.position[0] - camDirection[0]
+            camTransform.position[1] = transform.position[1] - camDirection[1] + 2
+            camTransform.position[2] = transform.position[2] - camDirection[2]
+
             const dirX = input.actions.left ? -1 : input.actions.right ? 1 : 0
             const dirZ = input.actions.up ? -1 : input.actions.down ? 1 : 0
 
@@ -56,6 +75,9 @@ const playerMovementSystem = (world: World) => {
 
             const targetVelocity: vec3 = [dirX, 0, dirZ]
             vec3.normalize(targetVelocity, targetVelocity)
+            // Rotate velocity by camera yaw so that "forwards" is away from the camera
+            vec3.rotateY(targetVelocity, targetVelocity, [0, 0, 0], camera.yaw)
+            // Scale velocity up to speed
             vec3.scale(targetVelocity, targetVelocity, speed)
 
             // Manually set vertical speed
@@ -63,6 +85,7 @@ const playerMovementSystem = (world: World) => {
 
             vec3.lerp(velocity, velocity, targetVelocity, 1 - 0.005 ** delta)
 
+            // Check if grounded last frame
             const isGrounded = characterController.computedGrounded()
 
             // Slightly downward while walking on the ground
@@ -110,31 +133,6 @@ const playerMovementSystem = (world: World) => {
                 quat.slerp(transform.rotation, transform.rotation, targetQ, t)
             }
 
-            // Update camera position and rotation
-            if (cameraResult) {
-                const [[_, camTransform]] = cameraResult
-
-                camTransform.position[0] = transform.position[0]
-                camTransform.position[1] = transform.position[1] + 2
-                camTransform.position[2] = transform.position[2] + 5
-
-                const rotVec = vec3.subtract(
-                    [],
-                    transform.position,
-                    camTransform.position,
-                )
-                rotVec[1] += 1
-
-                // vec3.rotateY(
-                //     camTransform.position,
-                //     camTransform.position,
-                //     transform.position,
-                //     input.liveInput.mouse.panX * (Math.PI) * delta,
-                // )
-
-                quatLookAt(camTransform.rotation, rotVec)
-            }
-
             // Teleport player if out of bounds
             if (transform.position[1] < -30) {
                 character.setNextKinematicTranslation({
@@ -156,8 +154,8 @@ export const game1 = async () => {
 
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
+        Transform3DComponent({ position: [0, 10, 7] }),
         PerspectiveCamera({ far: 5000 }),
-        Transform3DComponent(),
     )
 
     // Create player
@@ -170,7 +168,7 @@ export const game1 = async () => {
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
         PlayerComponent(),
-        Transform3DComponent({ position: [-3, 10, 0] }),
+        Transform3DComponent({ position: [0, 10, 0] }),
         Velocity3DComponent(),
         RenderableDynamic(),
         Geometry3DComponent(playerShape),

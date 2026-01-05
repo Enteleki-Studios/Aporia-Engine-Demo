@@ -23,6 +23,12 @@ export class InputManager<K extends Record<string, string>> {
 
     actions: Simplify<Record<keyof K, boolean>>
 
+    // TODO: TEMP exposure of mouse data
+    mouse = {
+        panX: 0,
+        panY: 0,
+    }
+
     constructor(keymap: K) {
         this.actions = mapObject(keymap, () => false)
         this.codeToAction = Object.entries(keymap).reduce<Record<string, keyof Keymap>>(
@@ -111,6 +117,9 @@ export class InputManager<K extends Record<string, string>> {
     }
 
     flushInputs() {
+        this.mouse.panX = this.liveInput.mouse.panX
+        this.mouse.panY = this.liveInput.mouse.panY
+
         this.liveInput.mouse.panX = 0
         this.liveInput.mouse.panY = 0
 

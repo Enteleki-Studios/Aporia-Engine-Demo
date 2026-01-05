@@ -25,6 +25,10 @@ type PerspectiveCamera = {
     aspect: number
     near: number
     far: number
+
+    // TODO: Should yaw+pitch be tracked elsewhere?
+    yaw: number
+    pitch: number
 }
 
 export const PerspectiveCamera = createComponent(
@@ -34,5 +38,7 @@ export const PerspectiveCamera = createComponent(
         aspect: state?.aspect ?? 1,
         near: state?.near ?? 0.1,
         far: state?.far ?? 2000,
+        yaw: state?.yaw ?? 0,
+        pitch: state?.pitch ?? 0,
     }),
 )

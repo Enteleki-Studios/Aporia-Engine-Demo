@@ -14,7 +14,7 @@ export const quatLookAt = (out: quat, dir: vec3, up: vec3 = Y_AXIS): quat => {
     vec3.normalize(z, dir)
 
     // Flip the vector because "forward" is -Z
-    vec3.negate(z, z)
+    // vec3.negate(z, z)
 
     if (vec3.length(z) < 1e-6) {
         quat.identity(out)
