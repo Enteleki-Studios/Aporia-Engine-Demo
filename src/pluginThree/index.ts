@@ -11,7 +11,6 @@ import {
     type IUniform,
     Mesh,
     MeshStandardMaterial,
-    NearestFilter,
     OrthographicCamera,
     PerspectiveCamera,
     PlaneGeometry,
@@ -43,6 +42,7 @@ import { geometryQuery, gltfQuery, perspectiveCameraQuery } from './queries'
 import { Renderer } from './renderer'
 import { animationSystem } from './systems/animations'
 import { syncTransforms } from './systems/syncTransform'
+import { CheckeredTexture } from './textures/checkered'
 import { isThreeMesh } from './utils'
 
 export { DefaultCube } from './defaultCube'
@@ -185,10 +185,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             ([[geometryDef, transform], entity]) => {
                 const { objectStore, renderer } = world.resources.three
 
-                const defaultTexture = loader.load('/textures/checkered.jpg')
-                // Keep the texture crisp
-                defaultTexture.minFilter = NearestFilter
-                defaultTexture.magFilter = NearestFilter
+                const defaultTexture = new CheckeredTexture()
 
                 // TODO: Use a function instead of mutation
                 let geometry

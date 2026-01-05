@@ -28,8 +28,11 @@ export const shapeToColliderDesc = (shape: Shape3D, rapier: Rapier): ColliderDes
             )
 
         case 'wedge': {
-            const { vertices, indices } = generateWedgeMeshData(shape)
-            return rapier.ColliderDesc.trimesh(vertices, indices)
+            // Use a convexHull instead of a trimesh to support collisions
+            // when the rigid body is dynamic
+            const { vertices } = generateWedgeMeshData(shape)
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Vertices come from a trusted source
+            return rapier.ColliderDesc.convexHull(vertices)!
         }
     }
 }

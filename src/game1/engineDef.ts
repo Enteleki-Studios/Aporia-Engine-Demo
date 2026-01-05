@@ -154,8 +154,8 @@ export const game1 = async () => {
 
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
-        Transform3DComponent({ position: [0, 10, 7] }),
-        PerspectiveCamera({ far: 5000 }),
+        Transform3DComponent(),
+        PerspectiveCamera({ far: 5000, yaw: Math.PI }),
     )
 
     // Create player
@@ -185,9 +185,9 @@ export const game1 = async () => {
         world.resources.entities.addComponents(
             world.resources.entities.createEntity(),
             Transform3DComponent({ position: [i * 2, 10, -i * 2] }),
-            RigidBodyDynamic(),
-            Geometry3DComponent(ballShape),
             RenderableDynamic(),
+            Geometry3DComponent(ballShape),
+            RigidBodyDynamic(),
             ColliderComponent(Shape3DComponent(ballShape)),
         )
     }
@@ -201,7 +201,7 @@ export const game1 = async () => {
 
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
-        Transform3DComponent({ position: [0, 10, -25] }),
+        Transform3DComponent({ position: [-15, 10, 25] }),
         RigidBodyFixed(),
         Geometry3DComponent(boxShape),
         RenderableFixed(),
@@ -217,9 +217,9 @@ export const game1 = async () => {
     world.resources.entities.addComponents(
         world.resources.entities.createEntity(),
         Transform3DComponent({ position: [0, 1, 0] }),
-        RenderableFixed(),
+        RenderableDynamic(),
         Geometry3DComponent(wedgeShape),
-        RigidBodyFixed(),
+        RigidBodyDynamic(),
         ColliderComponent(Shape3DComponent(wedgeShape)),
     )
 
