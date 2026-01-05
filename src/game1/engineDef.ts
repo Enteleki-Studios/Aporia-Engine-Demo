@@ -230,8 +230,7 @@ export const game1 = async () => {
             for (let j = 0; j <= nrows; j++) {
                 heights.push(Math.random())
                 // heights.push(1)
-                // heights.push(i / ncols)
-                // heights.push(i / ncols + j / nrows)
+                // heights.push((Math.random() + 0.2) * i * j * 0.01)
             }
         }
 
