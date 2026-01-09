@@ -3,3 +3,8 @@ export const trimNumberArrayToString = (arr: number[], decimalPlaces = 2): strin
 
 const averageReducer = (acc: number, num: number) => acc + num
 export const average = (a: number[]) => a.reduce(averageReducer, 0) / a.length
+
+export const floodWith = <A, B>(a: A[], b: B): (A | B)[] =>
+    a.flatMap((element: A, index: number, array: A[]) =>
+        index === array.length - 1 ? [element] : [element, b],
+    )

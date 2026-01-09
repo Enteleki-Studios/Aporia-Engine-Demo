@@ -7,7 +7,7 @@ export class DirectionalLight extends ThreeDL {
     constructor(color: number, intensity: number) {
         super(color, intensity)
 
-        const d = 40
+        const d = 30
 
         this.castShadow = true
 

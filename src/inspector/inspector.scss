@@ -1,52 +1,4 @@
-@use 'sass:color';
-@use 'sass:map';
-
-$white: #fefefe;
-$black: #121212;
-// $darkBlue: #282a36;
-$darkBlue: #212830;
-$lighterBlue: #3d3f4a;
-$darkGrey: #43454f;
-$grey: #5e5f68;
-
-$colors: (
-    default: (
-        background: $black,
-        backgroundLighter: color.scale($black, $lightness: 5%),
-        foreground: $white,
-        disabled: $grey,
-        caption: color.scale($grey, $lightness: 20%),
-    ),
-    panel: (
-        background: $darkBlue,
-        backgroundFaded: $lighterBlue,
-        foreground: $white,
-        border: $darkGrey,
-        hover: $lighterBlue,
-        toolbar: $black,
-    ),
-    card: (
-        border: color.scale($darkBlue, $lightness: 30%),
-    ),
-    log: (
-        background: $black,
-        foreground: $white,
-        timestamp: $darkGrey,
-        lineNumber: $darkBlue,
-    ),
-);
-
-@function color($context, $key) {
-    @if map.has-key($colors, $context) {
-        @if map.has-key(map.get($colors, $context), $key) {
-            @return map.get(map.get($colors, $context), $key);
-        }
-        @warn "Missing `#{key}` in context `#{$context}`";
-        @return null;
-    }
-    @warn "Missing context`#{context}`";
-    @return null;
-}
+@use '@inspector/theme';
 
 .Inspector {
     display: grid;
@@ -57,22 +9,24 @@ $colors: (
         'header header'
         'sidepanel views'
         'sidepanel explorer'
-        'footer footer';
+        'footer explorer';
     width: 100vw;
     height: 100vh;
     font-size: 0.75rem;
     font-family: monospace, sans-serif;
-    background: color(panel, border);
-    color: color(default, foreground);
+    background: theme.color(default, border);
+    color: theme.color(default, foreground);
 
     & > * {
-        background: color(panel, background);
+        background: theme.color(default, background);
     }
 
     ul,
     li,
     p,
-    h3 {
+    h3,
+    pre,
+    hr {
         margin: 0;
         padding: 0;
     }
@@ -80,7 +34,7 @@ $colors: (
     .header {
         grid-area: header;
         padding: 0.25rem 0.5rem;
-        background-color: color(default, background);
+        background-color: theme.color(header, background);
         display: flex;
         align-items: center;
         gap: 3rem;
@@ -93,8 +47,8 @@ $colors: (
         .game,
         .gameDebug {
             background: repeating-conic-gradient(
-                    color(default, background) 0% 25%,
-                    color(default, backgroundLighter) 0% 50%
+                    theme.color(checkered, color1) 0% 25%,
+                    theme.color(checkered, color2) 0% 50%
                 )
                 50% / 20px 20px;
             overflow: hidden;
@@ -115,7 +69,7 @@ $colors: (
     footer {
         grid-area: footer;
         padding: 0.25rem;
-        color: color(default, caption);
+        color: theme.color(default, caption);
         text-align: center;
         font-size: 0.6rem;
     }
