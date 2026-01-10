@@ -1,18 +1,18 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { RapierThreeVizPanel } from 'src/pluginRapierThreeViz/rapierThreeVizPanel'
-import { ThreePanel } from 'src/pluginThree/threePanel'
-
-import { ResourcesPanel, RuntimePanel } from '@core/react'
-
-import { EntitiesPanel } from '@pluginEntities'
 
 import './inspector.scss'
 
 type InspectorProps = {
     children: ReactNode
+    sidepanelContent?: ReactNode
+    explorerContent?: ReactNode
 }
 
-export const Inspector = ({ children }: InspectorProps) => {
+export const Inspector = ({
+    children,
+    sidepanelContent,
+    explorerContent,
+}: InspectorProps) => {
     const [isPassthrough, setIsPassthrough] = useState(false)
 
     useEffect(() => {
@@ -36,19 +36,12 @@ export const Inspector = ({ children }: InspectorProps) => {
     return (
         <div className="Inspector">
             <div className="header">Inspector</div>
-            <div className="sidepanel">
-                <RuntimePanel />
-                <EntitiesPanel />
-            </div>
-            <div className="explorer">
-                <ResourcesPanel />
-                <ThreePanel />
-                <RapierThreeVizPanel />
-            </div>
+            <div className="sidepanel">{sidepanelContent}</div>
+            <div className="explorer">{explorerContent}</div>
+            <footer>Enteleki Studios</footer>
             <div className="views">
                 <div className="game">{children}</div>
             </div>
-            <footer>Enteleki Studios</footer>
         </div>
     )
 }

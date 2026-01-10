@@ -1,0 +1,42 @@
+@use '@inspector/theme';
+
+.Tabs {
+    .tabNav {
+        border-bottom: 1px solid theme.color(default, border);
+
+        button {
+            background: none;
+            color: inherit;
+            border: none;
+            border-top: 1px solid transparent;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            font: inherit;
+
+            &::after {
+                // Prevent bold from changing width
+                display: block;
+                content: attr(title);
+                font-weight: bold;
+                height: 1px;
+                color: transparent;
+                overflow: hidden;
+                visibility: hidden;
+            }
+            &:hover {
+                border-top-color: theme.color(default, border-hover);
+                background-color: theme.color(default, background-hover);
+            }
+            &.active {
+                border-top-color: theme.color(default, highlight);
+                font-weight: bold;
+            }
+        }
+    }
+    .tabContent {
+        padding: 0.5rem 0;
+
+        // .tabView {
+        // }
+    }
+}

@@ -17,8 +17,8 @@ export class Runtime<R extends object> {
 
     private loop = () => {
         this.loopId = this.syncFrames
-            ? requestAnimationFrame(this.loop)
-            : setTimeout(this.loop)
+            ? window.requestAnimationFrame(this.loop)
+            : window.setTimeout(this.loop)
         this.step()
     }
 
@@ -54,9 +54,9 @@ export class Runtime<R extends object> {
     stop() {
         if (this.loopId) {
             if (this.syncFrames) {
-                cancelAnimationFrame(this.loopId)
+                window.cancelAnimationFrame(this.loopId)
             } else {
-                clearTimeout(this.loopId)
+                window.clearTimeout(this.loopId)
             }
             this.loopId = null
         }

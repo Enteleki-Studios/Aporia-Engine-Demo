@@ -4,6 +4,8 @@ import { WorldWithPlugin } from '@core'
 
 import { type TypedUseWorld, usePersistentState, useWorld } from '@core/react'
 
+import { Panel, Stack, Toggle } from '@inspector'
+
 import type { RapierThreeVizPlugin } from '.'
 
 const useThreeWorld: TypedUseWorld<WorldWithPlugin<RapierThreeVizPlugin>> = useWorld
@@ -12,29 +14,35 @@ export const RapierThreeVizPanel = () => {
     const world = useThreeWorld()
 
     const [viz, setViz] = usePersistentState<boolean>('R3-viz', false)
-    const [depth, setDepth] = usePersistentState<boolean>('R3-depth', true)
+    const [depth, setDepth] = usePersistentState<boolean>('R3-depth', false)
 
     useEffect(() => {
         world.resources.rapierViz.api.toggleViz(viz)
     }, [world, viz])
 
     useEffect(() => {
-        world.resources.rapierViz.api.toggleDepthTest(depth)
+        world.resources.rapierViz.api.toggleDepthTest(!depth)
     }, [world, depth])
 
-    const handleToggleViz = () => {
-        setViz((prev) => !prev)
+    const handleToggleViz = (next: boolean) => {
+        setViz(next)
     }
 
-    const handleToggleDepth = () => {
-        setDepth((prev) => !prev)
+    const handleToggleDepth = (next: boolean) => {
+        setDepth(next)
     }
 
     return (
-        <div>
+        <Panel>
             <h3>R3Viz</h3>
-            <button onClick={handleToggleViz}>Toggle viz</button>
-            <button onClick={handleToggleDepth}>Toggle depth test</button>
-        </div>
+            <Stack>
+                <Toggle checked={viz} onChange={handleToggleViz}>
+                    Visualize physics world
+                </Toggle>
+                <Toggle checked={depth} onChange={handleToggleDepth}>
+                    Disable depth test
+                </Toggle>
+            </Stack>
+        </Panel>
     )
 }

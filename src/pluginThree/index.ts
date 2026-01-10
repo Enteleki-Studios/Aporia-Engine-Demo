@@ -51,6 +51,7 @@ export { CustomGridTexture } from './customGridTexture'
 export { DefaultGrid } from './defaultGrid'
 export * from './components'
 export * from './queries'
+export { ThreePanel } from './threePanel'
 
 type ThreeOutput = {
     three: {

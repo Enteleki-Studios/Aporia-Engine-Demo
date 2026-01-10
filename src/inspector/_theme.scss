@@ -1,0 +1,52 @@
+@use 'sass:color';
+@use 'sass:map';
+
+$white: #fefefe;
+$black: #121212;
+$darkBlue: #212830;
+$lighterBlue: #3d3f4a;
+$darkGrey: #43454f;
+$grey: #5e5f68;
+$pink: #e9026e;
+
+$colors: (
+    default: (
+        background: $darkBlue,
+        foreground: $white,
+        disabled: $grey,
+        caption: #7b7d88,
+        highlight: $pink,
+        border: $darkGrey,
+        border-hover: #888,
+        background-hover: #33363a,
+    ),
+    control: (
+        border: $white,
+        foreground: $white,
+        foreground-enabled: $pink,
+        background-enabled: #ffffff99,
+        background-secondary: #ffffff65,
+        background-hover: #ffffff15,
+        background-active: #ffffff30,
+    ),
+    header: (
+        background: $black,
+        foreground: $white,
+    ),
+    checkered: (
+        color1: $black,
+        color2: color.scale($black, $lightness: 5%),
+    ),
+);
+
+@function color($context, $key) {
+    @if map.has-key($colors, $context) {
+        @if map.has-key(map.get($colors, $context), $key) {
+            @return map.get(map.get($colors, $context), $key);
+        }
+        @warn "Missing `#{key}` in context `#{$context}`";
+        @return null;
+    }
+    @warn "Missing context`#{context}`";
+    @return null;
+}

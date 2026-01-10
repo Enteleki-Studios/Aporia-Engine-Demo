@@ -17,6 +17,8 @@ type Provides = {
 
 type Dependencies = PluginsToResources<[PluginThree, PluginRapier3D]>
 
+export { RapierThreeVizPanel } from './rapierThreeVizPanel'
+
 export type RapierThreeVizPlugin = ReturnType<typeof pluginRapierThreeViz>
 
 export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
@@ -31,6 +33,10 @@ export const pluginRapierThreeViz = (): Plugin<Provides, Dependencies> => ({
 
         lines.renderOrder = 999
         lines.frustumCulled = false
+
+        // Configurable:
+        lines.visible = false
+        lines.material.depthTest = true
 
         const toggleViz = (value?: boolean) => {
             lines.visible = value ?? !lines.visible

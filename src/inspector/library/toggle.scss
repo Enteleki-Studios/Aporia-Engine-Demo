@@ -1,0 +1,45 @@
+@use '@inspector/theme';
+
+.Toggle {
+    label {
+        margin-right: 0.5rem;
+    }
+}
+
+.ToggleControl {
+    display: inline-block;
+    width: 1.75rem;
+    height: 0.75rem;
+    background-color: theme.color(control, background-secondary);
+    border-radius: 1rem;
+    position: relative;
+    top: 0.125rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &::after {
+        position: absolute;
+        display: block;
+        content: '';
+        width: 1rem;
+        height: 1rem;
+        top: -0.125rem;
+        left: 0;
+        border-radius: 50%;
+        background-color: theme.color(control, foreground);
+        transition:
+            left 0.15s ease-out,
+            background-color 0.25s ease;
+    }
+    &.on {
+        background-color: theme.color(control, background-enabled);
+
+        &::after {
+            left: calc(100% - 1rem);
+            background-color: theme.color(control, foreground-enabled);
+        }
+    }
+    &.off::after {
+        left: 0;
+    }
+}
