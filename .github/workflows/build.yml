@@ -7,6 +7,7 @@ on:
         branches: ['main']
 env:
     HUSKY: 0
+    STORYBOOK_DISABLE_TELEMETRY: true
 
 jobs:
     build:

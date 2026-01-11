@@ -16,8 +16,8 @@
         "test": "vitest",
         "typecheck": "tsc",
         "prepare": "husky",
-        "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build"
+        "storybook": "storybook dev -p 6006 --disable-telemetry",
+        "build-storybook": "storybook build --disable-telemetry"
     },
     "dependencies": {
         "@dimforge/rapier3d": "^0.19.3",
