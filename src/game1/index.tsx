@@ -20,7 +20,7 @@ export const Root = () => {
         <WorldContext value={world}>
             <Inspector
                 sidepanelContent={
-                    <Stack divider={<Divider />}>
+                    <Stack divider={<Divider />} fullWidth>
                         <RuntimePanel />
                         <EntitiesPanel />
                     </Stack>

@@ -1,6 +1,7 @@
 import eslintComments from 'eslint-plugin-eslint-comments'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
+import storybook from 'eslint-plugin-storybook'
 import { defineConfig } from 'eslint/config'
 import tseslint from 'typescript-eslint'
 
@@ -12,6 +13,7 @@ export default defineConfig(
     tseslint.configs.stylisticTypeChecked,
     react.configs.flat.recommended,
     react.configs.flat['jsx-runtime'],
+    ...storybook.configs['flat/recommended'],
     {
         plugins: {
             'react-hooks': reactHooks,

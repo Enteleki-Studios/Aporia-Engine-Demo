@@ -2,6 +2,7 @@
 
 .Toggle {
     label {
+        color: theme.color(control, foreground);
         margin-right: 0.5rem;
     }
 }

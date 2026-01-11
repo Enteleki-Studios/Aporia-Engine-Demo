@@ -4,7 +4,7 @@
     background: none;
     border: 1px solid theme.color(control, border);
     padding: 0.25rem 0.5rem;
-    color: inherit;
+    color: theme.color(control, foreground);
     border-radius: 2px;
     cursor: pointer;
 
