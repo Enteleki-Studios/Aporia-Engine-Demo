@@ -1,4 +1,3 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
 import eslintComments from 'eslint-plugin-eslint-comments'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
