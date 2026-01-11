@@ -1,7 +1,17 @@
 {
-    "entryPoints": ["src/core/index.ts"],
-    "plugin": ["typedoc-plugin-markdown"],
-    "out": "./docs",
+    "entryPoints": [
+        "src/core/index.ts",
+        "src/core/utils/index.ts",
+        "src/core/react/index.ts",
+        "src/core/components/index.ts",
+        "src/pluginEntities/index.ts",
+        "src/pluginInput/index.ts",
+        "src/pluginRapier3D/index.ts",
+        "src/pluginRapierThreeViz/index.ts",
+        "src/pluginThree/index.ts"
+    ],
+    "out": "dist/docs/",
     "excludeExternals": true,
-    "sort": ["instance-first", "source-order"]
+    "sort": ["instance-first", "source-order"],
+    "plugin": ["typedoc-plugin-missing-exports"]
 }
