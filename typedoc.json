@@ -1,0 +1,7 @@
+{
+    "entryPoints": ["src/core/index.ts"],
+    "plugin": ["typedoc-plugin-markdown"],
+    "out": "./docs",
+    "excludeExternals": true,
+    "sort": ["instance-first", "source-order"]
+}
