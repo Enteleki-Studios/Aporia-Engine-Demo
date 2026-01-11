@@ -4,7 +4,7 @@ import './button.scss'
 
 type ButtonProps = {
     children: ReactNode
-    onClick: () => void
+    onClick?: () => void
 }
 
 export const Button = ({ children, onClick }: ButtonProps) => {

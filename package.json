@@ -15,7 +15,9 @@
         "start": "vite",
         "test": "vitest",
         "typecheck": "tsc",
-        "prepare": "husky"
+        "prepare": "husky",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
     },
     "dependencies": {
         "@dimforge/rapier3d": "^0.19.3",
@@ -48,7 +50,17 @@
         "vite": "^7.1.4",
         "vite-plugin-wasm": "^3.4.1",
         "vite-tsconfig-paths": "^6.0.3",
-        "vitest": "^4.0.3"
+        "vitest": "^4.0.3",
+        "storybook": "^10.1.11",
+        "@storybook/react-vite": "^10.1.11",
+        "@storybook/addon-vitest": "^10.1.11",
+        "@storybook/addon-a11y": "^10.1.11",
+        "@storybook/addon-docs": "^10.1.11",
+        "@storybook/addon-onboarding": "^10.1.11",
+        "eslint-plugin-storybook": "^10.1.11",
+        "playwright": "^1.57.0",
+        "@vitest/browser-playwright": "^4.0.3",
+        "@vitest/coverage-v8": "^4.0.3"
     },
     "prettier": {
         "printWidth": 90,

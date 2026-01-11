@@ -3,16 +3,16 @@ import { ReactNode, useCallback } from 'react'
 import './toggle.scss'
 
 type ToggleProps = {
-    checked: boolean
+    checked?: boolean
     onChange: (value: boolean) => void
-    children: ReactNode
+    children?: ReactNode
 }
 
 // TODO: For now this component must be controlled
 // but could be expanded to be uncontrolled optionally
 // passed a defaultChecked prop
 
-export const Toggle = ({ checked, onChange, children }: ToggleProps) => {
+export const Toggle = ({ checked = false, onChange, children }: ToggleProps) => {
     const handleClick = useCallback(() => {
         onChange(!checked)
     }, [checked, onChange])
