@@ -13,7 +13,7 @@ export class Runtime {
         this.clock = new Clock()
     }
 
-    setWorld<W>(world: W) {
+    setWorld(world: unknown) {
         this.world = world
     }
 
