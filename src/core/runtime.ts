@@ -1,18 +1,20 @@
-import { type AnySystem, Clock, type System } from '.'
+import { type AnySystem, Clock } from '.'
 
-export class Runtime<R extends object> {
+export class Runtime {
     clock: Clock
-    resources: R
-
     syncFrames = true
 
-    private systems: System<this>[] = []
+    private world!: unknown
+    private systems: AnySystem[] = []
     private debugSystems: AnySystem[] = []
     private loopId: number | null = null
 
-    constructor(resources: R) {
+    constructor() {
         this.clock = new Clock()
-        this.resources = resources
+    }
+
+    setWorld<W>(world: W) {
+        this.world = world
     }
 
     private loop = () => {
@@ -23,8 +25,7 @@ export class Runtime<R extends object> {
     }
 
     addSystem(system: AnySystem) {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- TODO: Need to restructure to fix this
-        this.systems.push(system as unknown as System<this>)
+        this.systems.push(system)
     }
 
     removeSystem(system: AnySystem) {
@@ -66,13 +67,13 @@ export class Runtime<R extends object> {
         this.clock.startFrame()
 
         for (const system of this.systems) {
-            system(this)
+            system(this.world)
         }
 
         this.clock.endFrame()
 
         for (const debugSystem of this.debugSystems) {
-            debugSystem(this)
+            debugSystem(this.world)
         }
     }
 

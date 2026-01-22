@@ -15,8 +15,8 @@ export const EntitiesPanel = () => {
     return (
         <div>
             <h3>Entities</h3>
-            <pre>Entities: {world.resources.entities.size}</pre>
-            <pre>Queries: {world.resources.entities.numQueries}</pre>
+            <pre>Entities: {world.entities.size}</pre>
+            <pre>Queries: {world.entities.numQueries}</pre>
         </div>
     )
 }

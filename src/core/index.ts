@@ -2,6 +2,8 @@ import type { Simplify, UnionToIntersection } from 'type-fest'
 
 import type { Runtime } from './runtime'
 
+export type World<R extends object> = { runtime: Runtime } & R
+
 export {
     createDefaultComposer,
     type DefaultResources,
@@ -24,7 +26,7 @@ export type Plugin<
 > = {
     createResources?(): ProvidesResources | Promise<ProvidesResources>
     init?<R extends Simplify<RequiresResources & ProvidesResources>>(
-        world: Runtime<R>,
+        world: World<R>,
     ): void
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
@@ -47,13 +49,13 @@ export type PluginToRequiredResources<P extends AnyPlugin> =
         ? Requires
         : never
 
-export type WorldWithPlugin<P extends AnyPlugin> = Runtime<
+export type WorldWithPlugin<P extends AnyPlugin> = World<
     Simplify<PluginToRequiredResources<P> & PluginToResources<P>>
 >
 
 export type System<T> = (world: T) => void
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
-export type AnySystem = System<Runtime<any>>
+export type AnySystem = System<World<any>>
 
 export type Array2 = [number, number]
 export type Array3 = [number, number, number]

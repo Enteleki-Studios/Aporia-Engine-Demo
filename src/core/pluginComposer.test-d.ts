@@ -35,13 +35,14 @@ const plugC: Plugin<{ resC: string }, { resB: string }> = {
 test('can build with one plugin', async () => {
     const world = await new PluginComposer([]).addPlugin(plugA).build()
 
-    expectTypeOf(world.resources).toEqualTypeOf<{ resA: string }>()
+    expectTypeOf(world.resA).toEqualTypeOf<string>()
 })
 
 test('can build with two plugins', async () => {
     const world = await new PluginComposer([]).addPlugin(plugA).addPlugin(plugB).build()
 
-    expectTypeOf(world.resources).toEqualTypeOf<{ resA: string; resB: string }>()
+    expectTypeOf(world.resA).toEqualTypeOf<string>()
+    expectTypeOf(world.resB).toEqualTypeOf<string>()
 })
 
 test('can add plugins with dependencies', async () => {
@@ -56,7 +57,7 @@ test('type error when dependencies are unmet', async () => {
 test('can add plugin with no resources', async () => {
     const plugInitOnly: Plugin<object> = {
         init(w) {
-            console.log(w.resources)
+            console.log(w.runtime)
         },
     }
 
@@ -66,7 +67,7 @@ test('can add plugin with no resources', async () => {
 test('can add plugin with dependencies and no resources', async () => {
     const plugInitOnly: Plugin<object, { resB: string }> = {
         init(w) {
-            console.log(w.resources.resB)
+            console.log(w.resB)
         },
     }
 

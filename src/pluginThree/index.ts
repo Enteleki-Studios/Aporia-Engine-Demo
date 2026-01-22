@@ -181,10 +181,10 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         }
     },
     init: (world) => {
-        world.resources.entities.addQueryEffect(
+        world.entities.addQueryEffect(
             geometryQuery,
             ([[geometryDef, transform], entity]) => {
-                const { objectStore, renderer } = world.resources.three
+                const { objectStore, renderer } = world.three
 
                 const defaultTexture = new CheckeredTexture()
 
@@ -297,11 +297,10 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             },
         )
 
-        world.resources.entities.addQueryEffect(
+        world.entities.addQueryEffect(
             gltfQuery,
             ([[gltfComponent, transform], entity]) => {
-                const { objectStore, renderer, gltfLoader, animationStore } =
-                    world.resources.three
+                const { objectStore, renderer, gltfLoader, animationStore } = world.three
                 const [group, isCreated] = objectStore.getOrCreate(entity.id)
 
                 if (isCreated) {
@@ -348,7 +347,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             },
         )
 
-        world.resources.entities.addQueryEffect(
+        world.entities.addQueryEffect(
             perspectiveCameraQuery,
             ([[cameraDef, transform], entity]) => {
                 const camera = new PerspectiveCamera(
@@ -361,26 +360,26 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                 camera.position.fromArray(transform.position)
                 camera.quaternion.fromArray(transform.rotation)
 
-                world.resources.three.cameraStore.set(entity.id, camera)
+                world.three.cameraStore.set(entity.id, camera)
 
-                const { renderer } = world.resources.three
+                const { renderer } = world.three
                 renderer.setMainCamera(camera)
             },
         )
 
-        world.addSystem(syncTransforms)
-        world.addSystem(animationSystem)
+        world.runtime.addSystem(syncTransforms)
+        world.runtime.addSystem(animationSystem)
 
         // TODO: Temp water shader update
-        world.addSystem(() => {
-            const { three } = world.resources
+        world.runtime.addSystem(() => {
+            const { three } = world
 
             three.renderer.render()
 
             const waterTime: IUniform<number> | undefined =
                 three.water.material.uniforms['time']
             if (waterTime) {
-                waterTime.value += world.clock.delta * 0.25
+                waterTime.value += world.runtime.clock.delta * 0.25
             }
         })
     },

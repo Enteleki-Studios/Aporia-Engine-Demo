@@ -10,8 +10,8 @@ export const pluginInput = <K extends Keymap>(
         input: new InputManager(keymap),
     }),
     init(world) {
-        world.addSystem(() => {
-            world.resources.input.flushInputs()
+        world.runtime.addSystem(() => {
+            world.input.flushInputs()
         })
     },
 })

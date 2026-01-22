@@ -1,4 +1,10 @@
-import { type AnyPlugin, type Plugin, type PluginsToResources, Runtime } from '@core'
+import {
+    type AnyPlugin,
+    type Plugin,
+    type PluginsToResources,
+    Runtime,
+    type World,
+} from '@core'
 
 import { pluginEntities } from '@pluginEntities'
 import { DEFAULT_KEYMAP, type Keymap, pluginInput } from '@pluginInput'
@@ -42,14 +48,16 @@ export class PluginComposer<P extends AnyPlugin[]> {
             }
         }
 
+        const runtime = new Runtime()
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- We know better here
-        const runtime = new Runtime(resources as Resources)
+        const world = { runtime, ...resources } as World<Resources>
+        runtime.setWorld(world)
 
         for (const plugin of this.plugins) {
-            plugin.init?.(runtime)
+            plugin.init?.(world)
         }
 
-        return runtime
+        return world
     }
 }
 
@@ -67,6 +75,7 @@ export const createDefaultComposer = <K extends Keymap>(config: Config<K>) => {
         .addPlugin(pluginInput(config.keymap))
 }
 
-export type DefaultResources = Awaited<
-    ReturnType<ReturnType<typeof createDefaultComposer>['build']>
->['resources']
+export type DefaultResources = Omit<
+    Awaited<ReturnType<ReturnType<typeof createDefaultComposer>['build']>>,
+    'runtime'
+>

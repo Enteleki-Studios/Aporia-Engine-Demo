@@ -37,11 +37,11 @@ const playerQuery = createQuery([
 ])
 
 const playerMovementSystem = (world: World) => {
-    const { delta } = world.clock
-    const { input } = world.resources
-    const entities = world.resources.entities.query(playerQuery)
-    const cameraResult = world.resources.entities.queryFirst(perspectiveCameraQuery)
-    const { characterController, bodies, colliders } = world.resources.physics
+    const { delta } = world.runtime.clock
+    const { input } = world
+    const entities = world.entities.query(playerQuery)
+    const cameraResult = world.entities.queryFirst(perspectiveCameraQuery)
+    const { characterController, bodies, colliders } = world.physics
 
     entities.forEach(([[transform, animation, { velocity }], entity]) => {
         const character = bodies.get(entity.id)
@@ -150,10 +150,10 @@ export const game1 = async () => {
 
     const world = await createWorld()
 
-    world.addSystem(playerMovementSystem)
+    world.runtime.addSystem(playerMovementSystem)
 
-    world.resources.entities.addComponents(
-        world.resources.entities.createEntity(),
+    world.entities.addComponents(
+        world.entities.createEntity(),
         Transform3DComponent(),
         PerspectiveCamera({ far: 5000, yaw: Math.PI }),
     )
@@ -165,8 +165,8 @@ export const game1 = async () => {
         radius: 0.4,
     }
 
-    world.resources.entities.addComponents(
-        world.resources.entities.createEntity(),
+    world.entities.addComponents(
+        world.entities.createEntity(),
         PlayerComponent(),
         Transform3DComponent({ position: [0, 10, 0] }),
         Velocity3DComponent(),
@@ -182,8 +182,8 @@ export const game1 = async () => {
 
     const ballShape: Ball = { type: 'ball', radius: 0.5 }
     for (let i = 0; i < 10; i++) {
-        world.resources.entities.addComponents(
-            world.resources.entities.createEntity(),
+        world.entities.addComponents(
+            world.entities.createEntity(),
             Transform3DComponent({ position: [i * 2, 10, -i * 2] }),
             RenderableDynamic(),
             Geometry3DComponent(ballShape),
@@ -199,8 +199,8 @@ export const game1 = async () => {
         halfDepth: 10,
     }
 
-    world.resources.entities.addComponents(
-        world.resources.entities.createEntity(),
+    world.entities.addComponents(
+        world.entities.createEntity(),
         Transform3DComponent({ position: [-15, 10, 25] }),
         RigidBodyFixed(),
         Geometry3DComponent(boxShape),
@@ -214,8 +214,8 @@ export const game1 = async () => {
         halfHeight: 5,
         halfDepth: 5,
     }
-    world.resources.entities.addComponents(
-        world.resources.entities.createEntity(),
+    world.entities.addComponents(
+        world.entities.createEntity(),
         Transform3DComponent({ position: [0, 1, 4] }),
         RenderableDynamic(),
         Geometry3DComponent(wedgeShape),
@@ -246,8 +246,8 @@ export const game1 = async () => {
         heights: generateHeightfield(size, size),
         scale: [size * scale, 5, size * scale],
     }
-    world.resources.entities.addComponents(
-        world.resources.entities.createEntity(),
+    world.entities.addComponents(
+        world.entities.createEntity(),
         Transform3DComponent({
             position: [0, -1.5, 0],
         }),

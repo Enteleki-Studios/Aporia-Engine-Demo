@@ -13,17 +13,10 @@ export const ThreePanel = () => {
     return (
         <div>
             <h3>Three</h3>
-            <pre>Calls: {world.resources.three.renderer.renderer.info.render.calls}</pre>
-            <pre>
-                Tris: {world.resources.three.renderer.renderer.info.render.triangles}
-            </pre>
-            <pre>
-                Textures: {world.resources.three.renderer.renderer.info.memory.textures}
-            </pre>
-            <pre>
-                Geometries:{' '}
-                {world.resources.three.renderer.renderer.info.memory.geometries}
-            </pre>
+            <pre>Calls: {world.three.renderer.renderer.info.render.calls}</pre>
+            <pre>Tris: {world.three.renderer.renderer.info.render.triangles}</pre>
+            <pre>Textures: {world.three.renderer.renderer.info.memory.textures}</pre>
+            <pre>Geometries: {world.three.renderer.renderer.info.memory.geometries}</pre>
         </div>
     )
 }
