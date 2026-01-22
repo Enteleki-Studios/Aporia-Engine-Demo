@@ -379,7 +379,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             const waterTime: IUniform<number> | undefined =
                 three.water.material.uniforms['time']
             if (waterTime) {
-                waterTime.value += world.runtime.clock.delta * 0.25
+                waterTime.value += world.clock.delta * 0.25
             }
         })
     },

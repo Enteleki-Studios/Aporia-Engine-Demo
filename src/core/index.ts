@@ -1,15 +1,13 @@
 import type { Simplify, UnionToIntersection } from 'type-fest'
 
-import type { Runtime } from './runtime'
-
-export type World<R extends object> = { runtime: Runtime } & R
+export type World<R extends object> = R
 
 export {
     createDefaultComposer,
     type DefaultResources,
     DEFAULT_CONFIG,
 } from './pluginComposer'
-export { Runtime } from './runtime'
+export { Runtime } from '@pluginRuntime'
 export {
     createComponent,
     type AnyComponent,

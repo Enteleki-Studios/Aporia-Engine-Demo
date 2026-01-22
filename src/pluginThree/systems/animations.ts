@@ -41,7 +41,7 @@ export const animationSystem = (world: ThreeWorld) => {
                 animation.prevActionName = actionName
             }
 
-            mixer.update(world.runtime.clock.delta)
+            mixer.update(world.clock.delta)
         }
     })
 }

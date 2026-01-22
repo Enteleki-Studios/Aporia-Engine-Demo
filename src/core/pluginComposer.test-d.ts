@@ -57,7 +57,7 @@ test('type error when dependencies are unmet', async () => {
 test('can add plugin with no resources', async () => {
     const plugInitOnly: Plugin<object> = {
         init(w) {
-            console.log(w.runtime)
+            console.log(w)
         },
     }
 

@@ -8,7 +8,9 @@ import type {
     RigidBody,
     World,
 } from '@dimforge/rapier3d'
+import type { PluginClock } from '@pluginClock'
 import { EntityId, type PluginEntities, createQuery } from '@pluginEntities'
+import type { PluginRuntime } from '@pluginRuntime'
 
 import { shapeToColliderDesc } from './colliderUtils'
 import {
@@ -36,7 +38,7 @@ type Provides = {
     }
 }
 
-type Dependencies = PluginsToResources<[PluginEntities]>
+type Dependencies = PluginsToResources<[PluginClock, PluginRuntime, PluginEntities]>
 
 const dynamicBodiesQuery = createQuery([
     ColliderComponent,
@@ -86,7 +88,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
         const { world: physicsWorld, rapier, bodies, colliders } = world.physics
 
         world.runtime.addSystem(() => {
-            world.physics.world.timestep = world.runtime.clock.delta
+            world.physics.world.timestep = world.clock.delta
             world.physics.world.step()
         })
 

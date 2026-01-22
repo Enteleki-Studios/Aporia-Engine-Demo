@@ -37,7 +37,7 @@ const playerQuery = createQuery([
 ])
 
 const playerMovementSystem = (world: World) => {
-    const { delta } = world.runtime.clock
+    const { delta } = world.clock
     const { input } = world
     const entities = world.entities.query(playerQuery)
     const cameraResult = world.entities.queryFirst(perspectiveCameraQuery)

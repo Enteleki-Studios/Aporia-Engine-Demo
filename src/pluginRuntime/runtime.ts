@@ -1,19 +1,16 @@
-import { type AnySystem, Clock } from '.'
+import type { AnySystem, Clock } from '@core'
+
+type WorldWithClock = { clock: Clock }
 
 export class Runtime {
-    clock: Clock
     syncFrames = true
 
-    private world!: unknown
+    private world!: WorldWithClock
     private systems: AnySystem[] = []
     private debugSystems: AnySystem[] = []
     private loopId: number | null = null
 
-    constructor() {
-        this.clock = new Clock()
-    }
-
-    setWorld(world: unknown) {
+    setWorld(world: WorldWithClock) {
         this.world = world
     }
 
@@ -64,13 +61,13 @@ export class Runtime {
     }
 
     step() {
-        this.clock.startFrame()
+        this.world.clock.startFrame()
 
         for (const system of this.systems) {
             system(this.world)
         }
 
-        this.clock.endFrame()
+        this.world.clock.endFrame()
 
         for (const debugSystem of this.debugSystems) {
             debugSystem(this.world)
