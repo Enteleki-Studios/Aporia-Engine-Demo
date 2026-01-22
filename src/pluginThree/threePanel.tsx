@@ -1,5 +1,6 @@
-import { type TypedUseWorld, useRenderSync, useWorld } from '@core/react'
+import { type TypedUseWorld, useWorld } from '@core/react'
 
+import { useRenderSync } from '@pluginRuntime'
 import { ThreeWorld } from '@pluginThree'
 
 const useThreeWorld: TypedUseWorld<ThreeWorld> = useWorld

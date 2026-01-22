@@ -1,10 +1,11 @@
 import { use } from 'react'
 
-import { ResourcesPanel, RuntimePanel, WorldContext } from '@core/react'
+import { ResourcesPanel, WorldContext } from '@core/react'
 
 import { Divider, Inspector, Stack, Tabs } from '@inspector'
 import { EntitiesPanel } from '@pluginEntities'
 import { RapierThreeVizPanel } from '@pluginRapierThreeViz'
+import { RuntimePanel } from '@pluginRuntime'
 import { ThreePanel } from '@pluginThree'
 
 import { game1 } from './engineDef'

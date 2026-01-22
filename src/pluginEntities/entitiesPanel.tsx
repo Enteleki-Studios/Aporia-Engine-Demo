@@ -1,8 +1,9 @@
 import type { WorldWithPlugin } from '@core'
 
-import { type TypedUseWorld, useRenderSync, useWorld } from '@core/react'
+import { type TypedUseWorld, useWorld } from '@core/react'
 
 import type { PluginEntities } from '@pluginEntities'
+import { useRenderSync } from '@pluginRuntime'
 
 const useEntitiesWorld: TypedUseWorld<WorldWithPlugin<PluginEntities>> = useWorld
 

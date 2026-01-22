@@ -1,6 +1,4 @@
 export * from './resourcesPanel'
-export * from './runtimePanel'
-export * from './useRenderSync'
 export * from './useSmoothNumber'
 export * from './useWorld'
 export * from './worldContext'
