@@ -7,20 +7,20 @@ export const Game = () => {
     const world = useGameWorld()
 
     useEffect(() => {
-        world.start()
+        world.runtime.start()
 
         return () => {
-            world.stop()
+            world.runtime.stop()
         }
     }, [world])
 
     useEffect(() => {
-        world.resources.three.renderer.setCanvasContainer(canvasContainerRef.current)
-        world.resources.input.setInputElement(canvasContainerRef.current)
+        world.three.renderer.setCanvasContainer(canvasContainerRef.current)
+        world.input.setInputElement(canvasContainerRef.current)
 
         return () => {
-            world.resources.three.renderer.setCanvasContainer(null)
-            world.resources.input.setInputElement(null)
+            world.three.renderer.setCanvasContainer(null)
+            world.input.setInputElement(null)
         }
     }, [world])
 

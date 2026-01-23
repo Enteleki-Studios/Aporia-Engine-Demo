@@ -17,11 +17,11 @@ export const RapierThreeVizPanel = () => {
     const [depth, setDepth] = usePersistentState<boolean>('R3-depth', false)
 
     useEffect(() => {
-        world.resources.rapierViz.api.toggleViz(viz)
+        world.rapierViz.api.toggleViz(viz)
     }, [world, viz])
 
     useEffect(() => {
-        world.resources.rapierViz.api.toggleDepthTest(!depth)
+        world.rapierViz.api.toggleDepthTest(!depth)
     }, [world, depth])
 
     const handleToggleViz = (next: boolean) => {

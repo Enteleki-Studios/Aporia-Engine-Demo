@@ -8,7 +8,9 @@ import type {
     RigidBody,
     World,
 } from '@dimforge/rapier3d'
+import type { PluginClock } from '@pluginClock'
 import { EntityId, type PluginEntities, createQuery } from '@pluginEntities'
+import type { PluginRuntime } from '@pluginRuntime'
 
 import { shapeToColliderDesc } from './colliderUtils'
 import {
@@ -36,7 +38,7 @@ type Provides = {
     }
 }
 
-type Dependencies = PluginsToResources<[PluginEntities]>
+type Dependencies = PluginsToResources<[PluginRuntime, PluginClock, PluginEntities]>
 
 const dynamicBodiesQuery = createQuery([
     ColliderComponent,
@@ -83,18 +85,18 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
         }
     },
     init(world) {
-        const { world: physicsWorld, rapier, bodies, colliders } = world.resources.physics
+        const { world: physicsWorld, rapier, bodies, colliders } = world.physics
 
-        world.addSystem(() => {
-            world.resources.physics.world.timestep = world.clock.delta
-            world.resources.physics.world.step()
+        world.runtime.addSystem(() => {
+            world.physics.world.timestep = world.clock.delta
+            world.physics.world.step()
         })
 
-        world.addSystem(() => {
-            world.resources.entities
+        world.runtime.addSystem(() => {
+            world.entities
                 .query(dynamicBodiesQuery)
                 .forEach(([[_, transform], entity]) => {
-                    const body = world.resources.physics.bodies.get(entity.id)
+                    const body = world.physics.bodies.get(entity.id)
 
                     if (body) {
                         const position = body.translation()
@@ -111,10 +113,10 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
                 })
 
             // TODO: Move functionality to a function...
-            world.resources.entities
+            world.entities
                 .query(kinematicBodiesQuery)
                 .forEach(([[_, transform], entity]) => {
-                    const body = world.resources.physics.bodies.get(entity.id)
+                    const body = world.physics.bodies.get(entity.id)
 
                     if (body) {
                         const position = body.translation()
@@ -125,7 +127,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
                 })
         })
 
-        world.resources.entities.addQueryEffect(
+        world.entities.addQueryEffect(
             dynamicBodiesQuery,
             ([[colliderDef, transform], entity]) => {
                 const { shape } = colliderDef
@@ -142,7 +144,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
             },
         )
 
-        world.resources.entities.addQueryEffect(
+        world.entities.addQueryEffect(
             fixedBodiesQuery,
             ([[colliderDef, transform], entity]) => {
                 const { shape } = colliderDef
@@ -159,7 +161,7 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
             },
         )
 
-        world.resources.entities.addQueryEffect(
+        world.entities.addQueryEffect(
             kinematicBodiesQuery,
             ([[colliderDef, transform], entity]) => {
                 const { shape } = colliderDef

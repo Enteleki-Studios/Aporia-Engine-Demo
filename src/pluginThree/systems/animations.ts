@@ -3,8 +3,8 @@ import type { ThreeWorld } from '@pluginThree'
 import { animationQuery } from '../queries'
 
 export const animationSystem = (world: ThreeWorld) => {
-    world.resources.entities.query(animationQuery).forEach(([[animation], entity]) => {
-        const { animationStore } = world.resources.three
+    world.entities.query(animationQuery).forEach(([[animation], entity]) => {
+        const { animationStore } = world.three
         const store = animationStore.get(entity.id)
 
         if (store) {

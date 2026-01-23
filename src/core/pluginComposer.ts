@@ -1,7 +1,15 @@
-import { type AnyPlugin, type Plugin, type PluginsToResources, Runtime } from '@core'
+import {
+    type AnyPlugin,
+    type Plugin,
+    type PluginsToResources,
+    type WithTypedRuntime,
+    type World,
+} from '@core'
 
+import { pluginClock } from '@pluginClock'
 import { pluginEntities } from '@pluginEntities'
 import { DEFAULT_KEYMAP, type Keymap, pluginInput } from '@pluginInput'
+import { pluginRuntime } from '@pluginRuntime'
 
 type CheckDependencies<Current extends object, Required extends object> = [
     keyof Required,
@@ -33,6 +41,7 @@ export class PluginComposer<P extends AnyPlugin[]> {
 
     async build() {
         type Resources = PluginsToResources<P>
+        type TypedWorld = WithTypedRuntime<World<Resources>>
 
         const resources = {}
 
@@ -42,14 +51,14 @@ export class PluginComposer<P extends AnyPlugin[]> {
             }
         }
 
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- We know better here
-        const runtime = new Runtime(resources as Resources)
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- We know the runtime type is correct
+        const world = resources as TypedWorld
 
         for (const plugin of this.plugins) {
-            plugin.init?.(runtime)
+            plugin.init?.(world)
         }
 
-        return runtime
+        return world
     }
 }
 
@@ -63,10 +72,12 @@ export const DEFAULT_CONFIG = {
 
 export const createDefaultComposer = <K extends Keymap>(config: Config<K>) => {
     return new PluginComposer([])
+        .addPlugin(pluginRuntime())
+        .addPlugin(pluginClock())
         .addPlugin(pluginEntities())
         .addPlugin(pluginInput(config.keymap))
 }
 
 export type DefaultResources = Awaited<
     ReturnType<ReturnType<typeof createDefaultComposer>['build']>
->['resources']
+>

@@ -1,8 +1,9 @@
 import type { WorldWithPlugin } from '@core'
 
-import { type TypedUseWorld, useRenderSync, useWorld } from '@core/react'
+import { type TypedUseWorld, useWorld } from '@core/react'
 
 import type { PluginEntities } from '@pluginEntities'
+import { useRenderSync } from '@pluginRuntime'
 
 const useEntitiesWorld: TypedUseWorld<WorldWithPlugin<PluginEntities>> = useWorld
 
@@ -15,8 +16,8 @@ export const EntitiesPanel = () => {
     return (
         <div>
             <h3>Entities</h3>
-            <pre>Entities: {world.resources.entities.size}</pre>
-            <pre>Queries: {world.resources.entities.numQueries}</pre>
+            <pre>Entities: {world.entities.size}</pre>
+            <pre>Queries: {world.entities.numQueries}</pre>
         </div>
     )
 }

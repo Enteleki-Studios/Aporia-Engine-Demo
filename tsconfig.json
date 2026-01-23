@@ -41,10 +41,12 @@
             "@core/react": ["./src/core/react/"],
             "@core/utils": ["./src/core/utils/"],
             "@inspector": ["./src/inspector/"],
+            "@pluginClock": ["./src/pluginClock/"],
             "@pluginEntities": ["./src/pluginEntities/"],
             "@pluginInput": ["./src/pluginInput/"],
             "@pluginRapier3D": ["./src/pluginRapier3D/"],
             "@pluginRapierThreeViz": ["./src/pluginRapierThreeViz/"],
+            "@pluginRuntime": ["./src/pluginRuntime/"],
             "@pluginThree": ["./src/pluginThree/"]
         }
     },
