@@ -11,7 +11,6 @@ export {
     PluginComposer,
 } from './pluginComposer'
 
-export { Runtime }
 export {
     createComponent,
     type AnyComponent,
@@ -25,8 +24,9 @@ export * from './shapes'
 /**
  * Type helper that ensures the runtime is typed with the full world type.
  * Used in Plugin.init to make world.runtime.addSystem() properly typed.
+ * TODO: How can we avoid having plugin configuration in the core files?
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Detecting Runtime<any> from plugin provides
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Any is used for detection
 export type WithTypedRuntime<W> = W extends { runtime: Runtime<any> }
     ? Omit<W, 'runtime'> & { runtime: Runtime<W> }
     : W
