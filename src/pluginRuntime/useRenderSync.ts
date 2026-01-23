@@ -1,30 +1,22 @@
 import { useEffect, useState } from 'react'
 
-import { PluginsToResources, type System } from '@core'
+import { type System } from '@core'
 
-import { type TypedUseWorld, useWorld } from '@core/react'
-
-import { PluginClock } from '@pluginClock'
-
-import { PluginRuntime } from './plugin'
-
-export const useClockRuntimeWorld: TypedUseWorld<
-    PluginsToResources<[PluginRuntime, PluginClock]>
-> = useWorld
+import { useRuntimeWorld } from './runtimePanel'
 
 export const useRenderSync = () => {
-    const world = useClockRuntimeWorld()
-    const [_, setFrame] = useState(0)
+    const world = useRuntimeWorld()
+    const [_, setCounter] = useState(0)
 
     useEffect(() => {
-        const onFrame: System<typeof world> = (w) => {
-            setFrame(w.clock.frames)
+        const cb: System<typeof world> = () => {
+            setCounter((prev) => prev + 1)
         }
 
-        world.runtime.addDebugSystem(onFrame)
+        world.runtime.addDebugSystem(cb)
 
         return () => {
-            world.runtime.removeDebugSystem(onFrame)
+            world.runtime.removeDebugSystem(cb)
         }
     }, [world])
 }
