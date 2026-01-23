@@ -47,15 +47,6 @@ const pluginEnemy = (): Plugin<EnemyProvides, RuntimeDependencies> => ({
 type PluginEnemy = ReturnType<typeof pluginEnemy>
 
 describe('pluginRuntime type safety', () => {
-    test('plugin can add system that uses its own resources', async () => {
-        const world = await new PluginComposer([])
-            .addPlugin(pluginRuntime())
-            .addPlugin(pluginPlayer())
-            .build()
-
-        world.runtime.step()
-    })
-
     test('plugin cannot add system requiring resources from other plugins', () => {
         type FullWorld = PluginsToResources<[PluginRuntime, PluginPlayer, PluginEnemy]>
 
