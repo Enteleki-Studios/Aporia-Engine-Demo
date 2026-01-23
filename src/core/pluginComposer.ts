@@ -8,7 +8,6 @@ import {
 
 import { pluginClock } from '@pluginClock'
 import { pluginEntities } from '@pluginEntities'
-import { DEFAULT_KEYMAP, type Keymap, pluginInput } from '@pluginInput'
 import { pluginRuntime } from '@pluginRuntime'
 
 type CheckDependencies<Current extends object, Required extends object> = [
@@ -62,20 +61,11 @@ export class PluginComposer<P extends AnyPlugin[]> {
     }
 }
 
-type Config<K extends Keymap> = {
-    keymap: K
-}
-
-export const DEFAULT_CONFIG = {
-    keymap: DEFAULT_KEYMAP,
-} as const
-
-export const createDefaultComposer = <K extends Keymap>(config: Config<K>) => {
+export const createDefaultComposer = () => {
     return new PluginComposer([])
         .addPlugin(pluginRuntime())
         .addPlugin(pluginClock())
         .addPlugin(pluginEntities())
-        .addPlugin(pluginInput(config.keymap))
 }
 
 export type DefaultResources = Awaited<

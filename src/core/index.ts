@@ -7,7 +7,6 @@ export type World<R extends object> = R
 export {
     createDefaultComposer,
     type DefaultResources,
-    DEFAULT_CONFIG,
     PluginComposer,
 } from './pluginComposer'
 
