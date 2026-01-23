@@ -38,7 +38,7 @@ type Provides = {
     }
 }
 
-type Dependencies = PluginsToResources<[PluginClock, PluginRuntime, PluginEntities]>
+type Dependencies = PluginsToResources<[PluginRuntime, PluginClock, PluginEntities]>
 
 const dynamicBodiesQuery = createQuery([
     ColliderComponent,

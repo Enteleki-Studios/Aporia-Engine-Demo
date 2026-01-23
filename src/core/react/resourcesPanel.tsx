@@ -6,9 +6,7 @@ export const ResourcesPanel = () => {
     const world = useWorld()
 
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Assume world is an object
-    const topLevelResources = Object.keys(world as object).filter(
-        (key) => key !== 'runtime',
-    )
+    const topLevelResources = Object.keys(world as object)
 
     return (
         <div>
