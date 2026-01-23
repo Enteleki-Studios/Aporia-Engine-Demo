@@ -1,4 +1,10 @@
-import { type AnyPlugin, type Plugin, type PluginsToResources, type World } from '@core'
+import {
+    type AnyPlugin,
+    type Plugin,
+    type PluginsToResources,
+    type WithTypedRuntime,
+    type World,
+} from '@core'
 
 import { pluginClock } from '@pluginClock'
 import { pluginEntities } from '@pluginEntities'
@@ -35,6 +41,7 @@ export class PluginComposer<P extends AnyPlugin[]> {
 
     async build() {
         type Resources = PluginsToResources<P>
+        type TypedWorld = WithTypedRuntime<World<Resources>>
 
         const resources = {}
 
@@ -44,8 +51,8 @@ export class PluginComposer<P extends AnyPlugin[]> {
             }
         }
 
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- We know better here
-        const world = resources as World<Resources>
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- We know the runtime type is correct
+        const world = resources as TypedWorld
 
         for (const plugin of this.plugins) {
             plugin.init?.(world)
@@ -65,8 +72,8 @@ export const DEFAULT_CONFIG = {
 
 export const createDefaultComposer = <K extends Keymap>(config: Config<K>) => {
     return new PluginComposer([])
+        .addPlugin(pluginRuntime()) // TODO: For now, this plugin is absolutely required
         .addPlugin(pluginClock())
-        .addPlugin(pluginRuntime())
         .addPlugin(pluginEntities())
         .addPlugin(pluginInput(config.keymap))
 }

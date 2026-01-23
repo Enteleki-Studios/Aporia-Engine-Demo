@@ -1,13 +1,17 @@
 import type { Simplify, UnionToIntersection } from 'type-fest'
 
+import type { Runtime } from '@pluginRuntime'
+
 export type World<R extends object> = R
 
 export {
     createDefaultComposer,
     type DefaultResources,
     DEFAULT_CONFIG,
+    PluginComposer,
 } from './pluginComposer'
-export { Runtime } from '@pluginRuntime'
+
+export { Runtime }
 export {
     createComponent,
     type AnyComponent,
@@ -18,13 +22,22 @@ export { ObjectStore } from './objectStore'
 export { Clock } from './clock'
 export * from './shapes'
 
+/**
+ * Type helper that ensures the runtime is typed with the full world type.
+ * Used in Plugin.init to make world.runtime.addSystem() properly typed.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Detecting Runtime<any> from plugin provides
+export type WithTypedRuntime<W> = W extends { runtime: Runtime<any> }
+    ? Omit<W, 'runtime'> & { runtime: Runtime<W> }
+    : W
+
 export type Plugin<
     ProvidesResources extends object,
     RequiresResources extends object = object,
 > = {
     createResources?(): ProvidesResources | Promise<ProvidesResources>
     init?<R extends Simplify<RequiresResources & ProvidesResources>>(
-        world: World<R>,
+        world: WithTypedRuntime<World<R>>,
     ): void
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code

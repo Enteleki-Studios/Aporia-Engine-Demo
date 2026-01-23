@@ -1,16 +1,13 @@
-import type { Plugin, PluginsToResources } from '@core'
-
-import type { PluginClock } from '@pluginClock'
+import type { Plugin } from '@core'
 
 import { Runtime } from './runtime'
 
 type Provides = {
-    runtime: Runtime
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- The actual world type isn't known until composition
+    runtime: Runtime<any>
 }
 
-type Dependencies = PluginsToResources<[PluginClock]>
-
-export const pluginRuntime = (): Plugin<Provides, Dependencies> => ({
+export const pluginRuntime = (): Plugin<Provides> => ({
     createResources() {
         return {
             runtime: new Runtime(),

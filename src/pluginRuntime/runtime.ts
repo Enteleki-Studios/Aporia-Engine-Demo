@@ -1,16 +1,39 @@
-import type { AnySystem, Clock } from '@core'
+import type { System } from '@core'
 
-type WorldWithClock = { clock: Clock }
+// Internal system type - uses unknown for flexibility, type safety is at the API boundary
+type InternalSystem = (world: unknown) => void
 
-export class Runtime {
+/**
+ * Utility type that properly types the runtime with the full world type.
+ * Use this when you need type-safe system registration.
+ *
+ * @example
+ * ```ts
+ * const world = await createWorld()
+ * const typedWorld = world as TypedRuntimeWorld<typeof world>
+ * // Now typedWorld.runtime.addSystem() is properly type-checked
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Replacing any from plugin provides
+export type TypedRuntimeWorld<W extends { runtime: Runtime<any> }> = Omit<
+    W,
+    'runtime'
+> & {
+    runtime: Runtime<W>
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- Base constraint for any world
+type AnyWorld = {}
+
+export class Runtime<W extends AnyWorld = AnyWorld> {
     syncFrames = true
 
-    private world!: WorldWithClock
-    private systems: AnySystem[] = []
-    private debugSystems: AnySystem[] = []
+    private world!: W
+    private systems: InternalSystem[] = []
+    private debugSystems: InternalSystem[] = []
     private loopId: number | null = null
 
-    setWorld(world: WorldWithClock) {
+    setWorld(world: W) {
         this.world = world
     }
 
@@ -21,24 +44,28 @@ export class Runtime {
         this.step()
     }
 
-    addSystem(system: AnySystem) {
-        this.systems.push(system)
+    addSystem(system: System<W>) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Temp
+        this.systems.push(system as InternalSystem)
     }
 
-    removeSystem(system: AnySystem) {
-        const index = this.systems.indexOf(system)
+    removeSystem(system: System<W>) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Temp
+        const index = this.systems.indexOf(system as InternalSystem)
 
         if (index > -1) {
             this.systems.splice(index, 1)
         }
     }
 
-    addDebugSystem(system: AnySystem) {
-        this.debugSystems.push(system)
+    addDebugSystem(system: System<W>) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Temp
+        this.debugSystems.push(system as InternalSystem)
     }
 
-    removeDebugSystem(system: AnySystem) {
-        const index = this.debugSystems.indexOf(system)
+    removeDebugSystem(system: System<W>) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Temp
+        const index = this.debugSystems.indexOf(system as InternalSystem)
 
         if (index > -1) {
             this.debugSystems.splice(index, 1)
@@ -61,13 +88,9 @@ export class Runtime {
     }
 
     step() {
-        this.world.clock.startFrame()
-
         for (const system of this.systems) {
             system(this.world)
         }
-
-        this.world.clock.endFrame()
 
         for (const debugSystem of this.debugSystems) {
             debugSystem(this.world)
