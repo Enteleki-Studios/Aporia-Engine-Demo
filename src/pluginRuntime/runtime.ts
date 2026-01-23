@@ -3,18 +3,8 @@ import type { System } from '@core'
 // Internal system type - uses unknown for flexibility, type safety is at the API boundary
 type InternalSystem = (world: unknown) => void
 
-/**
- * Utility type that properly types the runtime with the full world type.
- * Use this when you need type-safe system registration.
- *
- * @example
- * ```ts
- * const world = await createWorld()
- * const typedWorld = world as TypedRuntimeWorld<typeof world>
- * // Now typedWorld.runtime.addSystem() is properly type-checked
- * ```
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Replacing any from plugin provides
+// Utility type that properly types the runtime with the full world type.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Any is used as a check
 export type TypedRuntimeWorld<W extends { runtime: Runtime<any> }> = Omit<
     W,
     'runtime'
@@ -22,13 +12,12 @@ export type TypedRuntimeWorld<W extends { runtime: Runtime<any> }> = Omit<
     runtime: Runtime<W>
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- Base constraint for any world
-type AnyWorld = {}
+type AnyWorld = object
 
 export class Runtime<W extends AnyWorld = AnyWorld> {
     syncFrames = true
 
-    private world!: W
+    private world!: W // TODO: Can we remove this assertion?
     private systems: InternalSystem[] = []
     private debugSystems: InternalSystem[] = []
     private loopId: number | null = null
@@ -45,12 +34,12 @@ export class Runtime<W extends AnyWorld = AnyWorld> {
     }
 
     addSystem(system: System<W>) {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Temp
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Cast for internal use
         this.systems.push(system as InternalSystem)
     }
 
     removeSystem(system: System<W>) {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Temp
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Cast for internal use
         const index = this.systems.indexOf(system as InternalSystem)
 
         if (index > -1) {
@@ -59,12 +48,12 @@ export class Runtime<W extends AnyWorld = AnyWorld> {
     }
 
     addDebugSystem(system: System<W>) {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Temp
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Cast for internal use
         this.debugSystems.push(system as InternalSystem)
     }
 
     removeDebugSystem(system: System<W>) {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Temp
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Cast for internal use
         const index = this.debugSystems.indexOf(system as InternalSystem)
 
         if (index > -1) {

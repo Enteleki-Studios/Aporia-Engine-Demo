@@ -72,7 +72,7 @@ export const DEFAULT_CONFIG = {
 
 export const createDefaultComposer = <K extends Keymap>(config: Config<K>) => {
     return new PluginComposer([])
-        .addPlugin(pluginRuntime()) // TODO: For now, this plugin is absolutely required
+        .addPlugin(pluginRuntime())
         .addPlugin(pluginClock())
         .addPlugin(pluginEntities())
         .addPlugin(pluginInput(config.keymap))
