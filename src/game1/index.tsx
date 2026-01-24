@@ -9,11 +9,11 @@ import { RapierThreeVizPanel } from '@pluginRapierThreeViz'
 import { RuntimePanel } from '@pluginRuntime'
 import { ThreePanel } from '@pluginThree'
 
-import { game1 } from './engineDef'
 import { Game } from './game'
 import './index.scss'
+import { setup } from './setup'
 
-const worldPromise = game1()
+const worldPromise = setup()
 
 export const Root = () => {
     const world = use(worldPromise)
