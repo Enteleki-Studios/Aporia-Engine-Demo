@@ -50,7 +50,7 @@ export const setup = async () => {
     world.entities.addComponents(
         world.entities.createEntity(),
         PlayerComponent(),
-        Transform3DComponent({ position: [0, 10, 0] }),
+        // Transform3DComponent({ position: [0, 10, 0] }),
         Velocity3DComponent(),
         RenderableDynamic(),
         Geometry3DComponent(playerShape),
