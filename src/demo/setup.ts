@@ -62,11 +62,20 @@ export const setup = async () => {
         ColliderComponent(Shape3DComponent(playerShape)),
     )
 
-    const ballShape: Ball = { type: 'ball', radius: 0.5 }
+    world.entities.addComponents(
+        world.entities.createEntity(),
+        Transform3DComponent({ position: [10, 0.9, -10] }),
+        RenderableDynamic(),
+        GltfComponent({
+            path: '/humanoid/animated_robo.glb',
+        }),
+    )
+
     for (let i = 0; i < 10; i++) {
+        const ballShape: Ball = { type: 'ball', radius: Math.max(i / 4, 0.1) }
         world.entities.addComponents(
             world.entities.createEntity(),
-            Transform3DComponent({ position: [i * 2, 10, -i * 2] }),
+            Transform3DComponent({ position: [10, 10, 4 * i] }),
             RenderableDynamic(),
             Geometry3DComponent(ballShape),
             RigidBodyDynamic(),
@@ -74,43 +83,67 @@ export const setup = async () => {
         )
     }
 
-    const boxShape: Box = {
+    const floorShape: Box = {
         type: 'box',
-        halfWidth: 10,
-        halfHeight: 10,
-        halfDepth: 10,
+        halfWidth: 100,
+        halfHeight: 0.25,
+        halfDepth: 100,
     }
 
     world.entities.addComponents(
         world.entities.createEntity(),
-        Transform3DComponent({ position: [-15, 10, 25] }),
+        Transform3DComponent({ position: [0, -0.251, 0] }),
         RigidBodyFixed(),
-        Geometry3DComponent(boxShape),
+        Geometry3DComponent(floorShape),
         RenderableFixed(),
-        ColliderComponent(Shape3DComponent(boxShape)),
+        ColliderComponent(Shape3DComponent(floorShape)),
     )
 
-    const wedgeShape: Wedge = {
-        type: 'wedge',
-        halfWidth: 15,
-        halfHeight: 5,
-        halfDepth: 5,
+    for (let i = 0; i < 15; i++) {
+        const boxShape: Box = {
+            type: 'box',
+            halfWidth: 1,
+            halfHeight: i / 8,
+            halfDepth: 1,
+        }
+
+        world.entities.addComponents(
+            world.entities.createEntity(),
+            Transform3DComponent({ position: [20, i / 8, 3 * i] }),
+            RigidBodyFixed(),
+            Geometry3DComponent(boxShape),
+            RenderableFixed(),
+            ColliderComponent(Shape3DComponent(boxShape)),
+        )
     }
-    world.entities.addComponents(
-        world.entities.createEntity(),
-        Transform3DComponent({ position: [0, 1, 4] }),
-        RenderableDynamic(),
-        Geometry3DComponent(wedgeShape),
-        RigidBodyDynamic(),
-        ColliderComponent(Shape3DComponent(wedgeShape)),
-    )
+
+    for (let i = 0; i < 15; i++) {
+        const wedgeShape: Wedge = {
+            type: 'wedge',
+            halfWidth: 15,
+            halfHeight: Math.max(i, 0.5),
+            halfDepth: 5,
+        }
+        world.entities.addComponents(
+            world.entities.createEntity(),
+            Transform3DComponent({ position: [30, 0, 6 * i] }),
+            RenderableFixed(),
+            Geometry3DComponent(wedgeShape),
+            RigidBodyFixed(),
+            ColliderComponent(Shape3DComponent(wedgeShape)),
+        )
+    }
 
     const generateHeightfield = (ncols: number, nrows: number = ncols) => {
         const heights = []
 
         for (let i = 0; i <= ncols; i++) {
             for (let j = 0; j <= nrows; j++) {
-                heights.push(Math.random())
+                if (i === 0 || j === 0 || i === ncols || j === nrows) {
+                    heights.push(0)
+                } else {
+                    heights.push(Math.random())
+                }
                 // heights.push(1)
                 // heights.push((Math.random() + 0.2) * i * j * 0.01)
             }
@@ -119,19 +152,19 @@ export const setup = async () => {
         return heights
     }
 
-    const size = 40
-    const scale = 20
+    const size = 10
+    const scale = 10
     const heightfield: HeightField = {
         type: 'heightfield',
         ncols: size,
         nrows: size,
         heights: generateHeightfield(size, size),
-        scale: [size * scale, 5, size * scale],
+        scale: [size * scale, 3, size * scale],
     }
     world.entities.addComponents(
         world.entities.createEntity(),
         Transform3DComponent({
-            position: [0, -1.5, 0],
+            position: [-50, -0.5, 50],
         }),
         Geometry3DComponent(heightfield),
         RigidBodyFixed(),

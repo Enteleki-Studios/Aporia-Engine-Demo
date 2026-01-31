@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import { Root } from './game1'
+import { Root } from './demo'
 import { Loading } from './loading'
 import './root.scss'
 

@@ -35,9 +35,9 @@ import { generateWedgeMeshData, transpose1D } from '@core/utils'
 
 import { type EntityId } from '@pluginEntities'
 
-// import { AxesHelper } from './axesHelper'
+import { AxesHelper } from './axesHelper'
 import { DirectionalLight } from './directionalLight'
-// import { InfiniteGrid } from './infiniteGrid'
+import { InfiniteGrid } from './infiniteGrid'
 import { geometryQuery, gltfQuery, perspectiveCameraQuery } from './queries'
 import { Renderer } from './renderer'
 import { animationSystem } from './systems/animations'
@@ -91,8 +91,10 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
         renderer.renderer.setClearColor('#888888')
 
-        // renderer.scene.add(new AxesHelper(3))
-        // renderer.scene.add(new InfiniteGrid())
+        const axes = new AxesHelper(3)
+        axes.position.y = 2
+        renderer.scene.add(axes)
+        renderer.scene.add(new InfiniteGrid())
 
         // renderer.scene.add(new CameraHelper(renderer.camera))
 
@@ -144,7 +146,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         // light.helper.update()
         // renderer.scene.add(light.shadowHelper)
 
-        const waterGeometry = new PlaneGeometry(1000, 1000)
+        const waterGeometry = new PlaneGeometry(100, 100)
         const water = new Water(waterGeometry, {
             alpha: 0.65,
             textureWidth: 512,
@@ -160,8 +162,9 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         })
         water.receiveShadow = true
         water.rotation.x = -Math.PI / 2
-        water.position.y = -0.1
-        water.position.x = 0
+        water.position.y = 0.01
+        water.position.x = -50
+        water.position.z = 50
         water.material.transparent = true
         renderer.scene.add(water)
 
