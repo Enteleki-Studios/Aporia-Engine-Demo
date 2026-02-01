@@ -22,6 +22,7 @@ import {
     PerspectiveCamera,
     RenderableDynamic,
     RenderableFixed,
+    createAnimatedGltfExhibit,
 } from '@pluginThree'
 
 import { createWorld } from './createWorld'
@@ -62,14 +63,15 @@ export const setup = async () => {
         ColliderComponent(Shape3DComponent(playerShape)),
     )
 
-    world.entities.addComponents(
-        world.entities.createEntity(),
-        Transform3DComponent({ position: [10, 0.9, -10] }),
-        RenderableDynamic(),
-        GltfComponent({
-            path: '/humanoid/animated_robo.glb',
-        }),
-    )
+    createAnimatedGltfExhibit('/humanoid/animated_robo.glb')
+        .then((bundles) => {
+            bundles.forEach((bundle) => {
+                world.entities.addComponents(world.entities.createEntity(), ...bundle)
+            })
+        })
+        .catch(() => {
+            /**/
+        })
 
     for (let i = 0; i < 10; i++) {
         const ballShape: Ball = { type: 'ball', radius: Math.max(i / 4, 0.1) }
