@@ -1,16 +1,15 @@
 import type { WorldWithPlugin } from '@core'
 
-import { type TypedUseWorld, useWorld } from '@core/react'
+import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
 import type { PluginEntities } from '@pluginEntities'
-import { useRenderSync } from '@pluginRuntime'
 
 const useEntitiesWorld: TypedUseWorld<WorldWithPlugin<PluginEntities>> = useWorld
 
 export const EntitiesPanel = () => {
     // TODO: use observers in the entities class instead of
     // refreshing every frame
-    useRenderSync()
+    useIntervalRender(100)
     const world = useEntitiesWorld()
 
     return (

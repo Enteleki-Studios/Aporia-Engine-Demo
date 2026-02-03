@@ -7,11 +7,17 @@
     color: theme.color(control, foreground);
     border-radius: 2px;
     cursor: pointer;
+    font-family: inherit;
+    font-size: unset;
 
     &:hover {
         background-color: theme.color(control, background-hover);
     }
     &:active {
         background-color: theme.color(control, background-active);
+    }
+    &:disabled {
+        border-color: theme.color(control, border-disabled);
+        color: theme.color(control, foreground-disabled);
     }
 }

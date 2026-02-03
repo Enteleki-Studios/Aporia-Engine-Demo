@@ -87,14 +87,23 @@ export const setup = async () => {
 
     const floorShape: Box = {
         type: 'box',
-        halfWidth: 100,
+        halfWidth: 50,
         halfHeight: 0.25,
-        halfDepth: 100,
+        halfDepth: 50,
     }
 
     world.entities.addComponents(
         world.entities.createEntity(),
-        Transform3DComponent({ position: [0, -0.251, 0] }),
+        Transform3DComponent({ position: [50, -0.251, 50] }),
+        RigidBodyFixed(),
+        Geometry3DComponent(floorShape),
+        RenderableFixed(),
+        ColliderComponent(Shape3DComponent(floorShape)),
+    )
+
+    world.entities.addComponents(
+        world.entities.createEntity(),
+        Transform3DComponent({ position: [50, -0.251, -50] }),
         RigidBodyFixed(),
         Geometry3DComponent(floorShape),
         RenderableFixed(),
@@ -166,7 +175,7 @@ export const setup = async () => {
     world.entities.addComponents(
         world.entities.createEntity(),
         Transform3DComponent({
-            position: [-50, -0.5, 50],
+            position: [-50, 0, 50],
         }),
         Geometry3DComponent(heightfield),
         RigidBodyFixed(),

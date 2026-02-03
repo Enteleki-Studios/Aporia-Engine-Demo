@@ -22,8 +22,10 @@ $colors: (
     ),
     control: (
         border: $white,
+        border-disabled: $grey,
         foreground: $white,
         foreground-enabled: $pink,
+        foreground-disabled: $grey,
         background-enabled: #ffffffcc,
         background-secondary: #ffffff65,
         background-hover: #ffffff15,

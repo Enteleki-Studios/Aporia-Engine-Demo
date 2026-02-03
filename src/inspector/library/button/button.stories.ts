@@ -25,3 +25,10 @@ export const Primary: Story = {
         children: 'Button',
     },
 }
+
+export const Disabled: Story = {
+    args: {
+        children: 'Button',
+        disabled: true,
+    },
+}

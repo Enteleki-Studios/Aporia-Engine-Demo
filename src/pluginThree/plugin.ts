@@ -154,7 +154,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         })
         water.receiveShadow = true
         water.rotation.x = -Math.PI / 2
-        water.position.y = 0.01
+        water.position.y = 0.5
         water.position.x = -50
         water.position.z = 50
         water.material.transparent = true
@@ -365,11 +365,13 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         world.runtime.addSystem(syncTransforms)
         world.runtime.addSystem(animationSystem)
 
+        world.runtime.addSystem(() => {
+            world.three.renderer.render()
+        })
+
         // TODO: Temp water shader update
         world.runtime.addSystem(() => {
             const { three } = world
-
-            three.renderer.render()
 
             const waterTime: IUniform<number> | undefined =
                 three.water.material.uniforms['time']

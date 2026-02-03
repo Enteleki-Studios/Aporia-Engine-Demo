@@ -5,11 +5,12 @@ import './button.scss'
 type ButtonProps = {
     children: ReactNode
     onClick?: () => void
+    disabled?: boolean
 }
 
-export const Button = ({ children, onClick }: ButtonProps) => {
+export const Button = ({ children, onClick, disabled }: ButtonProps) => {
     return (
-        <button className="Button" onClick={onClick}>
+        <button className="Button" onClick={onClick} disabled={disabled}>
             {children}
         </button>
     )

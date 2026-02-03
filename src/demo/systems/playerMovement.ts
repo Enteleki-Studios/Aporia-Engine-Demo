@@ -36,9 +36,10 @@ export const playerMovementSystem = (world: World) => {
             const [[camera, camTransform]] = cameraResult
 
             // Increment yaw and pitch by input amount
-            camera.yaw += input.mouse.panX * -1 * delta
+            const sensitivity = 0.01
+            camera.yaw += input.mouse.panX * -1 * sensitivity
             camera.yaw = wrapAnglePi(camera.yaw)
-            camera.pitch += input.mouse.panY * -1 * delta
+            camera.pitch += input.mouse.panY * -1 * sensitivity
             camera.pitch = clamp(camera.pitch, -Math.PI / 3.5, Math.PI / 3.5)
 
             // Apply yaw and pitch
