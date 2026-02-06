@@ -20,6 +20,8 @@ import {
     TextureLoader,
     Vector3,
 } from 'three'
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
+import { FontLoader } from 'three/addons/loaders/FontLoader.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Sky } from 'three/addons/objects/Sky.js'
 import { Water } from 'three/addons/objects/Water.js'
@@ -38,7 +40,12 @@ import { type EntityId } from '@pluginEntities'
 import { AxesHelper } from './axesHelper'
 import { DirectionalLight } from './directionalLight'
 import { InfiniteGrid } from './infiniteGrid'
-import { geometryQuery, gltfQuery, perspectiveCameraQuery } from './queries'
+import {
+    floatingLabelQuery,
+    geometryQuery,
+    gltfQuery,
+    perspectiveCameraQuery,
+} from './queries'
 import { Renderer } from './renderer'
 import { animationSystem } from './systems/animations'
 import { syncTransforms } from './systems/syncTransform'
@@ -65,8 +72,9 @@ type ThreeOutput = {
 export type PluginThree = ReturnType<typeof pluginThree>
 export type ThreeWorld = WorldWithPlugin<PluginThree>
 
-// TODO: Move loader to resources
+// TODO: Move loaders to resources
 const loader = new TextureLoader()
+const fontLoader = new FontLoader()
 
 export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
     createResources: () => {
@@ -102,7 +110,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         // sun position
         const sun = new Vector3()
         const inclination = 0.7 // elevation (0–1)
-        const azimuth = 0.2 // east/west (0–1)
+        const azimuth = 0.9 // east/west (0–1)
 
         const theta = Math.PI * (inclination - 0.5)
         const phi = 2 * Math.PI * (azimuth - 0.5)
@@ -129,8 +137,8 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         skyUniforms.mieDirectionalG.value = 0.6 // Sun glow sharpness
         skyUniforms.sunPosition.value.copy(sun)
 
-        renderer.scene.add(new AmbientLight(0xffffff, inclination / 10))
-        const light = new DirectionalLight(0xffffff, inclination)
+        renderer.scene.add(new AmbientLight(0xffffff, inclination / 3))
+        const light = new DirectionalLight(0xffffff, inclination * 5)
         light.position.copy(sun.clone().multiplyScalar(50))
         renderer.scene.add(light)
 
@@ -306,41 +314,91 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                 }
 
                 gltfLoader.load(gltfComponent.path, (gltf) => {
-                    const { animations, scene } = gltf
+                    void (async () => {
+                        const { animations, scene } = gltf
 
-                    scene.traverse((child) => {
-                        if (isThreeMesh(child)) {
-                            child.castShadow = true
-                            child.receiveShadow = true
+                        scene.traverse((child) => {
+                            if (isThreeMesh(child)) {
+                                child.castShadow = true
+                                child.receiveShadow = true
+                            }
+                        })
+
+                        if (renderer.camera) {
+                            await renderer.renderer.compileAsync(
+                                scene,
+                                renderer.camera,
+                                renderer.scene,
+                            )
                         }
-                    })
 
-                    group.add(scene)
+                        group.add(scene)
 
-                    // const skeleton = new SkeletonHelper(scene)
-                    // skeleton.visible = true
-                    // renderer.scene.add(skeleton)
+                        // const skeleton = new SkeletonHelper(scene)
+                        // skeleton.visible = true
+                        // renderer.scene.add(skeleton)
 
-                    // TODO: This offset must be derived from a collider definition
-                    scene.position.y = -0.9
+                        // TODO: This offset must be derived from a collider definition
+                        scene.position.y = -0.9
 
-                    const mixer = new AnimationMixer(scene)
-                    const actions = animations.reduce<
-                        Record<string, AnimationAction | undefined>
-                    >((acc, anim) => {
-                        acc[anim.name] = mixer.clipAction(anim)
-                        return acc
-                    }, {})
+                        const mixer = new AnimationMixer(scene)
+                        const actions = animations.reduce<
+                            Record<string, AnimationAction | undefined>
+                        >((acc, anim) => {
+                            acc[anim.name] = mixer.clipAction(anim)
+                            return acc
+                        }, {})
 
-                    // console.debug(actions)
+                        // console.debug(actions)
 
-                    animationStore.set(entity.id, {
-                        mixer,
-                        actions,
-                    })
+                        animationStore.set(entity.id, {
+                            mixer,
+                            actions,
+                        })
+                    })()
                 })
             },
         )
+
+        world.entities.addQueryEffect(floatingLabelQuery, ([[label], entity]) => {
+            const { objectStore } = world.three
+            const [group, _isCreated] = objectStore.getOrCreate(entity.id)
+            // TODO: position the group if created
+
+            const { text, size, color, offset, depth } = label
+            fontLoader.load('/fonts/droid_sans_regular.typeface.json', (font) => {
+                const textGeo = new TextGeometry(text, {
+                    font: font,
+                    size,
+                    depth,
+
+                    // curveSegments: curveSegments,
+                    // bevelThickness: bevelThickness,
+                    // bevelSize: bevelSize,
+                    // bevelEnabled: bevelEnabled
+                })
+
+                textGeo.computeBoundingBox()
+                const boundingBox = textGeo.boundingBox
+
+                if (boundingBox) {
+                    const centerOffset = -0.5 * (boundingBox.max.x - boundingBox.min.x)
+
+                    const material = new MeshStandardMaterial({ color })
+
+                    const textMesh = new Mesh(textGeo, material)
+
+                    textMesh.position.x = centerOffset + offset[0]
+                    textMesh.position.y = offset[1]
+                    textMesh.position.z = offset[2]
+
+                    textMesh.rotation.x = 0
+                    textMesh.rotation.y = Math.PI * 2
+
+                    group.add(textMesh)
+                }
+            })
+        })
 
         world.entities.addQueryEffect(
             perspectiveCameraQuery,

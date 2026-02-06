@@ -1,8 +1,9 @@
 import {
+    ACESFilmicToneMapping,
     OrthographicCamera,
     PCFSoftShadowMap,
     PerspectiveCamera,
-    ReinhardToneMapping,
+    // ReinhardToneMapping,
     SRGBColorSpace,
     Scene,
     WebGLRenderer,
@@ -26,7 +27,7 @@ export class Renderer {
             antialias: true,
         })
 
-        this.renderer.toneMapping = ReinhardToneMapping
+        this.renderer.toneMapping = ACESFilmicToneMapping
         this.renderer.toneMappingExposure = 1
         this.renderer.outputColorSpace = SRGBColorSpace
 

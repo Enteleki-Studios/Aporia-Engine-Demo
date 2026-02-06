@@ -18,11 +18,12 @@ import {
 } from '@pluginRapier3D'
 import {
     Animation,
+    FloatingLabel,
     GltfComponent,
     PerspectiveCamera,
     RenderableDynamic,
     RenderableFixed,
-    createAnimatedGltfExhibit,
+    // createAnimatedGltfExhibit,
 } from '@pluginThree'
 
 import { createWorld } from './createWorld'
@@ -38,7 +39,7 @@ export const setup = async () => {
     world.entities.addComponents(
         world.entities.createEntity(),
         Transform3DComponent(),
-        PerspectiveCamera({ far: 5000, yaw: Math.PI }),
+        PerspectiveCamera({ far: 5000, yaw: 0 }),
     )
 
     // Create player
@@ -51,7 +52,7 @@ export const setup = async () => {
     world.entities.addComponents(
         world.entities.createEntity(),
         PlayerComponent(),
-        Transform3DComponent({ position: [0, 11, 0] }),
+        Transform3DComponent({ position: [0, 11, 10] }),
         Velocity3DComponent(),
         RenderableDynamic(),
         Geometry3DComponent(playerShape),
@@ -63,25 +64,32 @@ export const setup = async () => {
         ColliderComponent(Shape3DComponent(playerShape)),
     )
 
-    createAnimatedGltfExhibit('/humanoid/animated_robo.glb')
-        .then((bundles) => {
-            bundles.forEach((bundle) => {
-                world.entities.addComponents(world.entities.createEntity(), ...bundle)
-            })
-        })
-        .catch(() => {
-            /**/
-        })
+    // createAnimatedGltfExhibit('/humanoid/animated_robo.glb')
+    //     .then((bundles) => {
+    //         bundles.forEach((bundle) => {
+    //             world.entities.addComponents(world.entities.createEntity(), ...bundle)
+    //         })
+    //     })
+    //     .catch(() => {
+    //         /**/
+    //     })
 
     for (let i = 0; i < 10; i++) {
-        const ballShape: Ball = { type: 'ball', radius: Math.max(i / 4, 0.1) }
+        const radius = Math.max(i / 4, 0.1)
+        const ballShape: Ball = { type: 'ball', radius }
+
         world.entities.addComponents(
             world.entities.createEntity(),
-            Transform3DComponent({ position: [10, 10, 4 * i] }),
+            Transform3DComponent({ position: [5 * i + 5, 10, -10] }),
             RenderableDynamic(),
             Geometry3DComponent(ballShape),
             RigidBodyDynamic(),
             ColliderComponent(Shape3DComponent(ballShape)),
+            FloatingLabel({
+                text: `Radius: ${radius}`,
+                offset: [0, radius + 0.25, 0],
+                size: 0.3,
+            }),
         )
     }
 
@@ -120,11 +128,16 @@ export const setup = async () => {
 
         world.entities.addComponents(
             world.entities.createEntity(),
-            Transform3DComponent({ position: [20, i / 8, 3 * i] }),
+            Transform3DComponent({ position: [3 * i + 5, i / 8, 0] }),
             RigidBodyFixed(),
             Geometry3DComponent(boxShape),
             RenderableFixed(),
             ColliderComponent(Shape3DComponent(boxShape)),
+            FloatingLabel({
+                text: `Height: ${boxShape.halfHeight * 2}`,
+                offset: [0, boxShape.halfHeight + 0.25, 0],
+                size: 0.3,
+            }),
         )
     }
 

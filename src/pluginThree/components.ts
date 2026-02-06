@@ -1,4 +1,4 @@
-import { createComponent } from '@core'
+import { Array3, createComponent } from '@core'
 
 export const RenderableDynamic = createComponent('RenderableDynamic')
 export const RenderableFixed = createComponent('RenderableFixed')
@@ -40,5 +40,24 @@ export const PerspectiveCamera = createComponent(
         far: state?.far ?? 2000,
         yaw: state?.yaw ?? 0,
         pitch: state?.pitch ?? 0,
+    }),
+)
+
+type FloatingLabel = {
+    text: string
+    offset: Array3
+    color: string | number
+    size: number
+    depth: number
+}
+
+export const FloatingLabel = createComponent(
+    'FloatingLabel',
+    (props: Partial<FloatingLabel>): FloatingLabel => ({
+        text: props.text ?? 'Label',
+        offset: props.offset ?? [0, 0, 0],
+        color: props.color ?? 0xffffff,
+        size: props.size ?? 0.5,
+        depth: props.depth ?? (props.size ?? 0.5) / 5,
     }),
 )
