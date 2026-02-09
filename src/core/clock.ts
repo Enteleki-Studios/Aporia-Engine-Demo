@@ -4,7 +4,7 @@ const clamp = (min: number, max: number, value: number) =>
 export class Clock {
     // Settings
     /** Maximum value of delta to avoid giant leaps in time */
-    maxDelta = 0.1
+    maxDelta = 0.067 // 15 FPS
     /** Minimum value of delta to avoid division by zero */
     minDelta = 0.001
     /**  Target fps used to calculate frameRemaining */

@@ -270,13 +270,14 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                         const { vertices, indices, uvs } =
                             generateWedgeMeshData(geometryDef)
 
-                        geometry = new BufferGeometry()
-                        geometry.setAttribute(
+                        const indexedGeometry = new BufferGeometry()
+                        indexedGeometry.setAttribute(
                             'position',
                             new BufferAttribute(vertices, 3),
                         )
-                        geometry.setIndex(new BufferAttribute(indices, 1))
-                        geometry.setAttribute('uv', new BufferAttribute(uvs, 2))
+                        indexedGeometry.setIndex(new BufferAttribute(indices, 1))
+                        indexedGeometry.setAttribute('uv', new BufferAttribute(uvs, 2))
+                        geometry = indexedGeometry.toNonIndexed()
                         geometry.computeVertexNormals()
 
                         break

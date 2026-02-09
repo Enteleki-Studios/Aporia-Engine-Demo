@@ -9,6 +9,7 @@ import {
     Transform3DComponent,
     Velocity3DComponent,
 } from '@core/components'
+import { degToRad } from '@core/utils'
 
 import {
     ColliderComponent,
@@ -117,44 +118,64 @@ export const setup = async () => {
         RenderableFixed(),
         ColliderComponent(Shape3DComponent(floorShape)),
     )
+    world.entities.addComponents(
+        world.entities.createEntity(),
+        Transform3DComponent({ position: [-50, -0.251, -50] }),
+        RigidBodyFixed(),
+        Geometry3DComponent(floorShape),
+        RenderableFixed(),
+        ColliderComponent(Shape3DComponent(floorShape)),
+    )
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 26; i++) {
+        const y = i / 10 || 0.05
+
         const boxShape: Box = {
             type: 'box',
             halfWidth: 1,
-            halfHeight: i / 8,
+            halfHeight: y / 2,
             halfDepth: 1,
         }
 
         world.entities.addComponents(
             world.entities.createEntity(),
-            Transform3DComponent({ position: [3 * i + 5, i / 8, 0] }),
+            Transform3DComponent({ position: [3 * i + 5, y / 2, 0] }),
             RigidBodyFixed(),
             Geometry3DComponent(boxShape),
             RenderableFixed(),
             ColliderComponent(Shape3DComponent(boxShape)),
             FloatingLabel({
-                text: `Height: ${boxShape.halfHeight * 2}`,
-                offset: [0, boxShape.halfHeight + 0.25, 0],
+                text: `Height: ${y}`,
+                offset: [0, y / 2 + 0.25, 0],
                 size: 0.3,
             }),
         )
     }
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 29; i++) {
+        const theta = i * 2.5 || 1 // In degrees
+        const z = 10
+        const y = z * Math.tan(degToRad(theta))
+
         const wedgeShape: Wedge = {
             type: 'wedge',
-            halfWidth: 15,
-            halfHeight: Math.max(i, 0.5),
-            halfDepth: 5,
+            halfWidth: 1,
+            halfHeight: y / 2,
+            halfDepth: z / 2,
         }
+
         world.entities.addComponents(
             world.entities.createEntity(),
-            Transform3DComponent({ position: [30, 0, 6 * i] }),
+            Transform3DComponent({ position: [3 * i + 5, 0, -25] }),
             RenderableFixed(),
             Geometry3DComponent(wedgeShape),
             RigidBodyFixed(),
             ColliderComponent(Shape3DComponent(wedgeShape)),
+            FloatingLabel({
+                text: `Angle: ${theta.toFixed(2)}°`,
+                offset: [0, 2.5, z / 2],
+                size: 0.3,
+            }),
         )
     }
 

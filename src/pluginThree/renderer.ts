@@ -1,15 +1,11 @@
 import {
-    ACESFilmicToneMapping,
     OrthographicCamera,
     PCFSoftShadowMap,
     PerspectiveCamera,
-    // ReinhardToneMapping,
     SRGBColorSpace,
     Scene,
     WebGLRenderer,
 } from 'three'
-
-// import { OrbitControls } from 'three/examples/jsm/Addons.js'
 
 export class Renderer {
     renderer
@@ -27,7 +23,7 @@ export class Renderer {
             antialias: true,
         })
 
-        this.renderer.toneMapping = ACESFilmicToneMapping
+        this.renderer.toneMapping = 0
         this.renderer.toneMappingExposure = 1
         this.renderer.outputColorSpace = SRGBColorSpace
 
@@ -43,7 +39,6 @@ export class Renderer {
         this.scene = new Scene()
 
         this.setSize(this.width, this.height)
-        // new OrbitControls(this.camera, this.canvas)
     }
 
     render() {
