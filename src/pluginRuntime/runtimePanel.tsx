@@ -4,7 +4,7 @@ import type { PluginsToResources } from '@core'
 
 import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
-import { Button, ButtonBar, Stack } from '@inspector'
+import { Button, ButtonBar, Stack, TBody, TCell, TRow, Table } from '@inspector'
 
 import type { PluginRuntime } from './plugin'
 
@@ -31,10 +31,20 @@ export const RuntimePanel = () => {
     return (
         <Stack>
             <h3>Runtime</h3>
-            {/* @ts-expect-error Accessing a private prop */}
-            <pre>Systems: {runtime.systems.length}</pre>
-            {/* @ts-expect-error Accessing a private prop */}
-            <pre>Systems(debug): {runtime.debugSystems.length}</pre>
+            <Table>
+                <TBody>
+                    <TRow>
+                        <TCell>Systems</TCell>
+                        {/* @ts-expect-error Accessing a private prop */}
+                        <TCell>{runtime.systems.length}</TCell>
+                    </TRow>
+                    <TRow>
+                        <TCell>Debug systems</TCell>
+                        {/* @ts-expect-error Accessing a private prop */}
+                        <TCell>{runtime.debugSystems.length}</TCell>
+                    </TRow>
+                </TBody>
+            </Table>
             <ButtonBar>
                 <Button onClick={handleTogglePlay}>
                     {world.runtime.isRunning ? 'stop' : 'play'}

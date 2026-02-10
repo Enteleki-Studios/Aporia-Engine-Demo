@@ -7,10 +7,12 @@ import {
     MeshStandardMaterial,
 } from 'three'
 
-import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
+import { type TypedUseWorld, useWorld } from '@core/react'
 
 import { Option, Select, Stack } from '@inspector'
 import { ThreeWorld } from '@pluginThree'
+
+import { ThreeInfoPanel } from './threeInfoPanel'
 
 const useThreeWorld: TypedUseWorld<ThreeWorld> = useWorld
 
@@ -51,9 +53,6 @@ const OVERRIDE_MATERIALS = [
 ] as const
 
 export const ThreePanel = () => {
-    // TODO: use observers in the entities class instead of
-    // refreshing every frame
-    useIntervalRender(100)
     const world = useThreeWorld()
 
     const [omatIndex, setOmatIndex] = useState(0)
@@ -75,33 +74,27 @@ export const ThreePanel = () => {
     }, [omatIndex, world])
 
     return (
-        <Stack direction="row">
-            <Stack>
-                <h3>Three</h3>
-                <pre>Calls: {world.three.renderer.renderer.info.render.calls}</pre>
-                <pre>Tris: {world.three.renderer.renderer.info.render.triangles}</pre>
-                <pre>Textures: {world.three.renderer.renderer.info.memory.textures}</pre>
-                <pre>
-                    Geometries: {world.three.renderer.renderer.info.memory.geometries}
-                </pre>
-                <pre>Programs: {world.three.renderer.renderer.info.programs?.length}</pre>
-            </Stack>
+        <Stack>
+            <h3>Three</h3>
             <Stack direction="row">
-                <p>Visualize:</p>
-                <div>
-                    <Select
-                        value={omatIndex}
-                        onChange={(i) => {
-                            setOmatIndex(i)
-                        }}
-                    >
-                        {OVERRIDE_MATERIALS.map(([label], i) => (
-                            <Option key={label} value={i}>
-                                {label}
-                            </Option>
-                        ))}
-                    </Select>
-                </div>
+                <ThreeInfoPanel />
+                <Stack direction="row">
+                    <p>Visualize:</p>
+                    <div>
+                        <Select
+                            value={omatIndex}
+                            onChange={(i) => {
+                                setOmatIndex(i)
+                            }}
+                        >
+                            {OVERRIDE_MATERIALS.map(([label], i) => (
+                                <Option key={label} value={i}>
+                                    {label}
+                                </Option>
+                            ))}
+                        </Select>
+                    </div>
+                </Stack>
             </Stack>
         </Stack>
     )

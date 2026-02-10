@@ -2,6 +2,7 @@ import type { WorldWithPlugin } from '@core'
 
 import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
+import { Stack, TBody, TCell, TRow, Table } from '@inspector'
 import type { PluginEntities } from '@pluginEntities'
 
 const useEntitiesWorld: TypedUseWorld<WorldWithPlugin<PluginEntities>> = useWorld
@@ -13,10 +14,20 @@ export const EntitiesPanel = () => {
     const world = useEntitiesWorld()
 
     return (
-        <div>
+        <Stack>
             <h3>Entities</h3>
-            <pre>Entities: {world.entities.size}</pre>
-            <pre>Queries: {world.entities.numQueries}</pre>
-        </div>
+            <Table>
+                <TBody>
+                    <TRow>
+                        <TCell>Entities</TCell>
+                        <TCell>{world.entities.size}</TCell>
+                    </TRow>
+                    <TRow>
+                        <TCell>Queries</TCell>
+                        <TCell>{world.entities.numQueries}</TCell>
+                    </TRow>
+                </TBody>
+            </Table>
+        </Stack>
     )
 }

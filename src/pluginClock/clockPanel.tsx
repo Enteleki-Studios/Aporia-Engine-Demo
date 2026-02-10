@@ -2,6 +2,7 @@ import type { PluginsToResources } from '@core'
 
 import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
+import { Stack, TBody, TCell, TRow, Table } from '@inspector'
 import type { PluginClock } from '@pluginClock'
 
 type RuntimePanelWorld = PluginsToResources<[PluginClock]>
@@ -14,13 +15,32 @@ export const ClockPanel = () => {
     const { clock } = world
 
     return (
-        <div>
+        <Stack>
             <h3>Clock</h3>
-            <pre>FPS: {clock.fps}</pre>
-            <pre>True delta: {clock.trueDelta}</pre>
-            <pre>Delta: {clock.delta}</pre>
-            <pre>Length: {clock.frameLength.toFixed(1)}ms</pre>
-            <pre>Frames: {clock.frames}</pre>
-        </div>
+            <Table>
+                <TBody>
+                    <TRow>
+                        <TCell>FPS</TCell>
+                        <TCell>{clock.fps}</TCell>
+                    </TRow>
+                    <TRow>
+                        <TCell>True delta</TCell>
+                        <TCell> {clock.trueDelta.toFixed(3)}s</TCell>
+                    </TRow>
+                    <TRow>
+                        <TCell>Delta</TCell>
+                        <TCell> {clock.delta.toFixed(3)}s</TCell>
+                    </TRow>
+                    <TRow>
+                        <TCell>Length</TCell>
+                        <TCell> {clock.frameLength.toFixed(1)}ms</TCell>
+                    </TRow>
+                    <TRow>
+                        <TCell>Frames</TCell>
+                        <TCell> {clock.frames}</TCell>
+                    </TRow>
+                </TBody>
+            </Table>
+        </Stack>
     )
 }
