@@ -1,4 +1,5 @@
 import {
+    Material,
     OrthographicCamera,
     PCFSoftShadowMap,
     PerspectiveCamera,
@@ -77,5 +78,9 @@ export class Renderer {
             this.camera.aspect = a
             this.camera.updateProjectionMatrix()
         }
+    }
+
+    setOverrideMaterial(material: Material | null) {
+        this.scene.overrideMaterial = material
     }
 }
