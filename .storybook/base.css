@@ -5,3 +5,11 @@
     box-sizing: border-box;
     color: #fefefe;
 }
+
+/* 
+ * Not sure why this is needed
+ * Maybe a config problem, maybe a bug
+ */
+.docs-story {
+    background: #212830 !important;
+}
