@@ -18,10 +18,6 @@ const meta = {
                 max: 10,
             },
         },
-        divider: {
-            control: 'text',
-            defaultValue: false,
-        },
         children: { control: false },
     },
 } satisfies Meta<typeof Stack>
@@ -40,32 +36,12 @@ export const Primary: Story = {
             >
                 Render 3D
             </Toggle>,
+            <Divider />,
             <span>FPS: 120</span>,
+            <Divider />,
             <Button>Submit</Button>,
         ],
     },
 }
 
-export const WithDividerElement: Story = {
-    args: {
-        divider: <Divider />,
-        children: [
-            <Toggle
-                checked
-                onChange={() => {
-                    /**/
-                }}
-            >
-                Render 3D
-            </Toggle>,
-            <span>FPS: 120</span>,
-            <Button>Submit</Button>,
-        ],
-    },
-    argTypes: {
-        divider: {
-            control: false,
-        },
-    },
-}
 /* eslint-enable react/jsx-key -- No need for keys in this story */

@@ -1,0 +1,12 @@
+@use '@inspector/theme';
+
+.Option {
+    padding: 0.25rem 0.5rem;
+
+    &:hover {
+        background-color: theme.color(control, background-hover);
+    }
+    &.selected {
+        color: theme.color(control, foreground-enabled);
+    }
+}

@@ -22,9 +22,11 @@ export const Root = () => {
         <WorldContext value={world}>
             <Inspector
                 sidepanelContent={
-                    <Stack divider={<Divider />} fullWidth>
+                    <Stack fullWidth>
                         <ClockPanel />
+                        <Divider />
                         <RuntimePanel />
+                        <Divider />
                         <EntitiesPanel />
                     </Stack>
                 }
