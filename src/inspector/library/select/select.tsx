@@ -9,6 +9,7 @@ type SelectProps<T extends OptionValue> = {
     children: ReactElement<OptionProps<T>>[]
     defaultOpen?: boolean
     onChange?: (value: T) => void
+    label?: string
 }
 
 export const Select = <T extends OptionValue>({
@@ -16,6 +17,7 @@ export const Select = <T extends OptionValue>({
     children,
     defaultOpen = false,
     onChange,
+    label,
 }: SelectProps<T>) => {
     const [isOpen, setIsOpen] = useState(defaultOpen)
 
@@ -35,9 +37,15 @@ export const Select = <T extends OptionValue>({
     }, [])
 
     return (
-        <div className={`Select ${isOpen ? 'open' : 'closed'}`} onClick={handleClick}>
-            <div className="label">{selectedChild?.props.children}</div>
-            <div className="options">{items}</div>
+        <div className="Select">
+            {label && <div className="label">{label}</div>}
+            <div
+                className={`dropdown ${isOpen ? 'open' : 'closed'}`}
+                onClick={handleClick}
+            >
+                <div className="selection">{selectedChild?.props.children}</div>
+                <div className="options">{items}</div>
+            </div>
         </div>
     )
 }

@@ -3,37 +3,36 @@ import { ReactNode } from 'react'
 import './table.scss'
 
 type TableProps = {
-    children: ReactNode
+    children?: ReactNode
+    cols?: string
 }
 
-export const Table = ({ children }: TableProps) => (
-    <table className="Table">{children}</table>
+export const Table = ({ children, cols }: TableProps) => (
+    <div className="Table" style={{ gridTemplateColumns: cols }}>
+        {children}
+    </div>
 )
 
 type THeadProps = {
-    children: ReactNode
+    children?: ReactNode
 }
 
-export const THead = ({ children }: THeadProps) => (
-    <thead className="THead">{children}</thead>
-)
+export const THead = ({ children }: THeadProps) => <div className="THead">{children}</div>
 
 type TBodyProps = {
-    children: ReactNode
+    children?: ReactNode
 }
 
-export const TBody = ({ children }: TBodyProps) => (
-    <tbody className="TBody">{children}</tbody>
-)
+export const TBody = ({ children }: TBodyProps) => <div className="TBody">{children}</div>
 
 type TRowProps = {
-    children: ReactNode
+    children?: ReactNode
 }
 
-export const TRow = ({ children }: TRowProps) => <tr className="TRow">{children}</tr>
+export const TRow = ({ children }: TRowProps) => <div className="TRow">{children}</div>
 
 type TCell = {
-    children: ReactNode
+    children?: ReactNode
 }
 
-export const TCell = ({ children }: TCell) => <td className="TCell">{children}</td>
+export const TCell = ({ children }: TCell) => <div className="TCell">{children}</div>

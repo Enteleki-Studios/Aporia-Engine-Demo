@@ -79,13 +79,13 @@ export const ThreePanel = () => {
             <Stack direction="row">
                 <ThreeInfoPanel />
                 <Stack direction="row">
-                    <p>Visualize:</p>
                     <div>
                         <Select
                             value={omatIndex}
                             onChange={(i) => {
                                 setOmatIndex(i)
                             }}
+                            label="Visualize"
                         >
                             {OVERRIDE_MATERIALS.map(([label], i) => (
                                 <Option key={label} value={i}>

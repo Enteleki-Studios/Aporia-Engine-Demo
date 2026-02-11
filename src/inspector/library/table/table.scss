@@ -1,7 +1,12 @@
 .Table {
     border-collapse: collapse;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
 
-    .TCell {
-        padding: 0.125rem 0;
+    .THead,
+    .TRow,
+    .TBody {
+        display: contents;
     }
 }
