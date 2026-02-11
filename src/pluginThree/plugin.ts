@@ -146,7 +146,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         // light.helper.update()
         // renderer.scene.add(light.shadowHelper)
 
-        const waterGeometry = new PlaneGeometry(100, 100)
+        const waterGeometry = new PlaneGeometry(85, 85)
         const water = new Water(waterGeometry, {
             alpha: 0.65,
             textureWidth: 512,
@@ -162,7 +162,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         })
         water.receiveShadow = true
         water.rotation.x = -Math.PI / 2
-        water.position.y = 0.5
+        water.position.y = 0.8
         water.position.x = -50
         water.position.z = 50
         water.material.transparent = true

@@ -186,6 +186,8 @@ export const setup = async () => {
             for (let j = 0; j <= nrows; j++) {
                 if (i === 0 || j === 0 || i === ncols || j === nrows) {
                     heights.push(0)
+                } else if (i === 1 || j === 1 || i === ncols - 1 || j === nrows - 1) {
+                    heights.push(0.6)
                 } else {
                     heights.push(Math.random())
                 }
