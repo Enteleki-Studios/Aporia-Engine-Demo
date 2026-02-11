@@ -7,7 +7,7 @@ type TableProps = {
     cols?: string
 }
 
-export const Table = ({ children, cols }: TableProps) => (
+export const Table = ({ children, cols = '1fr 1fr' }: TableProps) => (
     <div className="Table" style={{ gridTemplateColumns: cols }}>
         {children}
     </div>

@@ -1,5 +1,3 @@
-import { fn } from 'storybook/test'
-
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Button } from './button'
@@ -14,7 +12,6 @@ const meta = {
     argTypes: {
         children: { control: 'text' },
     },
-    args: { onClick: fn() },
 } satisfies Meta<typeof Button>
 
 export default meta

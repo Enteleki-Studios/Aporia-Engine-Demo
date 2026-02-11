@@ -81,7 +81,7 @@ export const setup = async () => {
 
         world.entities.addComponents(
             world.entities.createEntity(),
-            Transform3DComponent({ position: [5 * i + 5, 10, -10] }),
+            Transform3DComponent({ position: [5 * i + 5, radius + 5, -10] }),
             RenderableDynamic(),
             Geometry3DComponent(ballShape),
             RigidBodyDynamic(),
@@ -89,7 +89,6 @@ export const setup = async () => {
             FloatingLabel({
                 text: `Radius: ${radius}`,
                 offset: [0, radius + 0.25, 0],
-                size: 0.3,
             }),
         )
     }
@@ -147,7 +146,6 @@ export const setup = async () => {
             FloatingLabel({
                 text: `Height: ${y}`,
                 offset: [0, y / 2 + 0.25, 0],
-                size: 0.3,
             }),
         )
     }
@@ -174,7 +172,6 @@ export const setup = async () => {
             FloatingLabel({
                 text: `Angle: ${theta.toFixed(2)}°`,
                 offset: [0, 2.5, z / 2],
-                size: 0.3,
             }),
         )
     }

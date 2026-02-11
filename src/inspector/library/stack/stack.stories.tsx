@@ -44,4 +44,16 @@ export const Primary: Story = {
     },
 }
 
+export const ButtonBar: Story = {
+    args: {
+        direction: 'row',
+        children: [
+            <Button>Accept</Button>,
+            <Button>Decline</Button>,
+            <Divider direction="vertical" />,
+            <Button>Cancel</Button>,
+        ],
+    },
+}
+
 /* eslint-enable react/jsx-key -- No need for keys in this story */

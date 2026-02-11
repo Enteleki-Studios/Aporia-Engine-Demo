@@ -57,7 +57,7 @@ export const FloatingLabel = createComponent(
         text: props.text ?? 'Label',
         offset: props.offset ?? [0, 0, 0],
         color: props.color ?? 0xffffff,
-        size: props.size ?? 0.5,
+        size: props.size ?? 0.3,
         depth: props.depth ?? (props.size ?? 0.5) / 5,
     }),
 )

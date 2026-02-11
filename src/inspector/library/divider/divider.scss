@@ -2,6 +2,14 @@
 
 .Divider {
     border: none;
-    border-top: 1px solid theme.color(default, border);
-    width: 100%;
+
+    &.horizontal {
+        border-top: 1px solid theme.color(default, border);
+        width: 100%;
+    }
+    &.vertical {
+        display: inline-block;
+        border-left: 1px solid theme.color(default, border);
+        height: inherit;
+    }
 }

@@ -1,3 +1,9 @@
 import './divider.scss'
 
-export const Divider = () => <hr className="Divider" />
+type DividerProps = {
+    direction?: 'horizontal' | 'vertical'
+}
+
+export const Divider = ({ direction = 'horizontal' }: DividerProps) => (
+    <div className={`Divider ${direction}`} />
+)

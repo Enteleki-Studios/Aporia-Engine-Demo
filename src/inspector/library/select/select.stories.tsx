@@ -39,6 +39,7 @@ type Story = StoryObj<typeof meta>
 export const Primary: Story = {
     args: {
         value: 1,
+        label: 'Choose option',
     },
 }
 

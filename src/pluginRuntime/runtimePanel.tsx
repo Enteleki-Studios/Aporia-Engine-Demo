@@ -4,7 +4,7 @@ import type { PluginsToResources } from '@core'
 
 import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
-import { Button, ButtonBar, Stack, TCell, TRow, Table } from '@inspector'
+import { Button, Stack, TCell, TRow, Table } from '@inspector'
 
 import type { PluginRuntime } from './plugin'
 
@@ -43,14 +43,14 @@ export const RuntimePanel = () => {
                     <TCell>{runtime.debugSystems.length}</TCell>
                 </TRow>
             </Table>
-            <ButtonBar>
+            <Stack direction="row">
                 <Button onClick={handleTogglePlay}>
                     {world.runtime.isRunning ? 'stop' : 'play'}
                 </Button>
                 <Button onClick={handleStep} disabled={world.runtime.isRunning}>
                     step
                 </Button>
-            </ButtonBar>
+            </Stack>
         </Stack>
     )
 }
