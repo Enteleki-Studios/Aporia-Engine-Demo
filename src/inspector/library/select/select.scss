@@ -42,7 +42,7 @@
             right: 0;
         }
         &.open {
-            .label::after {
+            .selection::after {
                 transform: rotate(180deg);
             }
             .options {

@@ -182,9 +182,9 @@ export const setup = async () => {
         for (let i = 0; i <= ncols; i++) {
             for (let j = 0; j <= nrows; j++) {
                 if (i === 0 || j === 0 || i === ncols || j === nrows) {
-                    heights.push(0)
+                    heights.push(0.333)
                 } else if (i === 1 || j === 1 || i === ncols - 1 || j === nrows - 1) {
-                    heights.push(0.6)
+                    heights.push(0.933)
                 } else {
                     heights.push(Math.random())
                 }
@@ -208,7 +208,7 @@ export const setup = async () => {
     world.entities.addComponents(
         world.entities.createEntity(),
         Transform3DComponent({
-            position: [-50, 0, 50],
+            position: [-50, -1, 50],
         }),
         Geometry3DComponent(heightfield),
         RigidBodyFixed(),

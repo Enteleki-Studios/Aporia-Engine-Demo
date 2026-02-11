@@ -50,6 +50,12 @@ const OVERRIDE_MATERIALS = [
             map: null,
         }),
     ],
+    [
+        'Vertex colors',
+        new MeshBasicMaterial({
+            vertexColors: true,
+        }),
+    ],
 ] as const
 
 export const ThreePanel = () => {
@@ -99,3 +105,21 @@ export const ThreePanel = () => {
         </Stack>
     )
 }
+
+// UV checker
+// const tex = new THREE.TextureLoader().load('/uv_checker.png')
+// tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+// scene.overrideMaterial = new THREE.MeshBasicMaterial({
+//   map: tex
+// })
+
+// Object color
+// const mat = new THREE.MeshBasicMaterial()
+// scene.traverse((o) => {
+//   if ((o as THREE.Mesh).isMesh) {
+//     const mesh = o as THREE.Mesh
+//     const color = new THREE.Color(Math.random(), Math.random(), Math.random())
+//     mesh.material = mat.clone()
+//     ;(mesh.material as THREE.MeshBasicMaterial).color = color
+//   }
+// })
