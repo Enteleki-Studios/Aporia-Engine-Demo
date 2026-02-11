@@ -1,6 +1,7 @@
 import { type Plugin, type PluginsToResources } from '@core'
 
 import { Transform3DComponent } from '@core/components'
+import { degToRad } from '@core/utils'
 
 import type {
     Collider,
@@ -70,8 +71,8 @@ export const pluginRapier3D = (): Plugin<Provides, Dependencies> => ({
         const characterController = world.createCharacterController(0.01)
         characterController.enableSnapToGround(0.5)
         characterController.enableAutostep(0.5, 0.2, true)
-        characterController.setMaxSlopeClimbAngle(60 * (Math.PI / 180))
-        characterController.setMinSlopeSlideAngle(70 * (Math.PI / 180))
+        characterController.setMaxSlopeClimbAngle(degToRad(45))
+        characterController.setMinSlopeSlideAngle(degToRad(50))
         characterController.setApplyImpulsesToDynamicBodies(true)
 
         return {
