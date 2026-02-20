@@ -7,7 +7,7 @@ import {
     MeshStandardMaterial,
 } from 'three'
 
-import { Divider, Option, Select, Stack } from '@inspector'
+import { Checkbox, Divider, Option, Select, Stack } from '@inspector'
 
 import { useThreeWorld } from '.'
 import { ThreeInfoPanel } from './threeInfoPanel'
@@ -108,16 +108,15 @@ export const ThreePanel = () => {
                 <Stack>
                     <p>Helpers</p>
                     {helperCollections.map((collection) => (
-                        <div key={collection.type}>
-                            <input
-                                type="checkbox"
-                                checked={collection.visible}
-                                onClick={() => {
-                                    helperStore.toggleHelpers(collection.type)
-                                }}
-                            />
+                        <Checkbox
+                            key={collection.type}
+                            checked={collection.visible}
+                            onClick={() => {
+                                helperStore.toggleHelpers(collection.type)
+                            }}
+                        >
                             {`${collection.type} (${collection.helpers.length})`}
-                        </div>
+                        </Checkbox>
                     ))}
                 </Stack>
             </Stack>

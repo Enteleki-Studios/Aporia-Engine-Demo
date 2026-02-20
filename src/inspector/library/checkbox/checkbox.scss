@@ -1,0 +1,28 @@
+@use '@inspector/theme';
+
+.Checkbox {
+    label {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    input {
+        display: none;
+    }
+
+    span {
+        margin-left: 0.25rem;
+    }
+
+    .box {
+        display: inline-block;
+        width: 0.75rem;
+        height: 0.75rem;
+        background-color: transparent;
+        border: 1px solid theme.color(control, foreground);
+        border-radius: 2px;
+    }
+    &.checked .box {
+        background-color: theme.color(control, foreground-enabled);
+    }
+}
