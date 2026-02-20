@@ -13,7 +13,7 @@ export const ThreeInfoPanel = () => {
 
     return (
         <Stack direction="row">
-            <Table cols="6rem 6rem">
+            <Table>
                 <TRow>
                     <TCell>Calls</TCell>
                     <TCell>{world.three.renderer.renderer.info.render.calls}</TCell>

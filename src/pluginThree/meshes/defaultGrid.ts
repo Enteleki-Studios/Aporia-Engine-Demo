@@ -7,7 +7,7 @@ import {
     Texture,
 } from 'three'
 
-import { CustomGridSettings, CustomGridTexture } from './customGridTexture'
+import { CustomGridSettings, CustomGridTexture } from '../textures/customGridTexture'
 
 type DefaultGridSettings = CustomGridSettings & {
     texture?: Texture

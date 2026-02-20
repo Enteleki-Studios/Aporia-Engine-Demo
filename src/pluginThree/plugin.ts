@@ -5,8 +5,6 @@ import {
     BoxGeometry,
     BufferAttribute,
     BufferGeometry,
-    // CapsuleGeometry,
-    // DirectionalLight,
     Group,
     type IUniform,
     Mesh,
@@ -15,7 +13,7 @@ import {
     PerspectiveCamera,
     PlaneGeometry,
     RepeatWrapping,
-    // SkeletonHelper,
+    SkeletonHelper,
     SphereGeometry,
     TextureLoader,
     Vector3,
@@ -37,9 +35,9 @@ import { generateWedgeMeshData, transpose1D } from '@core/utils'
 
 import { type EntityId } from '@pluginEntities'
 
-import { AxesHelper } from './axesHelper'
-import { DirectionalLight } from './directionalLight'
-import { InfiniteGrid } from './infiniteGrid'
+import { DirectionalLight } from './lights/directionalLight'
+import { AxesHelper } from './meshes/axesHelper'
+import { InfiniteGrid } from './meshes/infiniteGrid'
 import {
     floatingLabelQuery,
     geometryQuery,
@@ -50,7 +48,8 @@ import { Renderer } from './renderer'
 import { animationSystem } from './systems/animations'
 import { syncTransforms } from './systems/syncTransform'
 import { CheckeredTexture } from './textures/checkered'
-import { isThreeMesh } from './utils'
+import { HelperStore } from './utils/helperStore'
+import { isThreeMesh } from './utils/three'
 
 type ThreeOutput = {
     three: {
@@ -64,6 +63,7 @@ type ThreeOutput = {
                 actions: Record<string, AnimationAction | undefined>
             }
         >
+        helperStore: HelperStore
         gltfLoader: GLTFLoader
         water: Water
     }
@@ -79,6 +79,10 @@ const fontLoader = new FontLoader()
 export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
     createResources: () => {
         const renderer = new Renderer()
+        renderer.setSize(1920, 1080)
+        renderer.renderer.setClearColor('#888888')
+
+        const gltfLoader = new GLTFLoader()
 
         const objectStore = new ObjectStore((id: string) => {
             const group = new Group()
@@ -86,28 +90,14 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             return group
         })
 
-        // renderer.setSize(1280, 720)
-        renderer.setSize(1920, 1080)
+        const helperStore = new HelperStore(renderer.scene)
 
-        renderer.renderer.setClearColor('#888888')
+        helperStore.addHelper('axes', new AxesHelper(3))
+        helperStore.addHelper('grid', new InfiniteGrid())
 
-        const axes = new AxesHelper(3)
-        axes.position.y = 2
-        renderer.scene.add(axes)
-        renderer.scene.add(new InfiniteGrid())
+        // helperStore.addHelper('cameras', new CameraHelper(renderer.camera))
 
-        // renderer.scene.add(new CameraHelper(renderer.camera))
-
-        const sky = new Sky()
-        sky.scale.setScalar(2000)
-        sky.material.toneMapped = false
-        sky.material.fog = false
-        sky.material.depthWrite = false
-        sky.material.depthTest = false
-        sky.renderOrder = -1
-        renderer.scene.add(sky)
-
-        // sun position
+        // Sun position
         const sun = new Vector3()
         const inclination = 0.7 // elevation (0–1)
         const azimuth = 0.9 // east/west (0–1)
@@ -119,7 +109,26 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         sun.y = Math.sin(theta)
         sun.z = Math.sin(phi)
 
-        // Sky shader uniforms
+        // Lighting
+        renderer.scene.add(new AmbientLight(0xffffff, inclination / 3))
+        const light = new DirectionalLight(0xffffff, inclination * 5)
+        light.position.copy(sun.clone().multiplyScalar(50))
+        renderer.scene.add(light)
+
+        helperStore.addHelper('shadows', light.shadowHelper)
+        helperStore.addHelper('lights', light.helper)
+        light.helper.update()
+
+        // Sky
+        const sky = new Sky()
+        sky.scale.setScalar(2000)
+        sky.material.toneMapped = false
+        sky.material.fog = false
+        sky.material.depthWrite = false
+        sky.material.depthTest = false
+        sky.renderOrder = -1
+        renderer.scene.add(sky)
+
         type SkyShaderUniforms = {
             turbidity: { value: number }
             rayleigh: { value: number }
@@ -132,20 +141,12 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Three.js doesn't provide the type
         const skyUniforms = sky.material.uniforms as SkyShaderUniforms
         skyUniforms.turbidity.value = 0.2 // Higher = hazier
-        skyUniforms.rayleigh.value = 0.5 // Lower = bluer
-        skyUniforms.mieCoefficient.value = 0.003 // White haze
+        skyUniforms.rayleigh.value = 0.5 * inclination // Lower = bluer
+        skyUniforms.mieCoefficient.value = 0.05 * inclination // White haze
         skyUniforms.mieDirectionalG.value = 0.6 // Sun glow sharpness
         skyUniforms.sunPosition.value.copy(sun)
 
-        renderer.scene.add(new AmbientLight(0xffffff, inclination / 3))
-        const light = new DirectionalLight(0xffffff, inclination * 5)
-        light.position.copy(sun.clone().multiplyScalar(50))
-        renderer.scene.add(light)
-
-        // renderer.scene.add(light.helper)
-        // light.helper.update()
-        // renderer.scene.add(light.shadowHelper)
-
+        // Water
         const waterGeometry = new PlaneGeometry(85, 85)
         const water = new Water(waterGeometry, {
             alpha: 0.65,
@@ -168,16 +169,13 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         water.material.transparent = true
         renderer.scene.add(water)
 
-        // renderer.scene.overrideMaterial = new MeshBasicMaterial({ wireframe: true, color: '#0089cc' })
-
-        const gltfLoader = new GLTFLoader()
-
         return {
             three: {
                 renderer,
                 objectStore,
                 animationStore: new Map(),
                 cameraStore: new Map(),
+                helperStore,
                 gltfLoader,
                 water,
             },
@@ -304,7 +302,8 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         world.entities.addQueryEffect(
             gltfQuery,
             ([[gltfComponent, transform], entity]) => {
-                const { objectStore, renderer, gltfLoader, animationStore } = world.three
+                const { objectStore, renderer, gltfLoader, animationStore, helperStore } =
+                    world.three
                 const [group, isCreated] = objectStore.getOrCreate(entity.id)
 
                 if (isCreated) {
@@ -335,27 +334,25 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
 
                         group.add(scene)
 
-                        // const skeleton = new SkeletonHelper(scene)
-                        // skeleton.visible = true
-                        // renderer.scene.add(skeleton)
-
                         // TODO: This offset must be derived from a collider definition
                         scene.position.y = -0.9
 
-                        const mixer = new AnimationMixer(scene)
-                        const actions = animations.reduce<
-                            Record<string, AnimationAction | undefined>
-                        >((acc, anim) => {
-                            acc[anim.name] = mixer.clipAction(anim)
-                            return acc
-                        }, {})
+                        if (animations.length) {
+                            const mixer = new AnimationMixer(scene)
+                            const actions = animations.reduce<
+                                Record<string, AnimationAction | undefined>
+                            >((acc, anim) => {
+                                acc[anim.name] = mixer.clipAction(anim)
+                                return acc
+                            }, {})
 
-                        // console.debug(actions)
+                            animationStore.set(entity.id, {
+                                mixer,
+                                actions,
+                            })
 
-                        animationStore.set(entity.id, {
-                            mixer,
-                            actions,
-                        })
+                            helperStore.addHelper('skeletons', new SkeletonHelper(scene))
+                        }
                     })()
                 })
             },

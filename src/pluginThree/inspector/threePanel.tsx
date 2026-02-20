@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import {
     AdditiveBlending,
     MeshBasicMaterial,
@@ -9,7 +9,7 @@ import {
 
 import { type TypedUseWorld, useWorld } from '@core/react'
 
-import { Option, Select, Stack } from '@inspector'
+import { Divider, Option, Select, Stack } from '@inspector'
 import { ThreeWorld } from '@pluginThree'
 
 import { ThreeInfoPanel } from './threeInfoPanel'
@@ -60,6 +60,12 @@ const OVERRIDE_MATERIALS = [
 
 export const ThreePanel = () => {
     const world = useThreeWorld()
+    const { helperStore } = world.three
+
+    const helperCollections = useSyncExternalStore(
+        (cb) => helperStore.subscribe(cb),
+        () => helperStore.collections(),
+    )
 
     const [omatIndex, setOmatIndex] = useState(0)
 
@@ -82,8 +88,9 @@ export const ThreePanel = () => {
     return (
         <Stack>
             <h3>Three</h3>
-            <Stack direction="row">
+            <Stack direction="row" spacing={4}>
                 <ThreeInfoPanel />
+                <Divider direction="vertical" />
                 <Stack direction="row">
                     <div>
                         <Select
@@ -100,6 +107,22 @@ export const ThreePanel = () => {
                             ))}
                         </Select>
                     </div>
+                </Stack>
+                <Divider direction="vertical" />
+                <Stack>
+                    <p>Helpers</p>
+                    {helperCollections.map((collection) => (
+                        <div key={collection.type}>
+                            <input
+                                type="checkbox"
+                                checked={collection.visible}
+                                onClick={() => {
+                                    helperStore.toggleHelpers(collection.type)
+                                }}
+                            />
+                            {`${collection.type} (${collection.helpers.length})`}
+                        </div>
+                    ))}
                 </Stack>
             </Stack>
         </Stack>

@@ -7,11 +7,11 @@ export class DirectionalLight extends ThreeDL {
     constructor(color: number, intensity: number) {
         super(color, intensity)
 
-        const d = 30
+        const d = 20
 
         this.castShadow = true
 
-        this.shadow.bias = -0.0001
+        this.shadow.bias = -0.0002
         this.shadow.mapSize.width = 2048
         this.shadow.mapSize.height = 2048
         this.shadow.camera.near = 0.5
