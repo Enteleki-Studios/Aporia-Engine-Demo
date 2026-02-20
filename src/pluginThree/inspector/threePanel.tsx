@@ -7,14 +7,10 @@ import {
     MeshStandardMaterial,
 } from 'three'
 
-import { type TypedUseWorld, useWorld } from '@core/react'
-
 import { Divider, Option, Select, Stack } from '@inspector'
-import { ThreeWorld } from '@pluginThree'
 
+import { useThreeWorld } from '.'
 import { ThreeInfoPanel } from './threeInfoPanel'
-
-const useThreeWorld: TypedUseWorld<ThreeWorld> = useWorld
 
 const OVERRIDE_MATERIALS = [
     ['None', null],

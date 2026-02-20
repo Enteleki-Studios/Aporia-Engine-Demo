@@ -1,4 +1,4 @@
-import { Object3D, Scene } from 'three'
+import type { Object3D, Scene } from 'three'
 
 import { ObjectStore } from '@core'
 

@@ -1,14 +1,12 @@
-import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
+import { useIntervalRender } from '@core/react'
 
 import { Stack, TCell, TRow, Table } from '@inspector'
-import { ThreeWorld } from '@pluginThree'
 
-const useThreeWorld: TypedUseWorld<ThreeWorld> = useWorld
+import { useThreeWorld } from '.'
 
 export const ThreeInfoPanel = () => {
-    // TODO: use observers in the entities class instead of
-    // refreshing every frame
     useIntervalRender(100)
+
     const world = useThreeWorld()
 
     return (
