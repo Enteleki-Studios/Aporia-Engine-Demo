@@ -1,9 +1,14 @@
 import { AxesHelper as ThreeAxesHelper } from 'three'
 
+import { forOneOrEach } from '@core/utils'
+
 export class AxesHelper extends ThreeAxesHelper {
     constructor(size = 1) {
         super(size)
         this.renderOrder = 999
-        this.material.depthTest = false
+
+        forOneOrEach(this.material, (mat) => {
+            mat.depthTest = false
+        })
     }
 }

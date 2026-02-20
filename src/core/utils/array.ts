@@ -14,3 +14,11 @@ export const floodWith = <A, B>(a: A[], b: B): (A | B)[] =>
     a.flatMap((element: A, index: number, array: A[]) =>
         index === array.length - 1 ? [element] : [element, b],
     )
+
+export const forOneOrEach = <T>(a: T | T[], cb: (b: T, i: number) => void) => {
+    if (Array.isArray(a)) {
+        a.forEach(cb)
+    } else {
+        cb(a, 0)
+    }
+}
