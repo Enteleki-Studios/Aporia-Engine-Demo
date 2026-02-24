@@ -1,17 +1,54 @@
+import { type ChangeEvent, type ReactNode, useCallback } from 'react'
+
+import { useControlled } from '@core/react'
+
 import './checkbox.scss'
 
 type CheckboxProps = {
-    checked: boolean
-    onClick?: () => void
-    children?: string
+    checked?: boolean
+    defaultChecked?: boolean
+    onChange?: (checked: boolean) => void
+    switch?: boolean
+    children?: ReactNode
+    disabled?: boolean
 }
 
-export const Checkbox = ({ checked, onClick, children }: CheckboxProps) => (
-    <div className={`Checkbox ${checked ? 'checked' : ''}`}>
-        <label>
-            <input type="checkbox" checked={checked} onClick={onClick} />
-            <div className="box" />
-            <span>{children}</span>
-        </label>
-    </div>
-)
+export const Checkbox = ({
+    checked,
+    defaultChecked,
+    onChange,
+    children,
+    disabled = false,
+    ...props
+}: CheckboxProps) => {
+    const [isChecked, setIsChecked] = useControlled({
+        controlledValue: checked,
+        defaultValue: defaultChecked,
+    })
+
+    const handleChange = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {
+            const nextChecked = e.currentTarget.checked
+            setIsChecked(nextChecked)
+            onChange?.(nextChecked)
+        },
+        [onChange, setIsChecked],
+    )
+
+    return (
+        <div
+            className={`Checkbox ${props.switch ? 'switch' : 'box'} ${isChecked ? 'checked' : ''} ${disabled ? 'disabled' : ''}`}
+        >
+            <label>
+                <input
+                    type="checkbox"
+                    checked={isChecked}
+                    defaultChecked={defaultChecked}
+                    onChange={handleChange}
+                />
+                <div className="checkboxControl" />
+                <span className="label">{children}</span>
+            </label>
+        </div>
+    )
+}

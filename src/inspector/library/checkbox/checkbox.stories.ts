@@ -17,14 +17,15 @@ type Story = StoryObj<typeof meta>
 
 export const Primary: Story = {
     args: {
-        checked: true,
+        defaultChecked: true,
         children: 'Enable Inspector',
     },
 }
 
-export const Unchecked: Story = {
+export const Switch: Story = {
     args: {
-        checked: false,
+        defaultChecked: true,
         children: 'Enable Inspector',
+        switch: true,
     },
 }

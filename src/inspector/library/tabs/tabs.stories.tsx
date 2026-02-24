@@ -1,4 +1,4 @@
-import { Button, Stack, Toggle } from '@inspector'
+import { Button, Checkbox, Stack } from '@inspector'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Tabs } from './tabs'
@@ -36,21 +36,10 @@ export const Primary: Story = {
                 title: 'Debug helpers',
                 content: (
                     <Stack spacing={2}>
-                        <Toggle
-                            checked
-                            onChange={() => {
-                                /**/
-                            }}
-                        >
+                        <Checkbox checked switch>
                             Render debug helpers
-                        </Toggle>
-                        <Toggle
-                            onChange={() => {
-                                /**/
-                            }}
-                        >
-                            Enable follow camera
-                        </Toggle>
+                        </Checkbox>
+                        <Checkbox switch>Enable follow camera</Checkbox>
                         <Button>Reset debug camera position</Button>
                     </Stack>
                 ),

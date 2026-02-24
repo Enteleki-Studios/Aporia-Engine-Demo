@@ -4,7 +4,7 @@ import { WorldWithPlugin } from '@core'
 
 import { type TypedUseWorld, usePersistentState, useWorld } from '@core/react'
 
-import { Panel, Stack, Toggle } from '@inspector'
+import { Checkbox, Panel, Stack } from '@inspector'
 
 import type { RapierThreeVizPlugin } from '.'
 
@@ -34,14 +34,14 @@ export const RapierThreeVizPanel = () => {
 
     return (
         <Panel>
-            <h3>R3Viz</h3>
             <Stack>
-                <Toggle checked={viz} onChange={handleToggleViz}>
+                <h3>R3Viz</h3>
+                <Checkbox checked={viz} onChange={handleToggleViz} switch>
                     Visualize physics world
-                </Toggle>
-                <Toggle checked={depth} onChange={handleToggleDepth}>
+                </Checkbox>
+                <Checkbox checked={depth} onChange={handleToggleDepth} switch>
                     Disable depth test
-                </Toggle>
+                </Checkbox>
             </Stack>
         </Panel>
     )

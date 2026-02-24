@@ -4,25 +4,67 @@
     label {
         display: inline-flex;
         align-items: center;
+        cursor: pointer;
     }
 
     input {
         display: none;
     }
 
-    span {
+    .label {
         margin-left: 0.25rem;
     }
 
-    .box {
+    .checkboxControl {
         display: inline-block;
-        width: 0.75rem;
         height: 0.75rem;
+    }
+
+    &.box .checkboxControl {
+        width: 0.75rem;
         background-color: transparent;
         border: 1px solid theme.color(control, foreground);
         border-radius: 2px;
+        transition: background-color 0.15s ease;
     }
-    &.checked .box {
-        background-color: theme.color(control, foreground-enabled);
+    &.switch .checkboxControl {
+        width: 1.75rem;
+        background-color: theme.color(control, background-secondary);
+        border-radius: 1rem;
+        position: relative;
+        transition: background-color 0.15s ease;
+
+        &::after {
+            position: absolute;
+            display: block;
+            content: '';
+            width: 1rem;
+            height: 1rem;
+            top: -0.125rem;
+            left: 0;
+            border-radius: 50%;
+            background-color: theme.color(control, foreground);
+            transition:
+                left 0.15s ease-out,
+                background-color 0.25s ease;
+        }
+    }
+    &.checked {
+        &.box .checkboxControl {
+            background-color: theme.color(control, foreground-enabled);
+        }
+        &.switch .checkboxControl {
+            background-color: theme.color(control, background-enabled);
+
+            &::after {
+                left: calc(100% - 1rem);
+                background-color: theme.color(control, foreground-enabled);
+            }
+        }
+    }
+    &.disabled {
+        opacity: 0.5;
+        filter: saturate(70%);
+        pointer-events: none;
     }
 }

@@ -111,8 +111,8 @@ export const ThreePanel = () => {
                         <Checkbox
                             key={collection.type}
                             checked={collection.visible}
-                            onClick={() => {
-                                helperStore.toggleHelpers(collection.type)
+                            onChange={(isChecked) => {
+                                helperStore.toggleHelpers(collection.type, isChecked)
                             }}
                         >
                             {`${collection.type} (${collection.helpers.length})`}

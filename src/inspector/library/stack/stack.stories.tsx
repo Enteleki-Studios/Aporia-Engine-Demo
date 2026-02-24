@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key -- No need for keys in this story */
-import { Button, Divider, Toggle } from '@inspector'
+import { Button, Checkbox, Divider } from '@inspector'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Stack } from './stack'
@@ -28,14 +28,14 @@ type Story = StoryObj<typeof meta>
 export const Primary: Story = {
     args: {
         children: [
-            <Toggle
+            <Checkbox
                 checked
                 onChange={() => {
                     /**/
                 }}
             >
                 Render 3D
-            </Toggle>,
+            </Checkbox>,
             <Divider />,
             <span>FPS: 120</span>,
             <Divider />,
