@@ -38,13 +38,7 @@ export const setup = async () => {
 
     world.runtime.addSystem(playerMovementSystem)
 
-    world.entities.addComponents(
-        world.entities.createEntity(),
-        SunComponent({
-            inclination: 0.7,
-            azimuth: 0.5,
-        }),
-    )
+    world.entities.addComponents(world.entities.createEntity(), SunComponent())
 
     world.entities.addComponents(
         world.entities.createEntity(),

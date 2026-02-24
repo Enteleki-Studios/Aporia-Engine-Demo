@@ -10,8 +10,9 @@ export const syncSun = (world: SunWorld) => {
 
         if (sunDef.needsUpdate) {
             const { ambientLight, sunLight, sky } = world.sun
+            const { elevation, azimuth } = sunDef
 
-            updateSun(ambientLight, sunLight, sky, sunDef.inclination, sunDef.azimuth)
+            updateSun(ambientLight, sunLight, sky, elevation, azimuth)
 
             sunDef.needsUpdate = false
         }

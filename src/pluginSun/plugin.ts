@@ -29,13 +29,7 @@ export type SunWorld = WorldWithPlugin<PluginSun>
 export const pluginSun = (): Plugin<Provides, Dependencies> => ({
     createResources() {
         const sky = new Sky()
-
-        sky.scale.setScalar(2000)
-        sky.material.toneMapped = false
-        sky.material.fog = false
-        sky.material.depthWrite = false
-        sky.material.depthTest = false
-        sky.renderOrder = -1
+        sky.scale.setScalar(420000)
 
         return {
             sun: {
@@ -53,7 +47,7 @@ export const pluginSun = (): Plugin<Provides, Dependencies> => ({
         renderer.scene.add(sunLight)
         renderer.scene.add(sky)
 
-        updateSun(ambientLight, sunLight, sky, 0.7, 0.9)
+        updateSun(ambientLight, sunLight, sky, 90, 0)
 
         helperStore.addHelper('shadow', sunLight.shadowHelper)
         helperStore.addHelper('light', sunLight.helper)

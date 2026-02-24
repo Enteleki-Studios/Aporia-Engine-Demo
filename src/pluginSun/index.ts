@@ -5,7 +5,7 @@ import { createQuery } from '@pluginEntities'
 export * from './plugin'
 
 type SunProps = {
-    inclination: number
+    elevation: number
     azimuth: number
     needsUpdate: boolean
 }
@@ -13,8 +13,8 @@ type SunProps = {
 export const SunComponent = createComponent(
     'Sun',
     (props?: Partial<SunProps>): SunProps => ({
-        inclination: props?.inclination ?? 0.7,
-        azimuth: props?.azimuth ?? 0.9,
+        elevation: props?.elevation ?? 45,
+        azimuth: props?.azimuth ?? 0,
         needsUpdate: true,
     }),
 )
