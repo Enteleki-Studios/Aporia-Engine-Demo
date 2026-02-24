@@ -5,6 +5,7 @@ import {
     BoxGeometry,
     BufferAttribute,
     BufferGeometry,
+    CameraHelper,
     Group,
     type IUniform,
     Mesh,
@@ -95,8 +96,6 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         helperStore.addHelper('axes', new AxesHelper(3))
         helperStore.addHelper('grid', new InfiniteGrid())
 
-        // helperStore.addHelper('cameras', new CameraHelper(renderer.camera))
-
         // Sun position
         const sun = new Vector3()
         const inclination = 0.7 // elevation (0–1)
@@ -115,8 +114,8 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         light.position.copy(sun.clone().multiplyScalar(50))
         renderer.scene.add(light)
 
-        helperStore.addHelper('shadows', light.shadowHelper)
-        helperStore.addHelper('lights', light.helper)
+        helperStore.addHelper('shadow', light.shadowHelper)
+        helperStore.addHelper('light', light.helper)
         light.helper.update()
 
         // Sky
@@ -351,7 +350,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                                 actions,
                             })
 
-                            helperStore.addHelper('skeletons', new SkeletonHelper(scene))
+                            helperStore.addHelper('skeleton', new SkeletonHelper(scene))
                         }
                     })()
                 })
@@ -412,6 +411,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
                 camera.quaternion.fromArray(transform.rotation)
 
                 world.three.cameraStore.set(entity.id, camera)
+                world.three.helperStore.addHelper('camera', new CameraHelper(camera))
 
                 const { renderer } = world.three
                 renderer.setMainCamera(camera)

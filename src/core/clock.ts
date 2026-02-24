@@ -35,6 +35,8 @@ export class Clock {
     frames = 0
     /** Total time passed since clock start in sec */
     elapsedTime = 0
+    /** Override all delta calculations. Set to 0 to disable */
+    fixedDelta = 0
 
     static now() {
         return performance.now()
@@ -64,11 +66,17 @@ export class Clock {
 
     /** Mark the start of a new frame */
     startFrame() {
-        this.trueDelta = (Clock.now() - this.frameStart) / 1000
-        this.frameStart = Clock.now()
+        if (this.fixedDelta) {
+            this.trueDelta = this.fixedDelta
+        } else {
+            this.trueDelta = (Clock.now() - this.frameStart) / 1000
+        }
+
         this.delta = clamp(this.minDelta, this.maxDelta, this.trueDelta)
         this.fps = Math.floor(1 / this.trueDelta)
         this.elapsedTime = (Clock.now() - this.clockStart) / 1000
+
+        this.frameStart = Clock.now()
     }
 
     /** Mark the end of all work that needed to be done this frame */

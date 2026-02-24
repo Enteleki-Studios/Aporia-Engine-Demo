@@ -2,6 +2,7 @@
 
 .Divider {
     border: none;
+    margin: 0;
 
     &.horizontal {
         border-top: 1px solid theme.color(default, border);

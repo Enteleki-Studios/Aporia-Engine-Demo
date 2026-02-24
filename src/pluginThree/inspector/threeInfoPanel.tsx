@@ -1,6 +1,6 @@
 import { useIntervalRender } from '@core/react'
 
-import { Stack, TCell, TRow, Table } from '@inspector'
+import { Panel, TCell, TRow, Table } from '@inspector'
 
 import { useThreeWorld } from '.'
 
@@ -10,7 +10,7 @@ export const ThreeInfoPanel = () => {
     const world = useThreeWorld()
 
     return (
-        <Stack direction="row">
+        <Panel>
             <Table>
                 <TRow>
                     <TCell>Calls</TCell>
@@ -33,6 +33,6 @@ export const ThreeInfoPanel = () => {
                     <TCell>{world.three.renderer.renderer.info.programs?.length}</TCell>
                 </TRow>
             </Table>
-        </Stack>
+        </Panel>
     )
 }

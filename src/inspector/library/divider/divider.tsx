@@ -5,5 +5,5 @@ type DividerProps = {
 }
 
 export const Divider = ({ direction = 'horizontal' }: DividerProps) => (
-    <div className={`Divider ${direction}`} />
+    <hr className={`Divider ${direction}`} />
 )
