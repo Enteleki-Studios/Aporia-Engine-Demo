@@ -1,5 +1,4 @@
 import {
-    AmbientLight,
     type AnimationAction,
     AnimationMixer,
     BoxGeometry,
@@ -22,7 +21,6 @@ import {
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
 import { FontLoader } from 'three/addons/loaders/FontLoader.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-import { Sky } from 'three/addons/objects/Sky.js'
 import { Water } from 'three/addons/objects/Water.js'
 
 import {
@@ -36,7 +34,6 @@ import { generateWedgeMeshData, transpose1D } from '@core/utils'
 
 import { type EntityId } from '@pluginEntities'
 
-import { DirectionalLight } from './lights/directionalLight'
 import { AxesHelper } from './meshes/axesHelper'
 import { InfiniteGrid } from './meshes/infiniteGrid'
 import {
@@ -96,54 +93,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
         helperStore.addHelper('axes', new AxesHelper(3))
         helperStore.addHelper('grid', new InfiniteGrid())
 
-        // Sun position
-        const sun = new Vector3()
-        const inclination = 0.7 // elevation (0–1)
-        const azimuth = 0.9 // east/west (0–1)
-
-        const theta = Math.PI * (inclination - 0.5)
-        const phi = 2 * Math.PI * (azimuth - 0.5)
-
-        sun.x = Math.cos(phi)
-        sun.y = Math.sin(theta)
-        sun.z = Math.sin(phi)
-
-        // Lighting
-        renderer.scene.add(new AmbientLight(0xffffff, inclination / 3))
-        const light = new DirectionalLight(0xffffff, inclination * 5)
-        light.position.copy(sun.clone().multiplyScalar(50))
-        renderer.scene.add(light)
-
-        helperStore.addHelper('shadow', light.shadowHelper)
-        helperStore.addHelper('light', light.helper)
-        light.helper.update()
-
-        // Sky
-        const sky = new Sky()
-        sky.scale.setScalar(2000)
-        sky.material.toneMapped = false
-        sky.material.fog = false
-        sky.material.depthWrite = false
-        sky.material.depthTest = false
-        sky.renderOrder = -1
-        renderer.scene.add(sky)
-
-        type SkyShaderUniforms = {
-            turbidity: { value: number }
-            rayleigh: { value: number }
-            mieCoefficient: { value: number }
-            mieDirectionalG: { value: number }
-            sunPosition: { value: Vector3 }
-            up: { value: Vector3 }
-        }
-
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Three.js doesn't provide the type
-        const skyUniforms = sky.material.uniforms as SkyShaderUniforms
-        skyUniforms.turbidity.value = 0.2 // Higher = hazier
-        skyUniforms.rayleigh.value = 0.5 * inclination // Lower = bluer
-        skyUniforms.mieCoefficient.value = 0.05 * inclination // White haze
-        skyUniforms.mieDirectionalG.value = 0.6 // Sun glow sharpness
-        skyUniforms.sunPosition.value.copy(sun)
+        const sun = [0, 0, 0] // TODO: Get real sun position
 
         // Water
         const waterGeometry = new PlaneGeometry(85, 85)
@@ -154,7 +104,7 @@ export const pluginThree = (): Plugin<ThreeOutput, DefaultResources> => ({
             waterNormals: loader.load('textures/waternormals.jpg', (texture) => {
                 texture.wrapS = texture.wrapT = RepeatWrapping
             }),
-            sunDirection: new Vector3().copy(sun).normalize(),
+            sunDirection: new Vector3().fromArray(sun).normalize(),
             sunColor: 0xffffff,
             waterColor: 0x0088cc,
             distortionScale: 3.7,
