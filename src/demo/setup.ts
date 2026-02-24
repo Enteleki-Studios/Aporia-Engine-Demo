@@ -17,6 +17,7 @@ import {
     RigidBodyFixed,
     RigidBodyKinematic,
 } from '@pluginRapier3D'
+import { SunComponent } from '@pluginSun'
 import {
     Animation,
     FloatingLabel,
@@ -36,6 +37,14 @@ export const setup = async () => {
     const world = await createWorld()
 
     world.runtime.addSystem(playerMovementSystem)
+
+    world.entities.addComponents(
+        world.entities.createEntity(),
+        SunComponent({
+            inclination: 0.7,
+            azimuth: 0.5,
+        }),
+    )
 
     world.entities.addComponents(
         world.entities.createEntity(),

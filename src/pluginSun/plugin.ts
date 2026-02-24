@@ -1,44 +1,35 @@
-import { vec3 } from 'gl-matrix'
-import { AmbientLight, type Vector3 } from 'three'
+import { AmbientLight } from 'three'
 import { Sky } from 'three/addons/objects/Sky.js'
 
 import type { Plugin, PluginsToResources, WorldWithPlugin } from '@core'
 
+import { PluginClock } from '@pluginClock'
+import type { PluginEntities } from '@pluginEntities'
+import type { PluginRuntime } from '@pluginRuntime'
 import { DirectionalLight, type PluginThree } from '@pluginThree'
 
-type Dependencies = PluginsToResources<[PluginThree]>
+import { syncSun } from './systems'
+import { updateSun } from './updateSun'
+
+type Provides = {
+    sun: {
+        ambientLight: AmbientLight
+        sunLight: DirectionalLight
+        sky: Sky
+    }
+}
+
+type Dependencies = PluginsToResources<
+    [PluginRuntime, PluginClock, PluginEntities, PluginThree]
+>
 
 export type PluginSun = ReturnType<typeof pluginSun>
 export type SunWorld = WorldWithPlugin<PluginSun>
 
-export const pluginSun = (): Plugin<object, Dependencies> => ({
-    init(world) {
-        const { renderer, helperStore } = world.three
-
-        // Sun position
-        const sun: vec3 = [0, 0, 0]
-        const inclination = 0.7 // elevation (0–1)
-        const azimuth = 0.9 // east/west (0–1)
-
-        const theta = Math.PI * (inclination - 0.5)
-        const phi = 2 * Math.PI * (azimuth - 0.5)
-
-        sun[0] = Math.cos(phi)
-        sun[1] = Math.sin(theta)
-        sun[2] = Math.sin(phi)
-
-        // Lighting
-        renderer.scene.add(new AmbientLight(0xffffff, inclination / 3))
-        const light = new DirectionalLight(0xffffff, inclination * 5)
-        light.position.fromArray(vec3.scale([], sun, 50))
-        renderer.scene.add(light)
-
-        helperStore.addHelper('shadow', light.shadowHelper)
-        helperStore.addHelper('light', light.helper)
-        light.helper.update()
-
-        // Sky
+export const pluginSun = (): Plugin<Provides, Dependencies> => ({
+    createResources() {
         const sky = new Sky()
+
         sky.scale.setScalar(2000)
         sky.material.toneMapped = false
         sky.material.fog = false
@@ -46,24 +37,27 @@ export const pluginSun = (): Plugin<object, Dependencies> => ({
         sky.material.depthTest = false
         sky.renderOrder = -1
 
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Three.js doesn't provide the type
-        const skyUniforms = sky.material.uniforms as SkyShaderUniforms
+        return {
+            sun: {
+                ambientLight: new AmbientLight(0xffffff),
+                sunLight: new DirectionalLight(0xffffff, 1),
+                sky,
+            },
+        }
+    },
+    init(world) {
+        const { renderer, helperStore } = world.three
+        const { ambientLight, sunLight, sky } = world.sun
 
-        skyUniforms.turbidity.value = 0.2 // Higher = hazier
-        skyUniforms.rayleigh.value = 0.5 * inclination // Lower = bluer
-        skyUniforms.mieCoefficient.value = 0.05 * inclination // White haze
-        skyUniforms.mieDirectionalG.value = 0.6 // Sun glow sharpness
-        skyUniforms.sunPosition.value.fromArray(sun)
-
+        renderer.scene.add(ambientLight)
+        renderer.scene.add(sunLight)
         renderer.scene.add(sky)
+
+        updateSun(ambientLight, sunLight, sky, 0.7, 0.9)
+
+        helperStore.addHelper('shadow', sunLight.shadowHelper)
+        helperStore.addHelper('light', sunLight.helper)
+
+        world.runtime.addSystem(syncSun)
     },
 })
-
-type SkyShaderUniforms = {
-    turbidity: { value: number }
-    rayleigh: { value: number }
-    mieCoefficient: { value: number }
-    mieDirectionalG: { value: number }
-    sunPosition: { value: Vector3 }
-    up: { value: Vector3 }
-}
