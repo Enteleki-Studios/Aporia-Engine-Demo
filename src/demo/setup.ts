@@ -17,7 +17,7 @@ import {
     RigidBodyFixed,
     RigidBodyKinematic,
 } from '@pluginRapier3D'
-import { SunComponent } from '@pluginSun'
+import { SunComponent } from '@pluginSky'
 import {
     Animation,
     FloatingLabel,

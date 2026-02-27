@@ -8,8 +8,8 @@ import type { PluginEntities } from '@pluginEntities'
 import type { PluginRuntime } from '@pluginRuntime'
 import { DirectionalLight, type PluginThree } from '@pluginThree'
 
-import { syncSun } from './systems'
-import { updateSun } from './updateSun'
+import { syncSky } from './systems'
+import { updateSky } from './updateSky'
 
 type Provides = {
     sun: {
@@ -23,10 +23,10 @@ type Dependencies = PluginsToResources<
     [PluginRuntime, PluginClock, PluginEntities, PluginThree]
 >
 
-export type PluginSun = ReturnType<typeof pluginSun>
-export type SunWorld = WorldWithPlugin<PluginSun>
+export type PluginSky = ReturnType<typeof pluginSky>
+export type SkyWorld = WorldWithPlugin<PluginSky>
 
-export const pluginSun = (): Plugin<Provides, Dependencies> => ({
+export const pluginSky = (): Plugin<Provides, Dependencies> => ({
     createResources() {
         const sky = new Sky()
         sky.scale.setScalar(420000)
@@ -47,11 +47,11 @@ export const pluginSun = (): Plugin<Provides, Dependencies> => ({
         renderer.scene.add(sunLight)
         renderer.scene.add(sky)
 
-        updateSun(ambientLight, sunLight, sky, 90, 0)
+        updateSky(ambientLight, sunLight, sky, 90, 0)
 
         helperStore.addHelper('shadow', sunLight.shadowHelper)
         helperStore.addHelper('light', sunLight.helper)
 
-        world.runtime.addSystem(syncSun)
+        world.runtime.addSystem(syncSky)
     },
 })

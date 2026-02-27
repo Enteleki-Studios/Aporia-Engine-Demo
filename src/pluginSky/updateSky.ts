@@ -5,7 +5,7 @@ import { degToRad } from '@core/utils'
 
 import type { DirectionalLight } from '@pluginThree'
 
-export const updateSun = (
+export const updateSky = (
     ambientLight: AmbientLight,
     sunLight: DirectionalLight,
     sky: Sky,

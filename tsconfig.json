@@ -48,7 +48,7 @@
             "@pluginRapierThreeViz": ["./src/pluginRapierThreeViz/"],
             "@pluginRuntime": ["./src/pluginRuntime/"],
             "@pluginThree": ["./src/pluginThree/"],
-            "@pluginSun": ["./src/pluginSun/"]
+            "@pluginSky": ["./src/pluginSky/"]
         }
     },
     "include": ["."],

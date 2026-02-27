@@ -1,8 +1,8 @@
-import { type SunWorld, sunQuery } from '@pluginSun'
+import { type SkyWorld, sunQuery } from '@pluginSky'
 
-import { updateSun } from './updateSun'
+import { updateSky } from './updateSky'
 
-export const syncSun = (world: SunWorld) => {
+export const syncSky = (world: SkyWorld) => {
     const sunResult = world.entities.queryFirst(sunQuery)
 
     if (sunResult) {
@@ -12,7 +12,7 @@ export const syncSun = (world: SunWorld) => {
             const { ambientLight, sunLight, sky } = world.sun
             const { elevation, azimuth } = sunDef
 
-            updateSun(ambientLight, sunLight, sky, elevation, azimuth)
+            updateSky(ambientLight, sunLight, sky, elevation, azimuth)
 
             sunDef.needsUpdate = false
         }
