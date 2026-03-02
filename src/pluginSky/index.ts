@@ -3,6 +3,7 @@ import { createComponent } from '@core'
 import { createQuery } from '@pluginEntities'
 
 export * from './plugin'
+export * from './skyPanel'
 
 type SunProps = {
     elevation: number

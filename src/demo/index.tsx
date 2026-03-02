@@ -7,6 +7,7 @@ import { ClockPanel } from '@pluginClock'
 import { EntitiesPanel } from '@pluginEntities'
 import { RapierThreeVizPanel } from '@pluginRapierThreeViz'
 import { RuntimePanel } from '@pluginRuntime'
+import { SkyPanel } from '@pluginSky'
 import { ThreePanel } from '@pluginThree'
 
 import { Game } from './game'
@@ -45,6 +46,10 @@ export const Root = () => {
                             {
                                 title: 'R3Viz',
                                 content: <RapierThreeVizPanel />,
+                            },
+                            {
+                                title: 'Sky',
+                                content: <SkyPanel />,
                             },
                         ]}
                     />
