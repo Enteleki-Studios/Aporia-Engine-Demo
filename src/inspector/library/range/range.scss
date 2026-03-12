@@ -1,0 +1,36 @@
+@use '@inspector/theme';
+
+.Range {
+    border: 1px solid theme.color(control, border);
+    padding: 0.25rem;
+    border-radius: 2px;
+    position: relative;
+    cursor: col-resize;
+
+    .contentWrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+
+        .label {
+            margin-right: 2rem;
+            user-select: none;
+        }
+        input {
+            color: inherit;
+            background-color: transparent;
+            border: 0;
+            width: 2rem;
+            text-align: right;
+        }
+    }
+    .fillBar {
+        background-color: theme.color(control, foreground-enabled);
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}

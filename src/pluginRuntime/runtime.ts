@@ -20,6 +20,7 @@ export class Runtime<W extends AnyWorld = AnyWorld> {
     private world!: W // TODO: Can we remove this assertion?
     private systems: InternalSystem[] = []
     private debugSystems: InternalSystem[] = []
+    private tasks: InternalSystem[] = []
     private loopId: number | null = null
 
     setWorld(world: W) {
@@ -61,6 +62,10 @@ export class Runtime<W extends AnyWorld = AnyWorld> {
         }
     }
 
+    addTask(task: InternalSystem) {
+        this.tasks.push(task)
+    }
+
     start() {
         this.loop()
     }
@@ -84,6 +89,12 @@ export class Runtime<W extends AnyWorld = AnyWorld> {
         for (const debugSystem of this.debugSystems) {
             debugSystem(this.world)
         }
+
+        for (const task of this.tasks) {
+            task(this.world)
+        }
+
+        this.tasks.length = 0
     }
 
     get isRunning() {

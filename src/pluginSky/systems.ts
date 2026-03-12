@@ -21,6 +21,6 @@ export const syncSky = (world: SkyWorld) => {
     const { time } = world.sun.sky.material.uniforms
 
     if (time) {
-        time.value = world.clock.elapsedTime
+        time.value = world.clock.elapsedTime * 0.4
     }
 }

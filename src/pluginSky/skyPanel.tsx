@@ -1,15 +1,17 @@
-import { PluginsToResources } from '@core'
+import { type PluginsToResources } from '@core'
 
-import { TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
+import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
-import { Panel, Stack } from '@inspector'
-import { PluginEntities } from '@pluginEntities'
+import { Panel, Range, Stack } from '@inspector'
+import { type PluginEntities } from '@pluginEntities'
+import { type PluginRuntime } from '@pluginRuntime'
 import { sunQuery } from '@pluginSky'
 
-import { PluginSky } from './plugin'
+import { type PluginSky } from './plugin'
 
-export const useSkyWorld: TypedUseWorld<PluginsToResources<[PluginEntities, PluginSky]>> =
-    useWorld
+export const useSkyWorld: TypedUseWorld<
+    PluginsToResources<[PluginRuntime, PluginEntities, PluginSky]>
+> = useWorld
 
 export const SkyPanel = () => {
     useIntervalRender(500)
@@ -23,8 +25,36 @@ export const SkyPanel = () => {
         <Panel>
             <Stack>
                 <h3>Sky</h3>
-                <span>Elevation: {sun?.elevation}</span>
-                <span>Azimuth: {sun?.azimuth}</span>
+                <Range
+                    defaultValue={sun?.elevation ?? 0}
+                    min={0}
+                    max={90}
+                    onChange={(nextElevation) => {
+                        world.runtime.addTask(() => {
+                            if (sun) {
+                                sun.elevation = nextElevation
+                                sun.needsUpdate = true
+                            }
+                        })
+                    }}
+                >
+                    Elevation
+                </Range>
+                <Range
+                    defaultValue={sun?.azimuth ?? 0}
+                    min={-180}
+                    max={180}
+                    onChange={(nextAzimuth) => {
+                        world.runtime.addTask(() => {
+                            if (sun) {
+                                sun.azimuth = nextAzimuth
+                                sun.needsUpdate = true
+                            }
+                        })
+                    }}
+                >
+                    Azimuth
+                </Range>
             </Stack>
         </Panel>
     )

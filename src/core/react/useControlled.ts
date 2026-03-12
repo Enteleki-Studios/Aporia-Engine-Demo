@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 type UseControlledProps<T> = {
     controlledValue: T | undefined
@@ -8,7 +8,7 @@ type UseControlledProps<T> = {
 export const useControlled = <T>({
     controlledValue,
     defaultValue,
-}: UseControlledProps<T>): [T | undefined, (nextValue: T) => void] => {
+}: UseControlledProps<T>): [T | undefined, Dispatch<SetStateAction<T | undefined>>] => {
     const [uncontrolledValue, setUncontrolledValue] = useState<T | undefined>(
         defaultValue,
     )
