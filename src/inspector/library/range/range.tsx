@@ -25,6 +25,7 @@ type RangeProps = {
 type DragState = {
     origin: [number, number]
     lastPosition: [number, number]
+    elementWidth: number
 }
 
 export const Range = ({
@@ -47,6 +48,7 @@ export const Range = ({
     const dragState = useRef<DragState>({
         origin: [0, 0],
         lastPosition: [0, 0],
+        elementWidth: 1,
     })
 
     const handleInputClick = useCallback((e: ReactMouseEvent) => {
@@ -56,6 +58,7 @@ export const Range = ({
     const handleMouseDown = useCallback((e: ReactMouseEvent) => {
         dragState.current.origin = [e.clientX, e.clientY]
         dragState.current.lastPosition = [e.clientX, e.clientY]
+        dragState.current.elementWidth = e.currentTarget.clientWidth
         setIsDragging(true)
     }, [])
 
@@ -68,15 +71,21 @@ export const Range = ({
             e.stopPropagation()
 
             if (isDragging) {
-                const distance: [number, number] = [
-                    e.clientX - dragState.current.lastPosition[0],
-                    e.clientY - dragState.current.lastPosition[1],
-                ]
+                const distance = e.clientX - dragState.current.lastPosition[0]
+
+                const scale = Math.max(
+                    1,
+                    Math.abs(dragState.current.origin[1] - e.clientY) / 10,
+                )
+
+                const relativeValueChange = distance / dragState.current.elementWidth
+
+                const range = max - min
+
+                const valueChange = range * (relativeValueChange / scale)
 
                 setValState((prev) => {
-                    // TODO replace scale with Y distance
-                    const scale = 0.5
-                    const nextValue = clamp((prev ?? 0) + distance[0] * scale, min, max)
+                    const nextValue = clamp((prev ?? 0) + valueChange, min, max)
 
                     onChange?.(nextValue)
 
