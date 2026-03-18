@@ -3,6 +3,7 @@ import { use } from 'react'
 import { ResourcesPanel, WorldContext } from '@core/react'
 
 import { Divider, Inspector, Stack, Tabs } from '@inspector'
+import { CubeIcon, EyeIcon, PuzzlePieceIcon, SunHorizonIcon } from '@phosphor-icons/react'
 import { ClockPanel } from '@pluginClock'
 import { EntitiesPanel } from '@pluginEntities'
 import { RapierThreeVizPanel } from '@pluginRapierThreeViz'
@@ -37,18 +38,22 @@ export const Root = () => {
                         tabs={[
                             {
                                 title: 'Resources',
+                                icon: <PuzzlePieceIcon />,
                                 content: <ResourcesPanel />,
                             },
                             {
                                 title: 'Three',
+                                icon: <CubeIcon />,
                                 content: <ThreePanel />,
                             },
                             {
                                 title: 'R3Viz',
+                                icon: <EyeIcon />,
                                 content: <RapierThreeVizPanel />,
                             },
                             {
                                 title: 'Sky',
+                                icon: <SunHorizonIcon />,
                                 content: <SkyPanel />,
                             },
                         ]}
