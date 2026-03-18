@@ -1,0 +1,12 @@
+@use '@inspector/theme';
+
+.Alert {
+    border: 1px solid theme.color(control, border);
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+
+    &.info {
+        border-color: theme.color(severity, info);
+        color: theme.color(severity, info-copy);
+    }
+}

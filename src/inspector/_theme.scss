@@ -8,6 +8,10 @@ $lighterBlue: #3d3f4a;
 $darkGrey: #43454f;
 $grey: #5e5f68;
 $pink: #e9026e;
+$green: #16fd91;
+$blue: #02dee8;
+$red: #fd2117;
+$yellow: #fda417;
 
 $colors: (
     default: (
@@ -39,6 +43,16 @@ $colors: (
     checkered: (
         color1: $black,
         color2: color.scale($black, $lightness: 5%),
+    ),
+    severity: (
+        info: $blue,
+        info-copy: color.scale($blue, $lightness: 80%),
+        success: $green,
+        success-copy: color.scale($green, $lightness: 80%),
+        warning: $yellow,
+        warning-copy: color.scale($yellow, $lightness: 80%),
+        error: $red,
+        error-copy: color.scale($red, $lightness: 80%),
     ),
 );
 

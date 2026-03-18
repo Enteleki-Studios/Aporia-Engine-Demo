@@ -2,10 +2,10 @@ import { type PluginsToResources } from '@core'
 
 import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
-import { Panel, Range, Stack } from '@inspector'
+import { Alert, Panel, Range, Stack } from '@inspector'
 import { type PluginEntities } from '@pluginEntities'
 import { type PluginRuntime } from '@pluginRuntime'
-import { sunQuery } from '@pluginSky'
+import { skyQuery } from '@pluginSky'
 
 import { type PluginSky } from './plugin'
 
@@ -17,39 +17,48 @@ export const SkyPanel = () => {
     useIntervalRender(500)
 
     const world = useSkyWorld()
-    const sunResult = world.entities.queryFirst(sunQuery)
+    const skyResult = world.entities.queryFirst(skyQuery)
 
-    const sun = sunResult?.[0][0]
+    const sky = skyResult?.[0][0]
+
+    if (!sky) {
+        return (
+            <Panel>
+                <Stack>
+                    <h3>Sky</h3>
+                    <Alert>
+                        Add the SkySettings component to your world to enable this panel
+                    </Alert>
+                </Stack>
+            </Panel>
+        )
+    }
 
     return (
         <Panel>
             <Stack>
                 <h3>Sky</h3>
                 <Range
-                    defaultValue={sun?.elevation ?? 0}
+                    defaultValue={sky.elevation}
                     min={0}
                     max={90}
                     onChange={(nextElevation) => {
                         world.runtime.addTask(() => {
-                            if (sun) {
-                                sun.elevation = nextElevation
-                                sun.needsUpdate = true
-                            }
+                            sky.elevation = nextElevation
+                            sky.needsUpdate = true
                         })
                     }}
                 >
                     Elevation
                 </Range>
                 <Range
-                    defaultValue={sun?.azimuth ?? 0}
+                    defaultValue={sky.azimuth}
                     min={-180}
                     max={180}
                     onChange={(nextAzimuth) => {
                         world.runtime.addTask(() => {
-                            if (sun) {
-                                sun.azimuth = nextAzimuth
-                                sun.needsUpdate = true
-                            }
+                            sky.azimuth = nextAzimuth
+                            sky.needsUpdate = true
                         })
                     }}
                 >

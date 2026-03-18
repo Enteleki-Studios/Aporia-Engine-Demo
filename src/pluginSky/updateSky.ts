@@ -3,15 +3,17 @@ import type { Sky } from 'three/addons/objects/Sky.js'
 
 import { degToRad } from '@core/utils'
 
+import { type SkySettings } from '@pluginSky'
 import type { DirectionalLight } from '@pluginThree'
 
 export const updateSky = (
     ambientLight: AmbientLight,
     sunLight: DirectionalLight,
     sky: Sky,
-    elevation: number,
-    azimuth: number,
+    settings: SkySettings,
 ) => {
+    const { elevation, azimuth } = settings
+
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Three.js doesn't provide the type
     const skyUniforms = sky.material.uniforms as SkyShaderUniforms
 

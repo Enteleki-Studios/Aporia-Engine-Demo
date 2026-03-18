@@ -6,6 +6,7 @@ import type { Plugin, PluginsToResources, WorldWithPlugin } from '@core'
 import { PluginClock } from '@pluginClock'
 import type { PluginEntities } from '@pluginEntities'
 import type { PluginRuntime } from '@pluginRuntime'
+import { SkySettings } from '@pluginSky'
 import { DirectionalLight, type PluginThree } from '@pluginThree'
 
 import { syncSky } from './systems'
@@ -47,7 +48,7 @@ export const pluginSky = (): Plugin<Provides, Dependencies> => ({
         renderer.scene.add(sunLight)
         renderer.scene.add(sky)
 
-        updateSky(ambientLight, sunLight, sky, 90, 0)
+        updateSky(ambientLight, sunLight, sky, SkySettings())
 
         helperStore.addHelper('shadow', sunLight.shadowHelper)
         helperStore.addHelper('light', sunLight.helper)

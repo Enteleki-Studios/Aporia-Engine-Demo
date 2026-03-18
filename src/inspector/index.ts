@@ -1,5 +1,6 @@
 export { Inspector } from './inspector'
 
+export * from './library/alert/alert'
 export * from './library/button/button'
 export * from './library/checkbox/checkbox'
 export * from './library/divider/divider'

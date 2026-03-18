@@ -17,7 +17,7 @@ import {
     RigidBodyFixed,
     RigidBodyKinematic,
 } from '@pluginRapier3D'
-import { SunComponent } from '@pluginSky'
+import { SkySettings } from '@pluginSky'
 import {
     Animation,
     FloatingLabel,
@@ -38,7 +38,7 @@ export const setup = async () => {
 
     world.runtime.addSystem(playerMovementSystem)
 
-    world.entities.addComponents(world.entities.createEntity(), SunComponent())
+    world.entities.addComponents(world.entities.createEntity(), SkySettings())
 
     world.entities.addComponents(
         world.entities.createEntity(),
