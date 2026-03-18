@@ -9,4 +9,19 @@
         border-color: theme.color(severity, info);
         color: theme.color(severity, info-copy);
     }
+
+    &.success {
+        border-color: theme.color(severity, success);
+        color: theme.color(severity, success-copy);
+    }
+
+    &.warning {
+        border-color: theme.color(severity, warning);
+        color: theme.color(severity, warning-copy);
+    }
+
+    &.error {
+        border-color: theme.color(severity, error);
+        color: theme.color(severity, error-copy);
+    }
 }
