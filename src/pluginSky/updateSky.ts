@@ -31,14 +31,14 @@ export const updateSky = (
     sunLight.position.multiplyScalar(50)
     sunLight.helper.update()
 
-    skyUniforms.turbidity.value = 2.5
-    skyUniforms.rayleigh.value = 0.5
-    skyUniforms.mieCoefficient.value = 0.003
-    skyUniforms.mieDirectionalG.value = 0.75
+    skyUniforms.turbidity.value = settings.turbidity
+    skyUniforms.rayleigh.value = settings.rayleigh
+    skyUniforms.mieCoefficient.value = settings.mieCoefficient
+    skyUniforms.mieDirectionalG.value = settings.mieDirectionalG
 
-    skyUniforms.cloudCoverage.value = 0.4
-    skyUniforms.cloudDensity.value = 0.4
-    skyUniforms.cloudElevation.value = 1
+    skyUniforms.cloudCoverage.value = settings.cloudCoverage
+    skyUniforms.cloudDensity.value = settings.cloudDensity
+    skyUniforms.cloudElevation.value = settings.cloudElevation
 }
 
 type SkyShaderUniforms = {
