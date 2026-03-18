@@ -1,12 +1,41 @@
 import type { ReactNode } from 'react'
 
+import {
+    CheckCircleIcon,
+    InfoIcon,
+    WarningCircleIcon,
+    XCircleIcon,
+} from '@phosphor-icons/react'
+
 import './alert.scss'
+
+type Severity = 'info' | 'success' | 'warning' | 'error'
 
 type AlertProps = {
     children: ReactNode
-    severity?: 'info' | 'success' | 'warning' | 'error'
+    severity?: Severity
+}
+
+const sevToIcon = (severity: Severity) => {
+    switch (severity) {
+        case 'info':
+            return <InfoIcon />
+        case 'success':
+            return <CheckCircleIcon />
+        case 'warning':
+            return <WarningCircleIcon />
+        case 'error':
+            return <XCircleIcon />
+    }
 }
 
 export const Alert = ({ children, severity = 'info' }: AlertProps) => {
-    return <div className={`Alert ${severity}`}>{children}</div>
+    const icon = sevToIcon(severity)
+
+    return (
+        <div className={`Alert ${severity}`}>
+            <span className="icon">{icon}</span>
+            {children}
+        </div>
+    )
 }

@@ -1,4 +1,5 @@
 import { Button, Checkbox, Stack } from '@inspector'
+import { WrenchIcon } from '@phosphor-icons/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Tabs } from './tabs'
@@ -34,6 +35,7 @@ export const Primary: Story = {
         tabs: [
             {
                 title: 'Debug helpers',
+                icon: <WrenchIcon />,
                 content: (
                     <Stack spacing={2}>
                         <Checkbox checked switch>
