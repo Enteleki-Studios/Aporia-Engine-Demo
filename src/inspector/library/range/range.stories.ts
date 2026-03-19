@@ -19,7 +19,7 @@ type Story = StoryObj<typeof meta>
 
 export const Primary: Story = {
     args: {
-        value: 35,
+        defaultValue: 35,
         min: 0,
         max: 90,
         children: 'Elevation',

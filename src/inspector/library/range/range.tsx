@@ -19,7 +19,6 @@ type RangeProps = {
     max: number
     step?: number
     children?: ReactNode
-    disabled?: boolean
     onChange?: (nextValue: number) => void
 }
 
