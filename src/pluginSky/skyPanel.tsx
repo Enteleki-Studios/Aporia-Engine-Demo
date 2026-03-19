@@ -43,6 +43,7 @@ export const SkyPanel = () => {
                         defaultValue={sky.elevation}
                         min={0}
                         max={90}
+                        step={0.01}
                         onChange={(nextElevation) => {
                             world.runtime.addTask(() => {
                                 sky.elevation = nextElevation
@@ -56,6 +57,7 @@ export const SkyPanel = () => {
                         defaultValue={sky.azimuth}
                         min={-180}
                         max={180}
+                        step={0.01}
                         onChange={(nextAzimuth) => {
                             world.runtime.addTask(() => {
                                 sky.azimuth = nextAzimuth
@@ -85,6 +87,7 @@ export const SkyPanel = () => {
                         defaultValue={sky.rayleigh}
                         min={0}
                         max={4}
+                        step={0.01}
                         onChange={(next) => {
                             world.runtime.addTask(() => {
                                 sky.rayleigh = next
@@ -98,6 +101,7 @@ export const SkyPanel = () => {
                         defaultValue={sky.mieCoefficient}
                         min={0}
                         max={0.1}
+                        step={0.0001}
                         onChange={(next) => {
                             world.runtime.addTask(() => {
                                 sky.mieCoefficient = next
@@ -111,6 +115,7 @@ export const SkyPanel = () => {
                         defaultValue={sky.mieDirectionalG}
                         min={0}
                         max={1}
+                        step={0.01}
                         onChange={(next) => {
                             world.runtime.addTask(() => {
                                 sky.mieDirectionalG = next
@@ -127,6 +132,7 @@ export const SkyPanel = () => {
                         defaultValue={sky.cloudCoverage}
                         min={0}
                         max={1}
+                        step={0.01}
                         onChange={(next) => {
                             world.runtime.addTask(() => {
                                 sky.cloudCoverage = next
@@ -140,6 +146,7 @@ export const SkyPanel = () => {
                         defaultValue={sky.cloudDensity}
                         min={0}
                         max={1}
+                        step={0.01}
                         onChange={(next) => {
                             world.runtime.addTask(() => {
                                 sky.cloudDensity = next
@@ -153,6 +160,7 @@ export const SkyPanel = () => {
                         defaultValue={sky.cloudElevation}
                         min={0}
                         max={1}
+                        step={0.001}
                         onChange={(next) => {
                             world.runtime.addTask(() => {
                                 sky.cloudElevation = next

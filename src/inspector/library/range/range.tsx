@@ -17,6 +17,7 @@ type RangeProps = {
     defaultValue?: number
     min: number
     max: number
+    step?: number
     children?: ReactNode
     disabled?: boolean
     onChange?: (nextValue: number) => void
@@ -28,11 +29,14 @@ type DragState = {
     elementWidth: number
 }
 
+// TODO: Add support for text input
+
 export const Range = ({
     value,
     defaultValue,
     min,
     max,
+    step = 0.1,
     children,
     onChange,
 }: RangeProps) => {
@@ -51,9 +55,8 @@ export const Range = ({
         elementWidth: 1,
     })
 
-    const handleInputClick = useCallback((e: ReactMouseEvent) => {
-        e.stopPropagation()
-    }, [])
+    const range = max - min
+    const precision = step.toString().split('.')[1]?.length ?? 0
 
     const handleMouseDown = useCallback((e: ReactMouseEvent) => {
         dragState.current.origin = [e.clientX, e.clientY]
@@ -71,31 +74,39 @@ export const Range = ({
             e.stopPropagation()
 
             if (isDragging) {
+                // TODO: The "remainder" of the drag distance should carry over to the next drag event
+
                 const distance = e.clientX - dragState.current.lastPosition[0]
 
+                // Moving the cursor vertically makes dragging more precise
                 const scale = Math.max(
                     1,
                     Math.abs(dragState.current.origin[1] - e.clientY) / 10,
                 )
 
                 const relativeValueChange = distance / dragState.current.elementWidth
-
-                const range = max - min
-
                 const valueChange = range * (relativeValueChange / scale)
+                const steps = Math.trunc(valueChange / step)
+                const changeRespectingStep = steps * step
+
+                if (changeRespectingStep) {
+                    dragState.current.lastPosition = [e.clientX, e.clientY]
+                }
 
                 setValState((prev) => {
-                    const nextValue = clamp((prev ?? 0) + valueChange, min, max)
+                    const nextValue = Number(
+                        clamp((prev ?? 0) + changeRespectingStep, min, max).toFixed(
+                            precision,
+                        ),
+                    )
 
                     onChange?.(nextValue)
 
                     return nextValue
                 })
-
-                dragState.current.lastPosition = [e.clientX, e.clientY]
             }
         },
-        [isDragging, setValState, min, max, onChange],
+        [isDragging, setValState, min, max, step, onChange, range, precision],
     )
 
     useEffect(() => {
@@ -110,14 +121,15 @@ export const Range = ({
         }
     }, [isDragging, handleMouseMove, handleMouseUp])
 
-    const percentFilled = (((valState ?? 0) - min) / (max - min)) * 100
+    const percentFilled = (((valState ?? 0) - min) / range) * 100
+    const valString = valState?.toFixed(precision)
 
     return (
         <div className="Range" ref={dragRef} onMouseDown={handleMouseDown}>
             <div className="fillBar" style={{ width: `${percentFilled}%` }} />
             <div className="contentWrapper">
                 <div className="label">{children}</div>
-                <input type="text" value={valState} onClick={handleInputClick} />
+                <div className="value">{valString}</div>
             </div>
         </div>
     )
