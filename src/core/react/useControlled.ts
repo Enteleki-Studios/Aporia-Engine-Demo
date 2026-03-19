@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { type Dispatch, type SetStateAction, useState } from 'react'
 
 type UseControlledProps<T> = {
     controlledValue: T | undefined
