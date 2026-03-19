@@ -6,6 +6,7 @@ import { useSelectedTab } from './useSelectedTab'
 type Tab = {
     title: string
     content: ReactNode
+    icon?: ReactNode
 }
 
 type TabsProps = {
@@ -19,18 +20,20 @@ export const Tabs = ({ ns, tabs }: TabsProps) => {
     return (
         <div className="Tabs">
             <div className="tabNav">
-                {tabs.map(({ title }) => {
+                {tabs.map(({ title, icon }) => {
                     const isActive = title === activeTab
+                    const hasIcon = Boolean(icon)
                     return (
                         <button
                             key={title}
-                            className={`tabView ${isActive ? 'active' : ''}`}
+                            className={`tabView ${isActive ? 'active' : ''} ${hasIcon ? 'hasIcon' : ''}`}
                             title={title}
                             onClick={() => {
                                 setActiveTab(title)
                             }}
                         >
-                            {title}
+                            {icon}
+                            <span className="title">{title}</span>
                         </button>
                     )
                 })}

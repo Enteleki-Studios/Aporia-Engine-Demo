@@ -1,0 +1,50 @@
+@use '@inspector/theme';
+
+.Alert {
+    border: 1px solid theme.color(control, border);
+    border-radius: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    align-items: center;
+
+    .icon {
+        margin-right: 0.5rem;
+
+        svg {
+            font-size: 1.25rem;
+            vertical-align: middle;
+        }
+    }
+
+    &.info {
+        border-color: theme.color(severity, info);
+        color: theme.color(severity, info-copy);
+        .icon svg {
+            fill: theme.color(severity, info);
+        }
+    }
+
+    &.success {
+        border-color: theme.color(severity, success);
+        color: theme.color(severity, success-copy);
+        .icon svg {
+            fill: theme.color(severity, success);
+        }
+    }
+
+    &.warning {
+        border-color: theme.color(severity, warning);
+        color: theme.color(severity, warning-copy);
+        .icon svg {
+            fill: theme.color(severity, warning);
+        }
+    }
+
+    &.error {
+        border-color: theme.color(severity, error);
+        color: theme.color(severity, error-copy);
+        .icon svg {
+            fill: theme.color(severity, error);
+        }
+    }
+}

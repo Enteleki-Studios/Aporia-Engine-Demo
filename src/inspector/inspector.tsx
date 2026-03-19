@@ -33,12 +33,14 @@ export const Inspector = ({
         return children
     }
 
+    const currentYear = new Date().getFullYear()
+
     return (
         <div className="Inspector">
             <div className="header">Inspector</div>
             <div className="sidepanel">{sidepanelContent}</div>
             <div className="explorer">{explorerContent}</div>
-            <footer>Enteleki Studios</footer>
+            <footer>&copy; {currentYear} Enteleki Studios</footer>
             <div className="views">
                 <div className="game">{children}</div>
             </div>

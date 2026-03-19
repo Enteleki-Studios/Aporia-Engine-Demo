@@ -1,4 +1,5 @@
 import {
+    ACESFilmicToneMapping,
     Material,
     OrthographicCamera,
     PCFSoftShadowMap,
@@ -24,8 +25,8 @@ export class Renderer {
             antialias: true,
         })
 
-        this.renderer.toneMapping = 0
-        this.renderer.toneMappingExposure = 1
+        this.renderer.toneMapping = ACESFilmicToneMapping
+        this.renderer.toneMappingExposure = 0.5
         this.renderer.outputColorSpace = SRGBColorSpace
 
         this.renderer.shadowMap.enabled = true

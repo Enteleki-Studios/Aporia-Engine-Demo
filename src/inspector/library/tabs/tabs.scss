@@ -12,6 +12,18 @@
             padding: 0.25rem 0.5rem;
             cursor: pointer;
             font: inherit;
+            position: relative;
+
+            &.hasIcon {
+                svg {
+                    font-size: 1rem;
+                    position: absolute;
+                    margin-top: -1px;
+                }
+                .title {
+                    margin-left: 1.25rem;
+                }
+            }
 
             &::after {
                 // Prevent bold from changing width

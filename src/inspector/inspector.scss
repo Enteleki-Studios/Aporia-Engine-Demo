@@ -3,13 +3,13 @@
 .Inspector {
     display: grid;
     grid-gap: 2px;
-    grid-template-columns: 17rem 1fr;
+    grid-template-columns: 1fr 17rem;
     grid-template-rows: auto 1fr 20rem auto;
     grid-template-areas:
-        'header header'
-        'sidepanel views'
-        'sidepanel explorer'
-        'footer explorer';
+        'views header'
+        'views sidepanel'
+        'explorer sidepanel'
+        'explorer footer';
     width: 100vw;
     height: 100vh;
     font-size: 0.75rem;

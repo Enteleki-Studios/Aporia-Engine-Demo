@@ -47,7 +47,8 @@
             "@pluginRapier3D": ["./src/pluginRapier3D/"],
             "@pluginRapierThreeViz": ["./src/pluginRapierThreeViz/"],
             "@pluginRuntime": ["./src/pluginRuntime/"],
-            "@pluginThree": ["./src/pluginThree/"]
+            "@pluginThree": ["./src/pluginThree/"],
+            "@pluginSky": ["./src/pluginSky/"]
         }
     },
     "include": ["."],

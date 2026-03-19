@@ -1,10 +1,12 @@
 export { Inspector } from './inspector'
 
+export * from './library/alert/alert'
 export * from './library/button/button'
 export * from './library/checkbox/checkbox'
 export * from './library/divider/divider'
 export * from './library/option/option'
 export * from './library/panel/panel'
+export * from './library/range/range'
 export * from './library/select/select'
 export * from './library/stack/stack'
 export * from './library/table/table'
