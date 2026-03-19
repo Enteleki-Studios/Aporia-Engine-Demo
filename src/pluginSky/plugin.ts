@@ -3,7 +3,7 @@ import { Sky } from 'three/addons/objects/Sky.js'
 
 import type { Plugin, PluginsToResources, WorldWithPlugin } from '@core'
 
-import { PluginClock } from '@pluginClock'
+import type { PluginClock } from '@pluginClock'
 import type { PluginEntities } from '@pluginEntities'
 import type { PluginRuntime } from '@pluginRuntime'
 import { SkySettings } from '@pluginSky'
