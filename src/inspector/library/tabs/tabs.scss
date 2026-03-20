@@ -1,6 +1,10 @@
 @use '@inspector/theme';
 
 .Tabs {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
     .tabNav {
         border-bottom: 1px solid theme.color(default, border);
 
@@ -47,8 +51,17 @@
     }
     .tabContent {
         padding: 0.5rem 0;
+        flex: 1;
+        overflow: auto;
 
-        // .tabView {
-        // }
+        .tabView {
+            display: none;
+            height: 100%;
+            position: relative;
+
+            &.active {
+                display: block;
+            }
+        }
     }
 }

@@ -65,6 +65,10 @@
     .explorer {
         grid-area: explorer;
         padding: 0.5rem;
+
+        & > * {
+            height: 100%;
+        }
     }
     footer {
         grid-area: footer;

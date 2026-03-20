@@ -1,0 +1,48 @@
+@use '@inspector/theme';
+
+.Console {
+    background-color: #121212;
+    padding: 0.25rem;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+
+    .log {
+        flex: 1;
+        overflow: auto;
+
+        .logLine {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid theme.color(default, border);
+
+            &.warn {
+                color: theme.color(severity, warning);
+            }
+            &.error {
+                color: theme.color(severity, error);
+            }
+            &.info {
+                color: theme.color(severity, info);
+            }
+        }
+    }
+    .inputWrapper {
+        display: flex;
+        align-items: center;
+        padding-top: 0.25rem;
+
+        svg {
+            font-size: 1rem;
+            margin-right: 0.25rem;
+        }
+        input {
+            flex: 1;
+            background-color: inherit;
+            border: 0;
+            outline: 0;
+            color: theme.color(default, foreground);
+        }
+    }
+}

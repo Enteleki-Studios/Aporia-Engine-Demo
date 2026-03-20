@@ -3,8 +3,15 @@ import { use } from 'react'
 import { ResourcesPanel, WorldContext } from '@core/react'
 
 import { Divider, Inspector, Stack, Tabs } from '@inspector'
-import { CubeIcon, EyeIcon, PuzzlePieceIcon, SunHorizonIcon } from '@phosphor-icons/react'
+import {
+    CubeIcon,
+    EyeIcon,
+    PuzzlePieceIcon,
+    SunHorizonIcon,
+    TerminalIcon,
+} from '@phosphor-icons/react'
 import { ClockPanel } from '@pluginClock'
+import { ConsolePanel } from '@pluginConsole'
 import { EntitiesPanel } from '@pluginEntities'
 import { RapierThreeVizPanel } from '@pluginRapierThreeViz'
 import { RuntimePanel } from '@pluginRuntime'
@@ -33,31 +40,45 @@ export const Root = () => {
                     </Stack>
                 }
                 explorerContent={
-                    <Tabs
-                        ns="res"
-                        tabs={[
-                            {
-                                title: 'Resources',
-                                icon: <PuzzlePieceIcon />,
-                                content: <ResourcesPanel />,
-                            },
-                            {
-                                title: 'Three',
-                                icon: <CubeIcon />,
-                                content: <ThreePanel />,
-                            },
-                            {
-                                title: 'R3Viz',
-                                icon: <EyeIcon />,
-                                content: <RapierThreeVizPanel />,
-                            },
-                            {
-                                title: 'Sky',
-                                icon: <SunHorizonIcon />,
-                                content: <SkyPanel />,
-                            },
-                        ]}
-                    />
+                    <Stack direction="row" fullWidth>
+                        <Tabs
+                            ns="exp1"
+                            style={{ flex: 1 }}
+                            tabs={[
+                                {
+                                    title: 'Resources',
+                                    icon: <PuzzlePieceIcon />,
+                                    content: <ResourcesPanel />,
+                                },
+                                {
+                                    title: 'Three',
+                                    icon: <CubeIcon />,
+                                    content: <ThreePanel />,
+                                },
+                                {
+                                    title: 'R3Viz',
+                                    icon: <EyeIcon />,
+                                    content: <RapierThreeVizPanel />,
+                                },
+                                {
+                                    title: 'Sky',
+                                    icon: <SunHorizonIcon />,
+                                    content: <SkyPanel />,
+                                },
+                            ]}
+                        />
+                        <Tabs
+                            ns="exp2"
+                            style={{ flex: 1 }}
+                            tabs={[
+                                {
+                                    title: 'Console',
+                                    icon: <TerminalIcon />,
+                                    content: <ConsolePanel />,
+                                },
+                            ]}
+                        />
+                    </Stack>
                 }
             >
                 <Game />
