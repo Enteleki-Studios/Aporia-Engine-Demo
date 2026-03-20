@@ -1,52 +1,38 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
+
+import type { PluginsToResources } from '@core'
+
+import { type TypedUseWorld, useWorld } from '@core/react'
 
 import { Panel } from '@inspector'
 import { CaretDoubleRightIcon } from '@phosphor-icons/react'
 
 import './consolePanel.scss'
+import type { PluginConsole } from './plugin'
 
-type Log = {
-    timestamp: number
-    severity: string
-    content: string
-}
-
-const OVERRIDE_METHODS = ['log', 'info', 'warn', 'error', 'debug'] as const
+export const useConsoleWorld: TypedUseWorld<PluginsToResources<[PluginConsole]>> =
+    useWorld
 
 export const ConsolePanel = () => {
-    const [logs, setLogs] = useState<Log[]>([])
+    const world = useConsoleWorld()
+    const { hermit } = world.console
+
     const logsRef = useRef<HTMLDivElement>(null)
 
-    useEffect(() => {
-        OVERRIDE_METHODS.forEach((method) => {
-            const original = window.console[method]
-            window.console[method] = (...args) => {
-                original(...args)
-
-                setLogs((prev) => [
-                    ...prev,
-                    {
-                        timestamp: Date.now(),
-                        severity: method,
-                        content: args.map((a) => a.toString()).join(' '),
-                    },
-                ])
-            }
-        })
-    }, [])
+    const log = useSyncExternalStore(hermit.subscribe, hermit.getLog)
 
     useLayoutEffect(() => {
         if (logsRef.current) {
             logsRef.current.scrollTop = logsRef.current.scrollHeight
         }
-    }, [logs])
+    })
 
     return (
         <Panel className="Console">
             <div className="log" ref={logsRef}>
-                {logs.map((log, i) => (
-                    <div key={i} className={`logLine ${log.severity}`}>
-                        {log.timestamp} {log.content}
+                {log.map((entry, i) => (
+                    <div key={i} className={`logLine ${entry.severity}`}>
+                        {entry.content}
                     </div>
                 ))}
             </div>

@@ -54,7 +54,7 @@ export class HelperStore {
         this.onUpdate()
     }
 
-    collections() {
+    collections = () => {
         return this.cachedCollections
     }
 
@@ -62,7 +62,7 @@ export class HelperStore {
         return this.store.get(type)
     }
 
-    subscribe(cb: Callback) {
+    subscribe = (cb: Callback) => {
         this.observers.add(cb)
 
         return () => {

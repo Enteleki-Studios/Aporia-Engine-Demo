@@ -1,1 +1,2 @@
-export { ConsolePanel } from './consolePanel'
+export * from './consolePanel'
+export * from './plugin'
