@@ -1,4 +1,12 @@
-import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
+import {
+    ChangeEvent,
+    KeyboardEvent,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+    useSyncExternalStore,
+} from 'react'
 
 import type { PluginsToResources } from '@core'
 
@@ -8,6 +16,7 @@ import { Panel } from '@inspector'
 import { CaretDoubleRightIcon } from '@phosphor-icons/react'
 
 import './consolePanel.scss'
+import { kindToIcon } from './kindToIcon'
 import type { PluginConsole } from './plugin'
 
 export const useConsoleWorld: TypedUseWorld<PluginsToResources<[PluginConsole]>> =
@@ -16,12 +25,30 @@ export const useConsoleWorld: TypedUseWorld<PluginsToResources<[PluginConsole]>>
 export const ConsolePanel = () => {
     const world = useConsoleWorld()
     const { hermit } = world.console
-
+    const log = useSyncExternalStore(hermit.subscribe, hermit.getLog)
     const logsRef = useRef<HTMLDivElement>(null)
 
-    const log = useSyncExternalStore(hermit.subscribe, hermit.getLog)
+    const [input, setInput] = useState('')
 
-    useLayoutEffect(() => {
+    const handleInputKeydown = useCallback(
+        (e: KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') {
+                setInput((prev) => {
+                    if (prev.length) {
+                        void hermit.eval(prev)
+                    }
+                    return ''
+                })
+            }
+        },
+        [hermit],
+    )
+
+    const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        setInput(e.currentTarget.value)
+    }, [])
+
+    useEffect(() => {
         if (logsRef.current) {
             logsRef.current.scrollTop = logsRef.current.scrollHeight
         }
@@ -30,15 +57,23 @@ export const ConsolePanel = () => {
     return (
         <Panel className="Console">
             <div className="log" ref={logsRef}>
-                {log.map((entry, i) => (
-                    <div key={i} className={`logLine ${entry.severity}`}>
-                        {entry.content}
-                    </div>
-                ))}
+                <div className="logContents">
+                    {log.map((entry, i) => (
+                        <div key={i} className={`logLine ${entry.severity}`}>
+                            <div className="kind">{kindToIcon(entry.severity)}</div>
+                            <div className="content">{entry.content}</div>
+                        </div>
+                    ))}
+                </div>
             </div>
             <div className="inputWrapper">
                 <CaretDoubleRightIcon />
-                <input type="text" />
+                <input
+                    type="text"
+                    value={input}
+                    onChange={handleInputChange}
+                    onKeyDown={handleInputKeydown}
+                />
             </div>
         </Panel>
     )

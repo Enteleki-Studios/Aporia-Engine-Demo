@@ -1,5 +1,9 @@
 import { objectEntries, recordFromArray } from '@core/utils'
 
+import { type Utility } from '@hermitShell'
+
+import { parseArgs } from './parseArgs'
+
 const OVERRIDE_METHODS = ['log', 'info', 'warn', 'error', 'debug'] as const
 type MethodName = (typeof OVERRIDE_METHODS)[number]
 
@@ -21,11 +25,48 @@ export class Hermit {
     private observers = new Set<Callback>()
     private originalConsoleMethods: Record<MethodName, ConsoleMethod | null> =
         recordFromArray(OVERRIDE_METHODS, () => null)
+    private utilities = new Map<string, Utility[1]>()
 
     private onUpdate() {
         this.observers.forEach((cb) => {
             cb()
         })
+    }
+
+    addUtility(utility: Utility) {
+        this.utilities.set(utility[0], utility[1])
+    }
+
+    eval(input: string) {
+        return new Promise<void>((resolve) => {
+            this.newEntry(input, 'input')
+
+            const args = parseArgs(input)
+            if (args[0]) {
+                const utility = this.utilities.get(args[0])
+                if (utility) {
+                    const result = utility(args)
+                    this.newEntry(result, 'result')
+                } else {
+                    this.newEntry(`Utility not found: ${args[0]}`, 'error')
+                }
+            } else {
+                this.newEntry('No args parsed', 'error')
+            }
+            resolve()
+        })
+    }
+
+    newEntry(content: string | undefined, severity?: string) {
+        this.log = [
+            ...this.log,
+            {
+                timestamp: Date.now(),
+                severity: severity ?? 'log',
+                content: content ?? 'undefined',
+            },
+        ]
+        this.onUpdate()
     }
 
     interceptConsole() {
@@ -36,32 +77,24 @@ export class Hermit {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Follows the args type for console
                 this.originalConsoleMethods[method]?.(...args)
 
-                this.log = [
-                    ...this.log,
-                    {
-                        timestamp: Date.now(),
-                        severity: method,
-                        content: args
-                            .map((a: unknown) => {
-                                if (a === null) {
-                                    return 'null'
-                                }
-                                if (a === undefined) {
-                                    return 'undefined'
-                                }
-                                if (typeof a === 'string') {
-                                    return a
-                                }
-                                if (typeof a === 'number') {
-                                    return a.toString()
-                                }
-                                return JSON.stringify(a)
-                            })
-                            .join(' '),
-                    },
-                ]
-
-                this.onUpdate()
+                const content = args
+                    .map((a: unknown) => {
+                        if (a === null) {
+                            return 'null'
+                        }
+                        if (a === undefined) {
+                            return 'undefined'
+                        }
+                        if (typeof a === 'string') {
+                            return a
+                        }
+                        if (typeof a === 'number') {
+                            return a.toString()
+                        }
+                        return JSON.stringify(a)
+                    })
+                    .join(' ')
+                this.newEntry(content, method)
             }
         })
     }

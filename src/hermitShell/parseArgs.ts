@@ -37,5 +37,9 @@ export const parseArgs = (input: string): string[] => {
         { args: [], current: '', inQuotes: null },
     )
 
+    if (result.current.length > 0) {
+        return [...result.args, result.current]
+    }
+
     return result.args
 }

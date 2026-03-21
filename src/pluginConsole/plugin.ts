@@ -1,6 +1,6 @@
 import type { Plugin, WorldWithPlugin } from '@core'
 
-import { Hermit } from '@hermitShell'
+import { Hermit, echo } from '@hermitShell'
 
 type Provides = {
     console: {
@@ -21,5 +21,7 @@ export const pluginConsole = (): Plugin<Provides> => ({
     },
     init(world) {
         world.console.hermit.interceptConsole()
+
+        world.console.hermit.addUtility(echo)
     },
 })

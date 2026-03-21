@@ -14,18 +14,33 @@
         flex: 1;
         overflow: auto;
 
-        .logLine {
-            padding: 0.25rem 0;
-            border-bottom: 1px solid theme.color(default, border);
+        .logContents {
+            display: grid;
+            grid-template-columns: 1.5rem 1fr;
 
-            &.warn {
-                color: theme.color(severity, warning);
-            }
-            &.error {
-                color: theme.color(severity, error);
-            }
-            &.info {
-                color: theme.color(severity, info);
+            .logLine {
+                display: contents;
+
+                &.warn {
+                    color: theme.color(severity, warning);
+                }
+                &.error {
+                    color: theme.color(severity, error);
+                }
+                &.info {
+                    color: theme.color(severity, info);
+                }
+
+                .kind {
+                    padding: 0.125rem 0;
+
+                    svg {
+                        vertical-align: middle;
+                    }
+                }
+                .content {
+                    padding: 0.125rem 0;
+                }
             }
         }
     }
@@ -33,6 +48,7 @@
         display: flex;
         align-items: center;
         padding-top: 0.25rem;
+        border-top: 1px solid theme.color(default, border);
 
         svg {
             font-size: 1rem;
