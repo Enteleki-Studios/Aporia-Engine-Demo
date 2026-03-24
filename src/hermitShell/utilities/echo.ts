@@ -1,3 +1,3 @@
-import { Utility } from '@hermitShell'
+import type { Utility } from '../'
 
 export const echo: Utility = ['echo', (args: string[]) => args[1]]

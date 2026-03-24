@@ -58,8 +58,8 @@ export const ConsolePanel = () => {
         <Panel className="Console">
             <div className="log" ref={logsRef}>
                 <div className="logContents">
-                    {log.map((entry, i) => (
-                        <div key={i} className={`logLine ${entry.severity}`}>
+                    {log.map((entry) => (
+                        <div key={entry.id} className={`logLine ${entry.severity}`}>
                             <div className="kind">{kindToIcon(entry.severity)}</div>
                             <div className="content">{entry.content}</div>
                         </div>

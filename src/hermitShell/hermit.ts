@@ -1,36 +1,34 @@
-import { objectEntries, recordFromArray } from '@core/utils'
-
-import { type Utility } from '@hermitShell'
-
+import type { Utility } from '.'
 import { parseArgs } from './parseArgs'
-
-const OVERRIDE_METHODS = ['log', 'info', 'warn', 'error', 'debug'] as const
-type MethodName = (typeof OVERRIDE_METHODS)[number]
 
 type Callback = () => void
 
+const OVERRIDE_METHODS = ['log', 'info', 'warn', 'error', 'debug'] as const
+type MethodName = (typeof OVERRIDE_METHODS)[number]
+type ConsoleMethod = Console[MethodName]
+
 type LogEntry = {
+    id: number
     timestamp: number
     severity: string
     content: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Matches js console
-type ConsoleMethod = (...data: any[]) => void
-
-// TODO: Serve only last X entries to react
-
 export class Hermit {
     private log: LogEntry[] = []
     private observers = new Set<Callback>()
-    private originalConsoleMethods: Record<MethodName, ConsoleMethod | null> =
-        recordFromArray(OVERRIDE_METHODS, () => null)
-    private utilities = new Map<string, Utility[1]>()
+    private originalConsoleMethods = new Map<MethodName, ConsoleMethod | undefined>()
+    private _utilities = new Map<string, Utility[1]>()
+    private nextId = 1
 
     private onUpdate() {
         this.observers.forEach((cb) => {
             cb()
         })
+    }
+
+    get utilities() {
+        return this._utilities
     }
 
     addUtility(utility: Utility) {
@@ -42,6 +40,7 @@ export class Hermit {
             this.newEntry(input, 'input')
 
             const args = parseArgs(input)
+
             if (args[0]) {
                 const utility = this.utilities.get(args[0])
                 if (utility) {
@@ -53,6 +52,7 @@ export class Hermit {
             } else {
                 this.newEntry('No args parsed', 'error')
             }
+
             resolve()
         })
     }
@@ -61,21 +61,23 @@ export class Hermit {
         this.log = [
             ...this.log,
             {
+                id: this.nextId,
                 timestamp: Date.now(),
                 severity: severity ?? 'log',
                 content: content ?? 'undefined',
             },
         ]
+        this.nextId += 1
         this.onUpdate()
     }
 
     interceptConsole() {
-        OVERRIDE_METHODS.forEach((method) => {
-            this.originalConsoleMethods[method] = window.console[method]
+        OVERRIDE_METHODS.forEach((methodName) => {
+            this.originalConsoleMethods.set(methodName, window.console[methodName])
 
-            window.console[method] = (...args) => {
+            window.console[methodName] = (...args) => {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Follows the args type for console
-                this.originalConsoleMethods[method]?.(...args)
+                this.originalConsoleMethods.get(methodName)?.(...args)
 
                 const content = args
                     .map((a: unknown) => {
@@ -94,19 +96,19 @@ export class Hermit {
                         return JSON.stringify(a)
                     })
                     .join(' ')
-                this.newEntry(content, method)
+
+                this.newEntry(content, methodName)
             }
         })
     }
 
     releaseConsole() {
-        objectEntries(this.originalConsoleMethods).forEach(
-            ([methodName, originalMethod]) => {
-                if (originalMethod) {
-                    window.console[methodName] = originalMethod
-                }
-            },
-        )
+        this.originalConsoleMethods.entries().forEach(([methodName, originalMethod]) => {
+            if (originalMethod) {
+                window.console[methodName] = originalMethod
+                this.originalConsoleMethods.set(methodName, undefined)
+            }
+        })
     }
 
     getLog = () => {
