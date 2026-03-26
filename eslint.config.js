@@ -69,6 +69,9 @@ export default defineConfig(
             '@typescript-eslint/unbound-method': 0,
 
             'eslint-comments/require-description': 'error',
+
+            // TURN ON WHEN TS-ESLINT IS UPDATED
+            '@typescript-eslint/no-unnecessary-type-arguments': 0,
         },
     },
 )

@@ -5,7 +5,7 @@ import { usePersistentState } from '@core/react'
 export const useSelectedTab = (ns: string, tabs: { title: string }[]) => {
     const defaultTab = tabs[0]?.title ?? ''
 
-    const [value, setValue] = usePersistentState<string>(`selectedTab[${ns}]`, defaultTab)
+    const [value, setValue] = usePersistentState(`selectedTab[${ns}]`, defaultTab)
 
     useEffect(() => {
         if (!tabs.some(({ title }) => title === value)) {

@@ -9,9 +9,7 @@ export const useControlled = <T>({
     controlledValue,
     defaultValue,
 }: UseControlledProps<T>): [T | undefined, Dispatch<SetStateAction<T | undefined>>] => {
-    const [uncontrolledValue, setUncontrolledValue] = useState<T | undefined>(
-        defaultValue,
-    )
+    const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
 
     const isControlled = controlledValue !== undefined
 

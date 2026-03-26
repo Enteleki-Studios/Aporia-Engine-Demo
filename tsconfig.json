@@ -5,7 +5,6 @@
         "allowSyntheticDefaultImports": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
-        "baseUrl": ".",
         "checkJs": false,
         "erasableSyntaxOnly": true,
         "esModuleInterop": true,
