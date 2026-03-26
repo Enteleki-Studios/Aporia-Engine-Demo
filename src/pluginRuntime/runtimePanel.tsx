@@ -42,6 +42,11 @@ export const RuntimePanel = () => {
                     {/* @ts-expect-error Accessing a private prop */}
                     <TCell>{runtime.debugSystems.length}</TCell>
                 </TRow>
+                <TRow>
+                    <TCell>Tasks</TCell>
+                    {/* @ts-expect-error Accessing a private prop */}
+                    <TCell>{runtime.tasks.length}</TCell>
+                </TRow>
             </Table>
             <Stack direction="row">
                 <Button onClick={handleTogglePlay}>

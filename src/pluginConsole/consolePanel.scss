@@ -1,0 +1,67 @@
+@use '@inspector/theme';
+
+.Console {
+    background-color: #121212;
+    border-radius: 0.25rem;
+    padding: 0.25rem;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+
+    .log {
+        flex: 1;
+        overflow: auto;
+
+        .logContents {
+            display: grid;
+            grid-template-columns: 1.5rem 1fr;
+
+            .logLine {
+                display: contents;
+
+                &.warn {
+                    color: theme.color(severity, warning);
+                }
+                &.error {
+                    color: theme.color(severity, error);
+                }
+                &.info {
+                    color: theme.color(severity, info);
+                }
+
+                .kind {
+                    padding: 0.125rem 0;
+
+                    svg {
+                        vertical-align: middle;
+                    }
+                }
+                .content {
+                    padding: 0.125rem 0;
+                    white-space: preserve;
+                    tab-size: 2rem;
+                }
+            }
+        }
+    }
+    .inputWrapper {
+        display: flex;
+        align-items: center;
+        padding-top: 0.25rem;
+        border-top: 1px solid theme.color(default, border);
+
+        svg {
+            font-size: 1rem;
+            margin-right: 0.25rem;
+        }
+        input {
+            flex: 1;
+            background-color: inherit;
+            border: 0;
+            outline: 0;
+            color: theme.color(default, foreground);
+        }
+    }
+}

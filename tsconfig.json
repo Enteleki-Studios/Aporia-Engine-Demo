@@ -42,6 +42,7 @@
             "@core/utils": ["./src/core/utils/"],
             "@inspector": ["./src/inspector/"],
             "@pluginClock": ["./src/pluginClock/"],
+            "@pluginConsole": ["./src/pluginConsole/"],
             "@pluginEntities": ["./src/pluginEntities/"],
             "@pluginInput": ["./src/pluginInput/"],
             "@pluginRapier3D": ["./src/pluginRapier3D/"],

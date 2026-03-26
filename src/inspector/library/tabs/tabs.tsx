@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 import './tabs.scss'
 import { useSelectedTab } from './useSelectedTab'
@@ -12,13 +12,14 @@ type Tab = {
 type TabsProps = {
     tabs: Tab[]
     ns: string
+    style?: CSSProperties
 }
 
-export const Tabs = ({ ns, tabs }: TabsProps) => {
+export const Tabs = ({ ns, tabs, style }: TabsProps) => {
     const [activeTab, setActiveTab] = useSelectedTab(ns, tabs)
 
     return (
-        <div className="Tabs">
+        <div className="Tabs" style={style}>
             <div className="tabNav">
                 {tabs.map(({ title, icon }) => {
                     const isActive = title === activeTab
@@ -45,7 +46,6 @@ export const Tabs = ({ ns, tabs }: TabsProps) => {
                         <div
                             className={`tabView ${isActive ? 'active' : ''}`}
                             key={title}
-                            style={{ display: isActive ? 'block' : 'none' }}
                         >
                             {content}
                         </div>

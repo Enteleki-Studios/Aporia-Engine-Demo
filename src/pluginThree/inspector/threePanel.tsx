@@ -59,8 +59,8 @@ export const ThreePanel = () => {
     const { helperStore } = world.three
 
     const helperCollections = useSyncExternalStore(
-        (cb) => helperStore.subscribe(cb),
-        () => helperStore.collections(),
+        helperStore.subscribe,
+        helperStore.collections,
     )
 
     const [omatIndex, setOmatIndex] = useState(0)

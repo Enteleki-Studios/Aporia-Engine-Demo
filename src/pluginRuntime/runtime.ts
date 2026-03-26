@@ -86,15 +86,15 @@ export class Runtime<W extends AnyWorld = AnyWorld> {
             system(this.world)
         }
 
-        for (const debugSystem of this.debugSystems) {
-            debugSystem(this.world)
-        }
-
         for (const task of this.tasks) {
             task(this.world)
         }
 
         this.tasks.length = 0
+
+        for (const debugSystem of this.debugSystems) {
+            debugSystem(this.world)
+        }
     }
 
     get isRunning() {

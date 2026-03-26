@@ -2,7 +2,7 @@ import {
     ACESFilmicToneMapping,
     Material,
     OrthographicCamera,
-    PCFSoftShadowMap,
+    PCFShadowMap,
     PerspectiveCamera,
     SRGBColorSpace,
     Scene,
@@ -30,7 +30,7 @@ export class Renderer {
         this.renderer.outputColorSpace = SRGBColorSpace
 
         this.renderer.shadowMap.enabled = true
-        this.renderer.shadowMap.type = PCFSoftShadowMap
+        this.renderer.shadowMap.type = PCFShadowMap
 
         this.renderer.debug.checkShaderErrors = true
         this.renderer.info.autoReset = false

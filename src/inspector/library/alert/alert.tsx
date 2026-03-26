@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import {
     CheckCircleIcon,
     InfoIcon,
-    WarningCircleIcon,
+    WarningIcon,
     XCircleIcon,
 } from '@phosphor-icons/react'
 
@@ -23,7 +23,7 @@ const sevToIcon = (severity: Severity) => {
         case 'success':
             return <CheckCircleIcon />
         case 'warning':
-            return <WarningCircleIcon />
+            return <WarningIcon />
         case 'error':
             return <XCircleIcon />
     }
