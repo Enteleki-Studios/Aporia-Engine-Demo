@@ -40,7 +40,6 @@
             "@core/components": ["./src/core/components/"],
             "@core/react": ["./src/core/react/"],
             "@core/utils": ["./src/core/utils/"],
-            "@hermitShell": ["./src/hermitShell/"],
             "@inspector": ["./src/inspector/"],
             "@pluginClock": ["./src/pluginClock/"],
             "@pluginConsole": ["./src/pluginConsole/"],

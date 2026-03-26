@@ -1,6 +1,6 @@
 import type { Plugin, WorldWithPlugin } from '@core'
 
-import { Hermit, echo, help } from '@hermitShell'
+import { Hermit, echo, help } from '@enteleki-studios/hermit-shell'
 
 type Provides = {
     console: {
