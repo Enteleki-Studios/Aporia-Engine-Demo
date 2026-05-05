@@ -32,10 +32,7 @@ export class PluginComposer<P extends AnyPlugin[]> {
             ? Plugin<RP, RD>
             : never,
     ): PluginComposer<[...P, Plugin<RP, RD>]> {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Dependency checking covers us here
-        return new PluginComposer([...this.plugins, plugin]) as PluginComposer<
-            [...P, Plugin<RP, RD>]
-        >
+        return new PluginComposer([...this.plugins, plugin])
     }
 
     async build() {
