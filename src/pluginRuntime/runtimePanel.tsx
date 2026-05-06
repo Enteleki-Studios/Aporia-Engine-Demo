@@ -1,15 +1,13 @@
 import { useCallback } from 'react'
 
-import type { PluginsToResources } from '@core'
+import type { Runtime } from '@core'
 
 import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
 import { Button, Stack, TCell, TRow, Table } from '@inspector'
 
-import type { PluginRuntime } from './plugin'
-
-export const useRuntimeWorld: TypedUseWorld<PluginsToResources<[PluginRuntime]>> =
-    useWorld
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Panel only needs the runtime field; world parametrization is irrelevant here
+export const useRuntimeWorld: TypedUseWorld<{ runtime: Runtime<any> }> = useWorld
 
 export const RuntimePanel = () => {
     useIntervalRender(500)

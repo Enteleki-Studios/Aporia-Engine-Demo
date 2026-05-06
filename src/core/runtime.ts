@@ -1,16 +1,7 @@
-import type { System } from '@core'
+export type System<T> = (world: T) => void
 
 // Internal system type - uses unknown for flexibility, type safety is at the API boundary
 type InternalSystem = (world: unknown) => void
-
-// Utility type that properly types the runtime with the full world type.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Any is used as a check
-export type TypedRuntimeWorld<W extends { runtime: Runtime<any> }> = Omit<
-    W,
-    'runtime'
-> & {
-    runtime: Runtime<W>
-}
 
 type AnyWorld = object
 

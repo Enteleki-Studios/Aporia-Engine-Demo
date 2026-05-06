@@ -5,7 +5,6 @@ import type { Plugin, PluginsToResources, WorldWithPlugin } from '@core'
 
 import type { PluginClock } from '@pluginClock'
 import type { PluginEntities } from '@pluginEntities'
-import type { PluginRuntime } from '@pluginRuntime'
 import { SkySettings } from '@pluginSky'
 import { DirectionalLight, type PluginThree } from '@pluginThree'
 
@@ -20,9 +19,7 @@ type Provides = {
     }
 }
 
-type Dependencies = PluginsToResources<
-    [PluginRuntime, PluginClock, PluginEntities, PluginThree]
->
+type Dependencies = PluginsToResources<[PluginClock, PluginEntities, PluginThree]>
 
 export type PluginSky = ReturnType<typeof pluginSky>
 export type SkyWorld = WorldWithPlugin<PluginSky>

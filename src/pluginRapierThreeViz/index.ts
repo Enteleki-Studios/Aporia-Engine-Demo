@@ -3,7 +3,6 @@ import { BufferAttribute, BufferGeometry, LineBasicMaterial, LineSegments } from
 import type { Plugin, PluginsToResources } from '@core'
 
 import type { PluginRapier3D } from '@pluginRapier3D'
-import type { PluginRuntime } from '@pluginRuntime'
 import type { PluginThree } from '@pluginThree'
 
 type Provides = {
@@ -16,7 +15,7 @@ type Provides = {
     }
 }
 
-type Dependencies = PluginsToResources<[PluginRuntime, PluginThree, PluginRapier3D]>
+type Dependencies = PluginsToResources<[PluginThree, PluginRapier3D]>
 
 export { RapierThreeVizPanel } from './rapierThreeVizPanel'
 
