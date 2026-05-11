@@ -2,13 +2,9 @@ import {
     type AnyPlugin,
     type Plugin,
     type PluginsToResources,
-    type WithTypedRuntime,
+    Runtime,
     type World,
 } from '@core'
-
-import { pluginClock } from '@pluginClock'
-import { pluginEntities } from '@pluginEntities'
-import { pluginRuntime } from '@pluginRuntime'
 
 type CheckDependencies<Current extends object, Required extends object> = [
     keyof Required,
@@ -28,7 +24,7 @@ export class PluginComposer<P extends AnyPlugin[]> {
     }
 
     addPlugin<RP extends object, RD extends object>(
-        plugin: CheckDependencies<PluginsToResources<P>, RD> extends true
+        plugin: CheckDependencies<World<PluginsToResources<P>>, RD> extends true
             ? Plugin<RP, RD>
             : never,
     ): PluginComposer<[...P, Plugin<RP, RD>]> {
@@ -37,9 +33,11 @@ export class PluginComposer<P extends AnyPlugin[]> {
 
     async build() {
         type Resources = PluginsToResources<P>
-        type TypedWorld = WithTypedRuntime<World<Resources>>
+        type FinalWorld = World<Resources>
 
-        const resources = {}
+        const resources: { runtime: Runtime<FinalWorld> } = {
+            runtime: new Runtime<FinalWorld>(),
+        }
 
         for (const plugin of this.plugins) {
             if (plugin.createResources) {
@@ -47,8 +45,9 @@ export class PluginComposer<P extends AnyPlugin[]> {
             }
         }
 
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- We know the runtime type is correct
-        const world = resources as TypedWorld
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Composed resources match the inferred world type
+        const world = resources as FinalWorld
+        world.runtime.setWorld(world)
 
         for (const plugin of this.plugins) {
             plugin.init?.(world)
@@ -57,14 +56,3 @@ export class PluginComposer<P extends AnyPlugin[]> {
         return world
     }
 }
-
-export const createDefaultComposer = () => {
-    return new PluginComposer([])
-        .addPlugin(pluginRuntime())
-        .addPlugin(pluginClock())
-        .addPlugin(pluginEntities())
-}
-
-export type DefaultResources = Awaited<
-    ReturnType<ReturnType<typeof createDefaultComposer>['build']>
->

@@ -1,15 +1,12 @@
 import { useCallback } from 'react'
 
-import type { PluginsToResources } from '@core'
+import type { World } from '@core'
 
 import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
 import { Button, Stack, TCell, TRow, Table } from '@inspector'
 
-import type { PluginRuntime } from './plugin'
-
-export const useRuntimeWorld: TypedUseWorld<PluginsToResources<[PluginRuntime]>> =
-    useWorld
+export const useRuntimeWorld: TypedUseWorld<World<object>> = useWorld
 
 export const RuntimePanel = () => {
     useIntervalRender(500)

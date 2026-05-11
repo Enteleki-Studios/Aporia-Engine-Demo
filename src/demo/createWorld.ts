@@ -1,5 +1,4 @@
-import { createDefaultComposer } from '@core'
-
+import { createDefaultComposer } from '@defaults'
 import { pluginConsole } from '@pluginConsole'
 import { DEFAULT_KEYMAP, pluginInput } from '@pluginInput'
 import { pluginRapier3D } from '@pluginRapier3D'

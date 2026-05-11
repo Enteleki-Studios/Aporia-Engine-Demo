@@ -1,15 +1,11 @@
-import type { Plugin, PluginsToResources } from '@core'
-
-import type { PluginRuntime } from '@pluginRuntime'
+import type { Plugin } from '@core'
 
 import type { Keymap } from '.'
 import { InputManager } from './inputManager'
 
-type Dependencies = PluginsToResources<[PluginRuntime]>
-
 export const pluginInput = <K extends Keymap>(
     keymap: K,
-): Plugin<{ input: InputManager<K> }, Dependencies> => ({
+): Plugin<{ input: InputManager<K> }> => ({
     createResources: () => ({
         input: new InputManager(keymap),
     }),

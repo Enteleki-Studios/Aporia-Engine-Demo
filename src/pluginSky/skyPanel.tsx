@@ -1,16 +1,15 @@
-import { type PluginsToResources } from '@core'
+import { type PluginsToResources, type World } from '@core'
 
 import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
 import { Alert, Panel, Range, Stack } from '@inspector'
 import { type PluginEntities } from '@pluginEntities'
-import { type PluginRuntime } from '@pluginRuntime'
 import { skyQuery } from '@pluginSky'
 
 import { type PluginSky } from './plugin'
 
 export const useSkyWorld: TypedUseWorld<
-    PluginsToResources<[PluginRuntime, PluginEntities, PluginSky]>
+    World<PluginsToResources<[PluginEntities, PluginSky]>>
 > = useWorld
 
 export const SkyPanel = () => {

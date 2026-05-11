@@ -1,14 +1,10 @@
-import { Clock, type Plugin, type PluginsToResources } from '@core'
-
-import type { PluginRuntime } from '@pluginRuntime'
+import { Clock, type Plugin } from '@core'
 
 type Provides = {
     clock: Clock
 }
 
-type Dependencies = PluginsToResources<[PluginRuntime]>
-
-export const pluginClock = (): Plugin<Provides, Dependencies> => ({
+export const pluginClock = (): Plugin<Provides> => ({
     createResources() {
         return {
             clock: new Clock(),

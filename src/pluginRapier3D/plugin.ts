@@ -10,7 +10,6 @@ import type {
 } from '@dimforge/rapier3d'
 import type { PluginClock } from '@pluginClock'
 import { EntityId, type PluginEntities } from '@pluginEntities'
-import type { PluginRuntime } from '@pluginRuntime'
 
 import { GRAVITY_3D, type Rapier } from '.'
 import { shapeToColliderDesc } from './colliderUtils'
@@ -26,7 +25,7 @@ type Provides = {
     }
 }
 
-type Dependencies = PluginsToResources<[PluginRuntime, PluginClock, PluginEntities]>
+type Dependencies = PluginsToResources<[PluginClock, PluginEntities]>
 
 export type PluginRapier3D = ReturnType<typeof pluginRapier3D>
 

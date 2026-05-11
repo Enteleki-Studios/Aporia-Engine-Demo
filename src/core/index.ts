@@ -1,14 +1,11 @@
 import type { Simplify, UnionToIntersection } from 'type-fest'
 
-import type { Runtime } from '@pluginRuntime'
+import type { Runtime, System } from './runtime'
 
-export type World<R extends object> = R
+export type World<R extends object> = R & { runtime: Runtime<World<R>> }
 
-export {
-    createDefaultComposer,
-    type DefaultResources,
-    PluginComposer,
-} from './pluginComposer'
+export { PluginComposer } from './pluginComposer'
+export { Runtime, type System } from './runtime'
 
 export {
     createComponent,
@@ -20,23 +17,13 @@ export { ObjectStore } from './objectStore'
 export { Clock } from './clock'
 export * from './shapes'
 
-/**
- * Type helper that ensures the runtime is typed with the full world type.
- * Used in Plugin.init to make world.runtime.addSystem() properly typed.
- * TODO: How can we avoid having plugin configuration in the core files?
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Any is used for detection
-export type WithTypedRuntime<W> = W extends { runtime: Runtime<any> }
-    ? Omit<W, 'runtime'> & { runtime: Runtime<W> }
-    : W
-
 export type Plugin<
     ProvidesResources extends object,
     RequiresResources extends object = object,
 > = {
     createResources?(): ProvidesResources | Promise<ProvidesResources>
     init?<R extends Simplify<RequiresResources & ProvidesResources>>(
-        world: WithTypedRuntime<World<R>>,
+        world: World<R>,
     ): void
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
@@ -63,7 +50,6 @@ export type WorldWithPlugin<P extends AnyPlugin> = World<
     Simplify<PluginToRequiredResources<P> & PluginToResources<P>>
 >
 
-export type System<T> = (world: T) => void
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Required for lib code
 export type AnySystem = System<World<any>>
 
