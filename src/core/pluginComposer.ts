@@ -35,7 +35,7 @@ export class PluginComposer<P extends AnyPlugin[]> {
         type Resources = PluginsToResources<P>
         type FinalWorld = World<Resources>
 
-        const resources: { runtime?: Runtime<FinalWorld> } = {
+        const resources: { runtime: Runtime<FinalWorld> } = {
             runtime: new Runtime<FinalWorld>(),
         }
 
