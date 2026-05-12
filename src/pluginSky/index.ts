@@ -1,5 +1,4 @@
-import { createComponent } from '@core'
-
+import { createComponent } from '@enteleki-studios/aporia-engine-core'
 import { createQuery } from '@pluginEntities'
 
 export * from './plugin'

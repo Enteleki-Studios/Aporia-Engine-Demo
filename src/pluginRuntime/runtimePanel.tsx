@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
 
-import type { World } from '@core'
-
 import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
+import type { World } from '@enteleki-studios/aporia-engine-core'
 import { Button, Stack, TCell, TRow, Table } from '@inspector'
 
 export const useRuntimeWorld: TypedUseWorld<World<object>> = useWorld
@@ -31,18 +30,15 @@ export const RuntimePanel = () => {
             <Table>
                 <TRow>
                     <TCell>Systems</TCell>
-                    {/* @ts-expect-error Accessing a private prop */}
-                    <TCell>{runtime.systems.length}</TCell>
+                    <TCell>{runtime.numSystems}</TCell>
                 </TRow>
                 <TRow>
                     <TCell>Debug systems</TCell>
-                    {/* @ts-expect-error Accessing a private prop */}
-                    <TCell>{runtime.debugSystems.length}</TCell>
+                    <TCell>{runtime.numDebugSystems}</TCell>
                 </TRow>
                 <TRow>
                     <TCell>Tasks</TCell>
-                    {/* @ts-expect-error Accessing a private prop */}
-                    <TCell>{runtime.tasks.length}</TCell>
+                    <TCell>{runtime.numTasks}</TCell>
                 </TRow>
             </Table>
             <Stack direction="row">

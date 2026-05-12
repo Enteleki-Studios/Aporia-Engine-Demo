@@ -1,5 +1,4 @@
-import type { Plugin, WorldWithPlugin } from '@core'
-
+import type { Plugin, WorldWithPlugin } from '@enteleki-studios/aporia-engine-core'
 import { Hermit, echo, help } from '@enteleki-studios/hermit-shell'
 
 type Provides = {

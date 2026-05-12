@@ -1,8 +1,7 @@
-import { type Shape3D } from '@core'
-
 import { generateWedgeMeshData } from '@core/utils'
 
 import { type ColliderDesc } from '@dimforge/rapier3d'
+import { type Shape3D } from '@enteleki-studios/aporia-engine-core'
 import { type Rapier } from '@pluginRapier3D'
 
 export const shapeToColliderDesc = (shape: Shape3D, rapier: Rapier): ColliderDesc => {

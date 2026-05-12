@@ -1,4 +1,4 @@
-import { Array3, createComponent } from '@core'
+import { Array3, createComponent } from '@enteleki-studios/aporia-engine-core'
 
 export const RenderableDynamic = createComponent('RenderableDynamic')
 export const RenderableFixed = createComponent('RenderableFixed')

@@ -1,6 +1,6 @@
 import type { Object3D, Scene } from 'three'
 
-import { ObjectStore } from '@core'
+import { ObjectStore } from '@enteleki-studios/aporia-engine-core'
 
 type Collection = {
     readonly type: string

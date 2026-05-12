@@ -1,6 +1,6 @@
 import { assertType, describe, expectTypeOf, test } from 'vitest'
 
-import { createComponent } from '@core'
+import { createComponent } from '@enteleki-studios/aporia-engine-core'
 
 import { Entities } from './entities'
 import type { Entity } from './entity'

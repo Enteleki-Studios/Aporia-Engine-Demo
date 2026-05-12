@@ -1,5 +1,4 @@
-import { PluginComposer } from '@core'
-
+import { PluginComposer } from '@enteleki-studios/aporia-engine-core'
 import { pluginClock } from '@pluginClock'
 import { pluginEntities } from '@pluginEntities'
 

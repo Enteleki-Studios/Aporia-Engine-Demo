@@ -1,4 +1,4 @@
-import { type AnyComponentCreator } from '@core'
+import { type AnyComponentCreator } from '@enteleki-studios/aporia-engine-core'
 
 import { type Entity } from './entity'
 

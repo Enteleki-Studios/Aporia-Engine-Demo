@@ -1,7 +1,6 @@
 import { BufferAttribute, BufferGeometry, LineBasicMaterial, LineSegments } from 'three'
 
-import type { Plugin, PluginsToResources } from '@core'
-
+import type { Plugin, PluginsToResources } from '@enteleki-studios/aporia-engine-core'
 import type { PluginRapier3D } from '@pluginRapier3D'
 import type { PluginThree } from '@pluginThree'
 

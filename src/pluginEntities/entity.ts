@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions -- library code */
-import { type AnyComponent, type AnyComponentCreator, type ComponentKey } from '@core'
-
 import { newUUID } from '@core/utils'
+
+import {
+    type AnyComponent,
+    type AnyComponentCreator,
+    type ComponentKey,
+} from '@enteleki-studios/aporia-engine-core'
 
 export type EntityId = string
 

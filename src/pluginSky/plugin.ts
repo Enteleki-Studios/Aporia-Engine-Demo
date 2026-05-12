@@ -1,8 +1,11 @@
 import { AmbientLight } from 'three'
 import { Sky } from 'three/addons/objects/Sky.js'
 
-import type { Plugin, PluginsToResources, WorldWithPlugin } from '@core'
-
+import type {
+    Plugin,
+    PluginsToResources,
+    WorldWithPlugin,
+} from '@enteleki-studios/aporia-engine-core'
 import type { PluginClock } from '@pluginClock'
 import type { PluginEntities } from '@pluginEntities'
 import { SkySettings } from '@pluginSky'

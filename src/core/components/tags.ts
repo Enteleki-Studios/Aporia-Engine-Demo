@@ -1,4 +1,4 @@
-import { createComponent } from '@core'
+import { createComponent } from '@enteleki-studios/aporia-engine-core'
 
 export const PlayerComponent = createComponent('player')
 export const HeroComponent = createComponent('hero')

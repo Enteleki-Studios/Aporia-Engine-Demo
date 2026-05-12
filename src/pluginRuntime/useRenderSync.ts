@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { type System } from '@core'
+import { type System } from '@enteleki-studios/aporia-engine-core'
 
 import { useRuntimeWorld } from './runtimePanel'
 

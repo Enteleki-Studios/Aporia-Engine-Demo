@@ -1,4 +1,4 @@
-import { Clock, type Plugin } from '@core'
+import { Clock, type Plugin } from '@enteleki-studios/aporia-engine-core'
 
 type Provides = {
     clock: Clock

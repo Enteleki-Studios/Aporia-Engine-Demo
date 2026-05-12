@@ -23,11 +23,14 @@ import { FontLoader } from 'three/addons/loaders/FontLoader.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Water } from 'three/addons/objects/Water.js'
 
-import { ObjectStore, type Plugin, type WorldWithPlugin } from '@core'
-
 import { generateWedgeMeshData, transpose1D } from '@core/utils'
 
 import { type DefaultResources } from '@defaults'
+import {
+    ObjectStore,
+    type Plugin,
+    type WorldWithPlugin,
+} from '@enteleki-studios/aporia-engine-core'
 import { type EntityId } from '@pluginEntities'
 
 import { AxesHelper } from './meshes/axesHelper'

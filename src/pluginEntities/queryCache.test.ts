@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
-import { createComponent } from '@core'
+import { createComponent } from '@enteleki-studios/aporia-engine-core'
 
 import { Entity } from './entity'
 import { createQuery } from './query'

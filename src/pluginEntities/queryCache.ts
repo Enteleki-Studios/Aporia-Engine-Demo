@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- library code */
 /* eslint-disable @typescript-eslint/consistent-type-assertions -- library code */
-import { type AnyComponentCreator } from '@core'
+import { type AnyComponentCreator } from '@enteleki-studios/aporia-engine-core'
 
 import { Entity, EntityId } from './entity'
 import { type Query, entityMatchesQuery } from './query'

@@ -1,4 +1,9 @@
-import { type Array3, type Array4, type Shape3D, createComponent } from '@core'
+import {
+    type Array3,
+    type Array4,
+    type Shape3D,
+    createComponent,
+} from '@enteleki-studios/aporia-engine-core'
 
 type Transform3D = {
     position: Array3

@@ -1,5 +1,3 @@
-import { type Plugin, type PluginsToResources } from '@core'
-
 import { degToRad } from '@core/utils'
 
 import type {
@@ -8,6 +6,10 @@ import type {
     RigidBody,
     World,
 } from '@dimforge/rapier3d'
+import {
+    type Plugin,
+    type PluginsToResources,
+} from '@enteleki-studios/aporia-engine-core'
 import type { PluginClock } from '@pluginClock'
 import { EntityId, type PluginEntities } from '@pluginEntities'
 

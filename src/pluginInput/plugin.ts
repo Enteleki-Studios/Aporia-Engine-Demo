@@ -1,4 +1,4 @@
-import type { Plugin } from '@core'
+import type { Plugin } from '@enteleki-studios/aporia-engine-core'
 
 import type { Keymap } from '.'
 import { InputManager } from './inputManager'

@@ -1,4 +1,4 @@
-import type { Wedge } from '@core'
+import type { Wedge } from '@enteleki-studios/aporia-engine-core'
 
 export function generateWedgeMeshData({
     halfWidth: hx,

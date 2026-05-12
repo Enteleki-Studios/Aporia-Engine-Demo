@@ -1,7 +1,6 @@
-import type { WorldWithPlugin } from '@core'
-
 import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
 
+import type { WorldWithPlugin } from '@enteleki-studios/aporia-engine-core'
 import { Stack, TBody, TCell, TRow, Table } from '@inspector'
 import type { PluginEntities } from '@pluginEntities'
 

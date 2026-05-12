@@ -10,11 +10,12 @@
     "scripts": {
         "build": "vite build",
         "lint": "eslint src",
-        "prettier": "prettier -l --write .",
-        "prettier-check": "prettier --check .",
+        "format": "prettier -l --write .",
+        "format:check": "prettier --check .",
         "start": "vite",
         "test": "vitest",
         "typecheck": "tsc",
+        "typecheck:watch": "tsc --watch",
         "prepare": "husky",
         "storybook": "storybook dev -p 6006 --disable-telemetry",
         "build:storybook": "storybook build --disable-telemetry",
@@ -22,6 +23,7 @@
     },
     "dependencies": {
         "@dimforge/rapier3d": "^0.19.3",
+        "@enteleki-studios/aporia-engine-core": "^0.2.1",
         "@enteleki-studios/hermit-shell": "^1.2.2",
         "@phosphor-icons/react": "^2.1.10",
         "gl-matrix": "^3.4.4",

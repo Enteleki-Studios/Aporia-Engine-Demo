@@ -1,4 +1,7 @@
-import { type AnyComponent, type AnyComponentCreator } from '@core'
+import {
+    type AnyComponent,
+    type AnyComponentCreator,
+} from '@enteleki-studios/aporia-engine-core'
 
 import { Entity, type EntityId } from './entity'
 import { type Query } from './query'
