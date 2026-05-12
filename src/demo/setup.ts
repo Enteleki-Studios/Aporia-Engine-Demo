@@ -1,21 +1,20 @@
 import { glMatrix } from 'gl-matrix'
 
 import {
-    Geometry3DComponent,
-    PlayerComponent,
-    Shape3DComponent,
-    Transform3DComponent,
-    Velocity3DComponent,
-} from '@core/components'
-import { degToRad } from '@core/utils'
-
-import {
     Ball,
     Box,
     Capsule,
     HeightField,
     Wedge,
 } from '@enteleki-studios/aporia-engine-core'
+import {
+    Geometry3DComponent,
+    PlayerComponent,
+    Shape3DComponent,
+    Transform3DComponent,
+    Velocity3DComponent,
+} from '@enteleki-studios/aporia-engine-core/components'
+import { degToRad } from '@enteleki-studios/aporia-engine-core/utils'
 import {
     ColliderComponent,
     RigidBodyDynamic,

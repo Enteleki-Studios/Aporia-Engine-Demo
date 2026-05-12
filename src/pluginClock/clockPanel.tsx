@@ -1,6 +1,9 @@
-import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
-
 import type { PluginsToResources } from '@enteleki-studios/aporia-engine-core'
+import {
+    type TypedUseWorld,
+    useIntervalRender,
+    useWorld,
+} from '@enteleki-studios/aporia-engine-core/react'
 import { Stack, TBody, TCell, TRow, Table } from '@inspector'
 import type { PluginClock } from '@pluginClock'
 

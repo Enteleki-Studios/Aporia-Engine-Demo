@@ -1,5 +1,7 @@
-import { Geometry3DComponent, Transform3DComponent } from '@core/components'
-
+import {
+    Geometry3DComponent,
+    Transform3DComponent,
+} from '@enteleki-studios/aporia-engine-core/components'
 import { createQuery } from '@pluginEntities'
 
 import {

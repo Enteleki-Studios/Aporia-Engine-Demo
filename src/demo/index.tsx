@@ -1,7 +1,6 @@
 import { use } from 'react'
 
-import { ResourcesPanel, WorldContext } from '@core/react'
-
+import { ResourcesPanel, WorldContext } from '@enteleki-studios/aporia-engine-core/react'
 import { Divider, Inspector, Stack, Tabs } from '@inspector'
 import {
     CubeIcon,

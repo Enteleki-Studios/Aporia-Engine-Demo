@@ -1,8 +1,11 @@
 import { useCallback } from 'react'
 
-import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
-
 import type { World } from '@enteleki-studios/aporia-engine-core'
+import {
+    type TypedUseWorld,
+    useIntervalRender,
+    useWorld,
+} from '@enteleki-studios/aporia-engine-core/react'
 import { Button, Stack, TCell, TRow, Table } from '@inspector'
 
 export const useRuntimeWorld: TypedUseWorld<World<object>> = useWorld

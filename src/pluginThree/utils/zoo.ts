@@ -1,6 +1,6 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 
-import { Transform3DComponent } from '@core/components'
+import { Transform3DComponent } from '@enteleki-studios/aporia-engine-core/components'
 
 import { Animation, GltfComponent, RenderableDynamic } from '../components'
 

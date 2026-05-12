@@ -8,9 +8,8 @@ import {
     useSyncExternalStore,
 } from 'react'
 
-import { type TypedUseWorld, useWorld } from '@core/react'
-
 import type { PluginsToResources } from '@enteleki-studios/aporia-engine-core'
+import { type TypedUseWorld, useWorld } from '@enteleki-studios/aporia-engine-core/react'
 import { Panel } from '@inspector'
 import { CaretDoubleRightIcon } from '@phosphor-icons/react'
 

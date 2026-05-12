@@ -1,6 +1,6 @@
 import type { Simplify } from 'type-fest'
 
-import { mapObject } from '@core/utils'
+import { mapObject } from '@enteleki-studios/aporia-engine-core/utils'
 
 import type { Keymap } from '.'
 

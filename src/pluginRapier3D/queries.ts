@@ -1,5 +1,4 @@
-import { Transform3DComponent } from '@core/components'
-
+import { Transform3DComponent } from '@enteleki-studios/aporia-engine-core/components'
 import { createQuery } from '@pluginEntities'
 
 import {

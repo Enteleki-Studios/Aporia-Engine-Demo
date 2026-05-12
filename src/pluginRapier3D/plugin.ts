@@ -1,5 +1,3 @@
-import { degToRad } from '@core/utils'
-
 import type {
     Collider,
     KinematicCharacterController,
@@ -10,6 +8,7 @@ import {
     type Plugin,
     type PluginsToResources,
 } from '@enteleki-studios/aporia-engine-core'
+import { degToRad } from '@enteleki-studios/aporia-engine-core/utils'
 import type { PluginClock } from '@pluginClock'
 import { EntityId, type PluginEntities } from '@pluginEntities'
 

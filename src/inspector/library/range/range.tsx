@@ -7,8 +7,8 @@ import {
     useState,
 } from 'react'
 
-import { useControlled } from '@core/react'
-import { clamp } from '@core/utils'
+import { useControlled } from '@enteleki-studios/aporia-engine-core/react'
+import { clamp } from '@enteleki-studios/aporia-engine-core/utils'
 
 import './range.scss'
 

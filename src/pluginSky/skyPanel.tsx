@@ -1,6 +1,9 @@
-import { type TypedUseWorld, useIntervalRender, useWorld } from '@core/react'
-
 import { type PluginsToResources, type World } from '@enteleki-studios/aporia-engine-core'
+import {
+    type TypedUseWorld,
+    useIntervalRender,
+    useWorld,
+} from '@enteleki-studios/aporia-engine-core/react'
 import { Alert, Panel, Range, Stack } from '@inspector'
 import { type PluginEntities } from '@pluginEntities'
 import { skyQuery } from '@pluginSky'

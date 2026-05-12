@@ -1,8 +1,7 @@
 import type { AmbientLight, Vector3 } from 'three'
 import type { Sky } from 'three/addons/objects/Sky.js'
 
-import { degToRad } from '@core/utils'
-
+import { degToRad } from '@enteleki-studios/aporia-engine-core/utils'
 import { type SkySettings } from '@pluginSky'
 import type { DirectionalLight } from '@pluginThree'
 

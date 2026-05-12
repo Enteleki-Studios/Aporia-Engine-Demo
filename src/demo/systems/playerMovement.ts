@@ -1,13 +1,12 @@
 import { quat, vec3 } from 'gl-matrix'
 
+import { Y_AXIS } from '@enteleki-studios/aporia-engine-core'
 import {
     PlayerComponent,
     Transform3DComponent,
     Velocity3DComponent,
-} from '@core/components'
-import { clamp, wrapAnglePi } from '@core/utils'
-
-import { Y_AXIS } from '@enteleki-studios/aporia-engine-core'
+} from '@enteleki-studios/aporia-engine-core/components'
+import { clamp, wrapAnglePi } from '@enteleki-studios/aporia-engine-core/utils'
 import { createQuery } from '@pluginEntities'
 import { Animation, perspectiveCameraQuery } from '@pluginThree'
 

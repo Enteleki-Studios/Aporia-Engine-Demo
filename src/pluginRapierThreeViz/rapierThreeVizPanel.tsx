@@ -1,8 +1,11 @@
 import { useEffect } from 'react'
 
-import { type TypedUseWorld, usePersistentState, useWorld } from '@core/react'
-
 import { WorldWithPlugin } from '@enteleki-studios/aporia-engine-core'
+import {
+    type TypedUseWorld,
+    usePersistentState,
+    useWorld,
+} from '@enteleki-studios/aporia-engine-core/react'
 import { Checkbox, Panel, Stack } from '@inspector'
 
 import type { RapierThreeVizPlugin } from '.'

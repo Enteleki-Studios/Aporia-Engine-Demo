@@ -1,5 +1,4 @@
-import { useIntervalRender } from '@core/react'
-
+import { useIntervalRender } from '@enteleki-studios/aporia-engine-core/react'
 import { Panel, TCell, TRow, Table } from '@inspector'
 
 import { useThreeWorld } from '.'

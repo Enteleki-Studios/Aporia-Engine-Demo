@@ -1,6 +1,6 @@
 import { type ChangeEvent, type ReactNode, useCallback } from 'react'
 
-import { useControlled } from '@core/react'
+import { useControlled } from '@enteleki-studios/aporia-engine-core/react'
 
 import './checkbox.scss'
 
