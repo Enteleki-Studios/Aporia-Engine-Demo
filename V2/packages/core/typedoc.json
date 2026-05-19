@@ -1,7 +1,0 @@
-{
-    "entryPoints": ["src/index.ts"],
-    "out": "dist/docs/",
-    "excludeExternals": true,
-    "sort": ["instance-first", "source-order"],
-    "plugin": ["typedoc-plugin-missing-exports"]
-}

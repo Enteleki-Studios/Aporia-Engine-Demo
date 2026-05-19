@@ -1,9 +1,5 @@
 {
     "entryPoints": [
-        "src/core/index.ts",
-        "src/core/utils/index.ts",
-        "src/core/react/index.ts",
-        "src/core/components/index.ts",
         "src/pluginEntities/index.ts",
         "src/pluginInput/index.ts",
         "src/pluginRapier3D/index.ts",

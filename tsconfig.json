@@ -53,5 +53,5 @@
         }
     },
     "include": ["."],
-    "exclude": ["./V2/"]
+    "exclude": ["./migrate/"]
 }
