@@ -8,6 +8,8 @@ env:
     STORYBOOK_DISABLE_TELEMETRY: true
 
 permissions:
+    contents: read
+    pages: write
     id-token: write
 
 concurrency:
@@ -50,7 +52,7 @@ jobs:
 
             - name: Upload static files as artifact
               id: deployment
-              uses: actions/upload-pages-artifact@v3
+              uses: actions/upload-pages-artifact@v5
               with:
                   path: dist
     deploy:
@@ -62,4 +64,4 @@ jobs:
         steps:
             - name: Deploy to GitHub Pages
               id: deployment
-              uses: actions/deploy-pages@v4
+              uses: actions/deploy-pages@v5
