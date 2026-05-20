@@ -2,6 +2,8 @@
 
 Aporia Engine is an ECS-based, modular, web game engine written in Typescript
 
+👉 [Live demo!](https://demo.aporia.entelekistudios.com/)
+
 <!-- prettier-ignore-start -->
 > [!WARNING]
 > This project is currently under heavy development. Major breaking
