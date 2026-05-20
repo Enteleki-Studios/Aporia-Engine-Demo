@@ -6,58 +6,75 @@ on:
 env:
     HUSKY: 0
     STORYBOOK_DISABLE_TELEMETRY: true
+    NODE_VERSION: 'lts/*'
+    PACKAGE_MANAGER: 'npm'
 
 concurrency:
     group: 'deployment'
     cancel-in-progress: true
 
 jobs:
-    checks:
+    test:
         runs-on: ubuntu-latest
-
         steps:
             - uses: actions/checkout@v6
-
             - uses: actions/setup-node@v6
               with:
-                  node-version: 25
+                  node-version: ${{env.NODE_VERSION}}
+                  cache: ${{env.PACKAGE_MANAGER}}
+            - run: npm ci
+            - run: npm run test
 
-            - name: Install
-              run: npm ci
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: ${{env.NODE_VERSION}}
+                  cache: ${{env.PACKAGE_MANAGER}}
+            - run: npm ci
+            - run: npm run lint
 
-            - name: Test
-              run: npm run test
+    format:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: ${{env.NODE_VERSION}}
+                  cache: ${{env.PACKAGE_MANAGER}}
+            - run: npm ci
+            - run: npm run format:check
 
     build:
-        needs: checks
+        needs:
+            - test
+            - lint
+            - format
         runs-on: ubuntu-latest
-
         steps:
             - uses: actions/checkout@v6
-
             - uses: actions/setup-node@v6
               with:
-                  node-version: 25
+                  node-version: ${{env.NODE_VERSION}}
+                  cache: ${{env.PACKAGE_MANAGER}}
+            - run: npm ci
+            - run: npm run build
 
-            - name: Install
-              run: npm ci
-
-            - name: Build
-              run: npm run build
-
-            - name: Upload static files as artifact
+            - name: Upload artifact
               id: deployment
               uses: actions/upload-pages-artifact@v5
               with:
                   path: dist
+
     deploy:
         needs: build
+        runs-on: ubuntu-latest
         permissions:
             contents: read
             pages: write
             id-token: write
-        runs-on: ubuntu-latest
-
         environment:
             name: github-pages
             url: ${{ steps.deployment.outputs.page_url }}
