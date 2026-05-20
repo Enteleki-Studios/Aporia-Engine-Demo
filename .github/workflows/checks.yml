@@ -1,0 +1,48 @@
+name: Checks
+
+on:
+    pull_request:
+        branches: ['main']
+env:
+    HUSKY: 0
+    STORYBOOK_DISABLE_TELEMETRY: true
+
+jobs:
+    checks:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v6
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 25
+
+            - name: Install
+              run: npm ci
+
+            - name: Test
+              run: npm run test
+
+            - name: Lint
+              run: npm run lint
+
+            - name: Formatting
+              run: npm run format:check
+
+    build:
+        needs: checks
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v6
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 25
+
+            - name: Install
+              run: npm ci
+
+            - name: Build
+              run: npm run build
