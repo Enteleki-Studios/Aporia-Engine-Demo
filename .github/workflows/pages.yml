@@ -7,6 +7,9 @@ env:
     HUSKY: 0
     STORYBOOK_DISABLE_TELEMETRY: true
 
+permissions:
+    id-token: write
+
 concurrency:
     group: 'deployment'
     cancel-in-progress: true
